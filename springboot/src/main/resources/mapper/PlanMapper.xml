@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PlanMapper">
+
+    <sql id="Base_Column_List">
+        id,doctor_id,num,week
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Plan">
+        select plan.*, doctor.name as doctorName, department.name as departmentName,hospital.hospital_name as hospitalName
+        from plan
+        left join doctor on plan.doctor_id = doctor.id
+        left join department on doctor.department_id = department.id
+        left join hospital on plan.hospital_id = hospital.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="week != null"> and plan.week= #{week}</if>
+            <if test="doctorId != null"> and plan.doctor_id = #{doctorId}</if>
+            <if test="hospitalId != null"> and plan.hospital_id = #{hospitalId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Plan">
+        select
+        <include refid="Base_Column_List" />
+        from plan
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from plan
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Plan" useGeneratedKeys="true">
+        insert into plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="doctorId != null">doctor_id,</if>
+                <if test="num != null">num,</if>
+                <if test="week != null">week,</if>
+                <if test="hospitalId != null">hospital_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="doctorId != null">#{doctorId},</if>
+                <if test="num != null">#{num},</if>
+                <if test="week != null">#{week},</if>
+            <if test="hospitalId != null">#{hospitalId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Plan">
+        update plan
+        <set>
+            <if test="doctorId != null">
+                doctor_id = #{doctorId},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+            <if test="week != null">
+                week = #{week},
+            </if>
+            <if test="hospitalId != null">
+                hospital_id = #{hospitalId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>

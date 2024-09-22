@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DoctorMapper">
+
+
+    <select id="selectAll" resultType="com.example.entity.Doctor">
+        select doctor.*, department.name as departmentName,hospital.hospital_name as hospitalName
+        from doctor
+        left join department on doctor.department_id = department.id
+        left join plan on plan.doctor_id = doctor.id
+        left join hospital on doctor.hospital_id = hospital.id
+        <where>
+            <if test="id != null">and id= #{id}</if>
+            <if test="username != null">and username like concat('%', #{username}, '%')</if>
+            <if test="password != null">and password= #{password}</if>
+            <if test="name != null">and name= #{name}</if>
+            <if test="phone != null">and phone= #{phone}</if>
+            <if test="email != null">and email= #{email}</if>
+            <if test="avatar != null">and avatar= #{avatar}</if>
+            <if test="role != null">and role= #{role}</if>
+            <if test="departmentId != null">and department_id = #{departmentId}</if>
+            <if test="week != null">and plan.week = #{week}</if>
+            <if test="hospitalId != null">and doctor.hospital_id = #{hospitalId}</if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Doctor">
+        select *
+        from doctor
+        where id = #{id}
+    </select>
+    <select id="selectByH" resultType="com.example.entity.Doctor">
+        select doctor.*, department.name as departmentName,hospital.hospital_name as hospitalName
+        from doctor
+        left join department on doctor.department_id = department.id
+        left join plan on plan.doctor_id = doctor.id
+        left join hospital on doctor.hospital_id = hospital.id
+        where doctor.hospital_id=#{H_id}
+    </select>
+    <select id="select" resultType="com.example.entity.Doctor">
+        select * from doctor
+    </select>
+
+    <delete id="deleteById">
+        delete from doctor
+        where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Doctor" useGeneratedKeys="true">
+        insert into doctor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="email != null">email,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="role != null">role,</if>
+            <if test="description != null">description,</if>
+            <if test="price != null">price,</if>
+            <if test="time != null">time,</if>
+            <if test="position != null">position,</if>
+            <if test="departmentId != null">department_id,</if>
+            <if test="hospitalId != null">hospital_id,</if>
+            <if test="publicKey != null">public_key,</if>
+            <if test="privateKey != null">private_key,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="role != null">#{role},</if>
+            <if test="description != null">#{description},</if>
+            <if test="price != null">#{price},</if>
+            <if test="time != null">#{time},</if>
+            <if test="position != null">#{position},</if>
+            <if test="departmentId != null">#{departmentId},</if>
+            <if test="hospitalId != null">#{hospitalId},</if>
+            <if test="publicKey != null">#{publicKey},</if>
+            <if test="privateKey != null">#{privateKey},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Doctor">
+        update doctor
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="position != null">
+                position = #{position},
+            </if>
+            <if test="departmentId != null">
+                department_id = #{departmentId},
+            </if>
+            <if test="hospitalId != null">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="publicKey != null">
+                public_key = #{publicKey},
+            </if>
+            <if test="privateKey != null">
+                private_key = #{privateKey},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

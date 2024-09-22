@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DrugMapper">
+    <sql id="selectComment">
+        select id,hospital_id,drug_number,drug_name,price from drug
+    </sql>
+    <insert id="add" parameterType="com.example.entity.Drug" useGeneratedKeys="true">
+        insert into drug
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="hospitalId != null">hospital_id,</if>
+            <if test="drugNumber != null">drug_number,</if>
+            <if test="drugName != null">drug_name,</if>
+            <if test="price != null">price,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="hospitalId != null">#{hospitalId},</if>
+            <if test="drugNumber != null">#{drugNumber},</if>
+            <if test="drugName != null">#{drugName},</if>
+            <if test="price != null">#{price},</if>
+        </trim>
+    </insert>
+    <update id="updateById">
+        update drug
+        <set>
+            <if test="hospitalId!=null">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="drugNumber!=null">
+                drug_number = #{drugNumber},
+            </if>
+            <if test="drugName!=null">
+                drug_name = #{drugName},
+            </if>
+            <if test="price!=null">
+                price = #{price},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete from drug where id = #{id}
+    </delete>
+
+    <select id="selectAll" resultType="com.example.entity.Drug">
+        select drug.*, hospital.hospital_name as hospitalName
+        from drug
+        LEFT JOIN hospital on drug.hospital_id = hospital.id
+        <where>
+            <if test="id != null">and drug.id= #{id}</if>
+            <if test=" drugNumber!= null">and drug.drug_number like concat('%', #{drugNumber}, '%')</if>
+            <if test=" drugName!= null">and drug.drug_name like concat('%', #{drugName}, '%')</if>
+            <if test="hospitalId != null"> and drug.hospital_id = #{hospitalId}</if>
+        </where>
+        order by drug.id
+    </select>
+</mapper>

@@ -1,0 +1,42 @@
+${AnsiColor.BRIGHT_GREEN}$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+${AnsiColor.BRIGHT_YELLOW}$$                                _.ooOoo._                               $$
+${AnsiColor.BRIGHT_RED}$$                               o888888888o                              $$
+${AnsiColor.BRIGHT_CYAN}$$                               88"  .  "88                              $$
+${AnsiColor.BRIGHT_MAGENTA}$$                               (|  ^_^  |)                              $$
+${AnsiColor.BRIGHT_GREEN}$$                               O\   =   /O                              $$
+${AnsiColor.BRIGHT_RED}$$                            ____/`-----'\____                           $$
+${AnsiColor.BRIGHT_CYAN}$$                          .'  \\|       |$$  `.                         $$
+${AnsiColor.BRIGHT_MAGENTA}$$                         /  \\|||   :   |||$$  \                        $$
+${AnsiColor.BRIGHT_GREEN}$$                        /  _|||||  -:-  |||||-  \                       $$
+${AnsiColor.BRIGHT_YELLOW}$$                        |   | \\\   -   $$/ |   |                       $$
+${AnsiColor.BRIGHT_GREEN}$$                        | \_|  ''\-----/''  |   |                       $$
+${AnsiColor.BRIGHT_YELLOW}$$                        \  .-\___  `-`  ____/-. /                       $$
+${AnsiColor.BRIGHT_CYAN}$$                      ___`. .'   /--.--\   `. . ___                     $$
+${AnsiColor.BRIGHT_RED}$$                    ."" '<  `.____\_<|>_/____.'  >'"".                  $$
+${AnsiColor.BRIGHT_GREEN}$$                  | | :  `- \`.;`.\ _ /``;.`/ - ` : | |                 $$
+${AnsiColor.BRIGHT_YELLOW}$$                  \  \ `-.   \_ ___\ /___ _/   .-` /  /                 $$
+${AnsiColor.BRIGHT_CYAN}$$            ========`-.____`-.____\_____/____.-`____.-'========         $$
+${AnsiColor.BRIGHT_MAGENTA}$$                                  `=---='                               $$
+${AnsiColor.BRIGHT_YELLOW}$$            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        $$
+${AnsiColor.BRIGHT_GREEN}$$                     佛祖保佑          永无BUG         永不修改            $$
+${AnsiColor.BRIGHT_YELLOW}$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+${AnsiColor.BRIGHT_CYAN}$$                        写字楼里写字间，写字间中程序员；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        程序人员写程序，又将程序换酒钱；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        酒醒只在屏前坐，酒醉还来屏下眠；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        酒醉酒醒日复日，屏前屏下年复年；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        但愿老死电脑间，不愿鞠躬老板前；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        奔驰宝马贵者趣，公交自行程序员；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        别人笑我太疯癫，我笑自己命太贱；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        但见满街漂亮妹，哪个归得程序员；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        半人半我半自在，半醒半醉半神仙；                      $$
+${AnsiColor.BRIGHT_CYAN}$$                        半亲半爱半苦乐，半俗半禅半随缘。                      $$
+${AnsiColor.BRIGHT_YELLOW}$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+                        _
+                       | |
+ _ __ ___   __ _    ___| |__   __ _  ___
+| '_ ` _ \ / _` |  / __| '_ \ / _` |/ _ \
+| | | | | | (_| | | (__| | | | (_| | (_) |
+|_| |_| |_|\__,_|  \___|_| |_|\__,_|\___/
+
+${AnsiColor.BRIGHT_WHITE}

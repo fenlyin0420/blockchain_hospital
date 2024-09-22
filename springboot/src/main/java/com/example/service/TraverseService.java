@@ -1,0 +1,78 @@
+package com.example.service;
+
+
+
+import cn.hutool.core.util.RandomUtil;
+import com.example.entity.Drug;
+import com.example.entity.Traverse;
+import com.example.mapper.DrugMapper;
+import com.example.mapper.TraverseMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
+
+@Service
+public class TraverseService {
+
+    @Resource
+    private TraverseMapper traverseMapper;
+
+    public List<Traverse> selectAll(Traverse traverse) {
+        return traverseMapper.selectAll(traverse);
+    }
+
+    public PageInfo<Traverse> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Traverse> list = traverseMapper.selectAll(traverse);
+        return PageInfo.of(list);
+    }
+
+    public Traverse selectById(Integer id) {
+        Traverse traverse = new Traverse();
+        traverse.setId(id);
+        return traverseMapper.selectAll(traverse).get(0);
+    }
+
+    public Traverse selectByName(String name) {
+        Traverse traverse = new Traverse();
+        traverse.setName(name);
+        return traverseMapper.selectAll(traverse).get(0);
+    }
+
+    public Traverse selectByDoctorId(Integer id) {
+        Traverse traverse = new Traverse();
+        traverse.setDoctorId(id);
+        return traverseMapper.selectAll(traverse).get(0);
+    }
+
+    public Traverse selectByHospitalId(Integer id) {
+        Traverse traverse = new Traverse();
+        traverse.setHospitalId(id);
+        return traverseMapper.selectAll(traverse).get(0);
+    }
+
+    public void add(Traverse traverse) {
+        traverseMapper.add(traverse);
+    }
+
+    public void updateById(Traverse traverse) {
+        traverseMapper.updateById(traverse);
+    }
+
+    public void deleteById(Integer id) {
+        traverseMapper.deleteById(id);
+    }
+
+    public void deleteBatch(List<Integer> ids) {
+        for(Integer id : ids){
+            traverseMapper.deleteById(id);
+        }
+    }
+}
