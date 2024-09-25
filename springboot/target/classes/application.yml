@@ -7,7 +7,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: hospital   #你本地的数据库用户名
-    password: 811324 #你本地的数据库密码
+    password: 123456 #你本地的数据库密码
     url: jdbc:mysql://localhost:3306/blockchain_hospital
   servlet:
     multipart:

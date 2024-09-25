@@ -18,6 +18,7 @@
 
     <div class="table" style="padding: 15px 20px">
       <el-row :gutter="20">
+
         <el-col :span="6" v-for="item in tableData" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 100px; height: 100px; border-radius: 50%">
@@ -110,6 +111,9 @@ export default {
       })
     },
     load(pageNum) {  // 分页查询
+      // debug
+      // window.alert("查询第" + pageNum + "页");
+
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/doctor/selectPage2', {
         params: {
@@ -141,5 +145,7 @@ export default {
 </script>
 
 <style scoped>
-
+.table {
+  font-size: 16px;
+}
 </style>

@@ -109,10 +109,15 @@ export default {
   },
   methods: {
     loadDoctor() {
+      //debug
+      console.log(this.user);
       let id=this.user.hospitalId
-      this.$request.get('/doctor/selectByH/'+id).then(res => {
+      // this.$request.get('/doctor/selectByH/'+id).then(res => {
+      this.$request.get('/doctor/selectAll/').then(res => { // 加载所有医生，而不是按照医院id加载
         if (res.code === '200') {
           this.doctorData = res.data
+          // debug
+          console.log(res);
         } else {
           this.$message.error(res.msg)
         }
