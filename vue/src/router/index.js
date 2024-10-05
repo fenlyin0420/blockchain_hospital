@@ -14,7 +14,7 @@ const routes = [
     path: '/',
     name: 'Manager',
     component: () => import('../views/Manager.vue'),
-    redirect: '/home',  // 重定向到主页//需要有前台时必须注册掉，负责就会重定向
+    // redirect: '/home',  // 重定向到主页//需要有前台时必须注册掉，负责就会重定向
     children: [
       { path: '403', name: 'NoAuth', meta: { name: '无权限' }, component: () => import('../views/manager/403') },
       { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/manager/Home') },
@@ -36,7 +36,6 @@ const routes = [
       { path: 'Power', name: 'Power', meta: { name: '权限管理' }, component: () => import('../views/records/Power.vue') },
       { path: 'AddFiles', name: 'AddFiles', meta: { name: '新建档案' }, component: () => import('../views/records/AddFiles.vue') },
       { path: 'SearchFiles', name: 'SearchFiles', meta: { name: '档案检索' }, component: () => import('../views/records/SearchFiles.vue') },
-
       { path: 'hospital', name: 'hospital', meta: { name: '医院信息' }, component: () => import('../views/records/hospital.vue') },
       { path: 'drug', name: 'Drug', meta: { name: '药品信息' }, component: () => import('../views/records/Drug') },
       { path: 'caseList', name: 'CaseList', meta: { name: '病历列表' }, component: () => import('../views/records/CaseList') },

@@ -7,4 +7,6 @@ public enum RoleEnum {
     DOCTOR,
     // 患者
     USER,
+    // 护士
+    NURSE
 }
