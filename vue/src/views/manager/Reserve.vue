@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入挂号状态" style="width: 200px" v-model="status"></el-input>
+      <el-select v-model="status" placeholder="请选择挂号状态" style="width: 200px">
+        <el-option label="未叫号" value="未叫号"></el-option>
+        <el-option label="已叫号" value="已叫号"></el-option>
+      </el-select>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -10,7 +13,7 @@
       <el-table :data="tableData" stripe>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="hospitalName" label="医院"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" show-overflow-tooltip></el-table-column>
+<!--        <el-table-column prop="userName" label="患者姓名" show-overflow-tooltip></el-table-column>-->
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip></el-table-column>
         <el-table-column prop="time" label="挂号时间"></el-table-column>
         <el-table-column prop="status" label="挂号状态"></el-table-column>

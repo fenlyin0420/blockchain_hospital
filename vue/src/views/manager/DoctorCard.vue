@@ -1,4 +1,4 @@
-<template>
+<template xmlns="">
   <div>
     <div class="search">
       <el-select v-model="hospitalId" placeholder="请选择医院" >
@@ -8,6 +8,11 @@
       </el-select>
 
       <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">
+        <el-option v-for="item in departmentData" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+
+      <el-select v-model="departmentId" placeholder="请选择时间" style="width: 199px">
         <el-option v-for="item in departmentData" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>

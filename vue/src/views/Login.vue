@@ -28,20 +28,6 @@
         </div>
       </el-form>
     </div>
-<!--    <el-dialog title="郑重声明" :visible.sync="dialogVisible" :show-close="false" width="40%" :close-on-click-modal="false" destroy-on-close>-->
-<!--      <div style="color: red; font-size: 16px; line-height: 26px; margin-bottom: 20px">-->
-<!--        本项目由知识星球【项目训练营】原创，我们已经对本项目<strong style="color: #4d1cc0">申请了软件著作权，完善了所有星球项目相关的法律文件材料</strong>，星球内付费用户可以学习该项目自己使用，禁止在其他平台做转手或者倒卖，-->
-<!--        我们有专门人员在各大平台不定期检索，一旦发现，<strong style="color: #4d1cc0">我们第一时间收集好证据，向你发送律师函</strong>，现在互联网所有账号都是实名制，-->
-<!--        我们可以明确追溯到你。请大家不要做违法的事情，不要给你的人生轨迹抹上一层黑。-->
-<!--      </div>-->
-<!--      <div style="text-align: center">-->
-<!--        <div>微信扫码加入知识星球【项目训练营】</div>-->
-<!--        <img src="https://i.postimg.cc/0yTm5ps0/image.jpg" alt="">-->
-<!--      </div>-->
-<!--      <div slot="footer" class="dialog-footer">-->
-<!--        <el-button type="primary" @click="dialogVisible=false">我已明确本项目仅限个人使用</el-button>-->
-<!--      </div>-->
-<!--    </el-dialog>-->
   </div>
 </template>
 

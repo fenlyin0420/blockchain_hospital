@@ -37,7 +37,6 @@
       <div class="manager-main-left">
         <el-menu :unique-opened="true" router style="border: none" :default-active="$route.path">
           <!--default-openeds="['info','powerDoctor', 'reserve', 'user','powerUser']"-->
-<!--去除掉首页         -->
 <!--          <el-menu-item index="/home">-->
 <!--            <i class="el-icon-s-home"></i>-->
 <!--            <span slot="title" style="font-size: 20px;">系统首页</span>-->
@@ -58,7 +57,8 @@
               <i class="el-icon-menu"></i><span>预约就诊</span>
             </template>
             <el-menu-item index="/doctorCard" v-if="user.role!=='DOCTOR'">预约挂号</el-menu-item>
-            <el-menu-item index="/reserve">患者挂号</el-menu-item>
+            <el-menu-item index="/reserve" v-if="user.role!=='USER'">患者挂号</el-menu-item>
+            <el-menu-item index="/reserve" v-else>我的挂号</el-menu-item>
             <el-menu-item index="/record">我的就诊</el-menu-item>
             <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记</el-menu-item>
           </el-submenu>
@@ -77,7 +77,7 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
-            <el-menu-item index="/admin">管理员信息</el-menu-item>
+<!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
             <el-menu-item index="/doctor">医生信息</el-menu-item>
             <el-menu-item index="/user">患者信息</el-menu-item>
           </el-submenu>

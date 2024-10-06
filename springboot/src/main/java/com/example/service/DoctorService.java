@@ -98,8 +98,6 @@ public class DoctorService {
      * 查询所有
      */
     public List<Doctor> selectAll(Doctor doctor) {
-        // debug
-        System.out.println("selectAll");
         return doctorMapper.selectAll(doctor);
     }
 

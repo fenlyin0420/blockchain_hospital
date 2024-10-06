@@ -1,7 +1,16 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入星期几" style="width: 200px" v-model="week"></el-input>
+      <!-- 下拉框选择星期几 -->
+      <el-select v-model="week" placeholder="请选择星期几" style="width: 200px">
+        <el-option label="星期一" value="星期一"></el-option>
+        <el-option label="星期二" value="星期二"></el-option>
+        <el-option label="星期三" value="星期三"></el-option>
+        <el-option label="星期四" value="星期四"></el-option>
+        <el-option label="星期五" value="星期五"></el-option>
+        <el-option label="星期六" value="星期六"></el-option>
+        <el-option label="星期日" value="星期日"></el-option>
+      </el-select>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -106,14 +115,15 @@ export default {
   created() {
     this.load(1)
     this.loadDoctor()
+    console.log("组件已创建");
   },
   methods: {
     loadDoctor() {
       //debug
-      console.log(this.user);
-      let id=this.user.hospitalId
-      // this.$request.get('/doctor/selectByH/'+id).then(res => {
-      this.$request.get('/doctor/selectAll/').then(res => { // 加载所有医生，而不是按照医院id加载
+      console.log("this.user", this.user);
+      let id=this.user.hospitalId // 各医院管理员只能管理自己医院的排班，所以是selectById
+      this.$request.get('/doctor/selectByH/'+id).then(res => {
+      //this.$request.get('/doctor/selectAll/').then(res => { // 加载所有医生，而不是按照医院id加载
         if (res.code === '200') {
           this.doctorData = res.data
           // debug
