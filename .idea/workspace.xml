@@ -4,32 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c16069f-5c2c-43fe-8e4c-87e55f9825a1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/project.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/project.backup.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Nurse.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Nurse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/service/DoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/service/DoctorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/common/enums/RoleEnum.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/common/enums/RoleEnum.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/controller/DoctorController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/controller/DoctorController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/controller/WebController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/controller/WebController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/mapper/DoctorMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/mapper/DoctorMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot/target/classes/com/example/service/DoctorService.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/target/classes/com/example/service/DoctorService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/views/Manager.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/Manager.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/views/manager/Plan.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/manager/Plan.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/views/manager/Reserve.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/manager/Reserve.vue" afterDir="false" />
-    </list>
+    <list default="true" id="6c16069f-5c2c-43fe-8e4c-87e55f9825a1" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,7 +94,7 @@
       <option name="presentableId" value="Default" />
       <updated>1728195719206</updated>
       <workItem from="1728195720915" duration="2342000" />
-      <workItem from="1728198073407" duration="6459000" />
+      <workItem from="1728198073407" duration="6620000" />
     </task>
     <servers />
   </component>
