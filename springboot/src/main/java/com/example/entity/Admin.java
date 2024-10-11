@@ -39,7 +39,7 @@ public class Admin extends Account implements Serializable {
     private String role;
     private String publicKey;
     private String privateKey;
-
+    // TODO 去掉 getter setter 函数，因为已经有 lombok 注解了
     @Override
     public Integer getId() {
         return id;

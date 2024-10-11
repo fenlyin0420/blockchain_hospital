@@ -32,7 +32,7 @@ public class Record implements Serializable {
     private String hospitalName;
 
     private String departmentName;
-
+    // TODO 去掉 getter setter 函数，因为已经有 lombok 注解了
     public Integer getId() {
         return id;
     }
