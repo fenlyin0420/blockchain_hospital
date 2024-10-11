@@ -8,12 +8,12 @@
       </el-select>
 
       <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">
-        <el-option v-for="item in departmentData" :key="item.id" :label="item.name" :value="item.id">
+        <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
 
       <el-select v-model="departmentId" placeholder="请选择时间" style="width: 199px">
-        <el-option v-for="item in departmentData" :key="item.id" :label="item.name" :value="item.id">
+        <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
 
@@ -77,13 +77,13 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {},
       ids: [],
-      departmentData: [],
+      planData: [],
       hospitalList:[]
     }
   },
   created() {
     this.load(1)
-    this.loadDepartment()
+    this.loadPlan()
     this.load2()
   },
   methods: {
@@ -106,10 +106,11 @@ export default {
         }
       })
     },
-    loadDepartment() {
+    loadPlan() {
       this.$request.get('/department/selectAll').then(res => {
         if (res.code === '200') {
-          this.departmentData = res.data
+          this.planData = res.data
+          console.log(res.data)
         } else {
           this.$message.error(res.msg)
         }
@@ -128,6 +129,7 @@ export default {
           hospitalId:this.hospitalId,
         }
       }).then(res => {
+        console.log(res);
         this.tableData = res.data?.list
         this.total = res.data?.total
       })

@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c16069f-5c2c-43fe-8e4c-87e55f9825a1" name="Changes" comment="" />
+    <list default="true" id="6c16069f-5c2c-43fe-8e4c-87e55f9825a1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/entity/Doctor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vue/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vue/src/views/front/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/front/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,17 +43,17 @@
     "Spring Boot.SpringbootApplication.executor": "Run",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Projects/Web/blockchain_hospital/Project/vue/node_modules/element-ui",
+    "last_opened_file_path": "D:/Projects/Web/blockchain_hospital/Project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "npm.serve.executor": "Run",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "JavaScript.Libraries",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "D:\\Applications\\JetBrains\\IntelliJ IDEA 2024.1.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
@@ -54,7 +63,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected="Spring Boot.SpringbootApplication">
+  <component name="RunManager" selected="npm.serve">
     <configuration name="SpringbootApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="springboot" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.SpringbootApplication" />
@@ -95,6 +104,13 @@
       <updated>1728195719206</updated>
       <workItem from="1728195720915" duration="2342000" />
       <workItem from="1728198073407" duration="6620000" />
+      <workItem from="1728209329458" duration="11000" />
+      <workItem from="1728296648360" duration="172000" />
+      <workItem from="1728296832358" duration="863000" />
+      <workItem from="1728364444848" duration="623000" />
+      <workItem from="1728396430349" duration="1409000" />
+      <workItem from="1728567794871" duration="3927000" />
+      <workItem from="1728627932381" duration="4957000" />
     </task>
     <servers />
   </component>

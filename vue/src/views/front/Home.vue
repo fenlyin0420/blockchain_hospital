@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-
+    <div>This is /front/home </div>
   </div>
 </template>
 
