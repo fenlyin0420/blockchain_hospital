@@ -19,8 +19,8 @@ public enum ResultCodeEnum {
     USER_KEY_ERROR("-1","钥匙错误"),
     USER_SET_FRONT_ERROR("-1","请先生成公钥环"),;
 
-    public String code;
-    public String msg;
+    public final String code;
+    public final String msg;
 
     ResultCodeEnum(String code, String msg) {
         this.code = code;
