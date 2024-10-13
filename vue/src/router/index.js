@@ -23,6 +23,7 @@ const routes = [
       { path: 'user', name: 'User', meta: { name: '患者信息' }, component: () => import('../views/manager/User') },
       { path: 'adminPerson', name: 'AdminPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/AdminPerson') },
       { path: 'doctorPerson', name: 'DoctorPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/DoctorPerson') },
+      { path: 'nursePerson', name:'NursePerson', meta: { name: '个人信息' }, component: () => import('../views/manager/nursePerson')},
       { path: 'userPerson', name: 'UserPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/UserPerson') },
       { path: 'password', name: 'Password', meta: { name: '修改密码' }, component: () => import('../views/manager/Password') },
       { path: 'notice', name: 'Notice', meta: { name: '公告信息' }, component: () => import('../views/manager/Notice') },
@@ -44,6 +45,7 @@ const routes = [
       { path: 'referralApplication', name: 'ReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/records/ReferralApplication') },
       { path: 'caseDetails', name: 'CaseDetails', meta: { name: '病历详情' }, component: () => import('../views/records/CaseDetails.vue') },
       { path: 'PersonalInformation', name: 'PersonalInformation', meta: { name: '密钥管理' }, component: () => import('../views/records/PersonalInformation.vue') },
+
     ]
   },
   {

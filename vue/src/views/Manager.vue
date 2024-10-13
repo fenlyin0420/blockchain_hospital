@@ -145,6 +145,9 @@ export default {
       if (this.user.role === 'USER') {
         this.$router.push('/userPerson')
       }
+      if (this.user.role === 'NURSE') {
+        this.$router.push('/nursePerson')
+      }
     },
     PersonalInformation(){
       this.$router.push("PersonalInformation")
