@@ -1,3 +1,4 @@
 vue/node_modules
 springboot/target
-
+.idea
+springboot\src\main\resources\application.yml
