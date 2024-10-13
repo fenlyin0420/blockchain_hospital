@@ -12,8 +12,13 @@
         </el-option>
       </el-select>
 
-      <el-select v-model="departmentId" placeholder="请选择时间" style="width: 199px">
-        <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
+      <el-select v-model="selectedTime" placeholder="请选择时间" style="width: 199px">
+        <el-option
+            v-for="timeOption in timeOptions"
+            :key="timeOption.value"
+            :label="timeOption.label"
+            :value="timeOption.value"
+        >
         </el-option>
       </el-select>
 
@@ -21,9 +26,9 @@
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
 
+    <!-- doctorCard 显示区域 -->
     <div class="table" style="padding: 15px 20px">
       <el-row :gutter="20">
-
         <el-col :span="6" v-for="item in tableData" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 100px; height: 100px; border-radius: 50%">
@@ -78,7 +83,16 @@ export default {
       rules: {},
       ids: [],
       planData: [],
-      hospitalList:[]
+      hospitalList:[],
+      timeOptions: [
+        { label: '星期一', value: 1 },
+        { label: '星期二', value: 2 },
+        { label: '星期三', value: 3 },
+        { label: '星期四', value: 4 },
+        { label: '星期五', value: 5 },
+        { label: '星期六', value: 6 },
+        { label: '星期日', value: 7 },
+      ],
     }
   },
   created() {
@@ -106,20 +120,28 @@ export default {
         }
       })
     },
+    /**
+     * 查询所有计划，其 res.data 是一个数组，数组每一个元素都是一个 plan 表的元组
+     * 组件属性 planData 将引用返回的数组（res.data）
+     */
     loadPlan() {
       this.$request.get('/department/selectAll').then(res => {
         if (res.code === '200') {
           this.planData = res.data
-          console.log(res.data)
+          console.log("loadPlan: ")
+          console.log(res)
         } else {
           this.$message.error(res.msg)
         }
       })
     },
-    load(pageNum) {  // 分页查询
-      // debug
-      // window.alert("查询第" + pageNum + "页");
-
+    /**
+     * 查询指定页的数据，并将返回数据保存在组件数据中
+     * res.data 中的 total 是返回的总记录数，被组件属性 total 引用
+     * res.data 中的 list 是包含医生个人信息的对象，被组件属性 tableData 引用
+     * @param pageNum 页号
+     */
+    load(pageNum) {
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/doctor/selectPage2', {
         params: {
@@ -129,6 +151,7 @@ export default {
           hospitalId:this.hospitalId,
         }
       }).then(res => {
+        console.log("load(pageNum): ")
         console.log(res);
         this.tableData = res.data?.list
         this.total = res.data?.total
@@ -142,6 +165,7 @@ export default {
     reset() {
       this.departmentId = null;
       this.hospitalId = null;
+
       this.load(1)
     },
     handleCurrentChange(pageNum) {

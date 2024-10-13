@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c16069f-5c2c-43fe-8e4c-87e55f9825a1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/vue/src/views/manager/nursePerson.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot/src/main/java/com/example/service/DoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot/src/main/java/com/example/service/DoctorService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vue/src/views/Manager.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/Manager.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/src/views/manager/DoctorCard.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +127,7 @@
       <workItem from="1728643227834" duration="2724000" />
       <workItem from="1728709911685" duration="3649000" />
       <workItem from="1728740482338" duration="1187000" />
-      <workItem from="1728796184654" duration="2583000" />
+      <workItem from="1728796184654" duration="5546000" />
     </task>
     <servers />
   </component>

@@ -49,7 +49,10 @@
             </template>
             <el-menu-item index="/notice" v-if="user.role === 'ADMIN'">公告信息</el-menu-item>
             <el-menu-item index="/department" v-if="user.role === 'ADMIN'">科室信息</el-menu-item>
-            <el-menu-item index="/plan">医生排班</el-menu-item>
+            <el-menu-item index="/plan" v-if="user.role === 'DOCTER'">医生排班</el-menu-item>
+            <el-menu-item index="/plan" v-if="user.role === 'NURSE'">护士排班</el-menu-item>
+
+
           </el-submenu>
 
           <el-submenu index="reserve">

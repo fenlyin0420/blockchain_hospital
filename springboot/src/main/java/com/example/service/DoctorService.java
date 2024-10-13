@@ -111,7 +111,7 @@ public class DoctorService {
     }
 
     /**
-     * 医生挂号页面的分页查询
+     * 患者挂号页面的分页查询
      */
     public PageInfo<Doctor> selectPage2(Doctor doctor, Integer pageNum, Integer pageSize) {
         String today = DateUtil.format(new Date(), "yyyy-MM-dd");
