@@ -85,7 +85,7 @@
             </template>
 <!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
             <el-menu-item index="/doctor">医生管理</el-menu-item>
-            <el-menu-item index="/nerse">护士管理</el-menu-item>
+            <el-menu-item index="/nurse">护士管理</el-menu-item>
             <el-menu-item index="/user">患者管理</el-menu-item>
           </el-submenu>
 
@@ -108,9 +108,9 @@
 
           <el-submenu index="record" v-if="user.role === 'ADMIN'">
             <template slot="title">
-              <i class="el-icon-menu"></i><span>转诊管理</span>
+              <i class="el-icon-menu"></i><span>转诊记录与审批</span>
             </template>
-            <el-menu-item index="/referralRecord">转诊记录及审批</el-menu-item>
+            <el-menu-item index="/referralRecord">转诊记录与审批</el-menu-item>
           </el-submenu>
 <!--
           <el-submenu index="information" v-if="user.role === 'ADMIN'">
