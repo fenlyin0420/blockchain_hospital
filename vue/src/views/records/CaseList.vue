@@ -41,6 +41,7 @@
             </el-input>
           </template>
         </el-table-column>
+        <el-table-column prop="inhospital" label="是否住院"></el-table-column>
         <el-table-column prop="jurisdiction" label="权限"></el-table-column>
         <el-table-column label="详情" width="120" align="center">
           <template v-slot="scope">

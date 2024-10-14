@@ -53,6 +53,7 @@
           </el-col>
         </el-row>
       </el-row>
+
       <hr class="divider" />
       <el-row class="info-row">
         <el-col :span="24">
@@ -62,6 +63,7 @@
           </div>
         </el-col>
       </el-row>
+
       <hr class="divider" />
       <el-row class="info-row">
         <el-col :span="24">
@@ -78,10 +80,16 @@
               <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
             </div>
             <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical" class="medicine-textarea"></el-input>
+            <span class="field-label"> 是否住院 : </span>
+            <el-radio v-model="radio" label="1">是</el-radio>
+            <el-radio v-model="radio" label="2">否</el-radio>
             <el-button type="primary" @click="ok" class="edit-button">确定</el-button>
           </div>
         </el-col>
       </el-row>
+      
+      
+
     </div>
   </div>
 </template>
@@ -98,6 +106,7 @@ export default {
       selectedMedicine: '', // 选择的药品
       medicineQuantity: '', // 药品数量
       medicineFrequency: '', // 一日几次
+      radio: '',
       tableData: [],
       drugList: [],
       information: {},
