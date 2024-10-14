@@ -12,6 +12,7 @@
             <if test="number != null">number,</if>
             <if test="advice != null">advice,</if>
             <if test="drug != null">drug,</if>
+            <if test="inhospital != null">inhospital,</if>
             <if test="jurisdiction != null">jurisdiction,</if>
             <if test="signData != null">sign_data,</if>
             <if test="signResult != null">sign_result,</if>
@@ -25,6 +26,7 @@
             <if test="number != null">#{number},</if>
             <if test="advice != null">#{advice},</if>
             <if test="drug != null">#{drug},</if>
+            <if test="inhospital != null">#{inhospital},</if>
             <if test="jurisdiction != null">#{jurisdiction},</if>
             <if test="signData != null">#{signData},</if>
             <if test="signResult != null">#{signResult},</if>

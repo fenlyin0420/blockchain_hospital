@@ -14,6 +14,7 @@ public class Traverse {
     private Integer hospitalId;
     private String advice;
     private String drug;
+    private String inhospital;
     private String jurisdiction;
     private String doctorName;
     private String hospitalName;
