@@ -81,8 +81,8 @@
             </div>
             <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical" class="medicine-textarea"></el-input>
             <span class="field-label"> 是否住院 : </span>
-            <el-radio v-model="radio" label="1">是</el-radio>
-            <el-radio v-model="radio" label="2">否</el-radio>
+            <el-radio v-model="radio" label="是">是</el-radio>
+            <el-radio v-model="radio" label="否">否</el-radio>
             <el-button type="primary" @click="ok" class="edit-button">确定</el-button>
           </div>
         </el-col>
@@ -208,6 +208,7 @@ export default {
       this.information.hospitalId = this.caseInfo.hospitalId
       this.information.advice = this.advice
       this.information.drug = this.medicine
+      this.information.inhospital = this.radio
       this.information.jurisdiction = "允许"
       this.information.signData=" "
       this.information.signResult=" "
