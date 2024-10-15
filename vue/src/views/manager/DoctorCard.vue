@@ -12,7 +12,7 @@
         </el-option>
       </el-select>
 
-      <el-select v-model="selectedTime" placeholder="请选择时间" style="width: 199px">
+      <el-select v-model="disabled" placeholder="请选择时间" style="width: 199px">
         <el-option
             v-for="timeOption in timeOptions"
             :key="timeOption.value"
@@ -45,7 +45,7 @@
               挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{item.price}}</span> 剩余：{{item.num}}
             </div>
             <div style="margin-top: 15px">
-              <el-button type="primary" size="mini" @click="reserve(item.id,item.hospitalId)">挂号</el-button>
+              <el-button type="primary" size="mini" :disabled="disabled" @click="reserve(item.id,item.hospitalId)">挂号</el-button>
             </div>
           </div>
         </el-col>
@@ -93,6 +93,7 @@ export default {
         { label: '星期六', value: 6 },
         { label: '星期日', value: 7 },
       ],
+      disabled: false,
     }
   },
   created() {
@@ -102,6 +103,7 @@ export default {
   },
   methods: {
     reserve(doctorId,hospitalId) {
+      this.disabled = true;
       if (this.user.role !== 'USER') {
         this.$message.warning('您的角色不支持挂号操作')
         return
@@ -117,6 +119,7 @@ export default {
           this.load(1)
         } else {
           this.$message.error(res.msg)
+          this.disabled = false;
         }
       })
     },
@@ -171,6 +174,9 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
+    selectedTime() {
+
+    }
   }
 }
 </script>
