@@ -18,16 +18,16 @@
 <!--            <el-button type="primary" size="mini" @click="viewEditor(scope.row.medicalRecord)">查看病历</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column prop="inhospital" label="是否住院"></el-table-column>
-        <el-table-column prop="inhostpitalRecord" label="是否住院登记"></el-table-column>
+        <!-- <el-table-column prop="inhospital" label="是否住院"></el-table-column>
+        <el-table-column prop="inhostpitalRecord" label="是否住院登记"></el-table-column> -->
 
-        <el-table-column label="操作" width="180" align="center">
+        <!-- <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-popconfirm title="确定住院吗？" v-if="user.role==='DOCTOR'" @confirm="registration(scope.row)">
               <el-button slot="reference" type="success" style="margin-left: 5px;font-size: 18px" >住院登记</el-button>
             </el-popconfirm>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
 
       <div class="pagination">
