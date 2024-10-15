@@ -52,8 +52,8 @@
             <el-menu-item index="/department" v-if="user.role === 'ADMIN'">科室信息</el-menu-item>
             <el-menu-item index="/drug" v-if="user.role === 'ADMIN'">药品信息</el-menu-item>
 
-            <el-menu-item index="/plan" v-if="user.role === 'DOCTOR'">医生排班</el-menu-item>
-            <el-menu-item index="/plan" v-if="user.role === 'NURSE'">护士排班</el-menu-item>
+            <el-menu-item index="/plan" v-if="user.role === 'DOCTOR' || user.role === 'ADMIN'">医生排班</el-menu-item>
+            <el-menu-item index="/plan" v-if="user.role === 'NURSE' || user.role === 'ADMIN'">护士排班</el-menu-item>
 
 
           </el-submenu>
@@ -106,12 +106,10 @@
             <el-menu-item index="/referralApplication">转诊申请</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="record" v-if="user.role === 'ADMIN'">
-            <template slot="title">
-              <i class="el-icon-menu"></i><span>转诊记录与审批</span>
-            </template>
-            <el-menu-item index="/referralRecord">转诊记录与审批</el-menu-item>
-          </el-submenu>
+
+          <el-menu-item v-if="user.role === 'ADMIN'" index="/referralRecord">
+            <i class="el-icon-menu"></i><span>转诊管理</span>
+          </el-menu-item>
 <!--
           <el-submenu index="information" v-if="user.role === 'ADMIN'">
             <template slot="title">
