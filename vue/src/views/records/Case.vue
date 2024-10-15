@@ -81,8 +81,8 @@
             </div>
             <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical" class="medicine-textarea"></el-input>
             <span class="field-label"> 是否住院 : </span>
-            <el-radio v-model="radio" label="是">是</el-radio>
-            <el-radio v-model="radio" label="否">否</el-radio>
+              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
             <el-button type="primary" @click="ok" class="edit-button">确定</el-button>
           </div>
         </el-col>
@@ -99,7 +99,7 @@ export default {
   name: "Case",
   data() {
     return {
-      caseInfo: {}, // 单个病历信息
+      caseInfo: {inhospital: this.radio}, // 单个病历信息
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       advice: '', // 医嘱
       medicine: '', // 药品
@@ -114,8 +114,13 @@ export default {
     }
   },
   created() {
-    this.loadByUser()
-    this.loadByDrug()
+    this.loadByUser();
+    this.loadByDrug();
+    const queryData = this.$route.query.data;
+    if (queryData) {
+      // 对查询参数中的数据进行解码和解析
+      this.caseInfo = JSON.parse(decodeURIComponent(queryData));
+    }
   },
   mounted() {
 
@@ -144,7 +149,7 @@ export default {
       this.caseInfo = {
         id: '001',
         number: '123456',
-        name: '张三',
+        name: '默认',
         doctorName: '李医生',
         hospitalName: 'XX医院',
         status: '未叫号', // Assuming default status
@@ -216,11 +221,35 @@ export default {
       this.information.signKey=" "
       this.$request.post('/traverse/add', this.information).then(res => {
         if (res.code === '200') {
-          this.$message.success('成功')
+          this.$message.success('成功la')
+
+          this.$router.push({
+            name: 'CaseDetails',
+            params: {
+              id: 1,
+              name: this.user.name,
+              doctor: '',
+              hospitalId: 1,
+              advice: this.advice,
+              drug: this.drugList,
+              inhospital: 'n',
+              jurisdiction: '允许',
+              doctorName: this.caseInfo.doctorname,
+              hospitalName: this.caseInfo.hispitalName,
+              number: this.user.number,
+              signData: null,
+              signResult: "成功",
+              signPubKey: this.user.publickey,
+              signKey: this.user.privateKey
+            }
+          })
         } else {
           this.$message.error(res.msg)
         }
       })
+    },
+    handleRadioChange() {
+      this.radio = this.radio === '是'? '是' : '否';
     }
   }
 }

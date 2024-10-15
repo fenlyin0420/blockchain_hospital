@@ -230,7 +230,6 @@ export default {
           inform:row
         }
       });
-
     },
   }
 }

@@ -4,7 +4,7 @@
     <div class="manager-header">
       <div class="manager-header-left">
         <img src="@/assets/imgs/logo.png" />
-        <div class="title">智能转诊系统</div>
+        <div class="title">基于SM2可链接环签名的智能区块链转诊系统</div>
       </div>
 
       <!-- 面包屑导航栏 -->

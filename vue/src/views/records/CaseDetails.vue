@@ -96,7 +96,7 @@
             </el-col>
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
-                <el-button plain type="primary" @click="verifySign()" v-if="user.role==='DOCTOR'">验签</el-button>
+                <el-button plain type="primary" @click="verifySign()" v-if="user.role==='USER'">验签</el-button>
               </div>
             </el-col>
           </el-row>
@@ -145,6 +145,7 @@ export default {
   },
   created() {
     this.receivedData = this.$route.params.inform;
+    console.log(this.receivedData)
     this.load()
   },
   methods: {
@@ -167,8 +168,6 @@ export default {
         };
       });
       this.drug=medications
-      console.log(this.drug)
-      console.log(this.receivedData)
       if(this.receivedData.signPubKey!==null||this.receivedData.signPubKey!==""){
         const s=this.receivedData.signPubKey.split(",")
         const ss = s.map(line => {

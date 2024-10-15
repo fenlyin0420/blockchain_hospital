@@ -63,15 +63,23 @@ export default {
   },
   methods: {
     call(row) {
-      let reserveData = JSON.parse(JSON.stringify(row));
-      reserveData.status = '已叫号'
-      this.$request.put('/reserve/update', reserveData).then(res => {
+      let caseData = JSON.parse(JSON.stringify(row));
+      caseData.status = '已叫号'
+      console.log(caseData);
+      this.$request.put('/reserve/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('叫号成功')
-          this.$router.push('case')
+          let caseinfo = {
+            userName: caseData?.userName,
+            doctorName: caseData?.doctorName,
+            hospitalName: caseData?.hospitalName,
+            departmentName: caseData?.hospitalName,
+            time: caseData?.time,
+        };
           this.load(1)
           // 往就诊记录里同步一条数据
           this.record(row)
+          this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseinfo))}`)
         }
       })
     },

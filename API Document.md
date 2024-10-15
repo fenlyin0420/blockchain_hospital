@@ -53,3 +53,33 @@
     "signKey": "4983312662714231970281092985018459311427665918650628828208923045315219141544,40982219744816111194054117167623036749175195835309143328908225171604461393790,57503448068408977236926275040301450064634531186936856244261271705286412042163,36744483198943720669418387871093802472116064459174441142086946966484849244056,7854625183821364321859336456925885808633594278598511085194977304219908187554,40755311266279753640680912139874021689890193193452006092807893402380945748478"
 }
 ```
+
+## 叫号收到的对象
+```JSON
+{
+    "id": 44,
+    "doctorId": 3,
+    "userId": 1,
+    "time": "2024-10-15",
+    "status": "已叫号",
+    "doctorName": "钱有有",
+    "userName": "张三",
+    "hospitalId": 12,
+    "hospitalName": "xx大学第二附属医院"
+}
+```
+
+## caseInfo
+```JSON
+<span class="field-value">{{ caseInfo.userName }} </span>
+
+<span class="field-value">{{ caseInfo.doctorName }} </span>
+
+<span class="field-value">{{ caseInfo.hospitalName }} </span>
+
+<span class="field-value">{{ caseInfo.departmentName }} </span>
+
+<span class="field-value">{{ caseInfo.time }}</span>
+
+<span class="field-value">{{ caseInfo.inhospital }} </span>
+```
