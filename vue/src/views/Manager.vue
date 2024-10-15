@@ -62,7 +62,7 @@
             <el-menu-item index="/doctorCard" v-if="user.role!=='DOCTOR'">预约挂号</el-menu-item>
             <el-menu-item index="/reserve" v-if="user.role!=='USER'">患者挂号</el-menu-item>
             <el-menu-item index="/reserve" v-else>我的挂号</el-menu-item>
-            <!-- <el-menu-item index="/record">我的就诊</el-menu-item> -->
+            <el-menu-item index="/record">我的就诊</el-menu-item> 
             <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记</el-menu-item>
           </el-submenu>
 

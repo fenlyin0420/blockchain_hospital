@@ -9,15 +9,20 @@ import com.example.mapper.ReserveMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 预约挂号表业务处理
  **/
+@Slf4j
 @Service
 public class ReserveService {
 
@@ -83,7 +88,20 @@ public class ReserveService {
         }
         PageHelper.startPage(pageNum, pageSize);
         List<Reserve> list = reserveMapper.selectAll(reserve);
-        return PageInfo.of(list);
+
+        // 获取当前系统时间
+        LocalDateTime now = LocalDateTime.now();
+        // 定义一个日期时间格式化器
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        List<Reserve> listnow=new ArrayList<>();
+        String formattedDateTime = now.format(formatter);
+        for(Reserve i:list){
+            if(i.getTime().equals(formattedDateTime)){
+                listnow.add(i); // 移除就诊时间不再当日的元素
+            }
+        }
+        return PageInfo.of(listnow);
     }
 
 }
