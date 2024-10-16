@@ -4,18 +4,17 @@
       <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
       <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
-      <el-button type="success" style="margin-left: 10px"plain @click="handleAdd">新增</el-button>
     </div>
 
-<!--    <div class="operation">-->
-<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
-<!--&lt;!&ndash;      <el-button type="danger" plain @click="delBatch">批量删除</el-button>&ndash;&gt;-->
-<!--    </div>-->
+    <div class="operation">
+      <el-button type="primary" plain @click="handleAdd">新增</el-button>
+      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+    </div>
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
+        <el-table-column prop="id" label="序号" width="90" align="center" sortable></el-table-column>
         <el-table-column label="头像">
           <template v-slot="scope">
             <div style="display: flex; align-items: center">
@@ -26,14 +25,14 @@
         </el-table-column>
         <el-table-column prop="username" label="账号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
-        <el-table-column prop="description" label="医生介绍" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="description" label="护士介绍" show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室"></el-table-column>
-        <el-table-column prop="price" label="挂号费"></el-table-column>
+<!--        <el-table-column prop="price" label="挂号费"></el-table-column>-->
         <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column>
         <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="role" label="角色"></el-table-column>
-        <el-table-column prop="time" label="入职时间"></el-table-column>
-        <el-table-column prop="position" label="职位"></el-table-column>
+<!--        <el-table-column prop="role" label="角色"></el-table-column>-->
+<!--        <el-table-column prop="time" label="入职时间"></el-table-column>-->
+<!--        <el-table-column prop="position" label="职位"></el-table-column>-->
         <el-table-column prop="hospitalName" label="医院"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
@@ -78,19 +77,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="挂号费" prop="price">
-          <el-input v-model="form.price" placeholder="挂号费"></el-input>
-        </el-form-item>
         <el-form-item label="入职时间" prop="time">
           <el-date-picker style="width: 100%"
-              v-model="form.time"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="选择日期">
+                          v-model="form.time"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择日期">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="职位" prop="phone">
-          <el-input v-model="form.position" placeholder="职位"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input v-model="form.phone" placeholder="电话"></el-input>
@@ -130,7 +123,7 @@ export default {
       fromVisible: false,
       hospitalList:[],
       form: {},
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      //user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         username: [
           {required: true, message: '请输入账号', trigger: 'blur'},
@@ -200,23 +193,23 @@ export default {
     handleSelectionChange(rows) {   // 当前选中的所有的行数据
       this.ids = rows.map(v => v.id)
     },
-    // delBatch() {   // 批量删除
-    //   if (!this.ids.length) {
-    //     this.$message.warning('请选择数据')
-    //     return
-    //   }
-    //   this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-    //     this.$request.delete('/doctor/delete/batch', {data: this.ids}).then(res => {
-    //       if (res.code === '200') {   // 表示操作成功
-    //         this.$message.success('操作成功')
-    //         this.load(1)
-    //       } else {
-    //         this.$message.error(res.msg)  // 弹出错误的信息
-    //       }
-    //     })
-    //   }).catch(() => {
-    //   })
-    // },
+    delBatch() {   // 批量删除
+      if (!this.ids.length) {
+        this.$message.warning('请选择数据')
+        return
+      }
+      this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
+        this.$request.delete('/doctor/delete/batch', {data: this.ids}).then(res => {
+          if (res.code === '200') {   // 表示操作成功
+            this.$message.success('操作成功')
+            this.load(1)
+          } else {
+            this.$message.error(res.msg)  // 弹出错误的信息
+          }
+        })
+      }).catch(() => {
+      })
+    },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/doctor/selectPage', {

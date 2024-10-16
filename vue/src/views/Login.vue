@@ -4,10 +4,10 @@
       <div style="text-align: center; font-size: 20px; margin-bottom: 20px; color: #333">欢迎登录医院预约挂号系统</div>
       <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username">
-          <el-input prefix-icon="el-icon-user" placeholder="请输入账号" v-model="form.username"></el-input>
+          账号：<el-input :style="{ width: '293px' }" prefix-icon="el-icon-user" placeholder="请输入账号" v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" show-password  v-model="form.password"></el-input>
+          密码：<el-input :style="{ width: '293px' }" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-select v-model="form.role" placeholder="请选择角色" style="width: 100%;">

@@ -42,6 +42,18 @@
           <!--            <span slot="title" style="font-size: 20px;">系统首页</span>-->
           <!--          </el-menu-item>-->
 
+          <!--   护士_护理任务     -->
+          <el-submenu index="nursecare" v-if="user.role === 'NURSE'">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>护理任务</span>
+            </template>
+            <el-menu-item index="/HealthCheck" v-if="user.role!=='USER'">健康检测</el-menu-item>
+            <el-menu-item index="/AssignBeds" v-if="user.role!=='DOCTOR'">分配床位</el-menu-item>
+            <el-menu-item index="/DailyCare" v-if="user.role!=='USER'">日常护理</el-menu-item>
+          </el-submenu>
+
+
           <el-submenu index="info" v-if="user.role !== 'USER'">
             <template slot="title">
               <i class="el-icon-menu"></i>
@@ -65,14 +77,19 @@
             </el-menu-item>
           </el-submenu>
 
-          <el-submenu index="powerDoctor" v-if="user.role === 'DOCTOR'">
+          <el-submenu index="powerDoctor" v-if="user.role === 'DOCTOR' || user.role === 'NURSE'">
             <template slot="title">
               <i class="el-icon-menu"></i><span>档案管理</span>
             </template>
             <!--            <el-menu-item index="/SearchFiles">档案检索</el-menu-item>-->
             <!--            <el-menu-item index="/AddFiles">新建档案</el-menu-item>-->
-            <el-menu-item index="/caseList">病历列表</el-menu-item>
-            <el-menu-item index="/case">新建病历</el-menu-item>
+            <div v-if="user.role === 'DOCTOR'">
+              <el-menu-item index="/caseList" >病历列表</el-menu-item>
+              <el-menu-item index="/case" >新建病历</el-menu-item>
+            </div>
+
+            <el-menu-item index="/nurserecord" v-if="user.role === 'NURSE'">病床分配记录</el-menu-item>
+
           </el-submenu>
 
           <el-submenu index="user" v-if="user.role === 'ADMIN'">
@@ -81,6 +98,7 @@
             </template>
             <!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
             <el-menu-item index="/doctor">医生信息</el-menu-item>
+            <el-menu-item index="/nurse">护士信息</el-menu-item>
             <el-menu-item index="/user">患者信息</el-menu-item>
           </el-submenu>
 
@@ -109,16 +127,6 @@
             <el-menu-item index="/drug">药品信息</el-menu-item>
           </el-submenu>
 
-          <!--   护士_护理任务     -->
-          <el-submenu index="nursecare" v-if="user.role === 'NURSE'">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>护理任务</span>
-            </template>
-            <el-menu-item index="/HealthCheck" v-if="user.role!=='USER'">健康检测</el-menu-item>
-            <el-menu-item index="/AssignBeds" v-if="user.role!=='DOCTOR'">分配床位</el-menu-item>
-            <el-menu-item index="/DailyCare" v-if="user.role!=='USER'">生活照料</el-menu-item>
-          </el-submenu>
 
         </el-menu>
 
