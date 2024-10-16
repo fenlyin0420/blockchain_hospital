@@ -14,8 +14,8 @@
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="hospitalName" label="医院"></el-table-column>
         <el-table-column prop="userName" label="患者姓名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="time" label="挂号时间"></el-table-column>
+        <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip></el-table-column> -->
+        <el-table-column prop="time" label="就诊时间" ></el-table-column>
         <el-table-column prop="status" label="挂号状态"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
@@ -55,23 +55,31 @@ export default {
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {},
-      ids: []
+      ids: [],
     }
   },
   created() {
     this.load(1)
   },
-  methods: {
+  methods: { 
     call(row) {
-      let reserveData = JSON.parse(JSON.stringify(row));
-      reserveData.status = '已叫号'
-      this.$request.put('/reserve/update', reserveData).then(res => {
+      let caseData = JSON.parse(JSON.stringify(row));
+      caseData.status = '已叫号'
+      console.log(caseData);
+      this.$request.put('/reserve/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('叫号成功')
-          this.$router.push('case')
+          let caseinfo = {
+            userName: caseData?.userName,
+            doctorName: caseData?.doctorName,
+            hospitalName: caseData?.hospitalName,
+            departmentName: caseData?.hospitalName,
+            time: caseData?.time,
+        };
           this.load(1)
           // 往就诊记录里同步一条数据
           this.record(row)
+          this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseinfo))}`)
         }
       })
     },

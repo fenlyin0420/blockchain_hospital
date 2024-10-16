@@ -17,6 +17,14 @@
             <el-option label="患者" value="USER"></el-option>
           </el-select>
         </el-form-item>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
         <el-form-item>
           <el-button style="width: 100%; background-color: #7eb488; border-color: #7eb488; color: white" @click="login">登 录</el-button>
         </el-form-item>
