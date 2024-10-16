@@ -2,14 +2,15 @@
   <div>
     <div class="search">
       <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
+      <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <el-button type="success" style="margin-left: 10px"plain @click="handleAdd">新增</el-button>
     </div>
 
-    <div class="operation">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
-    </div>
+<!--    <div class="operation">-->
+<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
+<!--&lt;!&ndash;      <el-button type="danger" plain @click="delBatch">批量删除</el-button>&ndash;&gt;-->
+<!--    </div>-->
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
@@ -199,23 +200,23 @@ export default {
     handleSelectionChange(rows) {   // 当前选中的所有的行数据
       this.ids = rows.map(v => v.id)
     },
-    delBatch() {   // 批量删除
-      if (!this.ids.length) {
-        this.$message.warning('请选择数据')
-        return
-      }
-      this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/doctor/delete/batch', {data: this.ids}).then(res => {
-          if (res.code === '200') {   // 表示操作成功
-            this.$message.success('操作成功')
-            this.load(1)
-          } else {
-            this.$message.error(res.msg)  // 弹出错误的信息
-          }
-        })
-      }).catch(() => {
-      })
-    },
+    // delBatch() {   // 批量删除
+    //   if (!this.ids.length) {
+    //     this.$message.warning('请选择数据')
+    //     return
+    //   }
+    //   this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
+    //     this.$request.delete('/doctor/delete/batch', {data: this.ids}).then(res => {
+    //       if (res.code === '200') {   // 表示操作成功
+    //         this.$message.success('操作成功')
+    //         this.load(1)
+    //       } else {
+    //         this.$message.error(res.msg)  // 弹出错误的信息
+    //       }
+    //     })
+    //   }).catch(() => {
+    //   })
+    // },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/doctor/selectPage', {
