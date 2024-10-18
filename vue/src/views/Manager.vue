@@ -3,7 +3,7 @@
     <!--  头部  -->
     <div class="manager-header">
       <div class="manager-header-left">
-        <img src="@/assets/imgs/logo.png" />
+        <img src="@/assets/imgs/logo.png"/>
         <div class="title">基于SM2可链接环签名的智能区块链转诊系统</div>
       </div>
 
@@ -43,7 +43,7 @@
           <!--          </el-menu-item>-->
 
           <!--   护士_护理任务     -->
-          <el-submenu index="nursecare" v-if="user.role === 'NURSE'">
+          <el-submenu index="/nursecare" v-if="user.role === 'NURSE'">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>护理任务</span>
@@ -68,8 +68,8 @@
             <el-menu-item index="/plan" v-if="user.role === 'NURSE' || user.role === 'ADMIN'">护士排班</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="reserve" v-if="user.role !== 'ADMIN'">
 
+          <el-submenu index="reserve" v-if="user.role !== 'ADMIN' && user.role !=='NURSE'">
             <template slot="title">
               <i class="el-icon-menu"></i><span>预约就诊</span>
             </template>
@@ -77,10 +77,12 @@
             <el-menu-item index="/reserve" v-if="user.role!=='USER'">患者挂号</el-menu-item>
             <el-menu-item index="/reserve" v-else>我的挂号</el-menu-item>
 
-            <el-menu-item index="/record">我的就诊</el-menu-item> 
-            <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记</el-menu-item>
+            <el-menu-item index="/record">我的就诊</el-menu-item>
+            <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记
+            </el-menu-item>
 
           </el-submenu>
+
 
           <el-submenu index="powerDoctor" v-if="user.role === 'DOCTOR' || user.role === 'NURSE'">
             <template slot="title">
@@ -89,8 +91,8 @@
             <!--            <el-menu-item index="/SearchFiles">档案检索</el-menu-item>-->
             <!--            <el-menu-item index="/AddFiles">新建档案</el-menu-item>-->
             <div v-if="user.role === 'DOCTOR'">
-              <el-menu-item index="/caseList" >病历列表</el-menu-item>
-              <el-menu-item index="/case" >新建病历</el-menu-item>
+              <el-menu-item index="/caseList">病历列表</el-menu-item>
+              <el-menu-item index="/case">新建病历</el-menu-item>
             </div>
 
             <el-menu-item index="/nurserecord" v-if="user.role === 'NURSE'">病床分配记录</el-menu-item>
@@ -101,7 +103,7 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
-<!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
+            <!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
             <el-menu-item index="/doctor">医生管理</el-menu-item>
             <el-menu-item index="/nurse">护士管理</el-menu-item>
             <el-menu-item index="/user">患者管理</el-menu-item>
@@ -129,19 +131,19 @@
           <el-menu-item v-if="user.role === 'ADMIN'" index="/referralRecord">
             <i class="el-icon-menu"></i><span>转诊管理</span>
           </el-menu-item>
-<!--
-          <el-submenu index="information" v-if="user.role === 'ADMIN'">
-            <template slot="title">
-              <i class="el-icon-menu"></i><span>信息管理</span>
-            </template>
-            <el-menu-item index="/hospital">医院信息</el-menu-item>
-            <el-menu-item index="/drug">药品信息</el-menu-item>
-          </el-submenu>
-<<<<<<< HEAD
+          <!--
+                    <el-submenu index="information" v-if="user.role === 'ADMIN'">
+                      <template slot="title">
+                        <i class="el-icon-menu"></i><span>信息管理</span>
+                      </template>
+                      <el-menu-item index="/hospital">医院信息</el-menu-item>
+                      <el-menu-item index="/drug">药品信息</el-menu-item>
+                    </el-submenu>
+          <<<<<<< HEAD
 
 
-=======
--->
+          =======
+          -->
 
         </el-menu>
 
