@@ -55,6 +55,14 @@ public class PlanController {
         return Result.success();
     }
 
+    @PostMapping("/updateNum")
+    public Result updateNum(@RequestBody Plan plan) {
+        if (planService.updateNum(plan))
+            return Result.success();
+        else
+            return Result.error("更新挂号剩余数量失败");
+    }
+
     /**
      * 根据ID查询
      */

@@ -119,9 +119,13 @@ public class DoctorService {
 //        String week = getTodayWeek();
 //        doctor.setWeek(week);
         PageHelper.startPage(pageNum, pageSize);
+        // 将 Date 对象解析为 xxxx-xx-xx 格式的字符串
         doctor.setSelectedDate(doctor.getSelectedDate().split("T")[0]);
         System.out.println("[DEBUG]: " + doctor.getSelectedDate());
         List<Doctor> list = doctorMapper.selectByPlan(doctor);
+        for (Doctor dbDoctro : list) {
+            dbDoctro.setSelectedDate(doctor.getSelectedDate());
+        }
         // 计算查出来的在诊医生剩余多少个号
 //        for (Doctor dbDoctor : list) {
 //            // 查询出来当天已经挂过该医生号的数量

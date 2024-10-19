@@ -1,33 +1,56 @@
 <template xmlns="">
   <div>
+    <!-- 搜索区 -->
     <div class="search">
-      <el-tabs>
-        <el-tab-pane label="医院" name="first">
-          <el-select v-model="hospitalId" placeholder="请选择医院" >
-            <div v-for="item in hospitalList">
-              <el-option :label="item.hospitalName" :value="item.id"></el-option>
-            </div>
-          </el-select>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="医院" name="hospital" class="hd">
+<!--          <el-select v-model="hospitalId" placeholder="请选择医院" >-->
+<!--            <div v-for="item in hospitalList">-->
+<!--              <el-option :label="item.hospitalName" :value="item.id"></el-option>-->
+<!--            </div>-->
+<!--          </el-select>-->
+          <el-row :gutter="0">
+            <el-col :span="6" v-for="item in hospitalList">
+              <el-card
+                  class="el-card"
+                  :class="{ selected: hospitalId === item.id }"
+                  @click.native="selectHospital(item.id)">
+                <div>{{item.hospitalName}}</div>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="科室" name="second">
-          <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">
-            <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
+        <el-tab-pane label="科室" name="department" class="hd">
+<!--          <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">-->
+<!--            <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+          <el-row :gutter="0">
+            <el-col :span="6" v-for="item in planData">
+              <el-card
+                  class="el-card"
+                  :class="{ selected: departmentId === item.id }"
+                  @click.native="selectDepartment(item.id)">
+                <div>{{item.name}}</div>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="时间" name="third">
+        <el-tab-pane label="时间" name="time">
           <el-calendar
               class="calendar"
               v-model="selectedDate"
               :range="[startDate, endDate]">
             <template
                 slot="dateCell"
-                slot-scope="{date, data}">
-              <p :class="data.isSelected ? 'is-selected' : ''">
-                {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
-              </p>
+                slot-scope="{data}">
+              <div class="calendar-cell" :class="data.isSelected ? 'is-selected' : ''">
+                <div>{{ data.day.split('-').slice(1).join('-') }}</div>
+                {{ data.isSelected ? '✔️' : ''}}
+                {{ dayToWeek(data.day) }}
+              </div>
             </template>
           </el-calendar>
         </el-tab-pane>
@@ -56,12 +79,13 @@
               挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{item.price}}</span> 剩余：{{item.num}}
             </div>
             <div style="margin-top: 15px">
-              <el-button type="primary" size="mini" :disabled="disabled" @click="reserve(item.id,item.hospitalId)">挂号</el-button>
+              <el-button type="primary" size="mini" :disabled="disabled" @click="reserve(item)">挂号</el-button>
             </div>
           </div>
         </el-col>
       </el-row>
 
+      <!-- 选择分页区 -->
       <div class="pagination">
         <el-pagination
             background
@@ -83,10 +107,12 @@ export default {
   data() {
     let startDate = new Date()
     let endDate = new Date()
-    startDate.setDate(startDate.getDate() - startDate.getDay() + 1)
+    let week = startDate.getDay()
+    if (week === 0) week =7;
+    startDate.setDate(startDate.getDate() - week + 1)
     endDate.setDate(startDate.getDate() + 6)
     return {
-      tableData: [],  // 所有的数据
+      tableData: [],  // 所有的数据，经查询得到
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
@@ -103,30 +129,52 @@ export default {
       endDate: endDate,
       selectedDate: new Date(),
       disabled: false,
+      /** 顶部搜索区域 tab 默认项*/
+      activeName: 'hospital'
     }
   },
   created() {
     this.query(1)
     this.loadPlan()
     this.load2()
-
   },
   methods: {
-    reserve(doctorId,hospitalId) {
+    /**
+     * 挂号操作
+     * @param doctorId 所属医生的 ID
+     * @param hospitalId 所属医院的 ID
+     */
+    reserve(item) {
       this.disabled = true;
       if (this.user.role !== 'USER') {
         this.$message.warning('您的角色不支持挂号操作')
         return
       }
-      let data = {
+      let reserveBody = {
         userId: this.user.id,
-        doctorId: doctorId,
-        hospitalId: hospitalId
+        doctorId: item.doctorId,
+        hospitalId: item.hospitalId
       }
-      this.$request.post('/reserve/add', data).then(res => {
+      let planBody = {
+        hospitalId: item.hospitalId,
+        doctorId: item.id,
+        date: item.selectedDate,
+      }
+      console.log(item)
+      console.log("planbody")
+      console.log(planBody)
+      /** 修改挂号记录表 */
+      this.$request.post('/reserve/add', reserveBody).then(res => {
         if (res.code === '200') {
-          this.$message.success('挂号成功')
-          this.query(1)
+          /** 修改医生排班表中的剩余挂号数量 */
+          this.$request.post('plan/updateNum', planBody).then(res => {
+            if (res.code === '200'){
+              this.$message.success('挂号成功')
+              this.query(1)
+            } else {
+              this.$message.error("update num failed")
+            }
+          })
         } else {
           this.$message.error(res.msg)
           this.disabled = false;
@@ -141,8 +189,6 @@ export default {
       this.$request.get('/department/selectAll').then(res => {
         if (res.code === '200') {
           this.planData = res.data
-          console.log("loadPlan: ")
-          console.log(res)
         } else {
           this.$message.error(res.msg)
         }
@@ -166,10 +212,10 @@ export default {
           selectedDate: this.selectedDate
         }
       }).then(res => {
-        console.log("[query]:")
-        console.log(res)
         this.tableData = res.data?.list
         this.total = res.data?.total
+        console.log("tableData")
+        console.log(this.tableData)
       })
     },
     load2(){
@@ -186,8 +232,17 @@ export default {
     handleCurrentChange(pageNum) {
       this.query(pageNum)
     },
-    selectedTime() {
-
+    selectHospital(value) {
+      this.hospitalId = value
+    },
+    selectDepartment(value) {
+      this.departmentId = value
+    },
+    dayToWeek(dateStr){
+      const week = ['星期日','星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+      const date = new Date(dateStr)
+      let weekIndex = date.getDay()
+      return week[weekIndex]
     }
   }
 }
@@ -197,5 +252,25 @@ export default {
 .table {
   font-size: 16px;
 }
-
+.hd {
+  margin: 20px;
+}
+.selected{
+  background-color: #f2f8fe;
+}
+.calendar-cell{
+  text-align: center;
+}
+/deep/.el-tab-pane{
+  height: 120px;
+}
+/deep/thead{
+  display: none;
+}
+/deep/.el-card__body{
+  cursor: pointer;
+}
+/deep/.el-calendar__header {
+  display: none;
+}
 </style>

@@ -83,3 +83,35 @@
 
 <span class="field-value">{{ caseInfo.inhospital }} </span>
 ```
+
+## 患者挂号页面 tableDate
+tableDate[]
+```Json
+{
+    "id": 2,
+    "username": "zhao",
+    "name": "赵千里",
+    "password": "123456",
+    "role": "DOCTOR",
+    "newPassword": null,
+    "avatar": "http://localhost:8090/files/1729004324606-doctor2.jpeg",
+    "token": null,
+    "publicKey": "MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABL3z9pqrNQYtQzcJOGUbEXiqOGihGILxYcm6WrYCCjImG+0T6GlEF4fvz16CaiBOlWvpZXVMcj8M7snWLT5Gj+k=",
+    "privateKey": "MIICSwIBADCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBBIIBVTCCAVECAQEEIF0d9mHQRFLuI5caMRPtQnIrz1uUUYvdwzc7u9Bc89tEoIHjMIHgAgEBMCwGByqGSM49AQECIQD////+/////////////////////wAAAAD//////////zBEBCD////+/////////////////////wAAAAD//////////AQgKOn6np2fXjRNWp5Lz2UJp/OXifUVq4+S3by9QU2UDpMEQQQyxK4sHxmBGV+ZBEZqOcmUj+MLv/JmC+FxWkWJM0x0x7w3NqL09necWb3O42tpIVPQqYd8xipHQALfMuUhOfCgAiEA/////v///////////////3ID32shxgUrU7v0CTnVQSMCAQGhRANCAAS98/aaqzUGLUM3CThlGxF4qjhooRiC8WHJulq2AgoyJhvtE+hpRBeH789egmogTpVr6WV1THI/DO7J1i0+Ro/p",
+    "hospitalId": 1,
+    "hospitalName": "xx大学第一附属医院",
+    "phone": "18877776666",
+    "email": "zhao@xm.com",
+    "description": "工作经验：在皮肤科领域从事临床工作多年，具有丰富的临床经验和医疗技能。\n专长：对各类皮肤疾病的诊断、治疗和管理，包括但不限于湿疹、痤疮、皮炎、皮肤感染等。\n科研成果：参与过多项皮肤科研究项目，发表过相关领域的学术论文或著作。\n医疗理念：以患者为中心，秉承精准诊疗、个性化治疗的原则，致力于提供高质量的医疗服务。",
+    "price": 20,
+    "time": "2023-11-07",
+    "position": "副主治医师",
+    "departmentId": 2,
+    "week": null,
+    "date": null,
+    "period": null,
+    "departmentName": null,
+    "num": 19,
+    "selectedDate": null
+}
+```

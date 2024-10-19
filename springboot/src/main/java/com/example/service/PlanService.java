@@ -61,6 +61,14 @@ public class PlanService {
         planMapper.updateById(plan);
     }
 
+    public boolean updateNum(Plan plan){
+        System.out.println("[DEBUG]: " + plan.getNum());
+        if (planMapper.updateNum(plan) != 1)
+            return false;
+        else
+            return true;
+    }
+
     /**
      * 根据ID查询
      */
