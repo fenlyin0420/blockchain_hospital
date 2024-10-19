@@ -1,28 +1,39 @@
 <template xmlns="">
   <div>
     <div class="search">
-      <el-select v-model="hospitalId" placeholder="请选择医院" >
-        <div v-for="item in hospitalList">
-          <el-option :label="item.hospitalName" :value="item.id"></el-option>
-        </div>
-      </el-select>
+      <el-tabs>
+        <el-tab-pane label="医院" name="first">
+          <el-select v-model="hospitalId" placeholder="请选择医院" >
+            <div v-for="item in hospitalList">
+              <el-option :label="item.hospitalName" :value="item.id"></el-option>
+            </div>
+          </el-select>
+        </el-tab-pane>
 
-      <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">
-        <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
+        <el-tab-pane label="科室" name="second">
+          <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">
+            <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-tab-pane>
 
-      <el-select v-model="disabled" placeholder="请选择时间" style="width: 199px">
-        <el-option
-            v-for="timeOption in timeOptions"
-            :key="timeOption.value"
-            :label="timeOption.label"
-            :value="timeOption.value"
-        >
-        </el-option>
-      </el-select>
+        <el-tab-pane label="时间" name="third">
+          <el-calendar
+              class="calendar"
+              v-model="selectedDate"
+              :range="[startDate, endDate]">
+            <template
+                slot="dateCell"
+                slot-scope="{date, data}">
+              <p :class="data.isSelected ? 'is-selected' : ''">
+                {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
+              </p>
+            </template>
+          </el-calendar>
+        </el-tab-pane>
+      </el-tabs>
 
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
+      <el-button type="info" plain style="margin-left: 10px" @click="query(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
 
@@ -70,6 +81,10 @@
 export default {
   name: "Doctor",
   data() {
+    let startDate = new Date()
+    let endDate = new Date()
+    startDate.setDate(startDate.getDate() - startDate.getDay() + 1)
+    endDate.setDate(startDate.getDate() + 6)
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
@@ -84,22 +99,17 @@ export default {
       ids: [],
       planData: [],
       hospitalList:[],
-      timeOptions: [
-        { label: '星期一', value: 1 },
-        { label: '星期二', value: 2 },
-        { label: '星期三', value: 3 },
-        { label: '星期四', value: 4 },
-        { label: '星期五', value: 5 },
-        { label: '星期六', value: 6 },
-        { label: '星期日', value: 7 },
-      ],
+      startDate: startDate,
+      endDate: endDate,
+      selectedDate: new Date(),
       disabled: false,
     }
   },
   created() {
-    this.load(1)
+    this.query(1)
     this.loadPlan()
     this.load2()
+
   },
   methods: {
     reserve(doctorId,hospitalId) {
@@ -116,7 +126,7 @@ export default {
       this.$request.post('/reserve/add', data).then(res => {
         if (res.code === '200') {
           this.$message.success('挂号成功')
-          this.load(1)
+          this.query(1)
         } else {
           this.$message.error(res.msg)
           this.disabled = false;
@@ -140,11 +150,12 @@ export default {
     },
     /**
      * 查询指定页的数据，并将返回数据保存在组件数据中
+     * 初始化时默认查询第一页数据
      * res.data 中的 total 是返回的总记录数，被组件属性 total 引用
      * res.data 中的 list 是包含医生个人信息的对象，被组件属性 tableData 引用
      * @param pageNum 页号
      */
-    load(pageNum) {
+    query(pageNum) {
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/doctor/selectPage2', {
         params: {
@@ -152,10 +163,11 @@ export default {
           pageSize: this.pageSize,
           departmentId: this.departmentId,
           hospitalId:this.hospitalId,
+          selectedDate: this.selectedDate
         }
       }).then(res => {
-        console.log("load(pageNum): ")
-        console.log(res);
+        console.log("[query]:")
+        console.log(res)
         this.tableData = res.data?.list
         this.total = res.data?.total
       })
@@ -169,10 +181,10 @@ export default {
       this.departmentId = null;
       this.hospitalId = null;
 
-      this.load(1)
+      this.query(1)
     },
     handleCurrentChange(pageNum) {
-      this.load(pageNum)
+      this.query(pageNum)
     },
     selectedTime() {
 
@@ -185,4 +197,5 @@ export default {
 .table {
   font-size: 16px;
 }
+
 </style>

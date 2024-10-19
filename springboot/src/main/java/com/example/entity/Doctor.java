@@ -36,17 +36,22 @@ public class Doctor extends Account implements Serializable {
     private String role;
     /** 医院id */
     private Integer hospitalId;
-    /** 医院名称 */
-    private String hospitalName;
+    /** 个人简介 */
     private String description;
+    /** 挂号费 */
     private Double price;
+    /** 入职时间 */
     private String time;
+    /** 职位 */
     private String position;
+    /** 科室id */
     private Integer departmentId;
     private String publicKey;
     private String privateKey;
 
     /* 非数据库属性 */
+    /** 医院名称 */
+    private String hospitalName;
     /** 星期 */
     private String week;
     /** 日期 */
@@ -57,4 +62,6 @@ public class Doctor extends Account implements Serializable {
     private String departmentName;
     /** 挂号剩余数量 */
     private Integer num;
+    /** 用户挂号是选择的日期 */ // 临时作为医生的成员查一查吧
+    private String selectedDate;
 }
