@@ -11,7 +11,8 @@ import java.io.Serializable;
 public class Nurse extends Account implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** ID */
+    //护士这里有个问题，就是护士-病房的表还没建立
+
     private Integer id;
     /** 用户名 */
     private String username;
@@ -27,11 +28,14 @@ public class Nurse extends Account implements Serializable {
     private String avatar;
     /** 角色标识 */
     private String role;
-    /**医院id*/
+    /** 医院id */
     private Integer hospitalId;
-    /**医院id*/
+    /** 医院名称 */
     private String hospitalName;
-    private Double account;
+    private String description;
+    private String time;
+    private String position;
+    private Integer departmentId;
     private String publicKey;
     private String privateKey;
 

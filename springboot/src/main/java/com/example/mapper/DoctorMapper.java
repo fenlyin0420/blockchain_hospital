@@ -36,6 +36,13 @@ public interface DoctorMapper {
     */
     List<Doctor> selectAll(Doctor doctor);
 
+    /**
+     * 给定医院、科室、和时间，查询符合条件的医生
+     * @param doctor 医生实体
+     * @return 医生实体的列表
+     */
+    List<Doctor> selectByPlan(Doctor doctor);
+
     @Select("select * from doctor where username = #{username}")
     Doctor selectByUsername(String username);
 

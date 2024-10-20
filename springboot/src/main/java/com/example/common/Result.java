@@ -53,6 +53,12 @@ public class Result {
         return result;
     }
 
+    public static Result error(String msg) {
+        Result result = new Result();
+        result.setCode(ResultCodeEnum.SYSTEM_ERROR.code);
+        result.setMsg(msg);
+        return result;
+    }
     /**
      * 返回失败时自定义状态码和响应消息的对象
      * @param code 状态码

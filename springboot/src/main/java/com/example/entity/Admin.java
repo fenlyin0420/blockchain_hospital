@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 
 /**
  * 管理员
 */
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
