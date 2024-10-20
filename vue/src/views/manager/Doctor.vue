@@ -4,13 +4,16 @@
       <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
-    </div>
-
-    <div class="operation">
       <el-button type="primary" plain @click="handleAdd">新增</el-button>
-<!--      <el-button type="danger" plain @click="delBatch">批量删除</el-button> -->
+      <!--      <el-button type="danger" plain @click="delBatch">批量删除</el-button> -->
       <el-button type="danger" plain @click="doctorPlan">医生排班</el-button>
     </div>
+
+<!--    <div class="operation">-->
+<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
+<!--&lt;!&ndash;      <el-button type="danger" plain @click="delBatch">批量删除</el-button> &ndash;&gt;-->
+<!--      <el-button type="danger" plain @click="doctorPlan">医生排班</el-button>-->
+<!--    </div>-->
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
@@ -210,11 +213,8 @@
         <template>
           <el-table
               :data="tableData"
-              style="width: 100%">
-            <el-table-column
-                label="状态"
-                width="180">
-            </el-table-column>
+              style="width: 120%">
+
             <el-table-column
                 prop="name"
                 label="姓名"
@@ -227,8 +227,8 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="180">
               <template v-slot="scope">
-                <el-button size="mini" type="primary" plain @click="">排班</el-button>
-                <el-button size="mini" type="danger" plain @click="">取消</el-button>
+                <el-button size="mini" type="primary" plain @click="flag = !flag">排班</el-button>
+                <el-button size="mini" type="danger" plain @click="flag = !flag" dis abled="flag">取消</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -258,12 +258,11 @@ export default {
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
+      flag:true,
       username: null,
-
       fromVisible: false,
       fromVisible0:false,
       times:['上午','下午','上午和下午'],
-      fromVisible1:false,
       fromVisible3:false,
       hospitalList:[],
       form: {},
@@ -301,6 +300,9 @@ export default {
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
       this.fromVisible3 = true   // 打开弹窗
+    },
+    change() {
+      this.flag=!this.flag
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
@@ -391,7 +393,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
-            url: this.form.id ? '/paiban/update' : '/paiban/add',
+            url: this.form.id ? '/plan/update' : '/plan/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {

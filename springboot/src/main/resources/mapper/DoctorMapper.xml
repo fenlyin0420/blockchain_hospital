@@ -25,7 +25,6 @@
             <if test="hospitalId != null">and doctor.hospital_id = #{hospitalId}</if>
         </where>
     </select>
-
     <select id="selectById" resultType="com.example.entity.Doctor">
         select *
         from doctor
