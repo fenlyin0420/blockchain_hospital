@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.entity.Doctor;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
 import org.apache.ibatis.annotations.Param;
@@ -25,6 +26,8 @@ public interface NurseMapper {
 
     //根据账号或者名字查询护士信息
     List<Nurse> findBySearch(@Param("params") Params params);
+
+    int insert(Nurse nurse);
 
     /**
      * 根据用户名查询

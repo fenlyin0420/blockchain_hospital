@@ -72,4 +72,11 @@
         where id = #{id} 
     </update>
 
+    <update id="updateNum" parameterType="com.example.entity.Plan">
+        update plan set num = num - 1
+        where hospital_id = #{hospitalId}
+          and doctor_id = #{doctorId}
+          and date = #{date}
+    </update>
+
 </mapper>

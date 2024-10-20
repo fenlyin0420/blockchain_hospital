@@ -1,5 +1,3 @@
-package com.example.service;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.common.Constants;
@@ -17,7 +15,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -114,29 +111,23 @@ public class DoctorService {
      * 患者挂号页面的分页查询
      */
     public PageInfo<Doctor> selectPage2(Doctor doctor, Integer pageNum, Integer pageSize) {
-//        String today = DateUtil.format(new Date(), "yyyy-MM-dd");
-//        // 查询在诊医生的时候，除了根据科室，还得根据当天是星期几，筛选出当天在诊的医生
-//        String week = getTodayWeek();
-//        doctor.setWeek(week);
+        String today = DateUtil.format(new Date(), "yyyy-MM-dd");
+        // 查询在诊医生的时候，除了根据科室，还得根据当天是星期几，筛选出当天在诊的医生
+        String week = getTodayWeek();
+        doctor.setWeek(week);
         PageHelper.startPage(pageNum, pageSize);
-        // 将 Date 对象解析为 xxxx-xx-xx 格式的字符串
-        doctor.setSelectedDate(doctor.getSelectedDate().split("T")[0]);
-        System.out.println("[DEBUG]: " + doctor.getSelectedDate());
-        List<Doctor> list = doctorMapper.selectByPlan(doctor);
-        for (Doctor dbDoctro : list) {
-            dbDoctro.setSelectedDate(doctor.getSelectedDate());
-        }
+        List<Doctor> list = doctorMapper.selectAll(doctor);
         // 计算查出来的在诊医生剩余多少个号
-//        for (Doctor dbDoctor : list) {
-//            // 查询出来当天已经挂过该医生号的数量
-//            Reserve reserve = new Reserve();
-//            reserve.setDoctorId(dbDoctor.getId());
-//            reserve.setTime(today);
-//            List<Reserve> reserves = reserveMapper.selectAll(reserve);
-//            Plan plan = planMapper.selectByDoctorIdAndWeek(dbDoctor.getId(), week);
-//            // 用总数量-已经挂过的号数量 = 剩余挂号数量
-//            dbDoctor.setNum(plan.getNum() - reserves.size());
-//        }
+        for (Doctor dbDoctor : list) {
+            // 查询出来当天已经挂过该医生号的数量
+            Reserve reserve = new Reserve();
+            reserve.setDoctorId(dbDoctor.getId());
+            reserve.setTime(today);
+            List<Reserve> reserves = reserveMapper.selectAll(reserve);
+            Plan plan = planMapper.selectByDoctorIdAndWeek(dbDoctor.getId(), week);
+            // 用总数量-已经挂过的号数量 = 剩余挂号数量
+            dbDoctor.setNum(plan.getNum() - reserves.size());
+        }
         return PageInfo.of(list);
     }
 

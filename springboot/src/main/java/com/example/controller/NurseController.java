@@ -4,10 +4,7 @@ import com.example.entity.Nurse;
 import com.example.entity.Params;
 import com.example.service.NurseService;
 import com.example.common.Result;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -29,6 +26,12 @@ public class NurseController {
     public Result findBySearch(Params params) {
         List<Nurse> l = nurseService.findBySearch(params);
         return Result.success(l);
+    }
+
+    @PostMapping("/add")
+    public Result add(@RequestBody Nurse nurse) {
+        nurseService.add(nurse);
+        return Result.success();
     }
 
 }
