@@ -1,16 +1,18 @@
 package com.example.service;
 
-
 import cn.hutool.core.util.ObjectUtil;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
+import com.example.entity.Nurse;
+import com.example.entity.Params;
 import com.example.exception.CustomException;
 import com.example.mapper.NurseMapper;
 import com.example.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  *  护士业务处理
@@ -19,6 +21,18 @@ import javax.annotation.Resource;
 public class NurseService {
     @Resource
     private NurseMapper nurseMapper;
+
+    public List<Nurse> findAll(){
+        return nurseMapper.selectAll();
+    }
+
+    public List<Nurse> findBySearch(Params params){
+        return nurseMapper.findBySearch(params);
+    }
+
+
+
+
 
 
     public Account login(Account account) {
