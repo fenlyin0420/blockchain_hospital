@@ -15,7 +15,7 @@
         </el-breadcrumb>
       </div>
 
-      <div class="manager-header-right">
+      <div class="manager-header-right test">
         <el-dropdown placement="bottom">
           <div class="avatar">
             <img :src="user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"/>
@@ -71,13 +71,13 @@
 
           <el-submenu index="reserve" v-if="user.role !== 'ADMIN' && user.role !=='NURSE'">
             <template slot="title">
-              <i class="el-icon-menu"></i><span>预约就诊</span>
+<!--              <i class="el-icon-menu"></i><span>预约就诊</span>-->
             </template>
             <el-menu-item index="/doctorCard" v-if="user.role!=='DOCTOR'">预约挂号</el-menu-item>
             <el-menu-item index="/reserve" v-if="user.role!=='USER'">患者挂号</el-menu-item>
-            <el-menu-item index="/reserve" v-else>我的挂号</el-menu-item>
+            <el-menu-item index="/reserve" v-else>预约管理</el-menu-item>
 
-            <el-menu-item index="/record">我的就诊</el-menu-item>
+<!--            <el-menu-item index="/record">我的就诊</el-menu-item>-->
             <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记
             </el-menu-item>
 
@@ -109,14 +109,11 @@
             <el-menu-item index="/user">患者管理</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="powerUser" v-if="user.role === 'USER'">
-            <template slot="title">
-              <i class="el-icon-menu"></i><span>档案管理</span>
-            </template>
-            <!--            <el-menu-item index="/MyFiles">我的档案</el-menu-item>-->
-            <!--            <el-menu-item index="/Power">权限管理</el-menu-item>-->
-            <el-menu-item index="/caseList">病历列表</el-menu-item>
-          </el-submenu>
+          <el-menu-item index="/caseList" v-if="user.role === 'USER'">
+            <i class="el-icon-menu"></i>
+              <span>溯源病历</span>
+          </el-menu-item>
+
 
 
           <el-submenu index="record" v-if="user.role === 'DOCTOR'">
@@ -131,21 +128,9 @@
           <el-menu-item v-if="user.role === 'ADMIN'" index="/referralRecord">
             <i class="el-icon-menu"></i><span>转诊管理</span>
           </el-menu-item>
-          <!--
-                    <el-submenu index="information" v-if="user.role === 'ADMIN'">
-                      <template slot="title">
-                        <i class="el-icon-menu"></i><span>信息管理</span>
-                      </template>
-                      <el-menu-item index="/hospital">医院信息</el-menu-item>
-                      <el-menu-item index="/drug">药品信息</el-menu-item>
-                    </el-submenu>
-          <<<<<<< HEAD
-
-
-          =======
-          -->
-
         </el-menu>
+
+
 
       </div>
 
@@ -205,5 +190,9 @@ export default {
 
 .el-icon-menu span {
   font-size: 30px;
+}
+/deep/.test {
+  position: relative;
+  right: 80px;
 }
 </style>

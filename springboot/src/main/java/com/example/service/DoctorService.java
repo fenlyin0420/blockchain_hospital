@@ -116,7 +116,8 @@ public class DoctorService {
     public PageInfo<Doctor> selectPage2(Doctor doctor, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         // 将 Date 对象解析为 xxxx-xx-xx 格式的字符串
-        doctor.setSelectedDate(doctor.getSelectedDate().split("T")[0]);
+        if (doctor.getSelectedDate() != null)
+            doctor.setSelectedDate(doctor.getSelectedDate().split("T")[0]);
         // 访问数据库接口，查询数据
         List<Doctor> list = doctorMapper.selectByPlan(doctor);
         for (Doctor dbDoctro : list) {

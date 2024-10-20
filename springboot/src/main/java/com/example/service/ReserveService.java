@@ -89,19 +89,19 @@ public class ReserveService {
         PageHelper.startPage(pageNum, pageSize);
         List<Reserve> list = reserveMapper.selectAll(reserve);
 
-        // 获取当前系统时间
-        LocalDateTime now = LocalDateTime.now();
-        // 定义一个日期时间格式化器
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        List<Reserve> listnow=new ArrayList<>();
-        String formattedDateTime = now.format(formatter);
-        for(Reserve i:list){
-            if(i.getTime().equals(formattedDateTime)){
-                listnow.add(i); // 移除就诊时间不再当日的元素
-            }
-        }
-        return PageInfo.of(listnow);
+//        // 获取当前系统时间
+//        LocalDateTime now = LocalDateTime.now();
+//        // 定义一个日期时间格式化器
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//        List<Reserve> listnow=new ArrayList<>();
+//        String formattedDateTime = now.format(formatter);
+//        for(Reserve i:list){
+//            if(i.getTime().equals(formattedDateTime)){
+//                listnow.add(i); // 移除就诊时间不再当日的元素
+//            }
+//        }
+        return PageInfo.of(list);
     }
 
 }

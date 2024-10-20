@@ -84,7 +84,7 @@
         left join doctor on doctor.id = traverse.doctor_id
         <where>
             <if test="id != null">and traverse.id = #{id}</if>
-            <if test="name != null">and name like concat('%', #{name}, '%')</if>
+            <if test="name != null">and traverse.name like concat('%', #{name}, '%')</if>
             <if test="doctorId!= null">and doctor_id = #{doctorId}</if>
             <if test="hospitalId!= null">and hospital_id = #{hospitalId}</if>
             <if test="drug!= null">and drug = #{drug}</if>

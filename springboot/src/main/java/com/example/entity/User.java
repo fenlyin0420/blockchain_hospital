@@ -37,5 +37,6 @@ public class User extends Account implements Serializable {
     private Double account;
     private String publicKey;
     private String privateKey;
-
+    /** 病房号 */
+    private Integer ward_id;
 }
