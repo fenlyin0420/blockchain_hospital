@@ -41,6 +41,23 @@
 <!--            <i class="el-icon-s-home"></i>-->
 <!--            <span slot="title" style="font-size: 20px;">系统首页</span>-->
 <!--          </el-menu-item>-->
+          <el-submenu index="record" v-if="user.role === 'ADMIN'">
+            <template slot="title">
+              <i class="el-icon-menu"></i><span>转诊管理</span>
+            </template>
+            <el-menu-item index="/referralRecord">转诊审批</el-menu-item>
+            <el-menu-item index="/referralRecord">转诊日志</el-menu-item>
+          </el-submenu>
+
+          <el-submenu index="user" v-if="user.role === 'ADMIN'">
+            <template slot="title">
+              <i class="el-icon-menu"></i><span>用户管理</span>
+            </template>
+            <!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
+            <el-menu-item index="/doctor">医生管理</el-menu-item>
+            <el-menu-item index="/nurse">护士管理</el-menu-item>
+            <el-menu-item index="/user">患者管理</el-menu-item>
+          </el-submenu>
 
           <el-submenu index="info" v-if="user.role !== 'USER'">
             <template slot="title">
@@ -79,15 +96,7 @@
             <el-menu-item index="/case">新建病历</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="user" v-if="user.role === 'ADMIN'">
-            <template slot="title">
-              <i class="el-icon-menu"></i><span>用户管理</span>
-            </template>
-<!--            <el-menu-item index="/admin">管理员信息</el-menu-item> // 冗余选项-->
-            <el-menu-item index="/doctor">医生管理</el-menu-item>
-            <el-menu-item index="/nurse">护士管理</el-menu-item>
-            <el-menu-item index="/user">患者管理</el-menu-item>
-          </el-submenu>
+
 
           <el-submenu index="powerUser" v-if="user.role === 'USER'">
             <template slot="title">
@@ -106,12 +115,7 @@
             <el-menu-item index="/referralApplication">转诊申请</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="record" v-if="user.role === 'ADMIN'">
-            <template slot="title">
-              <i class="el-icon-menu"></i><span>转诊记录与审批</span>
-            </template>
-            <el-menu-item index="/referralRecord">转诊记录与审批</el-menu-item>
-          </el-submenu>
+
 <!--
           <el-submenu index="information" v-if="user.role === 'ADMIN'">
             <template slot="title">

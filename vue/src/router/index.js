@@ -20,6 +20,7 @@ const routes = [
       { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/manager/Home') },
       { path: 'admin', name: 'Admin', meta: { name: '管理员信息' }, component: () => import('../views/manager/Admin') },
       { path: 'doctor', name: 'Doctor', meta: { name: '医生信息' }, component: () => import('../views/manager/Doctor') },
+      { path: 'nurse', name: 'Nurse', meta: { name: '护士信息' }, component: () => import('../views/manager/Nurse') },
       { path: 'user', name: 'User', meta: { name: '患者信息' }, component: () => import('../views/manager/User') },
       { path: 'adminPerson', name: 'AdminPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/AdminPerson') },
       { path: 'doctorPerson', name: 'DoctorPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/DoctorPerson') },
