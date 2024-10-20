@@ -22,10 +22,13 @@ public interface PlanMapper {
     int deleteById(Integer id);
 
     /**
-      * 修改
-    */
+     * 根据
+     * @param plan
+     * @return
+     */
     int updateById(Plan plan);
 
+    int updateNum(Plan plan);
     /**
       * 根据ID查询
     */

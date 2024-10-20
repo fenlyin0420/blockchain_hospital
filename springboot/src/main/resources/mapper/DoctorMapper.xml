@@ -25,6 +25,18 @@
             <if test="hospitalId != null">and doctor.hospital_id = #{hospitalId}</if>
         </where>
     </select>
+
+    <select id="selectByPlan" resultType="com.example.entity.Doctor">
+        SELECT doctor.*, hospital.hospital_name, department.name as departmentName, plan.num
+        FROM doctor, hospital, department, plan
+        WHERE doctor.hospital_id = #{hospitalId}
+          AND doctor.department_id = #{departmentId}
+          AND doctor.id = plan.doctor_id
+          AND plan.date = #{selectedDate}
+          AND doctor.hospital_id = hospital.id
+          AND doctor.department_id = department.id
+    </select>
+
     <select id="selectById" resultType="com.example.entity.Doctor">
         select *
         from doctor
@@ -33,9 +45,9 @@
     <select id="selectByH" resultType="com.example.entity.Doctor">
         select doctor.*, department.name as departmentName,hospital.hospital_name as hospitalName
         from doctor
-        left join department on doctor.department_id = department.id
-        left join plan on plan.doctor_id = doctor.id
-        left join hospital on doctor.hospital_id = hospital.id
+                 left join department on doctor.department_id = department.id
+                 left join plan on plan.doctor_id = doctor.id
+                 left join hospital on doctor.hospital_id = hospital.id
         where doctor.hospital_id=#{H_id}
     </select>
     <select id="select" resultType="com.example.entity.Doctor">
