@@ -13,8 +13,8 @@
       <el-table :data="tableData" stripe>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="hospitalName" label="医院"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" show-overflow-tooltip></el-table-column>
-        <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip></el-table-column> -->
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" show-overflow-tooltip></el-table-column> 
         <el-table-column prop="time" label="就诊时间" ></el-table-column>
         <el-table-column prop="status" label="挂号状态"></el-table-column>
 
