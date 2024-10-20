@@ -4,11 +4,7 @@
     <div class="search">
       <el-tabs v-model="activeName">
         <el-tab-pane label="医院" name="hospital" class="hd">
-<!--          <el-select v-model="hospitalId" placeholder="请选择医院" >-->
-<!--            <div v-for="item in hospitalList">-->
-<!--              <el-option :label="item.hospitalName" :value="item.id"></el-option>-->
-<!--            </div>-->
-<!--          </el-select>-->
+
           <el-row :gutter="0">
             <el-col :span="6" v-for="item in hospitalList">
               <el-card
@@ -22,10 +18,7 @@
         </el-tab-pane>
 
         <el-tab-pane label="科室" name="department" class="hd">
-<!--          <el-select v-model="departmentId" placeholder="请选择科室" style="width: 199px">-->
-<!--            <el-option v-for="item in planData" :key="item.id" :label="item.name" :value="item.id">-->
-<!--            </el-option>-->
-<!--          </el-select>-->
+
           <el-row :gutter="0">
             <el-col :span="6" v-for="item in planData">
               <el-card
@@ -78,8 +71,21 @@
             <div style="margin-top: 15px">
               挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{item.price}}</span> 剩余：{{item.num}}
             </div>
+            <!-- 挂号按钮 -->
             <div style="margin-top: 15px">
               <el-button type="primary" size="mini" :disabled="disabled" @click="reserve(item)">挂号</el-button>
+              <el-dialog
+                  title="确认订单"
+                  :visible.sync="dialogVisible"
+                  width="30%">
+                <Payment :form="dialogDate"></Payment>
+
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="dialogVisible = false">Cancel</el-button>
+                  <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                </span>
+              </el-dialog>
+
             </div>
           </div>
         </el-col>
@@ -102,7 +108,11 @@
 </template>
 
 <script>
+import Payment from "@/views/manager/Payment.vue";
 export default {
+  components: {
+    Payment,
+  },
   name: "Doctor",
   data() {
     let startDate = new Date()
@@ -130,7 +140,11 @@ export default {
       selectedDate: new Date(),
       disabled: false,
       /** 顶部搜索区域 tab 默认项*/
-      activeName: 'hospital'
+      activeName: 'hospital',
+      /** 支付界面可视性 */
+      dialogVisible: false,
+      /** 向支付界面传递的数据 */
+      dialogDate: {},
     }
   },
   created() {
@@ -141,24 +155,33 @@ export default {
   methods: {
     /**
      * 挂号操作
-     * @param doctorId 所属医生的 ID
-     * @param hospitalId 所属医院的 ID
+     * @param item 医生信息
      */
     reserve(item) {
-      this.disabled = true;
+      this.dialogVisible = true;
+      // this.disabled = true;
       if (this.user.role !== 'USER') {
         this.$message.warning('您的角色不支持挂号操作')
         return
       }
       let reserveBody = {
         userId: this.user.id,
-        doctorId: item.doctorId,
-        hospitalId: item.hospitalId
+        doctorId: item.id,
+        hospitalId: item.hospitalId,
+        time: item.selectedDate
       }
+      console.log("reserveBody")
+      console.log(reserveBody)
       let planBody = {
         hospitalId: item.hospitalId,
         doctorId: item.id,
         date: item.selectedDate,
+      }
+      this.dialogDate = {
+        department: item.departmentName,
+        doctor: item.name,
+        date: item.selectedDate,
+        price: item.price,
       }
       console.log(item)
       console.log("planbody")
@@ -177,7 +200,7 @@ export default {
           })
         } else {
           this.$message.error(res.msg)
-          this.disabled = false;
+          // this.disabled = false;
         }
       })
     },

@@ -27,7 +27,7 @@
     </select>
 
     <select id="selectByPlan" resultType="com.example.entity.Doctor">
-        SELECT doctor.*, hospital_name, department.name, plan.num
+        SELECT doctor.*, hospital.hospital_name, department.name as departmentName, plan.num
         FROM doctor, hospital, department, plan
         WHERE doctor.hospital_id = #{hospitalId}
           AND doctor.department_id = #{departmentId}

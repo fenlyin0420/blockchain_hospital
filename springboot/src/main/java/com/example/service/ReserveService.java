@@ -33,7 +33,7 @@ public class ReserveService {
      * 新增
      */
     public void add(Reserve reserve) {
-        reserve.setTime(DateUtil.format(new Date(), "yyyy-MM-dd"));
+//        reserve.setTime(DateUtil.format(new Date(), "yyyy-MM-dd"));
         reserve.setStatus(CallEnum.STATUS_NO.status);
         reserveMapper.insert(reserve);
     }
