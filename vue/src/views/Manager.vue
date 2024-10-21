@@ -70,14 +70,14 @@
 
 
           <el-submenu index="reserve" v-if="user.role !== 'ADMIN' && user.role !=='NURSE'">
-            <template slot="title">
-<!--              <i class="el-icon-menu"></i><span>预约就诊</span>-->
+            <template slot="title" >
+            <i class="el-icon-menu" ></i><span>诊疗服务</span>
             </template>
             <el-menu-item index="/doctorCard" v-if="user.role!=='DOCTOR'">预约挂号</el-menu-item>
             <el-menu-item index="/reserve" v-if="user.role!=='USER'">患者挂号</el-menu-item>
             <el-menu-item index="/reserve" v-else>预约管理</el-menu-item>
 
-<!--            <el-menu-item index="/record">我的就诊</el-menu-item>-->
+            <el-menu-item index="/record" v-if="user.role!=='USER'">就诊记录</el-menu-item>
             <el-menu-item index="/registration" v-if="user.role !== 'DOCTOR' && user.role !=='USER'">住院登记
             </el-menu-item>
 

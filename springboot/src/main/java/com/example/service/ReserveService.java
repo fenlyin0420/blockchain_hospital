@@ -89,7 +89,7 @@ public class ReserveService {
         PageHelper.startPage(pageNum, pageSize);
         List<Reserve> list = reserveMapper.selectAll(reserve);
 
-//        // 获取当前系统时间
+//        // 获取当前系统时间(医生只显示当日叫号)
 //        LocalDateTime now = LocalDateTime.now();
 //        // 定义一个日期时间格式化器
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
