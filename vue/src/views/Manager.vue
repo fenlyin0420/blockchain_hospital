@@ -15,7 +15,7 @@
         </el-breadcrumb>
       </div>
 
-      <div class="manager-header-right">
+      <div class="manager-header-right test">
         <el-dropdown placement="bottom">
           <div class="avatar">
             <img :src="user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"/>
@@ -49,6 +49,7 @@
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
             </template>
+
             <el-menu-item index="/notice">公告信息</el-menu-item>
             <el-menu-item index="/hospital">医院信息</el-menu-item>
             <el-menu-item index="/department">科室信息</el-menu-item>
@@ -203,5 +204,9 @@ export default {
 
 .el-icon-menu span {
   font-size: 30px;
+}
+/deep/.test {
+  position: relative;
+  right: 80px;
 }
 </style>
