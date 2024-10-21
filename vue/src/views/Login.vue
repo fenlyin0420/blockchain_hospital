@@ -9,6 +9,9 @@
         <el-form-item prop="password" label="密码" label-width="15%">
           <el-input :style="{ width: '100%'}" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
         </el-form-item>
+        <el-form-item prop="password" label="公钥" label-width="15%">
+          <el-input :style="{ width: '100%'}" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
+        </el-form-item>
         <el-form-item label="身份" label-width="15%">
           <el-select :style="{ width: '100%'}" v-model="form.role" placeholder="请选择角色">
             <el-option label="管理员" value="ADMIN"></el-option>
@@ -58,7 +61,12 @@ export default {
           this.$request.post('/login', this.form).then(res => {
             if (res.code === '200') {
               localStorage.setItem("xm-user", JSON.stringify(res.data))  // 存储用户数据
-              this.$router.push('/')  // 跳转主页
+              console.log(res.data)
+              if (res.data.role === 'USER'){
+                this.$router.push('/doctorCard')
+              } else {
+                this.$router.push('/')  // 跳转主页
+              }
               this.$message.success('登录成功')
             } else {
               this.$message.error(res.msg)

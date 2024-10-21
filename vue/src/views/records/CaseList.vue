@@ -11,12 +11,13 @@
     <div class="table">
       <el-table :data="tableData" stripe>
         <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column>
-        <el-table-column prop="number" label="账号" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userDate" label="就诊日期" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名"></el-table-column>
         <el-table-column prop="hospitalName" label="医院名称"></el-table-column>
         <el-table-column
-            label="医嘱"
+            label="病情"
             width="200">
           <template slot-scope="scope">
             <el-input
@@ -42,18 +43,18 @@
           </template>
         </el-table-column>
         <el-table-column prop="inhospital" label="是否住院"></el-table-column>
-        <el-table-column prop="jurisdiction" label="权限"></el-table-column>
+       <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'"></el-table-column>
         <el-table-column label="详情" width="120" align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template v-slot="scope">
-            <el-button plain type="danger" size="mini" @click="update(scope.row)" v-if="user.role !=='USER'">编辑</el-button>
-            <el-button plain type="danger" size="mini" @click="del(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
+       <el-table-column label="操作" width="180" align="center" v-if="user.role === 'DOCTOR'">
+         <template v-slot="scope">
+           <el-button plain type="danger" size="mini" @click="update(scope.row)" v-if="user.role !=='USER'">编辑</el-button>
+           <el-button plain type="danger" size="mini" @click="del(scope.row.id)">删除</el-button>
+         </template>
+       </el-table-column>
       </el-table>
 
       <div class="pagination">
@@ -69,13 +70,16 @@
       </div>
     </div>
 
-    <el-dialog title="病历编辑" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
+    <el-dialog title="病历编辑" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="number" label="账号">
           <el-input v-model="form.number" autocomplete="off" placeholder="请输入账号"></el-input>
         </el-form-item>
         <el-form-item prop="name" label="姓名">
           <el-input v-model="form.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item prop="name" label="就诊日期">
+          <el-input v-model="form.userDate" autocomplete="off" placeholder="请输入就诊日期"></el-input>
         </el-form-item>
         <el-form-item prop="doctorName" label="医生姓名">
           <el-input v-model="form.doctorName" autocomplete="off" placeholder="请输入医生姓名"></el-input>
@@ -209,11 +213,14 @@ export default {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           status: this.status,
-          doctorId:this.user.id
+          //doctorId:this.user.id,
+          //name: this.user.name
         }
       }).then(res => {
+        //console.log(res.data)
         this.tableData = res.data?.list
         this.total = res.data?.total
+        //console.log(this.tableData)
       })
     },
     reset() {

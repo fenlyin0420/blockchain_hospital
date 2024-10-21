@@ -56,7 +56,7 @@
     <!-- doctorCard 显示区域 -->
     <div class="table" style="padding: 15px 20px">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="item in tableData" style="margin-bottom: 20px">
+        <el-col :span="12" v-for="item in tableData" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 100px; height: 100px; border-radius: 50%">
             <div style="font-weight: 550; margin-top: 10px">
@@ -73,7 +73,7 @@
             </div>
             <!-- 挂号按钮 -->
             <div style="margin-top: 15px">
-              <el-button type="primary" size="mini" :disabled="disabled" @click="reserve(item)">挂号</el-button>
+              <el-button type="primary" size="mini" :disabled="disabled" @click="showDialog(item)">挂号</el-button>
               <el-dialog
                   title="确认订单"
                   :visible.sync="dialogVisible"
@@ -82,7 +82,7 @@
 
                 <span slot="footer" class="dialog-footer">
                   <el-button @click="dialogVisible = false">Cancel</el-button>
-                  <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                  <el-button type="primary" @click="reserve(item)">Confirm</el-button>
                 </span>
               </el-dialog>
 
@@ -130,6 +130,7 @@ export default {
       hospitalId:null,
       fromVisible: false,
       form: {},
+      /** user entity, an object */
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {},
       ids: [],
@@ -137,7 +138,7 @@ export default {
       hospitalList:[],
       startDate: startDate,
       endDate: endDate,
-      selectedDate: new Date(),
+      selectedDate: null,
       disabled: false,
       /** 顶部搜索区域 tab 默认项*/
       activeName: 'hospital',
@@ -155,10 +156,11 @@ export default {
   methods: {
     /**
      * 挂号操作
+     * 需要修改的表：record.* plan.num user.account
      * @param item 医生信息
      */
     reserve(item) {
-      this.dialogVisible = true;
+      this.dialogVisible = false;
       // this.disabled = true;
       if (this.user.role !== 'USER') {
         this.$message.warning('您的角色不支持挂号操作')
@@ -170,40 +172,51 @@ export default {
         hospitalId: item.hospitalId,
         time: item.selectedDate
       }
-      console.log("reserveBody")
-      console.log(reserveBody)
       let planBody = {
         hospitalId: item.hospitalId,
         doctorId: item.id,
         date: item.selectedDate,
       }
+
+      /** 修改挂号记录表 */
+      this.$request.post('/reserve/add', reserveBody).then(res => {
+        if (res.code !== '200') {
+          this.$message.error(res.msg)
+          return
+        }
+      })
+      /** 修改医生排班表中的剩余挂号数量 */
+      this.$request.post('/plan/updateNum', planBody).then(res => {
+        if (res.code !== '200'){
+          this.$message.error("update num failed")
+          return
+        }
+      })
+      /** 修改账户余额 */
+      if (this.user.account < item.price){
+        this.$message.error("您的账余额不足")
+        return
+      }
+      this.$request.put('/user/update', {account: this.user.account - item.price}).then(res => {
+        if (res.code === '200'){
+          this.$message.success("挂号成功")
+          this.query(1)
+        } else {
+          this.$message.error(res.data)
+        }
+      })
+    },
+
+    showDialog(item){
+      this.dialogVisible = true
       this.dialogDate = {
         department: item.departmentName,
         doctor: item.name,
         date: item.selectedDate,
         price: item.price,
       }
-      console.log(item)
-      console.log("planbody")
-      console.log(planBody)
-      /** 修改挂号记录表 */
-      this.$request.post('/reserve/add', reserveBody).then(res => {
-        if (res.code === '200') {
-          /** 修改医生排班表中的剩余挂号数量 */
-          this.$request.post('plan/updateNum', planBody).then(res => {
-            if (res.code === '200'){
-              this.$message.success('挂号成功')
-              this.query(1)
-            } else {
-              this.$message.error("update num failed")
-            }
-          })
-        } else {
-          this.$message.error(res.msg)
-          // this.disabled = false;
-        }
-      })
     },
+
     /**
      * 查询所有计划，其 res.data 是一个数组，数组每一个元素都是一个 plan 表的元组
      * 组件属性 planData 将引用返回的数组（res.data）
@@ -249,7 +262,7 @@ export default {
     reset() {
       this.departmentId = null;
       this.hospitalId = null;
-
+      this.selectedDate = null
       this.query(1)
     },
     handleCurrentChange(pageNum) {
@@ -284,8 +297,8 @@ export default {
 .calendar-cell{
   text-align: center;
 }
-/deep/.el-tab-pane{
-  height: 120px;
+.search{
+  height: 250px;
 }
 /deep/thead{
   display: none;
