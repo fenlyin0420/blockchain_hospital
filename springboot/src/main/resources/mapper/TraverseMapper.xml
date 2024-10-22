@@ -6,6 +6,7 @@
     <insert id="add" parameterType="com.example.entity.Traverse" useGeneratedKeys="true">
         insert into traverse
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDate != null">user_date,</if>
             <if test="name != null">name,</if>
             <if test="doctorId != null">doctor_id,</if>
             <if test="hospitalId != null">hospital_id,</if>
@@ -20,6 +21,7 @@
             <if test="signKey != null">sign_key,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDate != null">#{userDate},</if>
             <if test="name != null">#{name},</if>
             <if test="doctorId != null">#{doctorId},</if>
             <if test="hospitalId != null">#{hospitalId},</if>

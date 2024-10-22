@@ -1,18 +1,17 @@
 package com.example.mapper;
-
-import com.example.entity.Doctor;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import tk.mybatis.mapper.common.BaseMapper;
 
 import java.util.List;
 
 /**
  * 护士相关的接口
  */
-public interface NurseMapper {
-
+public interface NurseMapper  extends BaseMapper<Nurse> {
+//public interface NurseMapper{
     /**
      * 根据ID查询
      //* @param id 护士的id

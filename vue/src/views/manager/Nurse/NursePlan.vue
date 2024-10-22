@@ -131,7 +131,7 @@ export default {
       //debug
       console.log("this.user", this.user);
       let id=this.user.hospitalId // 各医院管理员只能管理自己医院的排班，所以是selectById
-      this.$request.get('/doctor/selectByH/'+id).then(res => {
+      this.$request.get('/nurse/selectByH/'+id).then(res => {
         //this.$request.get('/doctor/selectAll/').then(res => { // 加载所有医生，而不是按照医院id加载
         if (res.code === '200') {
           this.doctorData = res.data
