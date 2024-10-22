@@ -12,8 +12,8 @@
       <el-table :data="tableData" stripe>
         <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
         <el-table-column prop="userDate" label="就诊日期" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名"></el-table-column>
         <el-table-column prop="hospitalName" label="医院名称"></el-table-column>
         <el-table-column

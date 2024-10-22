@@ -15,6 +15,7 @@
         <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'"></el-table-column>
         <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
          <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="departmentName" label="科室" ></el-table-column>
         <el-table-column prop="time" label="就诊时间" ></el-table-column>
         <el-table-column prop="status" label="挂号状态"></el-table-column>
 
@@ -42,6 +43,8 @@
 </template>
 
 <script>
+import { time } from 'echarts';
+
 export default {
   name: "Reserve",
   data() {
@@ -73,7 +76,7 @@ export default {
             userName: caseData?.userName,
             doctorName: caseData?.doctorName,
             hospitalName: caseData?.hospitalName,
-            departmentName: caseData?.hospitalName,
+            departmentName: caseData?.departmentName,
             time: caseData?.time,
         };
           this.load(1)

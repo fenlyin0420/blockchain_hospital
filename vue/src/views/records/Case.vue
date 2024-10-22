@@ -4,16 +4,16 @@
       <h2 style="margin: 0; text-align: left;">病历详情</h2>
     </div>
 
-    <div class="case-info">
-      <el-row class="info-row">
-        <el-col :span="6">
+    <div class="case-info" >
+      <el-row class="info-row" >
+        <!-- <el-col :span="6">
           <span class="field-label">选择:</span>
           <el-select v-model="caseInfo" placeholder="请选择医院">
-            <div v-for="item in tableData">
-              <el-option :label="item.userName + '-' + item.hospitalName" :value="item"></el-option>
+            <div>
+              <el-option v-for="item in tableData" :label="item.userName + '-' + item.hospitalName" :value="item" :key="item.id"></el-option>
             </div>
           </el-select>
-        </el-col>
+        </el-col> -->
         <el-col :span="6">
           <div class="info-field">
             <span class="field-label">姓名:</span>
@@ -45,12 +45,12 @@
               <span class="field-value">{{ caseInfo.time }}</span>
             </div>
           </el-col>
-          <el-col :span="6">
+          <!-- <el-col :span="6">
             <div class="info-field">
               <span class="field-label">住院 :</span>
               <span class="field-value">{{ caseInfo.inhospital }}</span>
             </div>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-row>
 
@@ -58,7 +58,7 @@
       <el-row class="info-row">
         <el-col :span="24">
           <div class="info-field">
-            <span class="field-label">医嘱信息:</span>
+            <span class="field-label">病情:</span>
             <el-input type="textarea" v-model="advice" clearable :rows="5" resize="vertical" class="info-textarea"></el-input>
           </div>
         </el-col>
@@ -71,8 +71,8 @@
             <span class="field-label">药品信息:</span>
             <div>
               <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
-                <div v-for="item in drugList">
-                  <el-option :label="item.drugName" :value="item.drugName"></el-option>
+                <div >
+                  <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName" :key="item.id"></el-option>
                 </div>
               </el-select>
               <el-input v-model="medicineQuantity" placeholder="数量" class="quantity-input"></el-input>
@@ -114,29 +114,58 @@ export default {
     }
   },
   created() {
-    this.loadByUser();
-    this.loadByDrug();
-    const queryData = this.$route.query.data;
-    if (queryData) {
-      // 对查询参数中的数据进行解码和解析
-      this.caseInfo = JSON.parse(decodeURIComponent(queryData));
-    }
+    this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法 
+    //this.loadByUser(); //获取tableData
+    this.loadByDrug(); //获取drugList
+    // const queryData = this.$route.query.data;
+    // if (queryData) {
+    //   // 对查询参数中的数据进行解码和解析
+    //   this.caseInfo = JSON.parse(decodeURIComponent(queryData));
+    // }
   },
   mounted() {
 
   },
   methods: {
-    loadByUser() {
-      this.$request.get('/record/selectAll', {
-        params: {
-          doctorId: this.user.id
-        }
-      }).then(res => {
-        this.$message.success("成功")
-        this.tableData = res.data
-      })
+
+    async loadData() {  
+      try {  
+        // loadByUser返回Promises  
+        await Promise.all([this.loadByUser()]);  
+          
+        // 从URL查询参数中解析caseInfo  
+        const queryData = this.$route.query.data;  
+        if (queryData) {  
+          this.caseInfo = JSON.parse(decodeURIComponent(queryData));  
+            
+          // 检查tableData以更新caseInfo
+          this.updateCaseInfoFromTableData();  
+        } 
+      } catch (error) {  
+        console.error('Error loading data:', error);  
+      }  
+    },  
+
+    async loadByUser() {
+      const res = await this.$request.get('/record/selectAll', {  
+          params: {  
+            doctorId: this.user.id,  
+          },  
+        });  
+        this.$message.success("成功");  
+        this.tableData = res.data; 
+
+      // this.$request.get('/record/selectAll', {
+      //   params: {
+      //     doctorId: this.user.id
+      //   }
+      // }).then(res => {
+      //   this.$message.success("成功")
+      //   this.tableData = res.data
+      // })
     },
-    loadByDrug() {
+
+    async loadByDrug() {
       this.$request.get("/drug/selectAll",{
         params:{
           hospitalId:this.user.hospitalId
@@ -145,6 +174,19 @@ export default {
         this.drugList = res.data
       })
     },
+
+    updateCaseInfoFromTableData() {  
+      // 更新caseInfo以匹配tableData中的项 
+      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName);  
+      if (matchingItem) {  
+        // 使用解构赋值或直接赋值来更新caseInfo  
+        // 注意：直接赋值整个对象可能会覆盖Vue的响应式跟踪，除非matchingItem本身是一个响应式对象  
+        this.caseInfo = { ...matchingItem }; // 使用解构赋值来保持响应性  
+      }  
+      // 如果没有找到匹配项，caseInfo将保持不变（从URL查询参数中解析的值）  
+    }, 
+
+
     loadCaseInfo() {
       this.caseInfo = {
         id: '001',
@@ -157,7 +199,7 @@ export default {
     },
     call(caseInfo) {
       let reserveData = { ...caseInfo, status: '已叫号' };
-      // Simulating API request to update case status
+      //Simulating API request to update case status
       // this.$request.put('/case/update', reserveData).then(res => {
       //   if (res.code === '200') {
       //     this.$message.success('叫号成功')
@@ -208,6 +250,7 @@ export default {
     ok() {
       // 修改按钮
       this.information.number = new Date().getTime()
+      this.information.userDate = this.caseInfo.time
       this.information.name = this.caseInfo.userName
       this.information.doctorId = this.caseInfo.doctorId
       this.information.hospitalId = this.caseInfo.hospitalId
