@@ -91,7 +91,7 @@
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
             </template>
-            <el-menu-item index="/plan">护士排班</el-menu-item>
+            <el-menu-item index="/NursePlan">护士排班</el-menu-item>
           </el-submenu>
 
           <el-submenu index="powerDoctor" v-if="user.role === 'NURSE'">

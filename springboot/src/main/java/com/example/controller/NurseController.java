@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
-@CrossOrigin
 @RestController //表明是接口的入口
 @RequestMapping("/nurse")
 public class NurseController {
@@ -29,7 +28,7 @@ public class NurseController {
     }
 
     @PostMapping("/add")
-    public Result add(@RequestBody Nurse nurse) {
+    public Result save(@RequestBody Nurse nurse) {
         nurseService.add(nurse);
         return Result.success();
     }

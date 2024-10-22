@@ -53,17 +53,9 @@ public class NurseService {
     }
 
     public void add(Nurse nurse) {
-        Nurse dbNurse = nurseMapper.selectByUsername(nurse.getUsername());
-        if (ObjectUtil.isNotNull(dbNurse)) {
-            throw new CustomException(ResultCodeEnum.USER_EXIST_ERROR);
+        if(nurse.getPassword() == null){
+            nurse.setPassword("123456");
         }
-        if (ObjectUtil.isEmpty(nurse.getPassword())) {
-            nurse.setPassword(Constants.USER_DEFAULT_PASSWORD);
-        }
-        if (ObjectUtil.isEmpty(nurse.getName())) {
-            nurse.setName(nurse.getUsername());
-        }
-        nurse.setRole(RoleEnum.NURSE.name());
-        nurseMapper.insert(nurse);
+        nurseMapper.insertSelective(nurse);
     }
 }
