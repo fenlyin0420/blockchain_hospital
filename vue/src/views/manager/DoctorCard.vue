@@ -2,61 +2,34 @@
   <div>
     <!-- 搜索区 -->
     <div class="search">
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="医院" name="hospital" class="hd">
+      <!-- 选择医院 -->
+      <el-select placeholder="请选择医院" v-model="hospitalId">
+        <el-option
+            v-for="item in hospitalList"
+            :label="item.hospitalName"
+            :value="item.id"></el-option>
+      </el-select>
 
-          <el-row :gutter="0">
-            <el-col :span="6" v-for="item in hospitalList">
-              <el-card
-                  class="el-card"
-                  :class="{ selected: hospitalId === item.id }"
-                  @click.native="selectHospital(item.id)">
-                <div>{{item.hospitalName}}</div>
-              </el-card>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
+      <!-- 选择科室 -->
+      <el-select placeholder="请选择科室" v-model="departmentId">
+        <el-option
+          v-for="item in planData"
+          :label="item.name"
+          :value="item.id"></el-option>
+      </el-select>
 
-        <el-tab-pane label="科室" name="department" class="hd">
 
-          <el-row :gutter="0">
-            <el-col :span="6" v-for="item in planData">
-              <el-card
-                  class="el-card"
-                  :class="{ selected: departmentId === item.id }"
-                  @click.native="selectDepartment(item.id)">
-                <div>{{item.name}}</div>
-              </el-card>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
 
-        <el-tab-pane label="时间" name="time">
-          <el-calendar
-              class="calendar"
-              v-model="selectedDate"
-              :range="[startDate, endDate]">
-            <template
-                slot="dateCell"
-                slot-scope="{data}">
-              <div class="calendar-cell" :class="data.isSelected ? 'is-selected' : ''">
-                <div>{{ data.day.split('-').slice(1).join('-') }}</div>
-                {{ data.isSelected ? '✔️' : ''}}
-                {{ dayToWeek(data.day) }}
-              </div>
-            </template>
-          </el-calendar>
-        </el-tab-pane>
-      </el-tabs>
-
-      <el-button type="info" plain style="margin-left: 10px" @click="query(1)">查询</el-button>
-      <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <div class="searchBtn">
+        <el-button type="info" plain style="margin-left: 10px" @click="query(1)">查询</el-button>
+        <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      </div>
     </div>
 
     <!-- doctorCard 显示区域 -->
     <div class="table" style="padding: 15px 20px">
       <el-row :gutter="20">
-        <el-col :span="12" v-for="item in tableData" style="margin-bottom: 20px">
+        <el-col :span="6" v-for="item in tableData" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 100px; height: 100px; border-radius: 50%">
             <div style="font-weight: 550; margin-top: 10px">
@@ -85,7 +58,6 @@
                   <el-button type="primary" @click="reserve(item)">Confirm</el-button>
                 </span>
               </el-dialog>
-
             </div>
           </div>
         </el-col>
@@ -115,29 +87,23 @@ export default {
   },
   name: "Doctor",
   data() {
-    let startDate = new Date()
-    let endDate = new Date()
-    let week = startDate.getDay()
-    if (week === 0) week =7;
-    startDate.setDate(startDate.getDate() - week + 1)
-    endDate.setDate(startDate.getDate() + 6)
     return {
       tableData: [],  // 所有的数据，经查询得到
+      planData: [],
+      hospitalList:[],
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
-      departmentId: null,
+      /** 用户选择的医院 */
       hospitalId:null,
+      /** 用户选择的科室 */
+      departmentId: null,
       fromVisible: false,
       form: {},
       /** user entity, an object */
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {},
       ids: [],
-      planData: [],
-      hospitalList:[],
-      startDate: startDate,
-      endDate: endDate,
       selectedDate: null,
       disabled: false,
       /** 顶部搜索区域 tab 默认项*/
@@ -146,9 +112,12 @@ export default {
       dialogVisible: false,
       /** 向支付界面传递的数据 */
       dialogDate: {},
+      timestamp: []
     }
   },
   created() {
+
+
     this.query(1)
     this.loadPlan()
     this.load2()
@@ -182,20 +151,20 @@ export default {
       this.$request.post('/reserve/add', reserveBody).then(res => {
         if (res.code !== '200') {
           this.$message.error(res.msg)
-          return
+          return -1
         }
       })
       /** 修改医生排班表中的剩余挂号数量 */
       this.$request.post('/plan/updateNum', planBody).then(res => {
         if (res.code !== '200'){
           this.$message.error("update num failed")
-          return
+          return -1
         }
       })
       /** 修改账户余额 */
       if (this.user.account < item.price){
         this.$message.error("您的账余额不足")
-        return
+        return -1
       }
       this.$request.put('/user/update', {account: this.user.account - item.price}).then(res => {
         if (res.code === '200'){
@@ -212,7 +181,6 @@ export default {
       this.dialogDate = {
         department: item.departmentName,
         doctor: item.name,
-        date: item.selectedDate,
         price: item.price,
       }
     },
@@ -250,8 +218,6 @@ export default {
       }).then(res => {
         this.tableData = res.data?.list
         this.total = res.data?.total
-        console.log("tableData")
-        console.log(this.tableData)
       })
     },
     load2(){
@@ -268,18 +234,6 @@ export default {
     handleCurrentChange(pageNum) {
       this.query(pageNum)
     },
-    selectHospital(value) {
-      this.hospitalId = value
-    },
-    selectDepartment(value) {
-      this.departmentId = value
-    },
-    dayToWeek(dateStr){
-      const week = ['星期日','星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-      const date = new Date(dateStr)
-      let weekIndex = date.getDay()
-      return week[weekIndex]
-    }
   }
 }
 </script>
@@ -288,17 +242,11 @@ export default {
 .table {
   font-size: 16px;
 }
-.hd {
-  margin: 20px;
+/deep/.el-select {
+  margin: 0 15px;
 }
-.selected{
-  background-color: #f2f8fe;
-}
-.calendar-cell{
-  text-align: center;
-}
-.search{
-  height: 250px;
+.searchBtn {
+  margin: 15px 0;
 }
 /deep/thead{
   display: none;
