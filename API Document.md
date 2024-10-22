@@ -84,7 +84,8 @@
 <span class="field-value">{{ caseInfo.inhospital }} </span>
 ```
 
-## 患者挂号页面 tableDate
+## 患者挂号页面 
+### tableDate
 tableDate[]
 ```Json
 {
@@ -113,5 +114,24 @@ tableDate[]
     "departmentName": null,
     "num": 19,
     "selectedDate": null
+}
+```
+### planDate
+planDate[]
+```JSON
+{
+    "id": 2,
+    "name": "外科",
+    "description": "这是外科",
+    "hospitalId": 1,
+    "hospitalName": "xx大学第一附属医院"
+}
+```
+### hospitalList
+```JSON
+{
+    "id": 1,
+    "hospitalName": "xx大学第一附属医院",
+    "url": "192.168.1.7"
 }
 ```
