@@ -4,8 +4,8 @@
       <h2 style="margin: 0; text-align: left;">病历详情</h2>
     </div>
 
-    <div class="case-info" >
-      <el-row class="info-row" >
+    <div class="case-info">
+      <el-row class="info-row">
         <!-- <el-col :span="6">
           <span class="field-label">选择:</span>
           <el-select v-model="caseInfo" placeholder="请选择医院">
@@ -56,12 +56,15 @@
 
       <hr class="divider" />
       <el-row class="info-row">
-        <el-col :span="24">
-          <div class="info-field">
-            <span class="field-label">病情:</span>
-            <el-input type="textarea" v-model="advice" clearable :rows="5" resize="vertical" class="info-textarea"></el-input>
-          </div>
-        </el-col>
+        <span class="field-label">病情:</span>
+        <el-row class="info-row">
+          <el-col :span="24">
+            <div class="info-field">
+              <el-input type="textarea" v-model="advice" clearable :rows="5" resize="vertical"
+                class="info-textarea"></el-input>
+            </div>
+          </el-col>
+        </el-row>
       </el-row>
 
       <hr class="divider" />
@@ -70,25 +73,56 @@
           <div class="info-field">
             <span class="field-label">药品信息:</span>
             <div>
-              <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
-                <div >
-                  <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName" :key="item.id"></el-option>
-                </div>
-              </el-select>
-              <el-input v-model="medicineQuantity" placeholder="数量" class="quantity-input"></el-input>
-              <el-input v-model="medicineFrequency" placeholder="一日几次" class="frequency-input"></el-input>
-              <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
+              <el-row class="info-row">
+                <el-col :span="6" class="custom-col">
+                  <div class="info-field">
+                    <span class="field-label">选择药品:</span>
+                    <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
+                      <div>
+                        <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName"
+                          :key="item.id"></el-option>
+                      </div>
+                    </el-select>
+                  </div>
+                </el-col>
+
+                <el-col :span="6" class="custom-col">
+                  <div class="info-field">
+                    <span class="field-label">药品数量:</span>
+                    <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
+                      class="quantity-input"></el-input-number>
+                    <!-- <el-input v-model="medicineQuantity" placeholder="数量" class="quantity-input"></el-input> -->
+                  </div>
+                </el-col>
+
+                <el-col :span="6" class="custom-col">
+                  <div class="info-field">
+                    <span class="field-label">每日次数:</span>
+                      <el-autocomplete class="frequency-input" v-model="medicineFrequency" :fetch-suggestions="querySearch"
+                        placeholder="一日几次" @select="handleSelect" ></el-autocomplete>
+                    <!-- <el-input v-model="medicineFrequency" placeholder="一日几次" class="frequency-input"></el-input> -->
+                  </div>
+                </el-col>
+                <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
+              </el-row>
             </div>
-            <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical" class="medicine-textarea"></el-input>
-            <span class="field-label"> 是否住院 : </span>
-              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
-              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
+            <div>
+              <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical"
+                class="medicine-textarea"></el-input>
+            </div>
+            <el-row class="info-row">
+              <el-col :span="6" class="custom-col">
+                <span class="field-label"> 是否住院 : </span>
+                <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+                <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
+              </el-col>
+            </el-row>
             <el-button type="primary" @click="ok" class="edit-button">确定</el-button>
           </div>
         </el-col>
       </el-row>
-      
-      
+
+
 
     </div>
   </div>
@@ -99,7 +133,7 @@ export default {
   name: "Case",
   data() {
     return {
-      caseInfo: {inhospital: this.radio}, // 单个病历信息
+      caseInfo: { inhospital: this.radio }, // 单个病历信息
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       advice: '', // 医嘱
       medicine: '', // 药品
@@ -110,7 +144,8 @@ export default {
       tableData: [],
       drugList: [],
       information: {},
-      receivedData: {}
+      receivedData: {},
+      restaurants: []
     }
   },
   created() {
@@ -124,36 +159,35 @@ export default {
     // }
   },
   mounted() {
-
+    this.restaurants = this.loadAll();
   },
   methods: {
-
-    async loadData() {  
-      try {  
+    async loadData() {
+      try {
         // loadByUser返回Promises  
-        await Promise.all([this.loadByUser()]);  
-          
+        await Promise.all([this.loadByUser()]);
+
         // 从URL查询参数中解析caseInfo  
-        const queryData = this.$route.query.data;  
-        if (queryData) {  
-          this.caseInfo = JSON.parse(decodeURIComponent(queryData));  
-            
+        const queryData = this.$route.query.data;
+        if (queryData) {
+          this.caseInfo = JSON.parse(decodeURIComponent(queryData));
+
           // 检查tableData以更新caseInfo
-          this.updateCaseInfoFromTableData();  
-        } 
-      } catch (error) {  
-        console.error('Error loading data:', error);  
-      }  
-    },  
+          this.updateCaseInfoFromTableData();
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    },
 
     async loadByUser() {
-      const res = await this.$request.get('/record/selectAll', {  
-          params: {  
-            doctorId: this.user.id,  
-          },  
-        });  
-        this.$message.success("成功");  
-        this.tableData = res.data; 
+      const res = await this.$request.get('/record/selectAll', {
+        params: {
+          doctorId: this.user.id,
+        },
+      });
+      this.$message.success("成功");
+      this.tableData = res.data;
 
       // this.$request.get('/record/selectAll', {
       //   params: {
@@ -166,26 +200,48 @@ export default {
     },
 
     async loadByDrug() {
-      this.$request.get("/drug/selectAll",{
-        params:{
-          hospitalId:this.user.hospitalId
+      this.$request.get("/drug/selectAll", {
+        params: {
+          hospitalId: this.user.hospitalId
         }
       }).then(res => {
         this.drugList = res.data
       })
     },
 
-    updateCaseInfoFromTableData() {  
+    updateCaseInfoFromTableData() {
       // 更新caseInfo以匹配tableData中的项 
-      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName);  
-      if (matchingItem) {  
+      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName);
+      if (matchingItem) {
         // 使用解构赋值或直接赋值来更新caseInfo  
         // 注意：直接赋值整个对象可能会覆盖Vue的响应式跟踪，除非matchingItem本身是一个响应式对象  
         this.caseInfo = { ...matchingItem }; // 使用解构赋值来保持响应性  
-      }  
+      }
       // 如果没有找到匹配项，caseInfo将保持不变（从URL查询参数中解析的值）  
-    }, 
+    },
 
+    //每日次数输入框
+    querySearch(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadAll() {
+        return [
+          { "value": "一日一次" },
+          { "value": "一日两次" },
+          { "value": "一日三次" },
+        ];
+      },
+      handleSelect(item) {
+        console.log(item);
+      },
 
     loadCaseInfo() {
       this.caseInfo = {
@@ -246,6 +302,9 @@ export default {
     confirmMedicine() {
       // 确定按钮
       this.medicine = this.medicine + this.selectedMedicine + " " + this.medicineQuantity + " " + this.medicineFrequency + "\n"
+      this.radio="否"
+      this.medicineFrequency= ''
+      this.medicineQuantity= '1'
     },
     ok() {
       // 修改按钮
@@ -258,47 +317,35 @@ export default {
       this.information.drug = this.medicine
       this.information.inhospital = this.radio
       this.information.jurisdiction = "允许"
-      this.information.signData=" "
-      this.information.signResult=" "
-      this.information.signPubKey=" "
-      this.information.signKey=" "
+      this.information.signData = " "
+      this.information.signResult = " "
+      this.information.signPubKey = " "
+      this.information.signKey = " "
       this.$request.post('/traverse/add', this.information).then(res => {
         if (res.code === '200') {
-          this.$message.success('成功la')
-
-          this.$router.push({
-            name: 'CaseDetails',
-            params: {
-              id: 1,
-              name: this.user.name,
-              doctor: '',
-              hospitalId: 1,
-              advice: this.advice,
-              drug: this.drugList,
-              inhospital: 'n',
-              jurisdiction: '允许',
-              doctorName: this.caseInfo.doctorname,
-              hospitalName: this.caseInfo.hispitalName,
-              number: this.user.number,
-              signData: null,
-              signResult: "成功",
-              signPubKey: this.user.publickey,
-              signKey: this.user.privateKey
-            }
-          })
+          this.$message.success('成功')
+          this.information.hospitalName = this.caseInfo.hospitalName
+          this.information.doctorName = this.caseInfo.doctorName
+          let caseData = JSON.parse(JSON.stringify(this.information))
+          this.$router.push(`CaseDetails?data=${encodeURIComponent(JSON.stringify(caseData))}`)
         } else {
           this.$message.error(res.msg)
         }
       })
     },
     handleRadioChange() {
-      this.radio = this.radio === '是'? '是' : '否';
+      this.radio = this.radio === '是' ? '是' : '否';
     }
   }
 }
 </script>
 
 <style scoped>
+.custom-col {  
+  margin-left: 0px; /* 减小左侧间距 */  
+  margin-right: 0px; /* 减小右侧间距 */  
+}
+
 .case-container {
   padding: 20px;
   background-color: #f5f5f5;
@@ -321,6 +368,7 @@ export default {
 }
 
 .field-label {
+  margin-right: 10px;
   font-weight: bold;
 }
 
@@ -334,17 +382,17 @@ export default {
 }
 
 .medicine-select {
-  width: calc(33.33% - 10px);
+  width: calc(60% - 10px);
   margin-right: 40px;
 }
 
 .quantity-input {
-  width: calc(18% - 10px);
+  width: calc(60% - 10px);
   margin-right: 40px;
 }
 
 .frequency-input {
-  width: calc(33.33% - 10px);
+  width: calc(60% - 10px);
 }
 
 .medicine-textarea {

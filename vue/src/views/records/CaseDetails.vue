@@ -9,7 +9,7 @@
           <el-form-item label="医院名称">
             <span>{{ receivedData.hospitalName }}</span>
           </el-form-item>
-          <el-form-item label="患者姓名">
+          <el-form-item label="患者姓名" >
             <span>{{ receivedData.name }}</span>
           </el-form-item>
           <el-form-item label="主治医生姓名">
@@ -28,7 +28,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="药品信息">
-            <el-table :data="drug" style="width: 100%" height="200" border>
+            <el-table :data="drug" style="width: 100%" height="200" border >
               <el-table-column prop="name" label="药品名称"></el-table-column>
               <el-table-column prop="dose" label="数量"></el-table-column>
               <el-table-column prop="frequency" label="用法用量"></el-table-column>
@@ -144,7 +144,13 @@ export default {
     };
   },
   created() {
-    this.receivedData = this.$route.params.inform;
+    const queryData = this.$route.query.data;
+    if (queryData) {
+      this.receivedData = JSON.parse(decodeURIComponent(queryData));
+    }
+    else{
+      this.receivedData = this.$route.params.inform;
+    }
     console.log(this.receivedData)
     this.load()
   },

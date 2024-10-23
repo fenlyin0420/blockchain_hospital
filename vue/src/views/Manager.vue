@@ -133,7 +133,7 @@
             </template>
             <div>
               <el-menu-item index="/caseList">病历列表</el-menu-item>
-              <el-menu-item index="/case">新建病历</el-menu-item>
+              <!-- <el-menu-item index="/case">新建病历</el-menu-item> -->
             </div>
           </el-submenu>
 
