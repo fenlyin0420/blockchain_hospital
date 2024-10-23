@@ -1,6 +1,8 @@
 package com.example.utils.JwtSm;
 
 import com.example.utils.SM2Util;
+import lombok.Data;
+import lombok.Getter;
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -13,48 +15,46 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-public class MySm2Util {
+@Data
+public class MySM2Util {
+    @Getter
     public static BCECPublicKey bcPubKey;
-    public static BCECPrivateKey bcecPriKey;
+    @Getter
+    public static BCECPrivateKey bcPriKey;
+    @Getter
     public static String point;
 
     /**
-     * 获取公钥和私钥
+     * 生成公私钥对
+     * @return KeyPair 公私钥对
+     * @throws InvalidAlgorithmParameterException InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException NoSuchAlgorithmException
+     * @throws NoSuchProviderException NoSuchProviderException
      */
-    public static KeyPair getkey() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
+    public static KeyPair getKey() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
         KeyPair keyPair= SM2Util.generateKeyPair();
         bcPubKey = (BCECPublicKey) keyPair.getPublic();
-        bcecPriKey=(BCECPrivateKey) keyPair.getPrivate();
+        bcPriKey = (BCECPrivateKey) keyPair.getPrivate();
         point=ByteUtils.toHexString(bcPubKey.getQ().getEncoded(false)).toUpperCase();
         return keyPair;
     }
-    public static BCECPublicKey getBcPubKey(){
-        return bcPubKey;
-    }
-    public static BCECPrivateKey getBcecPriKey(){
-        return bcecPriKey;
-    }
-
-    public static String getPoint() {
-        return point;
-    }
 
     /**
-     * BCECPublicKey转String
+     * BCECPublicKey 转 String
      */
     public static String pub2str(BCECPublicKey publicKey){
         return Base64.encodeBase64String(publicKey.getEncoded());
     }
 
     /**
-     * BCECPrivateKey转String
+     * BCECPrivateKey 转 String
      */
     public static String pri2str(BCECPrivateKey privateKey){
         return Base64.encodeBase64String(privateKey.getEncoded());
     }
 
     /**
-     * String转BCECPublicKey
+     * String 转 BCECPublicKey
      */
     public static BCECPublicKey str2pub(String publicKey) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] publicKeyBytes = java.util.Base64.getDecoder().decode(publicKey);
@@ -68,7 +68,7 @@ public class MySm2Util {
     }
 
     /**
-     * String转BCECPrivateKey
+     * String 转 BCECPrivateKey
      */
     public static BCECPrivateKey str2pri(String privateKey) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] privateKeyBytes = java.util.Base64.getDecoder().decode(privateKey);
@@ -82,42 +82,47 @@ public class MySm2Util {
 
     /**
      * 加密
-     * @param publickey  公钥
-     * @param data 需要加密的数据
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     * @throws NoSuchProviderException
-     * @throws InvalidCipherTextException
+     * @param publicKey  公钥
+     * @param plainText 需要加密的数据
+     * @return 返回密文
+     * @throws NoSuchAlgorithmException NoSuchAlgorithmException
+     * @throws InvalidKeySpecException InvalidKeySpecException
+     * @throws NoSuchProviderException NoSuchProviderException
+     * @throws InvalidCipherTextException InvalidCipherTextException
      */
-    public static String encryption(String publickey,String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, InvalidCipherTextException {
-        byte[] dataBytes= data.getBytes();
-        BCECPublicKey publicKey=str2pub(publickey);
-        byte[] cipherbyte=SM2Util.encrypt(publicKey, dataBytes);
-        String ciphertext= java.util.Base64.getEncoder().encodeToString(cipherbyte);
-        return ciphertext;
+    public static String encryption(String publicKey,String plainText) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, InvalidCipherTextException {
+        byte[] dataBytes = plainText.getBytes();
+        byte[] cipherByte = SM2Util.encrypt(str2pub(publicKey), dataBytes);
+        return java.util.Base64.getEncoder().encodeToString(cipherByte);
     }
 
 
     /**
      * 解密
-     * @param privatekey 私钥
-     * @param data 密文
+     * @param privateKey 私钥
+     * @param cipherText 密文
+     * @return 明文字符串
+     * @throws NoSuchAlgorithmException 未找到算法
+     * @throws InvalidKeySpecException 无效私钥
+     * @throws NoSuchProviderException NoSuchProviderException
+     * @throws InvalidCipherTextException InvalidCipherTextException
+     */
+    public static String decrypt(String privateKey,String cipherText) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, InvalidCipherTextException {
+        byte[] dataBytes= java.util.Base64.getDecoder().decode(cipherText);
+        BCECPrivateKey priKey=str2pri(privateKey);
+        byte[] plaintByte=SM2Util.decrypt(priKey, dataBytes);
+        return new String(plaintByte);
+    }
+
+    /**
+     * 签名
+     * @param privatekey
+     * @param data
      * @return
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      * @throws NoSuchProviderException
-     * @throws InvalidCipherTextException
-     */
-    public static String decrypt(String privatekey,String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, InvalidCipherTextException {
-        byte[] dataBytes= java.util.Base64.getDecoder().decode(data);
-        BCECPrivateKey priKey=str2pri(privatekey);
-        byte[] plaintbyte=SM2Util.decrypt(priKey, dataBytes);
-        String plainttext= new String(plaintbyte);
-        return plainttext;
-    }
-    /**
-     * 签名
+     * @throws CryptoException
      */
     public static String signaure(String privatekey,String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, CryptoException {
         BCECPrivateKey priKey=str2pri(privatekey);
@@ -126,8 +131,16 @@ public class MySm2Util {
         String sign= java.util.Base64.getEncoder().encodeToString(k);
         return sign;
     }
+
     /**
      * 验签
+     * @param publickey
+     * @param sign
+     * @param data
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     * @throws NoSuchProviderException
      */
     public static boolean visa(String publickey,String sign,String data) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         byte[] dataBytes= data.getBytes();

@@ -7,10 +7,11 @@ import com.example.entity.Drug;
 import com.example.entity.Traverse;
 import com.example.mapper.DrugMapper;
 import com.example.mapper.TraverseMapper;
+import com.example.utils.JwtSm.MySM2Util;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -59,6 +60,15 @@ public class TraverseService {
     }
 
     public void add(Traverse traverse) {
+        try {
+            String cipherText = MySM2Util.encryption(traverse.getSignPubKey(), traverse.getAdvice());
+            traverse.setAdvice(cipherText);
+            cipherText = MySM2Util.encryption(traverse.getSignPubKey(), traverse.getDrug());
+            traverse.setDrug(cipherText);
+        } catch (Exception e){
+            System.out.println();
+        }
+        System.out.println(traverse.getAdvice());
         traverseMapper.add(traverse);
     }
 

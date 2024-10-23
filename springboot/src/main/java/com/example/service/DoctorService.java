@@ -1,6 +1,5 @@
 package com.example.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.common.Constants;
 import com.example.common.enums.ResultCodeEnum;
@@ -11,13 +10,12 @@ import com.example.mapper.DepartmentMapper;
 import com.example.mapper.DoctorMapper;
 import com.example.mapper.PlanMapper;
 import com.example.mapper.ReserveMapper;
-import com.example.utils.JwtSm.MySm2Util;
+import com.example.utils.JwtSm.MySM2Util;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +25,6 @@ import java.security.NoSuchProviderException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -184,7 +181,7 @@ public class DoctorService {
 
     public void updateKey(Account account) {
         try {
-            MySm2Util.getkey();
+            MySM2Util.getKey();
         } catch (InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
@@ -192,10 +189,10 @@ public class DoctorService {
         } catch (NoSuchProviderException e) {
             throw new RuntimeException(e);
         }
-        BCECPublicKey publicKey = MySm2Util.getBcPubKey();
-        BCECPrivateKey privateKey = MySm2Util.getBcecPriKey();
-        String pubkey= MySm2Util.pub2str(publicKey);
-        String prikey= MySm2Util.pri2str(privateKey);
+        BCECPublicKey publicKey = MySM2Util.getBcPubKey();
+        BCECPrivateKey privateKey = MySM2Util.getBcPriKey();
+        String pubkey= MySM2Util.pub2str(publicKey);
+        String prikey= MySM2Util.pri2str(privateKey);
         Doctor dbDoctor = doctorMapper.selectByUsername(account.getUsername());
         dbDoctor.setPrivateKey(prikey);
         dbDoctor.setPublicKey(pubkey);

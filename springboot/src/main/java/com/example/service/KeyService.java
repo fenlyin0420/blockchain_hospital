@@ -5,7 +5,7 @@ import com.example.entity.*;
 import com.example.exception.CustomException;
 import com.example.mapper.*;
 import com.example.utils.JwtSm.BestRingSignUtil;
-import com.example.utils.JwtSm.MySm2Util;
+import com.example.utils.JwtSm.MySM2Util;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
@@ -80,21 +80,21 @@ public class KeyService {
         //钥匙进行格式转化
         List<BCECPublicKey> list=new ArrayList<>();
         try {
-            MySm2Util.getkey();
+            MySM2Util.getKey();
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException e) {
             throw new RuntimeException(e);
         }
         for (String pubKey:publicKeys){
             System.out.println("____________________________________________________________________________________________________________________________________________"+pubKey);
             try {
-                list.add(MySm2Util.str2pub(pubKey));
+                list.add(MySM2Util.str2pub(pubKey));
             }catch (Exception e){
                 throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
             }
         }
         BCECPrivateKey bcecPrivateKey;
         try {
-            bcecPrivateKey=MySm2Util.str2pri(doctorById.getPrivateKey());
+            bcecPrivateKey= MySM2Util.str2pri(doctorById.getPrivateKey());
         }catch (Exception e){
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
@@ -145,7 +145,7 @@ public class KeyService {
         List<BCECPublicKey> list=new ArrayList<>();
         for (String pubKey:publicKeys){
             try {
-                list.add(MySm2Util.str2pub(pubKey));
+                list.add(MySM2Util.str2pub(pubKey));
             }catch (Exception e){
                 throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
             }

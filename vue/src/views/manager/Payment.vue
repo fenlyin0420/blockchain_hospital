@@ -83,7 +83,7 @@ export default {
 
 <style scoped>
 .cards_item {
-  border-radius: 5px;
+  border-radius: 1px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
   background-color: #fafafa;
   flex-basis: 25%;

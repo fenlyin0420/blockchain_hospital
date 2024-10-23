@@ -6,10 +6,9 @@ import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Admin;
-import com.example.entity.User;
 import com.example.exception.CustomException;
 import com.example.mapper.AdminMapper;
-import com.example.utils.JwtSm.MySm2Util;
+import com.example.utils.JwtSm.MySM2Util;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -145,7 +144,7 @@ public class AdminService {
 
     public void updateKey(Account account) {
         try {
-            MySm2Util.getkey();
+            MySM2Util.getKey();
         } catch (InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
@@ -153,10 +152,10 @@ public class AdminService {
         } catch (NoSuchProviderException e) {
             throw new RuntimeException(e);
         }
-        BCECPublicKey publicKey = MySm2Util.getBcPubKey();
-        BCECPrivateKey privateKey = MySm2Util.getBcecPriKey();
-        String pubkey= MySm2Util.pub2str(publicKey);
-        String prikey= MySm2Util.pri2str(privateKey);
+        BCECPublicKey publicKey = MySM2Util.getBcPubKey();
+        BCECPrivateKey privateKey = MySM2Util.getBcPriKey();
+        String pubkey= MySM2Util.pub2str(publicKey);
+        String prikey= MySM2Util.pri2str(privateKey);
         Admin dbAdmin = adminMapper.selectByUsername(account.getUsername());
         dbAdmin.setPrivateKey(prikey);
         dbAdmin.setPublicKey(pubkey);

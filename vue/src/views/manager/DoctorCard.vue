@@ -6,6 +6,7 @@
       <el-select placeholder="请选择医院" v-model="hospitalId">
         <el-option
             v-for="item in hospitalList"
+            :key="item.id"
             :label="item.hospitalName"
             :value="item.id"></el-option>
       </el-select>
@@ -14,6 +15,7 @@
       <el-select placeholder="请选择科室" v-model="departmentId">
         <el-option
           v-for="item in planData"
+          :key="item.id"
           :label="item.name"
           :value="item.id"></el-option>
       </el-select>
@@ -112,7 +114,6 @@ export default {
       dialogVisible: false,
       /** 向支付界面传递的数据 */
       dialogDate: {},
-      timestamp: []
     }
   },
   created() {
@@ -242,9 +243,7 @@ export default {
 .table {
   font-size: 16px;
 }
-/deep/.el-select {
-  margin: 0 15px;
-}
+
 .searchBtn {
   margin: 15px 0;
 }
