@@ -62,7 +62,6 @@ public class PlanService {
     }
 
     public boolean updateNum(Plan plan){
-        System.out.println("[DEBUG]: " + plan.getNum());
         if (planMapper.updateNum(plan) != 1)
             return false;
         else

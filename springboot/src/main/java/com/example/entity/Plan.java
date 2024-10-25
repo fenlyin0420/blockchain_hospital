@@ -25,10 +25,11 @@ public class Plan implements Serializable {
     private Integer num;
     /** 排班时间 */
     private String date;
-    private String week;
 
+    // 非数据库属性
     private String doctorName;
     private String departmentName;
+    private Integer departmentId;
     /** 医院名称 */
     private String hospitalName;
 }

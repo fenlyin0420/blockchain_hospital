@@ -3,24 +3,22 @@
     <!-- 搜索区 -->
     <div class="search">
       <!-- 选择医院 -->
-      <el-select placeholder="请选择医院" v-model="hospitalId">
-        <el-option
-            v-for="item in hospitalList"
-            :key="item.id"
-            :label="item.hospitalName"
-            :value="item.id"></el-option>
+      <label for="hospital">医院:</label>
+      <el-select id="hospital" placeholder="请选择医院" v-model="hospitalId">
+        <el-option v-for="item in hospitalList" :key="item.id" :label="item.hospitalName" :value="item.id"></el-option>
       </el-select>
 
       <!-- 选择科室 -->
-      <el-select placeholder="请选择科室" v-model="departmentId">
-        <el-option
-          v-for="item in planData"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"></el-option>
+      <label for="departmentSelect">科室:</label>
+      <el-select id="departmentSelect" placeholder="请选择科室" v-model="departmentId">
+        <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
 
-
+      <!-- 选择日期 -->
+      <label for="selectedDate">日期:</label>
+      <el-select id="selectedDate" placeholder="请选择日期" v-model="selectedDate">
+        <el-option v-for="item in timestamp" :key="item.id" :label="item.label" :value="item.id"></el-option>
+      </el-select>
 
       <div class="searchBtn">
         <el-button type="info" plain style="margin-left: 10px" @click="query(1)">查询</el-button>
@@ -35,24 +33,24 @@
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 100px; height: 100px; border-radius: 50%">
             <div style="font-weight: 550; margin-top: 10px">
-              医院 <span style="color: #383535; margin-left: 5px; font-weight: 500">{{item.hospitalName}}</span>
+              医院 <span style="color: #383535; margin-left: 5px; font-weight: 500">{{ item.hospitalName }}</span>
             </div>
             <div style="font-weight: 550; margin-top: 10px">
-              {{item.name}} <span style="color: #383535; margin-left: 5px; font-weight: 500">{{item.departmentName}}</span>
+              {{ item.name }} <span style="color: #383535; margin-left: 5px; font-weight: 500">{{ item.departmentName
+                }}</span>
             </div>
-            <div style="margin-top: 20px; color: #353523; padding: 0 10px; text-align: left; overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;">
-              简介：{{item.description}}
+            <div
+              style="margin-top: 20px; color: #353523; padding: 0 10px; text-align: left; overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;">
+              简介：{{ item.description }}
             </div>
             <div style="margin-top: 15px">
-              挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{item.price}}</span> 剩余：{{item.num}}
+              挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{ item.price }}</span> 剩余：{{ item.num
+              }}
             </div>
             <!-- 挂号按钮 -->
             <div style="margin-top: 15px">
               <el-button type="primary" size="mini" :disabled="disabled" @click="showDialog(item)">挂号</el-button>
-              <el-dialog
-                  title="确认订单"
-                  :visible.sync="dialogVisible"
-                  width="30%">
+              <el-dialog title="确认订单" :visible.sync="dialogVisible" width="30%">
                 <Payment :form="dialogDate"></Payment>
 
                 <span slot="footer" class="dialog-footer">
@@ -67,14 +65,8 @@
 
       <!-- 选择分页区 -->
       <div class="pagination">
-        <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="pageSize"
-            layout="total, prev, pager, next"
-            :total="total">
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>
@@ -90,23 +82,29 @@ export default {
   name: "Doctor",
   data() {
     return {
-      tableData: [],  // 所有的数据，经查询得到
-      planData: [],
-      hospitalList:[],
+      /** API: /doctor/selectpage2 */
+      tableData: [],  
+      /** API: /plan/selectAll */
+      planList: [],
+      /** API: /hospital/selectAll */
+      hospitalList: [],
+      /** API: /department/selectAll */
+      departmentList: [],
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
       /** 用户选择的医院 */
-      hospitalId:null,
+      hospitalId: null,
       /** 用户选择的科室 */
       departmentId: null,
+      /** 用户选择的日期 */
+      selectedDate: null,
       fromVisible: false,
       form: {},
       /** user entity, an object */
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {},
       ids: [],
-      selectedDate: null,
       disabled: false,
       /** 顶部搜索区域 tab 默认项*/
       activeName: 'hospital',
@@ -114,14 +112,46 @@ export default {
       dialogVisible: false,
       /** 向支付界面传递的数据 */
       dialogDate: {},
+      /** 日期数据
+       * {
+       *   id: number,
+       *   label: string,
+       *   value: string
+       * }
+       */
+      timestamp: [],
     }
   },
   created() {
+    /** 生成七天日期数据 */
+    const weekIndex = [
+      "星期日",
+      "星期一",
+      "星期二",
+      "星期三",
+      "星期四",
+      "星期五",
+      "星期六",
+    ]
+    let startDate = new Date()
+    let dateTemp = new Date()
+    for (let i = 0; i < 7; i++) {
+      dateTemp.setDate(startDate.getDate() + i)
+      let week = dateTemp.getDay()
+      let label = weekIndex[week] + '||' + dateTemp.toISOString().split('T')[0]
+      this.timestamp.push({ id: i, label, value: dateTemp.toISOString().split('T')[0] })
+    }
 
+    Promise.all([this.loadDepartments(), this.loadHospitals()]).then(() => {
+      this.query(1)
+    }).catch(err => {
+      this.$message.error(err)
+    })
 
-    this.query(1)
-    this.loadPlan()
-    this.load2()
+    // 初始化过滤日期
+    this.selectedDate = this.timestamp[0]?.value
+  },
+  mounted() {
   },
   methods: {
     /**
@@ -136,6 +166,10 @@ export default {
         this.$message.warning('您的角色不支持挂号操作')
         return
       }
+      if (this.user.account < item.price) {
+        this.$message.error("您的账余额不足")
+        return -1
+      }
       let reserveBody = {
         userId: this.user.id,
         doctorId: item.id,
@@ -148,27 +182,23 @@ export default {
         date: item.selectedDate,
       }
 
-      /** 修改挂号记录表 */
+      /** 修改挂号记录表 reserve */
       this.$request.post('/reserve/add', reserveBody).then(res => {
         if (res.code !== '200') {
           this.$message.error(res.msg)
           return -1
         }
       })
-      /** 修改医生排班表中的剩余挂号数量 */
+      /** 修改医生排班表中的剩余挂号数量 plan */
       this.$request.post('/plan/updateNum', planBody).then(res => {
-        if (res.code !== '200'){
+        if (res.code !== '200') {
           this.$message.error("update num failed")
           return -1
         }
       })
-      /** 修改账户余额 */
-      if (this.user.account < item.price){
-        this.$message.error("您的账余额不足")
-        return -1
-      }
-      this.$request.put('/user/update', {account: this.user.account - item.price}).then(res => {
-        if (res.code === '200'){
+      /** 修改账户余额 user */
+      this.$request.put('/user/update', { account: this.user.account - item.price }).then(res => {
+        if (res.code === '200') {
           this.$message.success("挂号成功")
           this.query(1)
         } else {
@@ -177,27 +207,80 @@ export default {
       })
     },
 
-    showDialog(item){
+    showDialog(item) {
       this.dialogVisible = true
       this.dialogDate = {
         department: item.departmentName,
         doctor: item.name,
         price: item.price,
+        date: item.selectedDate
       }
     },
-
     /**
-     * 查询所有计划，其 res.data 是一个数组，数组每一个元素都是一个 plan 表的元组
-     * 组件属性 planData 将引用返回的数组（res.data）
+     * 获取指定排班排班 
      */
-    loadPlan() {
-      this.$request.get('/department/selectAll').then(res => {
-        if (res.code === '200') {
-          this.planData = res.data
-        } else {
-          this.$message.error(res.msg)
+    loadPlan(hospitalId, departmentId, selectedDate) {
+      return new Promise((resolve, reject) => {
+        body = {
+          hospitalId,
+          departmentId,
+          date: selectedDate
         }
-      })
+        this.$request.get('/plan/selectAll').then(res => {
+          if (res.code === '200') {
+            this.planList = res.data;
+            resolve();
+          } else {
+            this.$message.error(res.msg);
+            reject();
+          }
+        }).catch(err => {
+          this.$message.error('加载计划数据失败');
+          reject(err);
+        });
+      });
+    },    
+    /**
+     * 获取所有的医院
+     */
+    loadHospitals() {
+      return new Promise((resolve, reject) => {
+        this.$request.get('/hospital/selectAll').then(res => {
+          if (res.code === '200') {
+            this.hospitalList = res.data;
+            // 初始化医院
+            this.hospitalId = this.hospitalList[0]?.id
+            resolve();
+          } else {
+            this.$message.error(res.msg);
+            reject();
+          }
+        }).catch(err => {
+          this.$message.error('加载医院数据失败');
+          reject(err);
+        });
+      });
+    },
+    /**
+     * 获取所有科室
+     */
+    loadDepartments() {
+      return new Promise((resolve, reject) => {
+        this.$request.get('/department/selectAll').then(res => {
+          if (res.code === '200') {
+            this.departmentList = res.data;
+            // 初始化科室
+            this.departmentId = this.departmentList[0]?.id
+            resolve();
+          } else {
+            this.$message.error(res.msg);
+            reject();
+          }
+        }).catch(err => {
+          this.$message.error('加载科室信息失败')
+          reject(err);
+        });
+      });
     },
     /**
      * 查询指定页的数据，并将返回数据保存在组件数据中
@@ -213,23 +296,22 @@ export default {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           departmentId: this.departmentId,
-          hospitalId:this.hospitalId,
+          hospitalId: this.hospitalId,
           selectedDate: this.selectedDate
         }
       }).then(res => {
-        this.tableData = res.data?.list
-        this.total = res.data?.total
-      })
-    },
-    load2(){
-      this.$request.get('/hospital/selectAll').then(res=>{
-        this.hospitalList=res.data
+        if (res.code === '200') {
+          this.tableData = res.data?.list
+          this.total = res.data?.total
+        } else {
+          this.$message.error(res.msg)
+        }
       })
     },
     reset() {
-      this.departmentId = null;
-      this.hospitalId = null;
-      this.selectedDate = null
+      this.departmentId = this.planList[0]?.id
+      this.hospitalId = this.hospitalList[0]?.id
+      this.selectedDate = this.timestamp[0]?.value
       this.query(1)
     },
     handleCurrentChange(pageNum) {
@@ -245,15 +327,10 @@ export default {
 }
 
 .searchBtn {
-  margin: 15px 0;
+  margin: 5px 15px;
 }
-/deep/thead{
-  display: none;
-}
-/deep/.el-card__body{
-  cursor: pointer;
-}
-/deep/.el-calendar__header {
-  display: none;
+
+::v-deep .el-select {
+  margin: 0 15px;
 }
 </style>

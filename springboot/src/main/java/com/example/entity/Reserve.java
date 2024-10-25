@@ -29,4 +29,5 @@ public class Reserve implements Serializable {
     private String doctorName;
     private String userName;
     private String hospitalName;
+    private String departmentName;
 }
