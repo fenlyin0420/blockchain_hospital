@@ -205,3 +205,43 @@
 }
 ```
 - description: 根据 id 更新用户信息，如果其他参数都为空，则不更新
+
+# /traverse
+## /traverse/selectPage
+### 请求
+- method: GET
+- params:
+```
+{
+    pageNum: number,
+    pageSize: number,
+    id: number,
+    name: string **usually used**,
+    doctorId: number,
+    hospitalId: number,
+    drug: string
+}
+```
+
+### 响应
+```
+{
+    id: number,
+    name: string,
+    doctorId: number,
+    hospitalId: number,
+    advice: string,
+    drug: string,
+    inhospital: string,
+    jurisdiction: string,
+    doctorName: string,
+    hospitalName: string,
+    number: string,
+    signData: string,
+    signResult: string,
+    signPubKey: string,
+    signKey: string,
+    inHospital: string,
+    userDate: Date
+}
+```

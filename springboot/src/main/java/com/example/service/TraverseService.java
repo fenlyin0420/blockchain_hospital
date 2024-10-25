@@ -1,11 +1,6 @@
 package com.example.service;
 
-
-
-import cn.hutool.core.util.RandomUtil;
-import com.example.entity.Drug;
 import com.example.entity.Traverse;
-import com.example.mapper.DrugMapper;
 import com.example.mapper.TraverseMapper;
 import com.example.utils.JwtSm.MySM2Util;
 
@@ -13,9 +8,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 
