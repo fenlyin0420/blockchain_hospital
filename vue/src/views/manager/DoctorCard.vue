@@ -138,7 +138,7 @@ export default {
     for (let i = 0; i < 7; i++) {
       dateTemp.setDate(startDate.getDate() + i)
       let week = dateTemp.getDay()
-      let label = weekIndex[week] + '||' + dateTemp.toISOString().split('T')[0]
+      let label = weekIndex[week] + '🔹️' + dateTemp.toISOString().split('T')[0]
       this.timestamp.push({ id: i, label, value: dateTemp.toISOString().split('T')[0] })
     }
 
@@ -161,7 +161,6 @@ export default {
      */
     reserve(item) {
       this.dialogVisible = false;
-      // this.disabled = true;
       if (this.user.role !== 'USER') {
         this.$message.warning('您的角色不支持挂号操作')
         return
@@ -197,7 +196,7 @@ export default {
         }
       })
       /** 修改账户余额 user */
-      this.$request.put('/user/update', { account: this.user.account - item.price }).then(res => {
+      this.$request.put('/user/update', { id: this.user.id, account: this.user.account - item.price }).then(res => {
         if (res.code === '200') {
           this.$message.success("挂号成功")
           this.query(1)

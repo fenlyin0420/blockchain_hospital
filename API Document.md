@@ -184,8 +184,24 @@
 # /user
 ## /user/update
 ### 请求
-- `method: POST`
-- `params:`
+- `method: PUT`
+- `params: User entity`
 ```
-
+{
+    id: number **required**,
+    username: string,
+    password: string,
+    name: string,
+    phone: string,
+    email: string,
+    avatar: string,
+    role: string,
+    hospitalId: number,
+    hospitalName: string,
+    account: Double,
+    publicKey: string,
+    privateKey: string,
+    ward_id: number
+}
 ```
+- description: 根据 id 更新用户信息，如果其他参数都为空，则不更新
