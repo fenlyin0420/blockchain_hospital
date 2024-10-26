@@ -9,11 +9,12 @@
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Reserve">
-        select reserve.*, user.name as userName, doctor.name as doctorName,hospital.hospital_name as hospitalName,user.id as userId
+        select reserve.*, user.name as userName, doctor.name as doctorName,hospital.hospital_name as hospitalName,user.id as userId, department.name as departmentName
         from reserve
         left join user on reserve.user_id = user.id
         left join doctor on reserve.doctor_id = doctor.id
         left join hospital on reserve.hospital_id = hospital.id
+        left join department on doctor.department_id = department.id
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="status != null"> and status= #{status}</if>

@@ -102,7 +102,7 @@ public class SM2Util extends GMBaseUtil {
      * @param pubKey  公钥
      * @param srcData 原文
      * @return 默认输出C1C3C2顺序的密文。C1为65字节第1字节为压缩标识，这里固定为0x04，后面64字节为xy分量各32字节。C3为32字节。C2长度与原文一致。
-     * @throws InvalidCipherTextException
+     * @throws InvalidCipherTextException InvalidCipherTextException
      */
     public static byte[] encrypt(BCECPublicKey pubKey, byte[] srcData) throws InvalidCipherTextException {
         ECPublicKeyParameters pubKeyParameters = BCECUtil.convertPublicKeyToParameters(pubKey);

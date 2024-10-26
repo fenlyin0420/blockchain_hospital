@@ -33,8 +33,8 @@ public class pemtxtUtil {
     }
 
     public pemtxtUtil(String priKey,String pubKey) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
-        BCECPublicKey publicKey=MySm2Util.str2pub(pubKey);
-        BCECPrivateKey privateKey=MySm2Util.str2pri(priKey);
+        BCECPublicKey publicKey= MySM2Util.str2pub(pubKey);
+        BCECPrivateKey privateKey= MySM2Util.str2pri(priKey);
         privateKeyParameters= BCECUtil.convertPrivateKeyToParameters(privateKey);
         publicKeyParams = BCECUtil.convertPublicKeyToParameters(publicKey);
     }
@@ -79,11 +79,11 @@ public class pemtxtUtil {
         String publicKeyPem="";
         try {
             try {
-                MySm2Util.getkey();
+                MySM2Util.getKey();
             } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException e) {
                 throw new RuntimeException(e);
             }
-            BCECPublicKey bcecPublicKey=MySm2Util.str2pub(publicKey);
+            BCECPublicKey bcecPublicKey= MySM2Util.str2pub(publicKey);
             System.out.println("bcec成功");
             ECPublicKeyParameters publicKeyP = BCECUtil.convertPublicKeyToParameters(bcecPublicKey);
             System.out.println("ec转化成功");

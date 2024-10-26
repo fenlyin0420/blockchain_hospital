@@ -5,12 +5,10 @@
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
-<!--    <div class="operation">-->
-<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
-<!--    </div>-->
+
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column>
+        <!-- <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column> -->
         <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
         <el-table-column prop="userDate" label="就诊日期" show-overflow-tooltip></el-table-column>
         <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
@@ -212,15 +210,16 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          status: this.status,
-          //doctorId:this.user.id,
-          //name: this.user.name
+          name: this.user.name
         }
       }).then(res => {
-        //console.log(res.data)
         this.tableData = res.data?.list
+        console.log(this.tableData)
+        for (let i = 0; i < this.tableData.length; i++){
+          this.tableData[i].userDate = this.tableData[i].userDate?.split('T')[0]
+        }
+
         this.total = res.data?.total
-        //console.log(this.tableData)
       })
     },
     reset() {

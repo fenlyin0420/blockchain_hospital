@@ -11,31 +11,29 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-<!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
+        <!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
         <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
-         <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="departmentName" label="科室" ></el-table-column>
-        <el-table-column prop="time" label="就诊时间" ></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'"
+          show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'"
+          show-overflow-tooltip></el-table-column>
+        <el-table-column prop="departmentName" label="科室"></el-table-column>
+        <el-table-column prop="time" label="就诊时间"></el-table-column>
         <el-table-column prop="status" label="挂号状态"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'" @click=del(scope.row.id)>取消挂号</el-button>
-            <el-button plain type="warning" size="mini" v-if="user.role === 'DOCTOR'&&scope.row.status!=='已叫号'" @click=call(scope.row)>叫号</el-button>
+            <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
+              @click=del(scope.row.id)>取消挂号</el-button>
+            <el-button plain type="warning" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
+              @click=call(scope.row)>叫号</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination">
-        <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="pageSize"
-            layout="total, prev, pager, next"
-            :total="total">
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>
@@ -64,7 +62,7 @@ export default {
   created() {
     this.load(1)
   },
-  methods: { 
+  methods: {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
       caseData.status = '已叫号'
@@ -78,7 +76,7 @@ export default {
             hospitalName: caseData?.hospitalName,
             departmentName: caseData?.departmentName,
             time: caseData?.time,
-        };
+          };
           this.load(1)
           // 往就诊记录里同步一条数据
           this.record(row)
@@ -101,7 +99,7 @@ export default {
       })
     },
     del(id) {   // 单个删除
-      this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', {type: "warning"}).then(response => {
+      this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
         this.$request.delete('/reserve/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
@@ -138,6 +136,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -3,7 +3,7 @@
     <!--  头部  -->
     <div class="manager-header">
       <div class="manager-header-left">
-        <img src="@/assets/imgs/logo.png"/>
+        <img src="@/assets/imgs/logo.png" />
         <div class="title">基于SM2可链接环签名的智能区块链转诊系统</div>
       </div>
 
@@ -11,20 +11,31 @@
       <div class="manager-header-center">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: $route.path }">{{ $route.meta.name }}</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: $route.path }">{{
+            $route.meta.name
+          }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
 
       <div class="manager-header-right my-avatar">
         <el-dropdown placement="bottom">
           <div class="avatar">
-            <img :src="user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"/>
-            <div style="color: #666666">{{ user.name || '管理员' }}</div>
+            <img
+              :src="
+                user.avatar ||
+                'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+              "
+            />
+            <div style="color: #666666">{{ user.name || "管理员" }}</div>
           </div>
-          <el-dropdown-menu slot="dropdown" >
-            <el-dropdown-item @click.native="PersonalInformation">密钥管理</el-dropdown-item>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="PersonalInformation"
+              >密钥管理</el-dropdown-item
+            >
             <el-dropdown-item @click.native="goToPerson">个人信息</el-dropdown-item>
-            <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/password')"
+              >修改密码</el-dropdown-item
+            >
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -35,7 +46,12 @@
     <div class="manager-main">
       <!--  侧边栏  -->
       <div class="manager-main-left">
-        <el-menu :unique-opened="true" router style="border: none" :default-active="$route.path">
+        <el-menu
+          :unique-opened="true"
+          router
+          style="border: none"
+          :default-active="$route.path"
+        >
           <!--default-openeds="['info','powerDoctor', 'reserve', 'user','powerUser']"-->
           <!--          <el-menu-item index="/home">-->
           <!--            <i class="el-icon-s-home"></i>-->
@@ -59,10 +75,10 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
-            <el-menu-item index="/doctor">医生管理</el-menu-item><!--
-            <el-menu-item index="/plan">医生排班</el-menu-item>-->
-            <el-menu-item index="/nurse">护士管理</el-menu-item><!--
-            <el-menu-item index="/plan">护士排班</el-menu-item>-->
+            <el-menu-item index="/doctor">医生管理</el-menu-item>
+            <el-menu-item index="/plan">医生排班</el-menu-item>
+            <el-menu-item index="/nurse">护士管理</el-menu-item>
+            <el-menu-item index="/plan">护士排班</el-menu-item>
             <el-menu-item index="/user">患者管理</el-menu-item>
           </el-submenu>
 
@@ -104,9 +120,15 @@
           <!--  患者   -->
 
           <div v-if="user.role === 'USER'">
-            <el-menu-item index="/doctorCard"><i class="el-icon-menu"></i>预约挂号</el-menu-item>
-            <el-menu-item index="/reserve" ><i class="el-icon-menu"></i>预约管理</el-menu-item>
-            <el-menu-item index="/caseList"><i class="el-icon-menu"></i>溯源病历</el-menu-item>
+            <el-menu-item index="/doctorCard"
+              ><i class="el-icon-menu"></i>预约挂号</el-menu-item
+            >
+            <el-menu-item index="/reserve"
+              ><i class="el-icon-menu"></i>预约管理</el-menu-item
+            >
+            <el-menu-item index="/caseList"
+              ><i class="el-icon-menu"></i>溯源病历</el-menu-item
+            >
           </div>
 
           <!--  医生 -->
@@ -127,13 +149,13 @@
             <el-menu-item index="/record">就诊记录</el-menu-item>
           </el-submenu>
 
-          <el-submenu index="powerDoctor" v-if="user.role === 'DOCTOR' ">
+          <el-submenu index="powerDoctor" v-if="user.role === 'DOCTOR'">
             <template slot="title">
               <i class="el-icon-menu"></i><span>档案管理</span>
             </template>
             <div>
               <el-menu-item index="/caseList">病历列表</el-menu-item>
-              <el-menu-item index="/case">新建病历</el-menu-item>
+              <!-- <el-menu-item index="/case">新建病历</el-menu-item> -->
             </div>
           </el-submenu>
 
@@ -149,10 +171,9 @@
 
       <!--  数据表格  -->
       <div class="manager-main-right">
-        <router-view @update:user="updateUser"/>
+        <router-view @update:user="updateUser" />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -161,41 +182,41 @@ export default {
   name: "Manager",
   data() {
     return {
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-    }
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
+    };
   },
   created() {
     if (!this.user.id) {
-      this.$router.push('/login')
+      this.$router.push("/login");
     }
   },
   methods: {
     updateUser() {
-      this.user = JSON.parse(localStorage.getItem('xm-user') || '{}')   // 重新获取下用户的最新信息
+      this.user = JSON.parse(localStorage.getItem("xm-user") || "{}"); // 重新获取下用户的最新信息
     },
     goToPerson() {
-      if (this.user.role === 'ADMIN') {
-        this.$router.push('/adminPerson')
+      if (this.user.role === "ADMIN") {
+        this.$router.push("/adminPerson");
       }
-      if (this.user.role === 'DOCTOR') {
-        this.$router.push('/doctorPerson')
+      if (this.user.role === "DOCTOR") {
+        this.$router.push("/doctorPerson");
       }
-      if (this.user.role === 'USER') {
-        this.$router.push('/userPerson')
+      if (this.user.role === "USER") {
+        this.$router.push("/userPerson");
       }
-      if (this.user.role === 'NURSE') {
-        this.$router.push('/nursePerson')
+      if (this.user.role === "NURSE") {
+        this.$router.push("/nursePerson");
       }
     },
     PersonalInformation() {
-      this.$router.push("PersonalInformation")
+      this.$router.push("PersonalInformation");
     },
     logout() {
-      localStorage.removeItem('xm-user')
-      this.$router.push('/login')
-    }
-  }
-}
+      localStorage.removeItem("xm-user");
+      this.$router.push("/login");
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -204,7 +225,7 @@ export default {
 .el-icon-menu span {
   font-size: 30px;
 }
-/deep/.my-avatar {
+::v-deep .my-avatar {
   position: relative;
   right: 80px;
 }

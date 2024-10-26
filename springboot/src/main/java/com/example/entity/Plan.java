@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * 排班信息表
@@ -24,11 +25,12 @@ public class Plan implements Serializable {
     /** 挂号剩余量 */
     private Integer num;
     /** 排班时间 */
-    private String date;
+    private Date date;
     private String week;
 
+    // 非数据库属性
     private String doctorName;
     private String departmentName;
-    /** 医院名称 */
+    private Integer departmentId;
     private String hospitalName;
 }

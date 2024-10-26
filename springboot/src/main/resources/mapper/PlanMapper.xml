@@ -9,14 +9,14 @@
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Plan">
-        select plan.*, doctor.name as doctorName, department.name as departmentName,hospital.hospital_name as hospitalName
+        select plan.*, doctor.name as doctorName, department.name as departmentName, department.id as departmentId, hospital.hospital_name as hospitalName
         from plan
         left join doctor on plan.doctor_id = doctor.id
         left join department on doctor.department_id = department.id
         left join hospital on plan.hospital_id = hospital.id
         <where>
             <if test="id != null"> and id= #{id}</if>
-            <if test="week != null"> and plan.week= #{week}</if>
+            <if test="date != null"> and plan.date = #{date}</if>
             <if test="doctorId != null"> and plan.doctor_id = #{doctorId}</if>
             <if test="hospitalId != null"> and plan.hospital_id = #{hospitalId}</if>
         </where>

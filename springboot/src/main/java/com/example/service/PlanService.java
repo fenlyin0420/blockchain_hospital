@@ -62,7 +62,6 @@ public class PlanService {
     }
 
     public boolean updateNum(Plan plan){
-        System.out.println("[DEBUG]: " + plan.getNum());
         if (planMapper.updateNum(plan) != 1)
             return false;
         else
@@ -88,6 +87,7 @@ public class PlanService {
      */
     public PageInfo<Plan> selectPage(Plan plan, Integer pageNum, Integer pageSize) {
         Account currentUser = TokenUtils.getCurrentUser();
+        // 如果是医生，则只查询医生自己的排班信息
         if (RoleEnum.DOCTOR.name().equals(currentUser.getRole())) {
             plan.setDoctorId(currentUser.getId());
         }

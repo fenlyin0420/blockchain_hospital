@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "echarts": "^5.5.1",
-    "vue-echarts": "^7.0.3"
-  }
-}
