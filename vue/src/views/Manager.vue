@@ -98,7 +98,7 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>档案管理</span>
             </template>
-            <el-menu-item index="/nurserecord">病床分配记录</el-menu-item>
+            <el-menu-item index="/NurseRecord">病床分配记录</el-menu-item>
           </el-submenu>
 
           <!--  患者   -->

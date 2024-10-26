@@ -12,7 +12,9 @@ import com.example.entity.Account;
 import com.example.exception.CustomException;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
+import com.example.service.NurseService;
 import com.example.service.UserService;
+import com.example.utils.JwtSm.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -36,23 +38,26 @@ public class JwtInterceptor implements HandlerInterceptor {
     private DoctorService doctorService;
     @Resource
     private UserService userService;
+    @Resource
+    private NurseService nurseService;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 1. 从http请求的header中获取token
         String token = request.getHeader(Constants.TOKEN);
         if (ObjectUtil.isEmpty(token)) {
-            // 如果没拿到，从参数里再拿一次
+            // 如果没拿到，从参数里再拿一次试试
             token = request.getParameter(Constants.TOKEN);
         }
         // 2. 开始执行认证
-        if (ObjectUtil.isEmpty(token)) {
-            throw new CustomException(ResultCodeEnum.TOKEN_INVALID_ERROR);
+        if (ObjectUtil.isEmpty(token)) { //如果token为空
+            throw new CustomException(ResultCodeEnum.TOKEN_INVALID_ERROR); //报无效token的异常
         }
         Account account = null;
         try {
             // 解析token获取存储的数据
-            String userRole = JWT.decode(token).getAudience().get(0);
+            String userRole = JWT.decode(token).getAudience().get(0); //编码时通过id编，放到Audience里，解码的时候就要获得，武哥视频07_1h30min讲
             String userId = userRole.split("-")[0];
             String role = userRole.split("-")[1];
             // 根据userId查询数据库
@@ -64,6 +69,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             }
             if (RoleEnum.USER.name().equals(role)) {
                 account = userService.selectById(Integer.valueOf(userId));
+            }
+            if(RoleEnum.NURSE.name().equals(role)){
+                account = nurseService.selectById(Integer.valueOf(userId));
             }
         } catch (Exception e) {
             throw new CustomException(ResultCodeEnum.TOKEN_CHECK_ERROR);

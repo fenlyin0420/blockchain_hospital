@@ -20,7 +20,7 @@ public class BedsController {
 
     @GetMapping("/search")
     public Result findAll(){
-        System.out.println("[DEBUG]:service");
+
         List<Traverse> l = bedsService.findAll();
         return Result.success(l);
     }

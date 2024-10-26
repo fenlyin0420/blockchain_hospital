@@ -59,7 +59,7 @@ public class DoctorService {
         }
         if (ObjectUtil.isEmpty(doctor.getName())) {
             doctor.setName(doctor.getUsername());
-        }
+        } //这段代码没任何意义，用户名咋可能是空的呢，要是空的就查不出dbdoctor了  _2024/10/24 _sjh
         doctor.setRole(RoleEnum.DOCTOR.name());
         doctorMapper.insert(doctor);
     }

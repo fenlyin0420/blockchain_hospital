@@ -108,6 +108,7 @@ public class AdminService {
         if (!account.getPassword().equals(dbAdmin.getPassword())) {
             throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
         }
+
         // 生成token
         String tokenData = dbAdmin.getId() + "-" + RoleEnum.ADMIN.name();
         String token = TokenUtils.createToken(tokenData, dbAdmin.getPassword());

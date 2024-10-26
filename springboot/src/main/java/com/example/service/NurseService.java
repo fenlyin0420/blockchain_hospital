@@ -4,10 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.common.Constants;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
-import com.example.entity.Account;
-import com.example.entity.Doctor;
-import com.example.entity.Nurse;
-import com.example.entity.Params;
+import com.example.entity.*;
 import com.example.exception.CustomException;
 import com.example.mapper.NurseMapper;
 import com.example.utils.TokenUtils;
@@ -32,11 +29,6 @@ public class NurseService {
         return nurseMapper.findBySearch(params);
     }
 
-
-
-
-
-
     public Account login(Account account) {
         Account dbNurse = nurseMapper.selectByUsername(account.getUsername());
         if (ObjectUtil.isNull(dbNurse)) {
@@ -45,6 +37,7 @@ public class NurseService {
         if (!account.getPassword().equals(dbNurse.getPassword())) {
             throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
         }
+
         // 生成token
         String tokenData = dbNurse.getId() + "-" + RoleEnum.NURSE.name();
         String token = TokenUtils.createToken(tokenData, dbNurse.getPassword());
@@ -57,5 +50,12 @@ public class NurseService {
             nurse.setPassword("123456");
         }
         nurseMapper.insertSelective(nurse);
+    }
+
+    /**
+     * 根据ID查询
+     */
+    public Nurse selectById(Integer id) {
+        return nurseMapper.selectById(id);
     }
 }

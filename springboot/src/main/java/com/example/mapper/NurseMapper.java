@@ -1,6 +1,7 @@
 package com.example.mapper;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
+import com.example.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.BaseMapper;
@@ -12,12 +13,6 @@ import java.util.List;
  */
 public interface NurseMapper  extends BaseMapper<Nurse> {
 //public interface NurseMapper{
-    /**
-     * 根据ID查询
-     //* @param id 护士的id
-     * @return Nurse entity
-     */
-    //    Nurse getNurseById(int id);
 
     //查询所有的护士信息
     @Select("select * from nurse")
@@ -35,4 +30,6 @@ public interface NurseMapper  extends BaseMapper<Nurse> {
      */
     @Select("select * from nurse where username = #{username}")
     Nurse selectByUsername(String username);
+
+    Nurse selectById(Integer id);
 }

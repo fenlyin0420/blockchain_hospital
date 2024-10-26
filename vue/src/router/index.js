@@ -50,7 +50,7 @@ const routes = [
       { path: 'AssignBeds', name: 'AssignBeds', meta: { name: '分配床位' }, component: () => import('../views/manager/Nurse/AssignBeds.vue') },
       { path: 'DailyCare', name: 'DailyCare', meta: { name: '生活照料' }, component: () => import('../views/manager/Nurse/DailyCare.vue') },
       { path: 'HealthCheck', name: 'HealthCheck', meta: { name: '健康检测' }, component: () => import('../views/manager/Nurse/HealthCheck.vue') },
-      { path: 'nurserecord', name: 'nurserecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
+      { path: 'NurseRecord', name: 'NurseRecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
     ]
   },
   {

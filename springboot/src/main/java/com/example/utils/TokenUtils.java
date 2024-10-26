@@ -9,6 +9,7 @@ import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
+import com.example.service.NurseService;
 import com.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class TokenUtils {
     private static AdminService staticAdminService;
     private static DoctorService staticDoctorService;
     private static UserService staticUserService;
+    private static NurseService staticNurseService;
 
     @Resource
     AdminService adminService;
@@ -39,12 +41,15 @@ public class TokenUtils {
     DoctorService doctorService;
     @Resource
     UserService userService;
+    @Resource
+    NurseService nurseService;
 
     @PostConstruct
     public void setUserService() {
         staticAdminService = adminService;
         staticDoctorService = doctorService;
         staticUserService = userService;
+        staticNurseService = nurseService;
     }
 
     /**
@@ -75,6 +80,9 @@ public class TokenUtils {
                 }
                 if (RoleEnum.USER.name().equals(role)) {
                     return staticUserService.selectById(Integer.valueOf(userId));
+                }
+                if(RoleEnum.NURSE.name().equals(role)){
+                    return staticNurseService.selectById(Integer.valueOf(userId));
                 }
             }
         } catch (Exception e) {

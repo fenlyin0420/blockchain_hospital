@@ -33,4 +33,13 @@ public class NurseController {
         return Result.success();
     }
 
+    /**
+     * 根据ID查询
+     */
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        Nurse nurse = nurseService.selectById(id);
+        return Result.success(nurse);
+    }
+
 }

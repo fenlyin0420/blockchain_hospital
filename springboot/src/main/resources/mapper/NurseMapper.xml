@@ -54,4 +54,9 @@
         </where>
     </select>
 
+    <select id="selectById" resultType="com.example.entity.Nurse">
+        select * from nurse where id = #{id}
+    </select>
+
+
 </mapper>
