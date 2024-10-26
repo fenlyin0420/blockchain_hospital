@@ -1,8 +1,8 @@
 # /hospital
 ## /hospital/selectAll
 ### 请求
-- method: GET
-- params: null
+- `method: GET`
+- `params: null`
 
 ### 响应
 `hospital[...]`
@@ -17,8 +17,8 @@
 # /department
 ## /department/selectAll
 ### 请求
-- method: GET
-- params: null
+- `method: GET`
+- `params: null`
 
 ### 响应
 `department[...]`
@@ -35,8 +35,8 @@
 # /doctor
 ## /doctor/selectpage2
 ### 请求
-- method: GET
-- params:
+- `method: GET`
+- `params:`
 ```
 {
     pageNum: this.pageNum,
@@ -105,8 +105,8 @@
 # /plan
 ## /plan/selectAll
 ### 请求
-- method: GET
-- params: null
+- `method: GET`
+- `params: null`
 
 ### 响应
 `plan[...]`
@@ -119,11 +119,61 @@
     "hospitalName": "xx大学第一附属医院"
 }
 ```
+## /plan/selectpage
+### 请求
+- `mathod: GET`
+- `params: `
+```
+{
+    pageNum: number,
+    pageSize: number,
+    date: Date,
+    hospitalId: number
+}
+```
+### 响应
+```
+{
+    "total": 2,
+    "list": [
+        {
+            id: number,
+            hospitalId: number,
+            doctorId: number,
+            num: number,
+            date: Date,
+            doctorName: string,
+            departmentName: string,
+            departmentId: number,
+            hospitalName: string
+        },   
+        ...
+    ],
+    "pageNum": 1,
+    "pageSize": 10,
+    "size": 2,
+    "startRow": 1,
+    "endRow": 2,
+    "pages": 1,
+    "prePage": 0,
+    "nextPage": 0,
+    "isFirstPage": true,
+    "isLastPage": true,
+    "hasPreviousPage": false,
+    "hasNextPage": false,
+    "navigatePages": 8,
+    "navigatepageNums": [
+        1
+    ],
+    "navigateFirstPage": 1,
+    "navigateLastPage": 1
+}
+```
 
 ## /plan/updateNum
 ### 请求
-- method: POST
-- params:
+- `method: POST`
+- `params:`
 ```
 {
     hospitalId: number required
@@ -136,8 +186,8 @@
 # /reserve
 ## /reserve/add
 ### 请求
-- method: POST
-- params:
+- `method: POST`
+- `params:`
 ```
 {
     userId: this.user.id,
@@ -150,8 +200,8 @@
 
 ## /reserve/selectPage
 ### 请求
-- method: GET
-- params:
+- `method: GET`
+- `params:`
 ```
 {
     id: number,
@@ -209,8 +259,8 @@
 # /traverse
 ## /traverse/selectPage
 ### 请求
-- method: GET
-- params:
+- `method: GET`
+- `params:`
 ```
 {
     pageNum: number,
