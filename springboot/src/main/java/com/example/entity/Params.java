@@ -48,4 +48,6 @@ public class Params {
     private String vote;
     private String signNum;
     private String activityIntroduction;
+    private String advice;
+    private String drug;
 }

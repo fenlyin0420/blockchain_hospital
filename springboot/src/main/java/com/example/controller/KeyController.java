@@ -76,4 +76,8 @@ public class KeyController {
 
 
     //进行解密
+    @PostMapping("/decrypt")
+    public Result decrypt(@RequestBody Params params){
+        return Result.success(keyService.decrypt(params));
+    }
 }

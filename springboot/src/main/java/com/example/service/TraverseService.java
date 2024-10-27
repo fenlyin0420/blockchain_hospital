@@ -59,12 +59,9 @@ public class TraverseService {
     public void add(Traverse traverse) {
         try {
             User user = userMapper.selectByName(traverse.getName());
-            System.out.println("用户公钥：" + user.getPublicKey());
             // 加密医生建议
-            System.out.println("加密前：" + traverse.getAdvice());
             String cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getAdvice());
             traverse.setAdvice(cipherText);
-            System.out.println("加密后：" + traverse.getAdvice());
             // 加密医嘱
             cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
             traverse.setDrug(cipherText);

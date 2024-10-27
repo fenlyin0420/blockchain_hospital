@@ -77,6 +77,9 @@ public class MySM2Util {
      */
     public static BCECPrivateKey str2pri(String privateKey) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] privateKeyBytes = java.util.Base64.getDecoder().decode(privateKey);
+        Provider bouncyCastleProvider = new BouncyCastleProvider();
+        // 注册Bouncy Castle提供者到系统中
+        Security.addProvider(bouncyCastleProvider);
         // 创建PKCS8EncodedKeySpec对象，用于构造私钥的规范
         PKCS8EncodedKeySpec keySpecs = new PKCS8EncodedKeySpec(privateKeyBytes);
         // 使用EC算法和Bouncy Castle提供的KeyFactory来生成私钥对象
