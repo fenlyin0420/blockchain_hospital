@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * 护士相关的接口
  */
-public interface NurseMapper  extends BaseMapper<Nurse> {
-//public interface NurseMapper{
+//public interface NurseMapper  extends BaseMapper<Nurse> {
+public interface NurseMapper{
 
     //查询所有的护士信息
     @Select("select * from nurse")

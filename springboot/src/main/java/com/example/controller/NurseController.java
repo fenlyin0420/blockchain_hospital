@@ -27,11 +27,11 @@ public class NurseController {
         return Result.success(l);
     }
 
-    @PostMapping("/add")
-    public Result save(@RequestBody Nurse nurse) {
-        nurseService.add(nurse);
-        return Result.success();
-    }
+//    @PostMapping("/add")
+//    public Result save(@RequestBody Nurse nurse) {
+//        nurseService.add(nurse);
+//        return Result.success();
+//    }
 
     /**
      * 根据ID查询

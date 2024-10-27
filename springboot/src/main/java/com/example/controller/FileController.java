@@ -38,13 +38,16 @@ public class FileController {
      */
     @PostMapping("/upload")
     public Result upload(MultipartFile file) {
+        //获取当前时间戳
         String flag;
         synchronized (FileController.class) {
             flag = System.currentTimeMillis() + "";
             ThreadUtil.sleep(1L);
         }
+        //获取文件名
         String fileName = file.getOriginalFilename();
         try {
+            //如果没file文件夹，那么在当前根目录下创建一个file
             if (!FileUtil.isDirectory(filePath)) {
                 FileUtil.mkdir(filePath);
             }
@@ -61,7 +64,7 @@ public class FileController {
 
 
     /**
-     * 获取文件
+     * 获取文件（文件下载）
      *
      * @param flag
      * @param response
