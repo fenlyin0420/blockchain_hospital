@@ -48,7 +48,7 @@
     <!-- doctorCard 显示区域 -->
     <div class="table" style="padding: 15px 20px">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="item in tableData" style="margin-bottom: 20px">
+        <el-col :span="6" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img
               :src="item.avatar"
@@ -95,17 +95,17 @@
                 size="mini"
                 :disabled="disabled"
                 @click="showDialog(item)"
-                >挂号</el-button
-              >
-              <el-dialog title="确认订单" :visible.sync="dialogVisible" width="30%">
-                <Payment :form="dialogDate"></Payment>
-
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="dialogVisible = false">Cancel</el-button>
-                  <el-button type="primary" @click="reserve(item)">Confirm</el-button>
-                </span>
-              </el-dialog>
+                >挂号</el-button>
             </div>
+
+            <el-dialog title="确认订单" :visible.sync="dialogVisible" width="30%">
+              <Payment :form="dialogDate"></Payment>
+
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="reserve(clickedItem)">Confirm</el-button>
+              </span>
+            </el-dialog>
           </div>
         </el-col>
       </el-row>
@@ -174,6 +174,7 @@ export default {
        * }
        */
       timestamp: [],
+      clickedItem: null
     };
   },
   created() {
@@ -207,7 +208,6 @@ export default {
     // 初始化过滤日期
     this.selectedDate = this.timestamp[0]?.value;
   },
-  mounted() {},
   methods: {
     /**
      * 挂号操作
@@ -215,6 +215,7 @@ export default {
      * @param item 医生信息
      */
     reserve(item) {
+      console.log("item", item)
       this.dialogVisible = false;
       if (this.user.role !== "USER") {
         this.$message.warning("您的角色不支持挂号操作");
@@ -267,6 +268,7 @@ export default {
     },
 
     showDialog(item) {
+      this.clickedItem = item;
       this.dialogVisible = true;
       this.dialogDate = {
         department: item.departmentName,
@@ -274,33 +276,6 @@ export default {
         price: item.price,
         date: item.selectedDate,
       };
-    },
-    /**
-     * 获取指定排班排班
-     */
-    loadPlan(hospitalId, departmentId, selectedDate) {
-      return new Promise((resolve, reject) => {
-        body = {
-          hospitalId,
-          departmentId,
-          date: selectedDate,
-        };
-        this.$request
-          .get("/plan/selectAll")
-          .then((res) => {
-            if (res.code === "200") {
-              this.planList = res.data;
-              resolve();
-            } else {
-              this.$message.error(res.msg);
-              reject();
-            }
-          })
-          .catch((err) => {
-            this.$message.error("加载计划数据失败");
-            reject(err);
-          });
-      });
     },
     /**
      * 获取所有的医院
@@ -372,6 +347,7 @@ export default {
         .then((res) => {
           if (res.code === "200") {
             this.tableData = res.data?.list;
+            console.log(this.tableData)
             this.total = res.data?.total;
           } else {
             this.$message.error(res.msg);
