@@ -6,15 +6,15 @@
     <el-row :gutter="20">
       <el-col :span="8">
         <el-form label-width="120px">
-          <el-form-item label="医院名称">
+          <!-- <el-form-item label="医院名称">
             <span>{{ receivedData.hospitalName }}</span>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="患者姓名" >
             <span>{{ receivedData.name }}</span>
           </el-form-item>
-          <el-form-item label="主治医生姓名">
+          <!-- <el-form-item label="主治医生姓名">
             <span>{{ receivedData.doctorName }}</span>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <el-button type="primary" @click="decryptAdviceAndDrug">解密</el-button>
       </el-col>

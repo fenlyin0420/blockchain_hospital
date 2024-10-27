@@ -21,6 +21,12 @@
           </div>
         </el-col>
         <el-col :span="6">
+            <div class="info-field">
+              <span class="field-label">检查时间:</span>
+              <span class="field-value">{{ caseInfo.time }}</span>
+            </div>
+          </el-col>
+        <!-- <el-col :span="6">
           <div class="info-field">
             <span class="field-label">医生姓名:</span>
             <span class="field-value">{{ caseInfo.doctorName }}</span>
@@ -31,27 +37,22 @@
             <span class="field-label">医院名称:</span>
             <span class="field-value">{{ caseInfo.hospitalName }}</span>
           </div>
-        </el-col>
-        <el-row class="info-row">
+        </el-col> -->
+        <!-- <el-row class="info-row">
           <el-col :span="6">
             <div class="info-field">
               <span class="field-label">科室:</span>
               <span class="field-value">{{ caseInfo.departmentName }}</span>
             </div>
-          </el-col>
+          </el-col> 
+          
           <el-col :span="6">
-            <div class="info-field">
-              <span class="field-label">检查时间:</span>
-              <span class="field-value">{{ caseInfo.time }}</span>
-            </div>
-          </el-col>
-          <!-- <el-col :span="6">
             <div class="info-field">
               <span class="field-label">住院 :</span>
               <span class="field-value">{{ caseInfo.inhospital }}</span>
             </div>
-          </el-col> -->
-        </el-row>
+          </el-col>
+        </el-row> -->
       </el-row>
 
       <hr class="divider" />
@@ -385,7 +386,7 @@ export default {
 }
 
 .info-row {
-  margin-top: 30px;
+  margin-top: 15px;
   margin-bottom: 6px;
 }
 
