@@ -31,7 +31,7 @@
         <el-table-column prop="role" label="角色"></el-table-column>
         <el-table-column prop="time" label="入职时间"></el-table-column>
         <el-table-column prop="position" label="职位"></el-table-column>
-        <el-table-column prop="hospitalName" label="医院"></el-table-column>
+        <el-table-column prop="hospitalId" label="医院"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
@@ -175,7 +175,12 @@ export default {
       this.fromVisible=true;
     },
     submit(){
+<<<<<<< HEAD
       request.post("/nurse/add").then(res=> {
+=======
+      // 这里有点问题，后端service层找不到insertSelective调用
+      request.post("/nurse/add", this.form).then(res=> {
+>>>>>>> 2a230e49702f03c7ec8b903df3eb27fa3bf2f038
         if (res.code === '200') {
           this.$message.success('操作成功');
           this.fromVisible=false;

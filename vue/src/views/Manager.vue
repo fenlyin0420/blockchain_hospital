@@ -154,7 +154,8 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>预约就诊</span>
             </template>
-            <el-menu-item index="/reserve">患者挂号</el-menu-item>
+            <el-menu-item index="/reserve">当日诊疗</el-menu-item>
+            <el-menu-item index="">当日住院</el-menu-item>
             <el-menu-item index="/record">就诊记录</el-menu-item>
           </el-submenu>
 
