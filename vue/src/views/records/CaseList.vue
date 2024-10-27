@@ -7,16 +7,17 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe>
+      <el-table :data="tableData"  stripe>
         <!-- <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column> -->
-        <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="userDate" label="就诊日期" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名"></el-table-column>
-        <el-table-column prop="hospitalName" label="医院名称"></el-table-column>
+        <!-- <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column> -->
+        <el-table-column prop="userDate" label="就诊日期" width="150" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" width="120" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="150" align="center"></el-table-column>
+        <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="200" align="center"></el-table-column>
         <el-table-column
             label="病情"
-            width="200">
+            width="280"
+            align="center">
           <template slot-scope="scope">
             <el-input
                 type="textarea"
@@ -29,7 +30,8 @@
         </el-table-column>
         <el-table-column
             label="药物"
-            width="200">
+            width="250"
+            align="center">
           <template slot-scope="scope">
             <el-input
                 type="textarea"
@@ -40,8 +42,8 @@
             </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="inhospital" label="是否住院"></el-table-column>
-       <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'"></el-table-column>
+        <el-table-column prop="inhospital" label="是否住院" width="80" align="center"></el-table-column>
+       <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'" width="80" align="center"></el-table-column>
         <el-table-column label="详情" width="120" align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
@@ -210,7 +212,8 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.user.name
+          status: this.status,
+          //name: this.user.name
         }
       }).then(res => {
         this.tableData = res.data?.list

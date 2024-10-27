@@ -60,8 +60,8 @@
         <el-row class="info-row">
           <el-col :span="24">
             <div class="info-field">
-              <el-input type="textarea" v-model="advice" clearable :rows="5" resize="vertical"
-                class="info-textarea"></el-input>
+              <el-autocomplete type="textarea" v-model="advice" clearable :rows="5" resize="vertical"
+                class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
             </div>
           </el-col>
         </el-row>
@@ -145,7 +145,8 @@ export default {
       drugList: [],
       information: {},
       receivedData: {},
-      restaurants: []
+      restaurants: [],
+      restaurantsAdvice: []
     }
   },
   created() {
@@ -160,6 +161,7 @@ export default {
   },
   mounted() {
     this.restaurants = this.loadAll();
+    this.restaurantsAdvice = this.loadAllAdvice();
   },
   methods: {
     async loadData() {
@@ -237,6 +239,30 @@ export default {
           { "value": "一日一次" },
           { "value": "一日两次" },
           { "value": "一日三次" },
+        ];
+      },
+      handleSelect(item) {
+        console.log(item);
+      },
+
+      //病情联想
+    querySearchAdvice(queryString, cb) {
+        var restaurantsAdvice = this.restaurantsAdvice;
+        var results = queryString ? restaurantsAdvice.filter(this.createFilter(queryString)) : restaurantsAdvice;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurantsAdvice) => {
+          return (restaurantsAdvice.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadAllAdvice() {
+        return [
+          { "value": "发烧" },
+          { "value": "感冒" },
+          { "value": "腹泻" },
+          { "value": "过敏" },
         ];
       },
       handleSelect(item) {
@@ -379,6 +405,7 @@ export default {
 
 .info-textarea {
   margin-bottom: 26px;
+  width: calc(100% - 10px);
 }
 
 .medicine-select {
