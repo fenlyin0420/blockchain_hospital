@@ -47,12 +47,12 @@
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-       <el-table-column label="操作" width="180" align="center" v-if="user.role === 'DOCTOR'">
-         <template v-slot="scope">
-           <el-button plain type="danger" size="mini" @click="update(scope.row)" v-if="user.role !=='USER'">编辑</el-button>
-           <el-button plain type="danger" size="mini" @click="del(scope.row.id)">删除</el-button>
-         </template>
-       </el-table-column>
+<!--       <el-table-column label="操作" width="180" align="center" v-if="user.role === 'DOCTOR'">-->
+<!--         <template v-slot="scope">-->
+<!--           <el-button plain type="danger" size="mini" @click="update(scope.row)" v-if="user.role !=='USER'">编辑</el-button>-->
+<!--           <el-button plain type="danger" size="mini" @click="del(scope.row.id)">删除</el-button>-->
+<!--         </template>-->
+<!--       </el-table-column>-->
       </el-table>
 
       <div class="pagination">
@@ -156,7 +156,7 @@ export default {
       }
       this.$request.post('/record/add', data).then(res => {
         if (res.code === '200') {
-          this.$message.success('数据同步成功')
+          // this.$message.success('数据同步成功')
         } else {
           this.$message.error(res.msg)
         }
@@ -166,7 +166,7 @@ export default {
       this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', {type: "warning"}).then(response => {
         this.$request.delete('/traverse/delete/' + id).then(res => {
           if (res.code === '200') {
-            this.$message.success('操作成功')
+            // this.$message.success('操作成功')
             this.load(1)
           } else {
             this.$message.error(res.msg)
@@ -214,7 +214,6 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data?.list
-        console.log(this.tableData)
         for (let i = 0; i < this.tableData.length; i++){
           this.tableData[i].userDate = this.tableData[i].userDate?.split('T')[0]
         }

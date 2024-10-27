@@ -188,6 +188,9 @@ export default {
         this.pubs=ss
       }
     },
+    /**
+     * 数据解密
+     */
     decryptAdviceAndDrug() {
       let params = {
         name: this.receivedData.name,
@@ -210,7 +213,7 @@ export default {
       this.params.name=this.receivedData.name
       this.$request.post('/keys/sign', this.receivedData).then(res => {
         if (res.code === '200') {
-          this.$message.success('成功')
+          // this.$message.success('成功')
           this.receivedData.signData=res.data.signData
           this.receivedData.signKey=res.data.signKey
         } else {
@@ -225,7 +228,7 @@ export default {
       this.params.signKey=this.receivedData.signKey
       this.$request.post('/keys/verifySign', this.receivedData).then(res => {
         if (res.code === '200') {
-          this.$message.success('成功')
+          // this.$message.success('成功')
           this.receivedData.signResult=res.data.message
         } else {
           this.$message.error(res.msg)

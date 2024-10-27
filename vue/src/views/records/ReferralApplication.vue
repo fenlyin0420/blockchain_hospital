@@ -71,12 +71,11 @@ export default {
   },
   methods: {
     loadByUser(){
-      this.$request.get('/record/selectAll',{
+      this.$request.get('/record/selectAll',{ // 只能再就诊记录中选择要转诊的患者
         params:{
           doctorId:this.user.id
         }
       }).then(res => {
-        this.$message.success("成功")
         this.tableData = res.data
       })
     },
