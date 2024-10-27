@@ -210,7 +210,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.user.name
+          name: this.user.role === 'DOCTOR' ? '' : this.user.name
         }
       }).then(res => {
         this.tableData = res.data?.list

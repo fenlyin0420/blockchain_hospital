@@ -38,6 +38,9 @@ public interface UserMapper {
     @Select("select * from user where username = #{username}")
     User selectByUsername(String username);
 
+    @Select("select * from user where name = #{name}")
+    User selectByName(String name);
+
     @Select("select public_key as publicKey,private_key as privateKey from user where id = #{id}")
     User getKey(Integer id);
 }

@@ -8,7 +8,10 @@ import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+import java.security.Provider;
+import java.security.Security;
 
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -58,7 +61,9 @@ public class MySM2Util {
      */
     public static BCECPublicKey str2pub(String publicKey) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] publicKeyBytes = java.util.Base64.getDecoder().decode(publicKey);
-
+        Provider bouncyCastleProvider = new BouncyCastleProvider();
+        // 注册Bouncy Castle提供者到系统中
+        Security.addProvider(bouncyCastleProvider);
         // 创建X509EncodedKeySpec对象，用于构造公钥的规范
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
         // 使用EC算法和Bouncy Castle提供的KeyFactory来生成公钥对象
