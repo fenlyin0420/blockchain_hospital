@@ -2,10 +2,10 @@ package com.example.controller;
 
 
 import com.example.common.Result;
-import com.example.entity.Nurse;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
 import com.example.service.BedsService;
+import com.example.service.CareService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,22 +16,15 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController //表明是接口的入口
-@RequestMapping("/AssignBeds")
-public class BedsController {
+@RequestMapping("/DailyCare")
+public class CareController {
     @Resource
-    private BedsService bedsService;
+    private CareService careService;
 
     @GetMapping("/search")
     public Result findAll(){
-        List<Traverse> l = bedsService.findAll();
+        List<Traverse> l = careService.findAll();
         return Result.success(l);
     }
 
-    @GetMapping("/selectPage")
-    public Result selectPage(Ward ward,
-                             @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Ward> page = bedsService.selectPage(ward, pageNum, pageSize);
-        return Result.success(page);
-    }
 }

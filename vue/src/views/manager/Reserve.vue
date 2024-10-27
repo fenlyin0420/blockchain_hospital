@@ -29,6 +29,7 @@
               @click=call(scope.row)>叫号</el-button>
           </template>
         </el-table-column>
+
       </el-table>
 
       <div class="pagination">

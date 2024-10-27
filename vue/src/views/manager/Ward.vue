@@ -14,9 +14,13 @@
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column label="图片">
           <template v-slot="scope">
+            <!-- scope-->
             <div style="display: flex; align-items: center">
-              <el-image style="width: 40px; height: 40px; border-radius: 50%" v-if="scope.row.avatar"
-                        :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]"></el-image>
+              <el-image
+                  style="width: 80px; height: 80px; border-radius: 50%"
+                  :src="scope.row.img"
+                  :preview-src-list="[scope.row.img]">
+              </el-image>
             </div>
           </template>
         </el-table-column>
@@ -25,8 +29,8 @@
         <el-table-column prop="price" label="价格"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
+            <el-button type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button type="danger" plain @click="del(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,11 +56,10 @@
         </el-form-item>
         <el-form-item label="病房图片" prop="img">
           <el-upload
-              action="$baseUrl + '/files/upload'"
+              :action="$baseUrl + '/files/upload'"
               :on-success="handleImgSuccess"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="介绍" prop="description">
@@ -79,6 +82,9 @@
 <script>
 export default {
   name: "Ward",
+  /**
+   * 注意：这里需要给每个病房增加科室是啥
+   * */
   data() {
     return {
       tableData: [],  // 所有的数据
@@ -110,6 +116,7 @@ export default {
       this.fromVisible = true   // 打开弹窗
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
+      //更新实现了，添加还没有实现，逻辑有问题，注意增的时候要给remain设置一个默认值
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
@@ -181,9 +188,11 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
-    handleImgSuccess(response, file, fileList) {
+    handleImgSuccess(response) {
       // 把user的头像属性换成上传的图片的链接
-      this.$set(this.user, 'img', response.data)
+      console.log(response)
+      // this.$set(this.user, 'img', response.data)  //这条语句不行，得下面这条才行
+      this.form.img = response.data;
     },
   }
 }

@@ -175,7 +175,6 @@ export default {
       this.fromVisible=true;
     },
     submit(){
-      //这里有点问题，后端service层找不到insertSelective调用
       request.post("/nurse/add").then(res=> {
         if (res.code === '200') {
           this.$message.success('操作成功');

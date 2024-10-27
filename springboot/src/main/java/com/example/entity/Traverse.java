@@ -21,6 +21,8 @@ public class Traverse {
     private String jurisdiction;
     private String doctorName;
     private String hospitalName;
+    private String careStatus;
+    private Integer wardId;
     /** 时间戳 */
     private String number;
     private String signData;

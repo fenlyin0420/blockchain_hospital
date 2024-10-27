@@ -22,5 +22,7 @@ public class Ward {
     private String img;
     /** 介绍 */
     private String description;
+    /** 剩余数量 */
+    private Integer remain;
 
 }
