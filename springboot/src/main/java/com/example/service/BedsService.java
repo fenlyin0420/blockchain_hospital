@@ -14,7 +14,6 @@ public class BedsService {
 
 
     public List<Traverse> findAll() {
-        System.out.println("1[23");
         return bedsMapper.selectAll();
     }
 }

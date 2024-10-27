@@ -18,7 +18,9 @@ public enum ResultCodeEnum {
     PLAN_EXIST_ERROR("5006", "该医生已有当天的排班，请勿重复添加"),
     USER_RESULT_GET_ERROR("-1","身份检验失败"),
     USER_KEY_ERROR("-1","钥匙错误"),
-    USER_SET_FRONT_ERROR("-1","请先生成公钥环"),;
+    USER_SET_FRONT_ERROR("-1","请先生成公钥环"),
+    WARD_EXIST_ERROR("5001", "病房已存在"),;
+
 
     public final String code;
     public final String msg;
