@@ -51,6 +51,7 @@ const routes = [
       { path: 'DailyCare', name: 'DailyCare', meta: { name: '生活照料' }, component: () => import('../views/manager/Nurse/DailyCare.vue') },
       { path: 'HealthCheck', name: 'HealthCheck', meta: { name: '健康检测' }, component: () => import('../views/manager/Nurse/HealthCheck.vue') },
       { path: 'NurseRecord', name: 'NurseRecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
+      { path: 'Ward', name: 'Ward', meta: { name: '病房管理' }, component: () => import('../views/manager/Ward.vue') },
     ]
   },
   {

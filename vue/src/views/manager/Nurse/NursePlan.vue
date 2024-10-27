@@ -123,7 +123,7 @@ export default {
   },
   created() {
     this.load(1)
-    this.loadDoctor()
+    // this.loadDoctor()
     console.log("组件已创建");
   },
   methods: {

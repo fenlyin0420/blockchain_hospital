@@ -16,7 +16,7 @@
         <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="200" align="center"></el-table-column>
         <el-table-column
             label="病情"
-            width="280"
+            width="400"
             align="center">
           <template slot-scope="scope">
             <el-input
@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column
             label="药物"
-            width="250"
+            width="300"
             align="center">
           <template slot-scope="scope">
             <el-input
@@ -42,19 +42,19 @@
             </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="inhospital" label="是否住院" width="80" align="center"></el-table-column>
-       <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'" width="80" align="center"></el-table-column>
-        <el-table-column label="详情" width="120" align="center">
+        <el-table-column prop="inhospital" label="是否住院" width="120" align="center"></el-table-column>
+       <!-- <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'" width="80" align="center"></el-table-column> -->
+        <el-table-column label="详情"  align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
           </template>
         </el-table-column>
-       <el-table-column label="操作" width="180" align="center" v-if="user.role === 'DOCTOR'">
+       <!-- <el-table-column label="操作"  align="center" v-if="user.role === 'DOCTOR'">
          <template v-slot="scope">
            <el-button plain type="danger" size="mini" @click="update(scope.row)" v-if="user.role !=='USER'">编辑</el-button>
            <el-button plain type="danger" size="mini" @click="del(scope.row.id)">删除</el-button>
          </template>
-       </el-table-column>
+       </el-table-column> -->
       </el-table>
 
       <div class="pagination">
@@ -212,6 +212,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
+          name: this.user.role === 'DOCTOR' ? '' : this.user.name,
           status: this.status,
           //name: this.user.name
         }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.WardMapper">
+    <insert id="insert" parameterType="com.example.entity.Ward" useGeneratedKeys="true">
+        insert into ward
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="price != null">#{price},</if>
+            <if test="img != null">#{img},</if>
+            <if test="description != null">#{description}</if>
+        </trim>
+    </insert>
+
+    <update id="updateById">
+        update ward
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="img != null">
+                img = #{img},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from ward
+        where id = #{id}
+    </delete>
+
+    <select id="selectAll" resultType="com.example.entity.Ward">
+        select *
+        from ward
+        <where>
+            <if test="id != null">and id= #{id}</if>
+            <if test="name != null">and name= #{name}</if>
+            <if test="price != null">and price= #{price}</if>
+            <if test="img != null">and img= #{img}</if>
+            <if test="description != null">and description= #{description}</if>
+        </where>
+    </select>
+</mapper>

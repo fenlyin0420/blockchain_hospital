@@ -1,7 +1,9 @@
 package com.example.service;
 
 import com.example.entity.Traverse;
+import com.example.entity.User;
 import com.example.mapper.TraverseMapper;
+import com.example.mapper.UserMapper;
 import com.example.utils.JwtSm.MySM2Util;
 
 import com.github.pagehelper.PageHelper;
@@ -16,6 +18,9 @@ public class TraverseService {
 
     @Resource
     private TraverseMapper traverseMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     public List<Traverse> selectAll(Traverse traverse) {
         return traverseMapper.selectAll(traverse);
@@ -53,14 +58,17 @@ public class TraverseService {
 
     public void add(Traverse traverse) {
         try {
-            String cipherText = MySM2Util.encryption(traverse.getSignPubKey(), traverse.getAdvice());
+            User user = userMapper.selectByName(traverse.getName());
+            // 加密医生建议
+            String cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getAdvice());
             traverse.setAdvice(cipherText);
-            cipherText = MySM2Util.encryption(traverse.getSignPubKey(), traverse.getDrug());
+            // 加密医嘱
+            cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
             traverse.setDrug(cipherText);
         } catch (Exception e){
-            System.out.println();
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        System.out.println(traverse.getAdvice());
         traverseMapper.add(traverse);
     }
 

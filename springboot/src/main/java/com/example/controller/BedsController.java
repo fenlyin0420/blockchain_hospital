@@ -20,7 +20,6 @@ public class BedsController {
 
     @GetMapping("/search")
     public Result findAll(){
-
         List<Traverse> l = bedsService.findAll();
         return Result.success(l);
     }

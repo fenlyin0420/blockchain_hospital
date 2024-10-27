@@ -221,6 +221,18 @@ public class KeyService {
 
         return doctors;
     }
+    public Params decrypt(Params params) {
+        User user = userMapper.selectByName(params.getName());
+        try{
+            String advicePlainText = MySM2Util.decrypt(user.getPrivateKey(), params.getAdvice());
+            String drugPlainText = MySM2Util.decrypt(user.getPrivateKey(), params.getDrug());
+            params.setAdvice(advicePlainText);
+            params.setDrug(drugPlainText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return params;
+    }
 
     public Account selectById(Account account) {
         Account account1=new Account();

@@ -11,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Traverse {
     private Integer id;
+    /** 患者姓名 */
     private String name;
     private Integer doctorId;
     private Integer hospitalId;
@@ -20,6 +21,7 @@ public class Traverse {
     private String jurisdiction;
     private String doctorName;
     private String hospitalName;
+    /** 时间戳 */
     private String number;
     private String signData;
     private String signResult;

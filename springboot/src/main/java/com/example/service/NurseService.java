@@ -45,12 +45,12 @@ public class NurseService {
         return dbNurse;
     }
 
-    public void add(Nurse nurse) {
-        if(nurse.getPassword() == null){
-            nurse.setPassword("123456");
-        }
-        nurseMapper.insertSelective(nurse);
-    }
+//    public void add(Nurse nurse) {
+//        if(nurse.getPassword() == null){
+//            nurse.setPassword("123456");
+//        }
+//        nurseMapper.insertSelective(nurse);
+//    }
 
     /**
      * 根据ID查询

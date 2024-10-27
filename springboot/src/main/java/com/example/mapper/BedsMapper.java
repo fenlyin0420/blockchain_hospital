@@ -5,7 +5,8 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-public interface BedsMapper{
-    @Select("select * from traverse")
+public interface BedsMapper {
+
+
     List<Traverse> selectAll();
 }

@@ -90,6 +90,15 @@
             <el-menu-item index="/referralApplication">转诊申请</el-menu-item>
           </el-submenu>
 
+          <el-submenu index="info1" v-if="user.role === 'ADMIN'">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>住院管理</span>
+            </template>
+            <el-menu-item index="/ward">病房管理</el-menu-item>
+            <el-menu-item index="/approval">住院审批</el-menu-item>
+          </el-submenu>
+
           <!--   护士_护理任务     -->
 
           <el-submenu index="/nursecare" v-if="user.role === 'NURSE'">
@@ -145,7 +154,7 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>预约就诊</span>
             </template>
-            <el-menu-item index="/reserve">患者挂号</el-menu-item>
+            <el-menu-item index="/reserve">当日诊疗</el-menu-item>
             <el-menu-item index="/record">就诊记录</el-menu-item>
           </el-submenu>
 
