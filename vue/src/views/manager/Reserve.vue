@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { time } from 'echarts';
+// import { time } from 'echarts';
 
 export default {
   name: "Reserve",

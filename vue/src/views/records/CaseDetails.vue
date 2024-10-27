@@ -16,6 +16,7 @@
             <span>{{ receivedData.doctorName }}</span>
           </el-form-item>
         </el-form>
+        <el-button type="primary" @click="decryptAdviceAndDrug">解密</el-button>
       </el-col>
       <el-col :span="16">
         <el-form label-width="120px">
@@ -137,7 +138,7 @@ export default {
   data() {
     return {
       receivedData:[],
-      drug:{},
+      // drug:{},
       params:{},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       pubs:{}
@@ -151,21 +152,15 @@ export default {
     else{
       this.receivedData = this.$route.params.inform;
     }
-    console.log(this.receivedData)
     this.load()
   },
-  methods: {
-    load() {
-      if(this.receivedData.length===0){
-        this.$router.push("/caseList")
-      }
+  computed: {
+    drug() {
       const medicationString = this.receivedData.drug;
-
       // 拆分字符串为每一行
       const lines = medicationString.split('\n');
-
       // 将每一行拆分为药物信息对象
-      const medications = lines.map(line => {
+      return lines.map(line => {
         const parts = line.split(' ');
         return {
           name: parts[0],
@@ -173,7 +168,14 @@ export default {
           frequency: parts[2]
         };
       });
-      this.drug=medications
+    }
+  },
+  methods: {
+    load() {
+      if(this.receivedData.length){
+        this.$router.push("/caseList")
+      }
+
       if(this.receivedData.signPubKey!==null||this.receivedData.signPubKey!==""){
         const s=this.receivedData.signPubKey.split(",")
         const ss = s.map(line => {
@@ -185,7 +187,21 @@ export default {
         });
         this.pubs=ss
       }
-      console.log(this.pubs)
+    },
+    decryptAdviceAndDrug() {
+      let params = {
+        name: this.receivedData.name,
+        advice: this.receivedData.advice,
+        drug: this.receivedData.drug
+      }
+      this.$request.post('keys/decrypt', params).then(res => {
+        if (res.code === '200'){
+          this.receivedData.advice = res.data.advice
+          this.receivedData.drug = res.data.drug
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     sign(){
 
