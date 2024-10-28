@@ -21,12 +21,6 @@
         <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"  @click=submit(scope.row)>护理</el-button>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
 
@@ -57,17 +51,7 @@ export default {
         }
       })
     },
-    submit(row){
-      let caseData = JSON.parse(JSON.stringify(row));
-      caseData.careStatus = '已护理'
-      console.log(caseData);
-      this.$request.put('/DailyCare/update', caseData).then(res => {
-        if (res.code === '200') {
-          this.$message.success('护理完毕')
-          this.load();
-        }
-      })
-    }
+
   }
 }
 </script>
