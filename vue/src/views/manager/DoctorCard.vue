@@ -379,4 +379,5 @@ export default {
 ::v-deep .el-select {
   margin: 0 15px;
 }
+
 </style>
