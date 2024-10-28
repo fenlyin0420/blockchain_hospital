@@ -2,15 +2,11 @@ package com.example.controller;
 
 
 import com.example.common.Result;
-import com.example.entity.Nurse;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
 import com.example.service.BedsService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,5 +29,11 @@ public class BedsController {
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Ward> page = bedsService.selectPage(ward, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    @PutMapping("/save")
+    public Result save(@RequestBody Traverse traverse){
+        bedsService.updateById(traverse);
+        return Result.success();
     }
 }

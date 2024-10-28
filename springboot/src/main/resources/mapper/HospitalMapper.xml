@@ -7,6 +7,7 @@
         select id, hospital_name, url
         from hospital
     </sql>
+
     <insert id="insert">
         insert into hospital( hospital_name, url) values (#{hospitalName},#{url})
     </insert>

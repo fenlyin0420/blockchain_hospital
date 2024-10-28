@@ -25,4 +25,8 @@ public class BedsService {
         List<Ward> list = bedsMapper.selectAllWard(ward);
         return PageInfo.of(list);
     }
+
+    public void updateById(Traverse traverse) {
+        bedsMapper.updateById(traverse);
+    }
 }

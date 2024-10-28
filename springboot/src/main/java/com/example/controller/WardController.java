@@ -16,6 +16,12 @@ public class WardController {
     @Resource
     private WardService wardService;
 
+    @GetMapping("/findAll")
+    public Result findAll(){
+        List<Ward> list = wardService.findAll();
+        return Result.success(list);
+    }
+
     @GetMapping("/selectPage")
     public Result selectPage(Ward ward,
                              @RequestParam(defaultValue = "1") Integer pageNum,

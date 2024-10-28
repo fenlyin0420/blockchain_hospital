@@ -19,4 +19,7 @@ public interface WardMapper {
     Ward selectByName(String name);
 
     int updateById(Ward ward);
+
+    @Select("select * from ward")
+    List<Ward> findAll();
 }

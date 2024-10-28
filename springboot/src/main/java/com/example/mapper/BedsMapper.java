@@ -12,4 +12,6 @@ public interface BedsMapper {
     List<Traverse> selectAll();
 
     List<Ward> selectAllWard(Ward ward);
+
+    int updateById(Traverse traverse);
 }

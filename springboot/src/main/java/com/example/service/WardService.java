@@ -48,4 +48,8 @@ public class WardService {
     public void updateById(Ward ward) {
         wardMapper.updateById(ward);
     }
+
+    public List<Ward> findAll() {
+        return wardMapper.findAll();
+    }
 }

@@ -19,10 +19,11 @@ public class Traverse {
     private String drug;
     private String inhospital;
     private String jurisdiction;
-    private String doctorName;
+    private String doctorName; //非数据库字段
     private String hospitalName;
     private String careStatus;
     private Integer wardId;
+    private String wardName; //非数据库字段
     /** 时间戳 */
     private String number;
     private String signData;
