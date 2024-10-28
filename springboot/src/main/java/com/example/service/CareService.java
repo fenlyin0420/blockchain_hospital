@@ -15,4 +15,8 @@ public class CareService {
     public List<Traverse> findAll() {
         return careMapper.selectAll();
     }
+
+    public void updateById(Traverse traverse) {
+        careMapper.updateById(traverse);
+    }
 }

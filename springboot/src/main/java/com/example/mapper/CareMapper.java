@@ -9,4 +9,6 @@ public interface CareMapper {
 
 
     List<Traverse> selectAll();
+
+    int updateById(Traverse traverse);
 }

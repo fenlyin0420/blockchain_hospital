@@ -18,12 +18,13 @@
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
         <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="danger" size="mini" @click=call(scope.row)>未护理</el-button>
+            <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"  @click=submit(scope.row)>护理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,31 +53,21 @@ export default {
         if(res.code === '200'){
           this.tableData = res.data;
         }else{
-
+          this.$message.error(res.msg);
         }
       })
     },
-    call(row) { //这里还没搞懂
-      // let caseData = JSON.parse(JSON.stringify(row));
-      // caseData.status = '已叫号'
-      // console.log(caseData);
-      // this.$request.put('/reserve/update', caseData).then(res => {
-      //   if (res.code === '200') {
-      //     this.$message.success('叫号成功')
-      //     let caseinfo = {
-      //       userName: caseData?.userName,
-      //       doctorName: caseData?.doctorName,
-      //       hospitalName: caseData?.hospitalName,
-      //       departmentName: caseData?.departmentName,
-      //       time: caseData?.time,
-      //     };
-      //     this.load(1)
-      //     // 往就诊记录里同步一条数据
-      //     this.record(row)
-      //     this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseinfo))}`)
-      //   }
-      // })
-    },
+    submit(row){
+      let caseData = JSON.parse(JSON.stringify(row));
+      caseData.careStatus = '已护理'
+      console.log(caseData);
+      this.$request.put('/DailyCare/update', caseData).then(res => {
+        if (res.code === '200') {
+          this.$message.success('护理完毕')
+          this.load();
+        }
+      })
+    }
   }
 }
 </script>

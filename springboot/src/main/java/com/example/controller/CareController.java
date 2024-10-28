@@ -2,15 +2,13 @@ package com.example.controller;
 
 
 import com.example.common.Result;
+import com.example.entity.Reserve;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
 import com.example.service.BedsService;
 import com.example.service.CareService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,6 +23,12 @@ public class CareController {
     public Result findAll(){
         List<Traverse> l = careService.findAll();
         return Result.success(l);
+    }
+
+    @PutMapping("/update")
+    public Result update(@RequestBody Traverse traverse){
+        careService.updateById(traverse);
+        return Result.success();
     }
 
 }

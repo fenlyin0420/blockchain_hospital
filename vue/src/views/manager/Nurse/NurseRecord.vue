@@ -1,120 +1,78 @@
 <template>
   <div>
-    <el-form :inline="true" :model="searchForm" class="demo-form-inline" style="margin-top: 20px">
-      <el-form-item label="姓名">
-        <el-input v-model="searchForm.name" placeholder="姓名"></el-input>
-      </el-form-item>
-      <el-form-item label="病房号">
-        <el-select v-model="searchForm.region" placeholder="病房号">
-          <el-option label="病房A" value="1"></el-option>
-          <el-option label="病房B" value="2"></el-option>
-          <el-option label="病房C" value="3"></el-option>
-          <el-option label="病房D" value="4"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-      </el-form-item>
-    </el-form>
+    <!-- 选择病房-->
+    <el-select v-model="week" style="width: 300px" placeholder="请选择病房号">
+      <el-option label="重症监护室" value="重症监护室"></el-option>
+      <el-option label="A号房" value="A号房"></el-option>
+      <el-option label="B号房" value="B号房"></el-option>
+      <el-option label="C号房" value="C号房"></el-option>
+    </el-select>
 
-    <el-table
-        ref="filterTable"
-        :data="tableData"
-        style="width: 100%">
-      <el-table-column
-          prop="date"
-          label="日期"
-          sortable
-          column-key="date"
-          :filters="[{text: '2016-05-01', value: '2016-05-01'}, {text: '2016-05-02', value: '2016-05-02'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
-          :filter-method="filterHandler"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="name"
-          label="姓名">
-      </el-table-column>
-      <el-table-column
-          prop="doctorName"
-          label="医生姓名">
-      </el-table-column>
-      <el-table-column
-          prop="address"
-          label="处方"
-          :formatter="formatter">
-      </el-table-column>
-      <el-table-column
-          fixed="right"
-          label="操作"
-          width="200">
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="primary" size="small">查看</el-button>
-          <el-button type="danger" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-          prop="tag"
-          label="标签"
-          :filters="[{ text: '单人病房', value: '单人病房' }, { text: '双人病房', value: '双人病房' }]"
-          :filter-method="filterTag"
-          filter-placement="bottom-end">
-        <template slot-scope="scope">
-          <el-tag
-              :type="scope.row.tag === '单人病房' ? 'primary' : 'success'"
-              disable-transitions>{{ scope.row.tag }}
-          </el-tag>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!--  输入姓名   -->
+    <el-input v-model="input" style="width: 300px; margin-left: 10px" placeholder="请输入姓名"></el-input>
+
+    <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
+    <el-button type="success" plain style="margin-left: 10px" @click="reset">重置</el-button>
+
+    <div class="table" style="margin-top: 15px">
+      <el-table :data="tableData" strip @selection-change="handleSelectionChange">
+        <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
+        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
+        <el-table-column label="操作" width="180" align="center">
+          <template v-slot="scope">
+            <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"  @click=submit(scope.row)>护理</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
   </div>
 </template>
 
 <script>
+import request from "@/utils/request";
+
 export default {
-  name: "NurseRecord",
+  name: "DailyCare",
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: 'balabala',
-        tag: '单人病房'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: 'balabala',
-        tag: '双人病房'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: 'balabala',
-        tag: '单人病房'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: 'balabala',
-        tag: '双人病房'
-      }],
-      searchForm: {
-        name: '',
-        region: ''
-      },
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
+      input: '',
+      tableData: [],
     }
   },
+  created() {
+    this.load(); //查询病例
+  },
   methods: {
-    handleClick(row) {
-      console.log(row);
+    load(){
+      request.get("/DailyCare/search").then(res => {
+        if(res.code === '200'){
+          this.tableData = res.data;
+        }else{
+          this.$message.error(res.msg);
+        }
+      })
+    },
+    submit(row){
+      let caseData = JSON.parse(JSON.stringify(row));
+      caseData.careStatus = '已护理'
+      console.log(caseData);
+      this.$request.put('/DailyCare/update', caseData).then(res => {
+        if (res.code === '200') {
+          this.$message.success('护理完毕')
+          this.load();
+        }
+      })
     }
   }
 }
 </script>
+
+
+<style scoped>
+
+</style>
