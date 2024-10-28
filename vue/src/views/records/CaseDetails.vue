@@ -138,7 +138,6 @@ export default {
   data() {
     return {
       receivedData:[],
-      // drug:{},
       params:{},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       pubs:{}
@@ -151,6 +150,7 @@ export default {
     }
     else{
       this.receivedData = this.$route.params.inform;
+      console.log(this.receivedData)
     }
     this.load()
   },
@@ -177,7 +177,7 @@ export default {
       }
 
       if(this.receivedData.signPubKey!==null||this.receivedData.signPubKey!==""){
-        const s=this.receivedData.signPubKey.split(",")
+        const s = this.receivedData.signPubKey.split(",")
         const ss = s.map(line => {
           const parts = line.split(':');
           return {
@@ -207,10 +207,10 @@ export default {
       })
     },
     sign(){
-
-      this.params.role=this.user.role
-      this.params.id=this.receivedData.id
-      this.params.name=this.receivedData.name
+      console.log(this.receivedData)
+      this.params.role = this.user.role
+      this.params.id = this.receivedData.id
+      this.params.name = this.receivedData.name
       this.$request.post('/keys/sign', this.receivedData).then(res => {
         if (res.code === '200') {
           // this.$message.success('成功')

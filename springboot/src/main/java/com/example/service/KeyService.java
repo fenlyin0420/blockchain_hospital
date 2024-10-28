@@ -42,8 +42,9 @@ public class KeyService {
     public RingSign sign(Params params) {
         //通过userid查login信息，公私钥
 //        Login login=loginMapper.findByname(params.getName());
-        Traverse traverse=traverseMapper.selectById(params.getId());
-        Doctor doctorById=doctorMapper.selectById(traverse.getDoctorId());
+        System.out.println(params);
+        Traverse traverse = traverseMapper.selectById(params.getId());
+        Doctor doctor = doctorMapper.selectById(traverse.getDoctorId());
         if(Objects.equals(traverse.getSignPubKey(), " ") ||traverse.getSignPubKey()==null){
             setSignPublicKey(traverse);
             traverse=traverseMapper.selectById(params.getId());
@@ -60,15 +61,15 @@ public class KeyService {
         //提取环公钥
         List<Doctor> doctors=getSignPubKey(traverse);
         List<String> publicKeys=new ArrayList<>();
-        for (Doctor doctor:doctors){
-            publicKeys.add(doctor.getPublicKey());
+        for (Doctor doctorTemp:doctors){
+            publicKeys.add(doctorTemp.getPublicKey());
         }
         System.out.println(doctors);
         //List<String> publicKeys=ringSignMapper.findToPubKey();
         //匹配私钥，确定pi
         int pi=-1;
         for (int i=0;i<publicKeys.size();i++){
-            if(Objects.equals(publicKeys.get(i), doctorById.getPublicKey())){
+            if(Objects.equals(publicKeys.get(i), doctor.getPublicKey())){
                 pi=i+1;
                 break;
             }
@@ -94,7 +95,7 @@ public class KeyService {
         }
         BCECPrivateKey bcecPrivateKey;
         try {
-            bcecPrivateKey= MySM2Util.str2pri(doctorById.getPrivateKey());
+            bcecPrivateKey= MySM2Util.str2pri(doctor.getPrivateKey());
         }catch (Exception e){
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
