@@ -31,4 +31,5 @@ public class Traverse {
     private String signPubKey;
     private String signKey;
     private Date userDate;
+    private String img;
 }
