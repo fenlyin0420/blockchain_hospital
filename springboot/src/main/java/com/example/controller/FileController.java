@@ -93,7 +93,7 @@ public class FileController {
      */
     @DeleteMapping("/{flag}")
     public void delFile(@PathVariable String flag) {
-        FileUtil.del(filePath + flag);
+        FileUtil.del(flag);
         System.out.println("删除文件" + flag + "成功");
     }
 

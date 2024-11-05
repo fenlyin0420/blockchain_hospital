@@ -10,8 +10,8 @@
       <el-table :data="tableData"  stripe>
 <!--         <el-table-column prop="id" label="id" width="80" align="center" sortable v-show="false"></el-table-column>-->
         <!-- <el-table-column prop="number" label="账号" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column> -->
-        <el-table-column prop="userDate" label="就诊日期" width="150" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" width="120" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userDate" label="就诊日期" width="200" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" width="200" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="150" align="center"></el-table-column>
         <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="200" align="center"></el-table-column>
 <!--        <el-table-column-->
@@ -42,7 +42,7 @@
 <!--            </el-input>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column prop="inhospital" label="是否住院" width="120" align="center"></el-table-column>
+        <el-table-column prop="inhospital" label="是否住院" width="200" align="center"></el-table-column>
        <!-- <el-table-column prop="jurisdiction" label="权限" v-if="user.role === 'DOCTOR'" width="80" align="center"></el-table-column> -->
         <el-table-column label="详情"  align="center">
           <template v-slot="scope">

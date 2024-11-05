@@ -102,8 +102,8 @@
               <Payment :form="dialogDate"></Payment>
 
               <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="reserve(clickedItem)">Confirm</el-button>
+                <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="reserve(clickedItem)">确定</el-button>
               </span>
             </el-dialog>
           </div>

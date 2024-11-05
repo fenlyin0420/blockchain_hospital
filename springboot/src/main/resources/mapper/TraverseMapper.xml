@@ -19,6 +19,7 @@
             <if test="signResult != null">sign_result,</if>
             <if test="signPubKey != null">sign_pub_key,</if>
             <if test="signKey != null">sign_key,</if>
+            <if test="img != null">img,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userDate != null">#{userDate},</if>
@@ -34,6 +35,7 @@
             <if test="signResult != null">#{signResult},</if>
             <if test="signPubKey != null">#{signPubKey},</if>
             <if test="signKey != null">#{signKey},</if>
+            <if test="img != null">#{img},</if>
         </trim>
     </insert>
     <update id="updateById">
