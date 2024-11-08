@@ -2,7 +2,6 @@ package com.example.mapper;
 
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

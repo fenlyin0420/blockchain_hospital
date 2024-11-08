@@ -1,4 +1,3 @@
-import com.example.entity.Doctor;
 import com.example.utils.JwtSm.MySM2Util;
 
 public class Main {

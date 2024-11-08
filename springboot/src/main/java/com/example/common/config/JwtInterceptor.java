@@ -14,7 +14,6 @@ import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
 import com.example.service.UserService;
-import com.example.utils.JwtSm.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

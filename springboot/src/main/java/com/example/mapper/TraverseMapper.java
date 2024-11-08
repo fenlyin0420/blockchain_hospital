@@ -1,7 +1,6 @@
 package com.example.mapper;
 
 
-import com.example.entity.Drug;
 import com.example.entity.Traverse;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,4 +19,6 @@ public interface TraverseMapper {
     void deleteById(Integer id);
 
     Traverse selectById(Integer id);
+    
+    Traverse selectByNumber(String number);
 }

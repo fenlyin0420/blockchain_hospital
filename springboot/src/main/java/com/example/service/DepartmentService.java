@@ -1,15 +1,10 @@
 package com.example.service;
 
-import cn.hutool.core.date.DateUtil;
-import com.example.entity.Account;
 import com.example.entity.Department;
 import com.example.mapper.DepartmentMapper;
-import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import javax.annotation.Resource;
 import java.util.List;
 
