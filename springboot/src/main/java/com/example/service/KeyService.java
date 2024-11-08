@@ -42,12 +42,12 @@ public class KeyService {
     public RingSign sign(Params params) {
         //通过userid查login信息，公私钥
 //        Login login=loginMapper.findByname(params.getName());
-        System.out.println(params);
-        Traverse traverse = traverseMapper.selectById(params.getId());
+        System.out.println("params" + params);
+        Traverse traverse = traverseMapper.selectByNumber(params.getNumber());
         Doctor doctor = doctorMapper.selectById(traverse.getDoctorId());
         if(Objects.equals(traverse.getSignPubKey(), " ") ||traverse.getSignPubKey()==null){
             setSignPublicKey(traverse);
-            traverse=traverseMapper.selectById(params.getId());
+            traverse=traverseMapper.selectByNumber(params.getNumber());
         }
 
         //合成data
@@ -100,15 +100,6 @@ public class KeyService {
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
         String key= BestRingSignUtil.generate(data,list,bcecPrivateKey,pi);
-//        //查找管理员公钥
-//        Login admin=loginMapper.findByname(params.getInitiator());
-//        //对公钥进行初始化  加密信息
-//        String adminkey=admin.getPublicKey();
-//        try {
-//            data=MySm2Util.encryption(adminkey,data);
-//        }catch (Exception ignored){
-//
-//        }
 
         //返回数据
         RingSign ringSign=new RingSign();
@@ -122,23 +113,10 @@ public class KeyService {
 
 
     public RingSign verifySign(Params params) {
-        //验签
-//        String data=params.getSignData();
-//        //查找管理员私钥
-//        Login admin=loginMapper.findByname(params.getInitiator());
-//        //对私钥进行初始化  解密信息
-//        String adminkey=admin.getPrivateKey();
-//        try {
-//            data=MySm2Util.decrypt(adminkey,data);
-//        }catch (Exception ignored){
-//
-//        }
-
-        Traverse traverse=traverseMapper.selectById(params.getId());
-        Doctor doctorById=doctorMapper.selectById(traverse.getDoctorId());
-        String key=params.getSignKey();
-        List<Doctor> doctors=getSignPubKey(traverse);
-        List<String> publicKeys=new ArrayList<>();
+        Traverse traverse = traverseMapper.selectByNumber(params.getNumber());
+        String key = params.getSignKey();
+        List<Doctor> doctors = getSignPubKey(traverse);
+        List<String> publicKeys = new ArrayList<>();
         for (Doctor doctor:doctors){
             publicKeys.add(doctor.getPublicKey());
         }
@@ -152,16 +130,7 @@ public class KeyService {
             }
         }
         boolean result=BestRingSignUtil.verifySign(traverse.getSignData(),list,key);
-//        //成功后添加签名数据
-//        //不更改票数
-//        RingSign ringSign=new RingSign();
-//        //对公钥进行初始化  加密信息
-//        String adminkeys=admin.getPublicKey();
-//        try {
-//            data=MySm2Util.encryption(adminkeys,data);
-//        }catch (Exception ignored){
-//
-//        }
+
         RingSign ringSign=new RingSign();
         ringSign.setSignData(traverse.getSignData());
         ringSign.setSignKey(key);

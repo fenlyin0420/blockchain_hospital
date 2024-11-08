@@ -2,12 +2,8 @@ package com.example.controller;
 
 
 import com.example.common.Result;
-import com.example.entity.Reserve;
 import com.example.entity.Traverse;
-import com.example.entity.Ward;
-import com.example.service.BedsService;
 import com.example.service.CareService;
-import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

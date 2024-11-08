@@ -4,7 +4,6 @@ package com.example.controller;
 import com.example.entity.Hospital;
 import com.example.service.HospitalService;
 import com.example.common.Result;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 import com.github.pagehelper.PageInfo;
 

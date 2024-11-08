@@ -176,13 +176,7 @@ export default {
   },
   created() {
     this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法 
-    //this.loadByUser(); //获取tableData
     this.loadByDrug(); //获取drugList
-    // const queryData = this.$route.query.data;
-    // if (queryData) {
-    //   // 对查询参数中的数据进行解码和解析
-    //   this.caseInfo = JSON.parse(decodeURIComponent(queryData));
-    // }
   },
   mounted() {
     this.restaurants = this.loadAll();
@@ -196,6 +190,7 @@ export default {
 
         // 从URL查询参数中解析caseInfo  
         const queryData = this.$route.query.data;
+        console.log("queryData", queryData)
         if (queryData) {
           this.caseInfo = JSON.parse(decodeURIComponent(queryData));
 
@@ -215,15 +210,6 @@ export default {
       });
       this.$message.success("成功");
       this.tableData = res.data;
-
-      // this.$request.get('/record/selectAll', {
-      //   params: {
-      //     doctorId: this.user.id
-      //   }
-      // }).then(res => {
-      //   this.$message.success("成功")
-      //   this.tableData = res.data
-      // })
     },
 
     async loadByDrug() {
@@ -267,7 +253,7 @@ export default {
       ];
     },
     handleSelect(item) {
-      console.log(item);
+      // console.log(item);
     },
 
     //病情联想
@@ -291,7 +277,7 @@ export default {
       ];
     },
     handleSelect(item) {
-      console.log(item);
+      // console.log(item);
     },
 
     //图片上传
@@ -303,11 +289,11 @@ export default {
           let fileIdentifier = uploadedUrls[i];
           this.$request.delete(`/files/${fileIdentifier}`)
           .then(response => {
-            console.log('图片已从服务器删除', response);
+            // console.log('图片已从服务器删除', response);
             uploadedUrls.splice(i,1);
           })
           .catch(error => {
-            console.error('删除图片时出错', error);
+            // console.error('删除图片时出错', error);
           });
           //客户端删除图片
           uploadFiles.splice(i, 1);
@@ -320,7 +306,7 @@ export default {
       this.dialogVisible = true;
     },
     handleImgSuccess(response) {
-      console.log(response);
+      // console.log(response);
       const uploadedUrlString = response.data;
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
@@ -341,62 +327,36 @@ export default {
       return isImage;
     },
 
-    loadCaseInfo() {
-      this.caseInfo = {
-        id: '001',
-        number: '123456',
-        name: '默认',
-        doctorName: '李医生',
-        hospitalName: 'XX医院',
-        status: '未叫号', // Assuming default status
-      }
-    },
-    call(caseInfo) {
-      let reserveData = { ...caseInfo, status: '已叫号' };
-      //Simulating API request to update case status
-      // this.$request.put('/case/update', reserveData).then(res => {
-      //   if (res.code === '200') {
-      //     this.$message.success('叫号成功')
-      //     this.loadCaseInfo()
-      //     this.record(caseInfo)
-      //   }
-      // })
-      this.$message.success('叫号成功')
-      this.loadCaseInfo()
-      this.record(caseInfo)
-    },
-    record(caseInfo) {
-      let data = {
-        userId: caseInfo.userId,
-        doctorId: caseInfo.doctorId,
-      }
-      // this.$request.post('/record/add', data).then(res => {
-      //   if (res.code === '200') {
-      //     this.$message.success('数据同步成功')
-      //   } else {
-      //     this.$message.error(res.msg)
-      //   }
-      // })
-      // Assuming successful response for simulation
-      this.$message.success('数据同步成功')
-    },
-    del(id) {
-      // Simulating confirmation dialog and API request to delete case
-      this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
-        // Simulating API request to delete case
-        // this.$request.delete('/case/delete/' + id).then(res => {
-        //   if (res.code === '200') {
-        //     this.$message.success('操作成功')
-        //     this.loadCaseInfo()
-        //   } else {
-        //     this.$message.error(res.msg)
-        //   }
-        // })
-        // Assuming successful response for simulation
-        this.$message.success('操作成功')
-        this.loadCaseInfo()
-      }).catch(() => { })
-    },
+    // loadCaseInfo() {
+    //   this.caseInfo = {
+    //     id: '001',
+    //     number: '123456',
+    //     name: '默认',
+    //     doctorName: '李医生',
+    //     hospitalName: 'XX医院',
+    //     status: '未叫号', // Assuming default status
+    //   }
+    // },
+    // call(caseInfo) {
+    //   let reserveData = { ...caseInfo, status: '已叫号' };
+    //   this.$message.success('叫号成功')
+    //   this.loadCaseInfo()
+    //   this.record(caseInfo)
+    // },
+    // record(caseInfo) {
+    //   let data = {
+    //     userId: caseInfo.userId,
+    //     doctorId: caseInfo.doctorId,
+    //   }
+    //   this.$message.success('数据同步成功')
+    // },
+    // del(id) {
+    //   // Simulating confirmation dialog and API request to delete case
+    //   this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
+    //     this.$message.success('操作成功')
+    //     this.loadCaseInfo()
+    //   }).catch(() => { })
+    // },
     confirmMedicine() {
       // 确定按钮
       this.medicine = this.medicine + this.selectedMedicine + " " + this.medicineQuantity + " " + this.medicineFrequency + "\n"
@@ -404,8 +364,11 @@ export default {
       this.medicineFrequency = ''
       this.medicineQuantity = '1'
     },
+    /**
+     * 确认病历，并插入到数据库中
+     */
     ok() {
-      // 修改按钮
+      console.log("caseInfo", this.caseInfo)
       this.information.number = new Date().getTime()
       this.information.userDate = this.caseInfo.time
       this.information.name = this.caseInfo.userName
@@ -425,7 +388,7 @@ export default {
       this.information.signKey = " "
       this.$request.post('/traverse/add', this.information).then(res => {
         if (res.code === '200') {
-          this.$message.success('成功')
+          this.$message.success('插入成功')
           this.information.hospitalName = this.caseInfo.hospitalName
           this.information.doctorName = this.caseInfo.doctorName
           let caseData = JSON.parse(JSON.stringify(this.information))
