@@ -32,13 +32,13 @@
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
-        <el-table-column prop="doctorName" label="护士姓名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="departmentName" label="病房" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hospitalName" label="医院"></el-table-column>
-        <el-table-column prop="num" label="就诊数量"></el-table-column>
-        <el-table-column prop="week" label="周几"></el-table-column>
+        <el-table-column prop="doctorName" label="护士姓名" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="departmentName" label="病房" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="hospitalName" label="医院" align="center"></el-table-column>
+        <el-table-column prop="num" label="就诊数量" align="center"></el-table-column>
+        <el-table-column prop="week" label="周几" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="180" align="center" v-if="user.role === 'Admin'">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini" v-if="scope.row.hospitalId===user.hospitalId">编辑</el-button>
             <el-button plain type="danger" size="mini" @click=del(scope.row.id) v-if="scope.row.hospitalId===user.hospitalId">删除</el-button>
