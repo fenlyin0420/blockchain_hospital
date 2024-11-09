@@ -8,11 +8,11 @@
         <el-form label-width="10px">
           <el-form-item>
             <!-- 这里放图 -->
-            <span class="field-label">诊疗图像:</span>
+            <span class="field-label">医疗影像:</span>
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 180px; height: 180px" :src="url" :fit="fit"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fit"></el-image>
                 </div>
               </div>
             </div>

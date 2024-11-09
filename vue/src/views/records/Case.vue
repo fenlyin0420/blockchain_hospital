@@ -13,13 +13,13 @@
             </div>
           </el-select>
         </el-col> -->
-      <el-col :span="12">
+      <el-col :span="12" >
         <el-form inline label-width="80px">
           <el-form-item class="field-container">
             <span class="field-label">姓名:</span>
             <span class="field-value">{{ caseInfo.userName }}</span>
-            <span class="field-label">检查时间:</span>
-            <span class="field-value">{{ caseInfo.time }}</span>
+            <!-- <span class="field-label">检查时间:</span>
+            <span class="field-value">{{ caseInfo.time }}</span> -->
           </el-form-item>
         </el-form>
         <hr class="divider" />
@@ -32,28 +32,64 @@
             </div>
           </el-form-item>
         </el-form>
+        <hr class="divider" />
+        <el-form inline label-width="80px" class="custom-form-inline">
+          <el-form-item>
+            <span class="field-label">药品信息:</span>
+            <div class="info-field">
+              <span class="field-label">选择药品:</span>
+              <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
+                <div>
+                  <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName"
+                    :key="item.id"></el-option>
+                </div>
+              </el-select>
+              <span class="field-label">药品数量:</span>
+              <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
+                class="quantity-input"></el-input-number>
+            </div>
+            <div class="info-field">
+              <span class="field-label">每日次数:</span>
+              <el-autocomplete class="frequency-input" v-model="medicineFrequency" :fetch-suggestions="querySearch"
+                placeholder="一日几次" @select="handleSelect"></el-autocomplete>
+              <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
+            </div>
+            <div>
+              <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical"
+                class="medicine-textarea"></el-input>
+            </div>
+            <div class="info-field">
+              <span class="field-label"> 是否需要住院 : </span>
+              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
+            </div>
+          </el-form-item>
+        </el-form>
       </el-col>
       <el-col :span="12">
-        <el-form label-width="80px">
-          <el-form-item >
+        <el-form label-width="20px">
+          <el-form-item>
             <!-- 这里放图 -->
-            <span class="field-label">诊疗图像:</span>
-            <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
-              :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :before-upload="beforeUpload"
-              class="custom-upload">
-              <i slot="default" class="el-icon-plus"></i>
-              <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-                <span class="el-upload-list__item-actions">
-                  <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                    <i class="el-icon-zoom-in"></i>
+            <span class="field-label">医疗影像:</span>
+            <div class="upload-container">
+              <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
+                :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove"
+                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" :limit="1">
+                <i slot="default" class="el-icon-plus"></i>
+                <div slot="file" slot-scope="{file}">
+                  <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                  <span class="el-upload-list__item-actions">
+                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span v-if="!disabled" class="el-upload-list__item-delete"
+                      @click="handleRemove(file, uploadedUrls)">
+                      <i class="el-icon-delete"></i>
+                    </span>
                   </span>
-                  <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file,uploadedUrls)">
-                    <i class="el-icon-delete"></i>
-                  </span>
-                </span>
-              </div>
-            </el-upload>
+                </div>
+              </el-upload>
+            </div>
             <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
@@ -88,64 +124,11 @@
           </el-col>
         </el-row> -->
     </el-row>
-
-    <div class="case-info">
-      <hr class="divider" />
-      <el-row class="info-row">
-        <el-col :span="24">
-          <div class="info-field">
-            <span class="field-label">药品信息:</span>
-            <div>
-              <el-row class="info-row">
-                <el-col :span="6" class="custom-col">
-                  <div class="info-field">
-                    <span class="field-label">选择药品:</span>
-                    <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
-                      <div>
-                        <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName"
-                          :key="item.id"></el-option>
-                      </div>
-                    </el-select>
-                  </div>
-                </el-col>
-
-                <el-col :span="6" class="custom-col">
-                  <div class="info-field">
-                    <span class="field-label">药品数量:</span>
-                    <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
-                      class="quantity-input"></el-input-number>
-                  </div>
-                </el-col>
-
-                <el-col :span="6" class="custom-col">
-                  <div class="info-field">
-                    <span class="field-label">每日次数:</span>
-                    <el-autocomplete class="frequency-input" v-model="medicineFrequency"
-                      :fetch-suggestions="querySearch" placeholder="一日几次" @select="handleSelect"></el-autocomplete>
-                  </div>
-                </el-col>
-                <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
-              </el-row>
-            </div>
-            <div>
-              <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical"
-                class="medicine-textarea"></el-input>
-            </div>
-            <el-row class="info-row">
-              <el-col :span="6" class="custom-col">
-                <span class="field-label"> 是否需要住院 : </span>
-                <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
-                <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
-              </el-col>
-            </el-row>
-            <el-button type="primary" @click="ok" class="edit-button">确定</el-button>
-          </div>
-        </el-col>
-      </el-row>
-
-
-
-    </div>
+    <el-row class="info-row" :gutter="24">
+      <el-col :span="15"> 
+        <el-button type="primary" @click="ok" class="confirm-button1">确定</el-button>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -171,7 +154,8 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      uploadedUrls:[]
+      uploadedUrls: [],
+      uploadDisabled: false, // 控制上传组件的显示与隐藏
     }
   },
   created() {
@@ -295,25 +279,26 @@ export default {
     },
 
     //图片上传
-    handleRemove(file,uploadedUrls) {
+    handleRemove(file, uploadedUrls) {
       let uploadFiles = this.$refs.pictureUpload.uploadFiles
       for (var i = 0; i < uploadFiles.length; i++) {
         if (uploadFiles[i]['url'] == file.url) {
           //服务器端删除图片
           let fileIdentifier = uploadedUrls[i];
           this.$request.delete(`/files/${fileIdentifier}`)
-          .then(response => {
-            console.log('图片已从服务器删除', response);
-            uploadedUrls.splice(i,1);
-          })
-          .catch(error => {
-            console.error('删除图片时出错', error);
-          });
+            .then(response => {
+              console.log('图片已从服务器删除', response);
+              uploadedUrls.splice(i, 1);
+            })
+            .catch(error => {
+              console.error('删除图片时出错', error);
+            });
           //客户端删除图片
           uploadFiles.splice(i, 1);
           break;
         }
       }
+      this.uploadDisabled = false; //显示上传组件
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -321,7 +306,9 @@ export default {
     },
     handleImgSuccess(response) {
       console.log(response);
-      const uploadedUrlString = response.data;
+      // 设置uploadDisabled为true，隐藏上传组件
+      this.uploadDisabled = true;
+      const uploadedUrlString = response.data;  //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
@@ -401,6 +388,7 @@ export default {
       // 确定按钮
       this.medicine = this.medicine + this.selectedMedicine + " " + this.medicineQuantity + " " + this.medicineFrequency + "\n"
       this.radio = "否"
+      this.selectedMedicine = ''
       this.medicineFrequency = ''
       this.medicineQuantity = '1'
     },
@@ -468,7 +456,7 @@ export default {
 }
 
 .info-field {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .field-label {
@@ -485,25 +473,26 @@ export default {
 
 .info-textarea {
   margin-bottom: 26px;
-  width: 580px
+  width: 570px
 }
 
 .medicine-select {
-  width: calc(60% - 10px);
+  width: 35%;
   margin-right: 40px;
 }
 
 .quantity-input {
-  width: calc(60% - 10px);
-  margin-right: 40px;
+  width: 34%;
+  margin-right: 10px;
 }
 
 .frequency-input {
-  width: calc(60% - 10px);
+  width: 35%;
 }
 
 .medicine-textarea {
   margin-top: 10px;
+  margin-bottom: 10px;
   width: calc(100% - 10px);
 }
 
@@ -512,6 +501,14 @@ export default {
   margin-top: 1px;
   margin-right: 12px;
   font-size: 12px;
+}
+
+.confirm-button1 {
+  float: right;
+  margin-top: -10px;
+  margin-right: 12px;
+  font-size: 12px;
+  width: 40%;
 }
 
 .edit-button {
@@ -537,5 +534,40 @@ export default {
   display: flex;
   align-items: flex-start;
   /* 根据需要调整垂直对齐方式 */
+}
+
+.upload-container {
+  width: 145px;
+  height: 145px; 
+  position: relative; /* 用于定位图片 */
+}
+
+::v-deep .el-upload--picture-card {  
+  transform: scale(3.5); /*放大上传框*/
+  transform-origin: top left;
+  margin: 15px;
+  width: 100%;
+  height: 100%; 
+  position: absolute; /* 绝对定位，使图片可以覆盖整个容器 */
+  top: 0;
+  left: 0;
+}
+
+::v-deep .el-upload-list--picture-card .el-upload-list__item{  
+  transform: scale(3.5); /*放大图像框*/
+  transform-origin: top left;
+  margin: 15px;
+  width: 100%;
+  height: 100%; 
+}
+
+::v-deep .el-upload-list__item-thumbnail {
+  width: 100%;
+  height: 100%; 
+  object-fit: cover; 
+}
+
+ ::v-deep .disabled .el-upload--picture-card { 
+  display: none !important; /*上传图片后，隐藏下一个上传框 */
 }
 </style>
