@@ -91,7 +91,8 @@ public class PlanService {
         if (RoleEnum.DOCTOR.name().equals(currentUser.getRole())) {
             plan.setDoctorId(currentUser.getId());
         }
-        PageHelper.startPage(pageNum, pageSize);
+
+        PageHelper.startPage(pageNum, pageSize); //开启分页查询
         List<Plan> list = planMapper.selectAll(plan);
         return PageInfo.of(list);
     }

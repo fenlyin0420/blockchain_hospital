@@ -2,7 +2,7 @@
   <div>
     <div class="search">
       <!--  输入姓名   -->
-      <el-input v-model="input" style = "width: 300px" placeholder="请输入姓名"></el-input>
+      <el-input v-model="input" style = "width: 300px" v-if="user.role === 'NURSE'" placeholder="请输入姓名"></el-input>
       <!-- 下拉框选择星期几 -->
       <el-select v-model="week" style = "width: 200px; margin-left: 10px" placeholder="请选择星期几" >
         <el-option label="星期一" value="星期一"></el-option>
@@ -14,26 +14,21 @@
         <el-option label="星期日" value="星期日"></el-option>
       </el-select>
 
-      <!--      时间选择器-->
+      <el-button type="primary" plain @click="load(1)" style="margin-left: 10px" v-if="user.role === 'NURSE'">查询</el-button>
+      <el-button type="warning" plain @click="reset" style="margin-left: 10px" v-if="user.role === 'NURSE'">重置</el-button>
 
-      <el-button type="warning" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
-      <el-button type="primary" plain style="margin-left: 10px" @click="reset">重置</el-button>
-
-      <el-button type="primary" plain style="margin-left: 620px" @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain style="margin-left: 10px" @click="delBatch">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" style="margin-left: 10px" v-if="user.role === 'ADMIN'">新增
+      </el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
     </div>
 
-<!--    <div class="operation">-->
-<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
-<!--      <el-button type="danger" plain @click="delBatch">批量删除</el-button>-->
-<!--    </div>-->
 
     <div class="table">
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="doctorName" label="护士姓名" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="departmentName" label="病房" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="departmentName" label="科室" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="hospitalName" label="医院" align="center"></el-table-column>
         <el-table-column prop="num" label="就诊数量" align="center"></el-table-column>
         <el-table-column prop="week" label="周几" align="center"></el-table-column>
@@ -51,7 +46,6 @@
             background
             @current-change="handleCurrentChange"
             :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
             :page-size="pageSize"
             layout="total, prev, pager, next"
             :total="total">
