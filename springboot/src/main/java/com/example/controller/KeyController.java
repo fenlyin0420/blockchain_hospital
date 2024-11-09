@@ -1,9 +1,6 @@
 package com.example.controller;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.example.common.Result;
-import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Params;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static cn.hutool.core.lang.Console.log;
 
 @RestController
 @RequestMapping("/keys")

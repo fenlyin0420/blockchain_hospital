@@ -53,7 +53,7 @@
         <el-table-column prop="num" label="就诊数量" align="center"></el-table-column>
         <el-table-column prop="date" label="日期" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN'">
           <template v-slot="scope">
             <el-button
               plain
@@ -121,14 +121,13 @@
           ></el-input>
         </el-form-item>
         <el-form-item prop="week" label="选择周几">
-          <el-select v-model="form.week" placeholder="请选择周几" style="width: 100%">
-            <el-option label="星期一" value="星期一"></el-option>
-            <el-option label="星期二" value="星期二"></el-option>
-            <el-option label="星期三" value="星期三"></el-option>
-            <el-option label="星期四" value="星期四"></el-option>
-            <el-option label="星期五" value="星期五"></el-option>
-            <el-option label="星期六" value="星期六"></el-option>
-            <el-option label="星期日" value="星期日"></el-option>
+          <el-select placeholder="请选择日期" v-model="form.week" style="width: 100%">
+            <el-option
+                v-for="item in timestamp"
+                :key="item.id"
+                :label="item.label"
+                :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>

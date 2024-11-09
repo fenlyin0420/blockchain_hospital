@@ -148,8 +148,8 @@ export default {
     }
     else {
       this.receivedData = this.$route.params.inform;
-      console.log(this.receivedData)
     }
+    console.log(this.receivedData)
     this.load()
   },
   computed: {
@@ -222,11 +222,10 @@ export default {
     sign() {
       console.log(this.receivedData)
       this.params.role = this.user.role
-      this.params.id = this.receivedData.id
       this.params.name = this.receivedData.name
-      this.$request.post('/keys/sign', this.receivedData).then(res => {
+      this.params.number = this.receivedData.number + ''
+      this.$request.post('/keys/sign', this.params).then(res => {
         if (res.code === '200') {
-          // this.$message.success('成功')
           this.receivedData.signData = res.data.signData
           this.receivedData.signKey = res.data.signKey
         } else {
@@ -236,12 +235,11 @@ export default {
     },
     verifySign() {
       this.params.role = this.user.role
-      this.params.id = this.receivedData.id
       this.params.name = this.receivedData.name
+      this.params.number = this.receivedData.number
       this.params.signKey = this.receivedData.signKey
-      this.$request.post('/keys/verifySign', this.receivedData).then(res => {
+      this.$request.post('/keys/verifySign', this.params).then(res => {
         if (res.code === '200') {
-          // this.$message.success('成功')
           this.receivedData.signResult = res.data.message
         } else {
           this.$message.error(res.msg)

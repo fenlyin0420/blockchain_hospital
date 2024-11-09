@@ -1,11 +1,8 @@
 package com.example.mapper;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
-import com.example.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import tk.mybatis.mapper.common.BaseMapper;
-
 import java.util.List;
 
 /**
