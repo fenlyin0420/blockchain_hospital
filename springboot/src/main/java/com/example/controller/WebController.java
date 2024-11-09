@@ -13,7 +13,6 @@ import com.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.management.relation.Role;
 
 /**
  * 基础前端接口

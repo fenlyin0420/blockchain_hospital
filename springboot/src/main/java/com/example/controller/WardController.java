@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.Doctor;
 import com.example.entity.Ward;
 import com.example.service.WardService;
 import com.github.pagehelper.PageInfo;

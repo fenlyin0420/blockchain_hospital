@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -93,7 +92,7 @@ public class FileController {
      */
     @DeleteMapping("/{flag}")
     public void delFile(@PathVariable String flag) {
-        FileUtil.del(flag);
+        FileUtil.del(filePath +flag);
         System.out.println("删除文件" + flag + "成功");
     }
 

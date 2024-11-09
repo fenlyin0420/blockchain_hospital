@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.beans.Transient;
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Params {
-    public Object number;
+    /** 时间戳 */
+    private String number;
     private String name;
     private String username;
     private String phone;

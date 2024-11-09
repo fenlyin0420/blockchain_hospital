@@ -1,7 +1,6 @@
 package com.example.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Registration;
