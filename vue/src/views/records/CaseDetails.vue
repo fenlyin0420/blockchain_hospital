@@ -48,10 +48,10 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20">
+    <el-row :gutter="24">
+      <!-- 签名数据 -->
       <el-col :span="8">
         <div style="margin: 0 0 20px 0">
-
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
@@ -61,51 +61,66 @@
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
                 <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
+                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
               </div>
             </el-col>
           </el-row>
-
         </div>
+
         <div class="grid-content bg-purple">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signData">
           </el-input>
         </div>
       </el-col>
+
+      <!-- 签名信息 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 34px 0">
+        <div style="margin: 0 0 20px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
                 环签名信息
               </div>
             </el-col>
+
+            <el-col :span="14">
+              <div class="grid-content bg-purple-light">
+                <el-button  type="primary" style="visibility: hidden;" >占位 </el-button>
+              </div>
+            </el-col>
           </el-row>
 
         </div>
         <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signKey">
           </el-input>
         </div>
       </el-col>
+
+      <!-- 验签结果 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 34px 0">
+        <div style="margin: 0 0 20px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
                 验签结果
               </div>
             </el-col>
+
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
+              <!-- 验签按钮 -->
                 <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER'">验签</el-button>
+                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
               </div>
             </el-col>
           </el-row>
         </div>
+
         <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signResult">
           </el-input>
         </div>
