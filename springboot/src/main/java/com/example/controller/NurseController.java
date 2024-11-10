@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.entity.Doctor;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
 import com.example.service.NurseService;
@@ -25,6 +26,12 @@ public class NurseController {
     public Result findBySearch(Params params) {
         List<Nurse> l = nurseService.findBySearch(params);
         return Result.success(l);
+    }
+
+    @PutMapping("/update")
+    public Result update(@RequestBody Nurse nurse) {
+        nurseService.updateById(nurse);
+        return Result.success();
     }
 
 //    @PostMapping("/add")

@@ -57,4 +57,8 @@ public class NurseService {
     public Nurse selectById(Integer id) {
         return nurseMapper.selectById(id);
     }
+
+    public void updateById(Nurse nurse) {
+        nurseMapper.updateById(nurse);
+    }
 }

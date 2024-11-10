@@ -72,7 +72,7 @@ export default {
     },
     update() {
       // 保存当前的用户信息到数据库
-      this.$request.put('/user/update', this.user).then(res => {
+      this.$request.put('/nurse/update', this.user).then(res => {
         if (res.code === '200') {
           this.fromVisible = false
           // 成功更新

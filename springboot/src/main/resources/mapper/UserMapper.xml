@@ -93,9 +93,6 @@
             <if test="privateKey != null">
                 private_key = #{privateKey},
             </if>
-            <if test="ward_id != null">
-                ward_id = #{ward_id},
-            </if>
         </set>
         where id = #{id}
     </update>

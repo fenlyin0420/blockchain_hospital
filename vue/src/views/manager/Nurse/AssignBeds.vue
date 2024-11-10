@@ -278,7 +278,7 @@ export default {
   created() {
     this.load1(1); // 查询病房
     this.load(); // 查询病例
-    this.findWards(); //查询所有的病房信息
+    this.findWards(); //查询所有的病房信息循环赋值给select下拉框
   },
   methods: {
     findWards() {
@@ -315,9 +315,10 @@ export default {
       this.username = null;
       this.load(1);
     },
-    handleAssign(row) {   // 新增数据
+    handleAssign(row) {   // 新增数据（ward_id == null 的新增一个ward_id）
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
+      this.form.inhospital = '已住院';
       this.fromVisible = true;   // 打开弹窗
     },
     save() { // 实际上就是修改操作

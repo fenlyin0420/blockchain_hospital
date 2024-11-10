@@ -42,6 +42,56 @@
         </trim>
     </insert>
 
+    <update id="updateById">
+        update nurse
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+ 
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="position != null">
+                position = #{position},
+            </if>
+            <if test="departmentId != null">
+                department_id = #{departmentId},
+            </if>
+            <if test="hospitalId != null">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="publicKey != null">
+                public_key = #{publicKey},
+            </if>
+            <if test="privateKey != null">
+                private_key = #{privateKey},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
     <select id="findBySearch" resultType="com.example.entity.Nurse">
         select * from nurse
         <where>
