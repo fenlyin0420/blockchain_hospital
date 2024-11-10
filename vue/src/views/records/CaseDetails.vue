@@ -12,11 +12,11 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fit"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
-            <el-dialog :visible.sync="dialogVisible" size="50%">
+            <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="previewImageUrl" :alt="'Preview of ' + (previewImageIndex + 1)" />
             </el-dialog>
           </el-form-item>
@@ -155,15 +155,17 @@ export default {
   computed: {
     drug() {
       const medicationString = this.receivedData.drug;
+      console.log(medicationString)
       // 拆分字符串为每一行
-      const lines = medicationString.split('\n');
+      let lines = medicationString.split('\n');
+      if (lines.length != 1) lines = lines.slice(0, -1);
       // 将每一行拆分为药物信息对象
       return lines.map(line => {
         const parts = line.split(' ');
         return {
           name: parts[0],
-          dose: parts[1],
-          frequency: parts[2]
+          dose: parts[1] ? parts[1] : parts[0],
+          frequency: parts[2] ? parts[2] : parts[0]
         };
       });
     },
@@ -182,6 +184,7 @@ export default {
       this.previewImageUrl = url;
       this.previewImageIndex = index;
       this.dialogVisible = true;
+      console.log("drug:", this.drug);
     },
 
     load() {
@@ -203,6 +206,7 @@ export default {
     },
     /**
      * 数据解密
+     * 将本地密文发送到服务端，服务端解密后返回明文
      */
     decryptAdviceAndDrug() {
       let params = {
@@ -214,6 +218,7 @@ export default {
         if (res.code === '200') {
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
+          console.log("drug:", this.receivedData.drug)
         } else {
           this.$message.error(res.msg)
         }

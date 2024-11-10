@@ -4,7 +4,7 @@
     <div class="search">
       <!-- 选择医院 -->
       <label for="hospital">医院:</label>
-      <el-select id="hospital" placeholder="请选择医院" v-model="hospitalId">
+      <el-select id="hospital" placeholder="请选择医院" v-model="hospitalId" @change="query()">
         <el-option
           v-for="item in hospitalList"
           :key="item.id"
@@ -15,7 +15,7 @@
 
       <!-- 选择科室 -->
       <label for="departmentSelect">科室:</label>
-      <el-select id="departmentSelect" placeholder="请选择科室" v-model="departmentId">
+      <el-select id="departmentSelect" placeholder="请选择科室" v-model="departmentId" @change="query()">
         <el-option
           v-for="item in departmentList"
           :key="item.id"
@@ -26,23 +26,15 @@
 
       <!-- 选择日期 -->
       <label for="selectedDate">日期:</label>
-      <el-select id="selectedDate" placeholder="请选择日期" v-model="selectedDate">
+      <el-select id="selectedDate" placeholder="请选择日期" v-model="selectedDate" @change="query()">
         <el-option
           v-for="item in timestamp"
           :key="item.id"
           :label="item.label"
-          :value="item.id"
+          :value="item.value"
         ></el-option>
       </el-select>
 
-      <div class="searchBtn">
-        <el-button type="info" plain style="margin-left: 10px" @click="query(1)"
-          >查询</el-button
-        >
-        <el-button type="warning" plain style="margin-left: 10px" @click="reset"
-          >重置</el-button
-        >
-      </div>
     </div>
 
     <!-- doctorCard 显示区域 -->
@@ -196,7 +188,6 @@ export default {
       let label = weekIndex[week] + "🔹️" + dateTemp.toISOString().split("T")[0];
       this.timestamp.push({ id: i, label, value: dateTemp.toISOString().split("T")[0] });
     }
-
     Promise.all([this.loadDepartments(), this.loadHospitals()])
       .then(() => {
         this.query(1);
@@ -215,7 +206,6 @@ export default {
      * @param item 医生信息
      */
     reserve(item) {
-      console.log("item", item)
       this.dialogVisible = false;
       if (this.user.role !== "USER") {
         this.$message.warning("您的角色不支持挂号操作");
@@ -347,7 +337,6 @@ export default {
         .then((res) => {
           if (res.code === "200") {
             this.tableData = res.data?.list;
-            console.log(this.tableData)
             this.total = res.data?.total;
           } else {
             this.$message.error(res.msg);
@@ -355,7 +344,7 @@ export default {
         });
     },
     reset() {
-      this.departmentId = this.planList[0]?.id;
+      this.departmentId = this.departmentList[0]?.id;
       this.hospitalId = this.hospitalList[0]?.id;
       this.selectedDate = this.timestamp[0]?.value;
       this.query(1);

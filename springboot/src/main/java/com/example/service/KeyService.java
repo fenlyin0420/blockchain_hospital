@@ -40,8 +40,6 @@ public class KeyService {
      *
      */
     public RingSign sign(Params params) {
-        //通过userid查login信息，公私钥
-//        Login login=loginMapper.findByname(params.getName());
         System.out.println("params" + params);
         Traverse traverse = traverseMapper.selectByNumber(params.getNumber());
         Doctor doctor = doctorMapper.selectById(traverse.getDoctorId());
@@ -191,6 +189,12 @@ public class KeyService {
 
         return doctors;
     }
+
+    /**
+     * 解密病历
+     * @param params 与病历相关的参数
+     * @return
+     */
     public Params decrypt(Params params) {
         User user = userMapper.selectByName(params.getName());
         try{
