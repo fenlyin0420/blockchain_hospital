@@ -153,7 +153,7 @@ export default {
       fits: 'fill',
       dialogVisible: false, // 对话框可见性  
       previewImageUrl: '', // 预览图片URL  
-      previewImageIndex: -1 // 预览图片索引 
+      previewImageIndex: -1, // 预览图片索引 
     };
   },
   created() {
@@ -224,6 +224,7 @@ export default {
      * 将本地密文发送到服务端，服务端解密后返回明文
      */
     decryptAdviceAndDrug() {
+      // 解密文字
       let params = {
         name: this.receivedData.name,
         advice: this.receivedData.advice,
@@ -236,6 +237,14 @@ export default {
           console.log("drug:", this.receivedData.drug)
         } else {
           this.$message.error(res.msg)
+        }
+      })
+
+      // 解密图片
+      const url = this.receivedData.img.slice(0,-1);
+      this.$request.post('keys/imgDecrypt', url).then(res => {
+        if (res.code === '200'){
+          this.receivedData.img = `data:image/png;base64,${res.data}`;  
         }
       })
     },

@@ -8,7 +8,9 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 
 public class MyMultipartFile implements MultipartFile {
     private final byte[] fileContent;
@@ -67,5 +69,28 @@ public class MyMultipartFile implements MultipartFile {
         baos.flush();
         byte[] imageBytes = baos.toByteArray();
         return new MyMultipartFile(imageBytes, fileName, "image/" + format);
+    }
+    
+    public static MultipartFile fromURL(String imageUrl) throws IOException {
+        WebClient webClient = WebClient.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5 * 1024 * 1024))
+                .build();
+        
+        byte[] imageBytes = webClient.get()
+                .uri(imageUrl)
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .retrieve()
+                .bodyToMono(byte[].class)
+                .block();
+
+        if (imageBytes == null) {
+            throw new IOException("Failed to download image from URL");
+        }
+
+        // 从 URL 中提取文件名
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        String contentType = "image/png"; 
+
+        return new MyMultipartFile(imageBytes, fileName, contentType);
     }
 }

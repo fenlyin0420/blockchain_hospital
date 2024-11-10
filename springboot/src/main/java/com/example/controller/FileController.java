@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -55,7 +57,9 @@ public class FileController {
             }
             // 如果是病历图片，进行加密
             if (isTraverse) {
-                file = ImgUtil.ImageEncryptor(file);
+                BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
+                img = ImgUtil.ImageEncryptor(img);
+                file = ImgUtil.BufferedImageToMultipartFile(img, file.getOriginalFilename());
             }
             // 文件存储形式：时间戳-文件名
             FileUtil.writeBytes(file.getBytes(), filePath + flag + "-" + fileName);  // ***/manager/files/1697438073596-avatar.png

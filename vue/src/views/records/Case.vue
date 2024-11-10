@@ -64,7 +64,7 @@
             <div class="upload-container">
               <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
                 :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
-                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" :limit="1">
+                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" multiple :limit="3">
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{file}">
                   <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
@@ -226,7 +226,7 @@ export default {
     handleSelect(item) {
     },
 
-    //图片上传
+    //图片删除
     handleRemove(file, uploadedUrls) {
       let uploadFiles = this.$refs.pictureUpload.uploadFiles
       for (var i = 0; i < uploadFiles.length; i++) {
@@ -252,6 +252,7 @@ export default {
     },
     handleImgSuccess(response) {
       // 设置uploadDisabled为true，隐藏上传组件
+      console.log("res:", response)
       this.uploadDisabled = true;
       const uploadedUrlString = response.data;  //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
       const uploadedUrl = uploadedUrlString.split("/");
@@ -272,37 +273,6 @@ export default {
       }
       return isImage;
     },
-
-    // loadCaseInfo() {
-    //   this.caseInfo = {
-    //     id: '001',
-    //     number: '123456',
-    //     name: '默认',
-    //     doctorName: '李医生',
-    //     hospitalName: 'XX医院',
-    //     status: '未叫号', // Assuming default status
-    //   }
-    // },
-    // call(caseInfo) {
-    //   let reserveData = { ...caseInfo, status: '已叫号' };
-    //   this.$message.success('叫号成功')
-    //   this.loadCaseInfo()
-    //   this.record(caseInfo)
-    // },
-    // record(caseInfo) {
-    //   let data = {
-    //     userId: caseInfo.userId,
-    //     doctorId: caseInfo.doctorId,
-    //   }
-    //   this.$message.success('数据同步成功')
-    // },
-    // del(id) {
-    //   // Simulating confirmation dialog and API request to delete case
-    //   this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
-    //     this.$message.success('操作成功')
-    //     this.loadCaseInfo()
-    //   }).catch(() => { })
-    // },
     confirmMedicine() {
       // 确定按钮
       this.medicine = this.medicine + this.selectedMedicine + " " + this.medicineQuantity + " " + this.medicineFrequency + "\n"
