@@ -257,8 +257,19 @@ export default {
         if (res.code === '200') {
           this.receivedData.signData = res.data.signData
           this.receivedData.signKey = res.data.signKey
-          this.$message.success("生成成功")
-          this.$router.push('/reserve')
+
+          // 自动跳转
+          const countdownSeconds = 3;
+          let countdown = countdownSeconds;
+          const countdownInterval = setInterval(() => {
+            if (countdown > 0) {
+              this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
+              countdown--;
+            } else {
+              clearInterval(countdownInterval);
+              this.$router.push('/doctorReserve');
+            }
+          }, 1000);
         } else {
           this.$message.error(res.msg)
         }
