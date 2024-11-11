@@ -9,7 +9,6 @@
         select doctor.*, department.name as departmentName,hospital.hospital_name as hospitalName
         from doctor
         left join department on doctor.department_id = department.id
-        left join plan on plan.doctor_id = doctor.id
         left join hospital on doctor.hospital_id = hospital.id
         <where>
             <if test="id != null">and id= #{id}</if>
@@ -51,14 +50,16 @@
         from doctor
         where id = #{id}
     </select>
+
     <select id="selectByH" resultType="com.example.entity.Doctor">
         select doctor.*, department.name as departmentName,hospital.hospital_name as hospitalName
         from doctor
                  left join department on doctor.department_id = department.id
-                 left join plan on plan.doctor_id = doctor.id
+#                  left join plan on plan.doctor_id = doctor.id
                  left join hospital on doctor.hospital_id = hospital.id
         where doctor.hospital_id=#{H_id}
     </select>
+
     <select id="select" resultType="com.example.entity.Doctor">
         select * from doctor
     </select>

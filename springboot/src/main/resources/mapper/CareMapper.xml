@@ -17,7 +17,7 @@
         from traverse
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
-        where traverse.inhospital = '是'
+        where traverse.inhospital = '已住院'
     </select>
 
 </mapper>

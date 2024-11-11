@@ -74,7 +74,7 @@ public class DoctorController {
     }
 
     /**
-     * 查询医院
+     *根据医生所在医院的ID，查本医院医生
      */
     @GetMapping("/selectByH/{id}")
     public Result selectByH(@PathVariable Integer id) {

@@ -4,12 +4,17 @@ import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.exception.CustomException;
 import com.example.mapper.*;
+import com.example.utils.ImgUtil;
+import com.example.utils.MyMultipartFile;
 import com.example.utils.JwtSm.BestRingSignUtil;
 import com.example.utils.JwtSm.MySM2Util;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -17,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
+import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 
 import javax.annotation.Resource;
@@ -40,8 +46,6 @@ public class KeyService {
      *
      */
     public RingSign sign(Params params) {
-        //通过userid查login信息，公私钥
-//        Login login=loginMapper.findByname(params.getName());
         System.out.println("params" + params);
         Traverse traverse = traverseMapper.selectByNumber(params.getNumber());
         Doctor doctor = doctorMapper.selectById(traverse.getDoctorId());
@@ -191,6 +195,12 @@ public class KeyService {
 
         return doctors;
     }
+
+    /**
+     * 解密病历
+     * @param params 与病历相关的参数
+     * @return
+     */
     public Params decrypt(Params params) {
         User user = userMapper.selectByName(params.getName());
         try{
@@ -202,6 +212,18 @@ public class KeyService {
             e.printStackTrace();
         }
         return params;
+    }
+
+    public String imgDecrypt(String imgURL) {
+        try {
+            MultipartFile file = MyMultipartFile.fromURL(imgURL);
+            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
+            img = ImgUtil.ImageDecryptor(img);
+            return ImgUtil.getImageBytes(img);
+        } catch(IOException e) {
+            System.out.print("error:( " + e.getMessage());
+            return null;
+        }
     }
 
     public Account selectById(Account account) {

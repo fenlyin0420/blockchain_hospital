@@ -29,4 +29,8 @@ public interface NurseMapper{
     Nurse selectByUsername(String username);
 
     Nurse selectById(Integer id);
+
+    void updateById(Nurse nurse);
+
+    List<Nurse> selectByH(Integer id);
 }

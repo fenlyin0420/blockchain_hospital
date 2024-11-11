@@ -79,7 +79,7 @@ export default {
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      rules: {
+      rules: { //表单验证，即在dialog弹出的form里，如果不填会下面出现红色小字
         name: [
           {required: true, message: '请输入科室名称', trigger: 'blur'},
         ],

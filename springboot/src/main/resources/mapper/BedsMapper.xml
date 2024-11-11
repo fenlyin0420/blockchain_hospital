@@ -7,7 +7,10 @@
             <if test="wardId != null">
                 ward_id = #{wardId},
             </if>
-
+            inhospital = #{inhospital},
+            <if test="careStatus != null">
+                care_status = #{careStatus},
+            </if>
         </set>
         where id = #{id}
     </update>
@@ -21,7 +24,7 @@
         from traverse
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
-        where traverse.inhospital = '是'
+        where traverse.inhospital in ('已住院','待住院')
     </select>
 
     <select id="selectAllWard" resultType="com.example.entity.Ward">

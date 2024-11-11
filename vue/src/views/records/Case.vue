@@ -5,21 +5,11 @@
     </div>
 
     <el-row class="info-row" :gutter="24">
-      <!-- <el-col :span="6">
-          <span class="field-label">选择:</span>
-          <el-select v-model="caseInfo" placeholder="请选择医院">
-            <div>
-              <el-option v-for="item in tableData" :label="item.userName + '-' + item.hospitalName" :value="item" :key="item.id"></el-option>
-            </div>
-          </el-select>
-        </el-col> -->
-      <el-col :span="12">
+      <el-col :span="12" >
         <el-form inline label-width="80px">
           <el-form-item class="field-container">
             <span class="field-label">姓名:</span>
             <span class="field-value">{{ caseInfo.userName }}</span>
-            <!-- <span class="field-label">检查时间:</span>
-            <span class="field-value">{{ caseInfo.time }}</span> -->
           </el-form-item>
         </el-form>
         <hr class="divider" />
@@ -73,8 +63,8 @@
             <span class="field-label">医疗影像:</span>
             <div class="upload-container">
               <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
-                :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove"
-                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" :limit="1">
+                :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
+                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" multiple :limit="3">
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{file}">
                   <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
@@ -96,33 +86,6 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <!-- <el-col :span="6">
-          <div class="info-field">
-            <span class="field-label">医生姓名:</span>
-            <span class="field-value">{{ caseInfo.doctorName }}</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="info-field">
-            <span class="field-label">医院名称:</span>
-            <span class="field-value">{{ caseInfo.hospitalName }}</span>
-          </div>
-        </el-col> -->
-      <!-- <el-row class="info-row">
-          <el-col :span="6">
-            <div class="info-field">
-              <span class="field-label">科室:</span>
-              <span class="field-value">{{ caseInfo.departmentName }}</span>
-            </div>
-          </el-col> 
-          
-          <el-col :span="6">
-            <div class="info-field">
-              <span class="field-label">住院 :</span>
-              <span class="field-value">{{ caseInfo.inhospital }}</span>
-            </div>
-          </el-col>
-        </el-row> -->
     </el-row>
     <el-row class="info-row" :gutter="24">
       <el-col :span="15">
@@ -156,6 +119,7 @@ export default {
       disabled: false,
       uploadedUrls: [],
       uploadDisabled: false, // 控制上传组件的显示与隐藏
+      extraData: { isTraverse: true },
     }
   },
   created() {
@@ -237,7 +201,6 @@ export default {
       ];
     },
     handleSelect(item) {
-      // console.log(item);
     },
 
     //病情联想
@@ -262,10 +225,9 @@ export default {
       ];
     },
     handleSelect(item) {
-      // console.log(item);
     },
 
-    //图片上传
+    //图片删除
     handleRemove(file, uploadedUrls) {
       let uploadFiles = this.$refs.pictureUpload.uploadFiles
       for (var i = 0; i < uploadFiles.length; i++) {
@@ -273,13 +235,11 @@ export default {
           //服务器端删除图片
           let fileIdentifier = uploadedUrls[i];
           this.$request.delete(`/files/${fileIdentifier}`)
-            .then(response => {
-              // console.log('图片已从服务器删除', response);
-              uploadedUrls.splice(i, 1);
-            })
-            .catch(error => {
-              // console.error('删除图片时出错', error);
-            });
+          .then(response => {
+            uploadedUrls.splice(i,1);
+          })
+          .catch(error => {
+          });
           //客户端删除图片
           uploadFiles.splice(i, 1);
           break;
@@ -292,8 +252,8 @@ export default {
       this.dialogVisible = true;
     },
     handleImgSuccess(response) {
-      console.log(response);
       // 设置uploadDisabled为true，隐藏上传组件
+      console.log("res:", response)
       this.uploadDisabled = true;
       const uploadedUrlString = response.data;  //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
       const uploadedUrl = uploadedUrlString.split("/");
@@ -314,37 +274,6 @@ export default {
       }
       return isImage;
     },
-
-    // loadCaseInfo() {
-    //   this.caseInfo = {
-    //     id: '001',
-    //     number: '123456',
-    //     name: '默认',
-    //     doctorName: '李医生',
-    //     hospitalName: 'XX医院',
-    //     status: '未叫号', // Assuming default status
-    //   }
-    // },
-    // call(caseInfo) {
-    //   let reserveData = { ...caseInfo, status: '已叫号' };
-    //   this.$message.success('叫号成功')
-    //   this.loadCaseInfo()
-    //   this.record(caseInfo)
-    // },
-    // record(caseInfo) {
-    //   let data = {
-    //     userId: caseInfo.userId,
-    //     doctorId: caseInfo.doctorId,
-    //   }
-    //   this.$message.success('数据同步成功')
-    // },
-    // del(id) {
-    //   // Simulating confirmation dialog and API request to delete case
-    //   this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
-    //     this.$message.success('操作成功')
-    //     this.loadCaseInfo()
-    //   }).catch(() => { })
-    // },
     confirmMedicine() {
       // 确定按钮
       this.medicine = this.medicine + this.selectedMedicine + " " + this.medicineQuantity + " " + this.medicineFrequency + "\n"

@@ -4,9 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
-import com.example.entity.Plan;
+import com.example.entity.nursePlan;
 import com.example.exception.CustomException;
-import com.example.mapper.PlanMapper;
+import com.example.mapper.NursePlanMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -19,29 +19,29 @@ import java.util.List;
  * 排班信息表业务处理
  **/
 @Service
-public class PlanService {
+public class NursePlanService {
 
     @Resource
-    private PlanMapper planMapper;
+    private NursePlanMapper nursePlanMapper;
 
     /**
      * 新增
      */
-    public void add(Plan plan) {
+    public void add(nursePlan plan) {
         // 要先做一次这个排班的校验：同一个医生同一天只能有一条排班记录
-        // 根据医生的id和星期几查询一下有么有该记录
-        Plan dbPlan = planMapper.selectByDoctorIdAndWeek(plan.getDoctorId(), plan.getWeek());
+        // 根据医生的id和日期查询一下有么有该记录
+        nursePlan dbPlan = nursePlanMapper.selectByNurseIdAndDate(plan.getNurseId(), plan.getDate());
         if (ObjectUtil.isNotEmpty(dbPlan)) {
             throw new CustomException(ResultCodeEnum.PLAN_EXIST_ERROR);
         }
-        planMapper.insert(plan);
+        nursePlanMapper.insert(plan);
     }
 
     /**
      * 删除
      */
     public void deleteById(Integer id) {
-        planMapper.deleteById(id);
+        nursePlanMapper.deleteById(id);
     }
 
     /**
@@ -49,50 +49,37 @@ public class PlanService {
      */
     public void deleteBatch(List<Integer> ids) {
         for (Integer id : ids) {
-            planMapper.deleteById(id);
+            nursePlanMapper.deleteById(id);
         }
     }
 
     /**
      * 修改
      */
-    public void updateById(Plan plan) {
-        planMapper.updateById(plan);
+    public void updateById(nursePlan plan) {
+        nursePlanMapper.updateById(plan);
     }
 
-    public boolean updateNum(Plan plan){
-        if (planMapper.updateNum(plan) != 1)
-            return false;
-        else
-            return true;
-    }
-
-    /**
-     * 根据ID查询
-     */
-    public Plan selectById(Integer id) {
-        return planMapper.selectById(id);
-    }
 
     /**
      * 查询所有
      */
-    public List<Plan> selectAll(Plan plan) {
-        return planMapper.selectAll(plan);
+    public List<nursePlan> selectAll(nursePlan plan) {
+        return nursePlanMapper.selectAll(plan);
     }
 
     /**
      * 分页查询
      */
-    public PageInfo<Plan> selectPage(Plan plan, Integer pageNum, Integer pageSize) {
+    public PageInfo<nursePlan> selectPage(nursePlan plan, Integer pageNum, Integer pageSize) {
         Account currentUser = TokenUtils.getCurrentUser();
-        // 如果是医生，则只查询医生自己的排班信息
-        if (RoleEnum.DOCTOR.name().equals(currentUser.getRole())) {
-            plan.setDoctorId(currentUser.getId());
+        // 如果是护士，则只插叙护士自己的排班信息
+        if (RoleEnum.NURSE.name().equals(currentUser.getRole())) {
+            plan.setNurseId(currentUser.getId());
         }
 
         PageHelper.startPage(pageNum, pageSize); //开启分页查询
-        List<Plan> list = planMapper.selectAll(plan);
+        List<nursePlan> list = nursePlanMapper.selectAll(plan);
         return PageInfo.of(list);
     }
 
