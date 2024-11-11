@@ -135,13 +135,13 @@ export default {
       try {
         // loadByUser返回Promises  
         await Promise.all([this.loadByUser()]);
-
+        console.log("tableData", this.tableData)
         // 从URL查询参数中解析caseInfo  
         const queryData = this.$route.query.data;
         console.log("queryData", queryData)
         if (queryData) {
           this.caseInfo = JSON.parse(decodeURIComponent(queryData));
-
+          console.log("caseInfo", this.caseInfo)
           // 检查tableData以更新caseInfo
           this.updateCaseInfoFromTableData();
         }
@@ -172,7 +172,7 @@ export default {
 
     updateCaseInfoFromTableData() {
       // 更新caseInfo以匹配tableData中的项 
-      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName);
+      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName||item.userName === this.caseInfo.name);
       if (matchingItem) {
         // 使用解构赋值或直接赋值来更新caseInfo  
         // 注意：直接赋值整个对象可能会覆盖Vue的响应式跟踪，除非matchingItem本身是一个响应式对象  
