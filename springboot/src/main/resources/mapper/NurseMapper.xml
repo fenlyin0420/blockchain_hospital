@@ -109,10 +109,10 @@
     </select>
 
     <select id="selectByH" resultType="com.example.entity.Nurse">
-        select nurse.*, department.name as departmentName, hospital.name as hospitalName
+        select nurse.*, department.name as departmentName, hospital.hospital_name as hospitalName
         from nurse
-            left join department on nurse.departmentId = department.id
-            left join hospital on nurse.hospitalId = hospital.id
+            left join department on nurse.department_id = department.id
+            left join hospital on nurse.hospital_id = hospital.id
         where nurse.hospital_id = #{id}
     </select>
 
