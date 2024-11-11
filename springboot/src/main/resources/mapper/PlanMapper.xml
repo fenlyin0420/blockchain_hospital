@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.PlanMapper">
 
     <sql id="Base_Column_List">
-        id,doctor_id,num,week
+        id,doctor_id,num,date
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Plan">
@@ -41,14 +41,14 @@
                 <if test="id != null">id,</if>
                 <if test="doctorId != null">doctor_id,</if>
                 <if test="num != null">num,</if>
-                <if test="week != null">week,</if>
+                <if test="date != null">date,</if>
                 <if test="hospitalId != null">hospital_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="doctorId != null">#{doctorId},</if>
                 <if test="num != null">#{num},</if>
-                <if test="week != null">#{week},</if>
+                <if test="date != null">#{date},</if>
             <if test="hospitalId != null">#{hospitalId},</if>
         </trim>
     </insert>
@@ -62,8 +62,8 @@
             <if test="num != null">
                 num = #{num},
             </if>
-            <if test="week != null">
-                week = #{week},
+            <if test="date != null">
+                date = #{date},
             </if>
             <if test="hospitalId != null">
                 hospital_id = #{hospitalId},

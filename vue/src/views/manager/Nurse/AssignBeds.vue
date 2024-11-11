@@ -319,6 +319,7 @@ export default {
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
       this.form.inhospital = '已住院';
+      this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
     save() { // 实际上就是修改操作

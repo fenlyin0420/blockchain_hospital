@@ -8,7 +8,9 @@
                 ward_id = #{wardId},
             </if>
             inhospital = #{inhospital},
-
+            <if test="careStatus != null">
+                care_status = #{careStatus},
+            </if>
         </set>
         where id = #{id}
     </update>

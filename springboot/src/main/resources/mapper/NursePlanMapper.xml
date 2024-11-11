@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.NursePlanMapper">
+    <insert id="insert">
+        insert into nurse_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="nurseId != null">nurse_id,</if>
+            <if test="num != null">num,</if>
+            <if test="date != null">date,</if>
+            <if test="hospitalId != null">hospital_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="nurseId != null">#{nurseId},</if>
+            <if test="num != null">#{num},</if>
+            <if test="date != null">#{date},</if>
+            <if test="hospitalId != null">#{hospitalId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById">
+        update nurse_plan
+        <set>
+            <if test="nurseId != null">
+                nurse_id = #{nurseId},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+            <if test="date != null">
+                date = #{date},
+            </if>
+            <if test="hospitalId != null">
+                hospital_id = #{hospitalId},
+            </if>
+        </set>
+    </update>
+
+    <delete id="deleteById">
+        delete from nurse_plan
+        where id = #{id}
+    </delete>
+
+
+    <select id="selectAll" resultType="com.example.entity.nursePlan">
+        select nurse_plan.*, nurse.name as nurseName, department.name as departmentName, department.id as departmentId, hospital.hospital_name as hospitalName
+        from nurse_plan
+        left join nurse on nurse_plan.nurse_id = nurse.id
+        left join department on nurse.department_id = department.id
+        left join hospital on nurse_plan.hospital_id = hospital.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="date != null"> and nurse_plan.date = #{date}</if>
+            <if test="nurseId != null"> and nurse_plan.nurse_id = #{nurseId}</if>
+            <if test="hospitalId != null"> and nurse_plan.hospital_id = #{hospitalId}</if>
+        </where>
+        order by id desc
+    </select>
+
+</mapper>

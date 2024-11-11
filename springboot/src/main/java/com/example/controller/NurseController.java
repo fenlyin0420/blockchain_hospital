@@ -16,6 +16,16 @@ public class NurseController {
     @Resource
     private NurseService nurseService;  //尼玛，一定要引入资源啊，草泥马的这真卡死了，一定要长教训啊我日
 
+
+    /**
+     *根据护士所在医院的ID，查本医院护士
+     */
+    @GetMapping("/selectByH")
+        public Result selectByH(Integer id) {
+            List<Nurse> list = nurseService.selectByH(id);
+            return Result.success(list);
+        }
+
     @GetMapping
     public Result findAll() {
         List<Nurse> l = nurseService.findAll();
@@ -48,5 +58,7 @@ public class NurseController {
         Nurse nurse = nurseService.selectById(id);
         return Result.success(nurse);
     }
+
+
 
 }

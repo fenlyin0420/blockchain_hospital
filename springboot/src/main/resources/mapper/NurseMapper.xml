@@ -108,5 +108,13 @@
         select * from nurse where id = #{id}
     </select>
 
+    <select id="selectByH" resultType="com.example.entity.Nurse">
+        select nurse.*, department.name as departmentName, hospital.name as hospitalName
+        from nurse
+            left join department on nurse.departmentId = department.id
+            left join hospital on nurse.hospitalId = hospital.id
+        where nurse.hospital_id = #{id}
+    </select>
+
 
 </mapper>

@@ -2,19 +2,17 @@
   <div>
     <div class="search">
 
-      <el-input v-model="input" style = "width: 300px; margin-right: 10px;" v-if="user.role === 'DOCTOR'" placeholder="请输入姓名"></el-input>
-
       <el-select id="selectedDate" placeholder="请选择日期" v-model="selectedDate">
         <el-option
             v-for="item in timestamp"
             :key="item.id"
             :label="item.label"
-            :value="item.id"
+            :value="item.value"
         ></el-option>
       </el-select>
 
-      <el-button type="primary" plain @click="handleAdd" style="margin-left: 10px" v-if="user.role === 'DOCTOR'">查询</el-button>
-      <el-button type="warning" plain @click="reset" style="margin-left: 10px" v-if="user.role === 'DOCTOR'">重置</el-button>
+      <el-button type="success" plain @click="load(1)" style="margin-left: 10px">查询</el-button>
+      <el-button type="warning" plain @click="reset" style="margin-left: 10px" v-if="user.role === 'ADMIN'">重置</el-button>
 
       <el-button type="primary" plain @click="handleAdd" style="margin-left: 10px" v-if="user.role === 'ADMIN'">新增
       </el-button>
@@ -25,7 +23,7 @@
 
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-        <!--        <el-table-column type="selection" width="55" align="center"></el-table-column>-->
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column
             prop="doctorName"
             label="医生姓名"
@@ -103,6 +101,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item prop="num" label="看病人数">
           <el-input
               v-model="form.num"
@@ -110,13 +109,13 @@
               placeholder="请输入看病人数"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="week" label="选择周几">
-          <el-select placeholder="请选择日期" v-model="form.week" style="width: 100%">
+        <el-form-item prop="date" label="选择日期">
+          <el-select placeholder="请选择日期" v-model="form.date" style="width: 100%">
             <el-option
                 v-for="item in timestamp"
                 :key="item.id"
                 :label="item.label"
-                :value="item.id"
+                :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -145,7 +144,7 @@ export default {
       rules: {
         doctorId: [{required: true, message: "请选择医生", trigger: "blur"}],
         num: [{required: true, message: "请输入人数", trigger: "blur"}],
-        week: [{required: true, message: "请选择日期", trigger: "blur"}],
+        date: [{required: true, message: "请选择日期", trigger: "blur"}],
       },
       ids: [],
       doctorData: [],
@@ -156,27 +155,28 @@ export default {
   created() {
     /** 生成七天日期数据 */
     const weekIndex = [
-      "星期日",
-      "星期一",
-      "星期二",
-      "星期三",
-      "星期四",
-      "星期五",
-      "星期六",
-    ];
+          "星期日",
+          "星期一",
+          "星期二",
+          "星期三",
+          "星期四",
+          "星期五",
+          "星期六",
+        ];
     let startDate = new Date();
     let dateTemp = new Date();
     for (let i = 0; i < 7; i++) {
       dateTemp.setDate(startDate.getDate() + i);
       let week = dateTemp.getDay();
       let label = weekIndex[week] + "🔹️" + dateTemp.toISOString().split("T")[0];
-      this.timestamp.push({id: i, label, value: dateTemp.toISOString().split("T")[0]});
+      // 设置 value 为 yyyy-MM-dd 格式
+      this.timestamp.push({ id: i, label, value: dateTemp.toISOString().split("T")[0] });
     }
-    // 初始化日期
-    this.selectedDate = this.timestamp[0].value;
+// 初始化日期
+    this.selectedDate = null;
 
     this.load(1);
-    // this.loadDoctor();
+    this.loadDoctor();
   },
   methods: {
     loadDoctor() {
@@ -274,18 +274,17 @@ export default {
             params: {
               pageNum: this.pageNum,
               pageSize: this.pageSize,
-              date: new Date(this.selectedDate),
+              date: this.selectedDate,
               hospitalId: this.user.hospitalId,
             },
           })
           .then((res) => {
-            // TODO ??. 后端发送来的 Date 对象会被自动处理为 string?
             this.tableData = res.data?.list;
             this.total = res.data?.total;
           });
     },
     reset() {
-      this.week = null;
+      this.selectedDate = null;
       this.load(1);
     },
     handleCurrentChange(pageNum) {

@@ -61,4 +61,8 @@ public class NurseService {
     public void updateById(Nurse nurse) {
         nurseMapper.updateById(nurse);
     }
+
+    public List<Nurse> selectByH(Integer id) {
+        return nurseMapper.selectByH(id);
+    }
 }
