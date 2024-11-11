@@ -19,7 +19,7 @@ public class NurseController {
     /**
      *根据护士所在医院的ID，查本医院护士
      */
-    @GetMapping("/selectByH")
+    @GetMapping("/selectByH/{id}")
         public Result selectByH(Integer id) {
             List<Nurse> list = nurseService.selectByH(id);
             return Result.success(list);

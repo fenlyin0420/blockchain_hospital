@@ -257,6 +257,8 @@ export default {
         if (res.code === '200') {
           this.receivedData.signData = res.data.signData
           this.receivedData.signKey = res.data.signKey
+          this.$message.success("生成成功")
+          this.$router.push('/reserve')
         } else {
           this.$message.error(res.msg)
         }

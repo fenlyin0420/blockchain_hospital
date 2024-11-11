@@ -175,7 +175,7 @@ export default {
     this.selectedDate = null;
 
     this.load(1);
-    // this.loadNurse();
+    this.loadNurse();
   },
   methods: {
     loadNurse() {
