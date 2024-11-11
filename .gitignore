@@ -3,3 +3,4 @@ springboot/target
 .idea
 .vscode
 springboot/src/main/resources/application.yml
+diagram

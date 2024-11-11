@@ -12,11 +12,11 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fit"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
-            <el-dialog :visible.sync="dialogVisible" size="50%">
+            <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="previewImageUrl" :alt="'Preview of ' + (previewImageIndex + 1)" />
             </el-dialog>
           </el-form-item>
@@ -48,10 +48,10 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20">
+    <el-row :gutter="24">
+      <!-- 签名数据 -->
       <el-col :span="8">
         <div style="margin: 0 0 20px 0">
-
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
@@ -61,51 +61,66 @@
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
                 <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
+                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
               </div>
             </el-col>
           </el-row>
-
         </div>
+
         <div class="grid-content bg-purple">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signData">
           </el-input>
         </div>
       </el-col>
+
+      <!-- 签名信息 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 34px 0">
+        <div style="margin: 0 0 20px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
                 环签名信息
               </div>
             </el-col>
+
+            <el-col :span="14">
+              <div class="grid-content bg-purple-light">
+                <el-button  type="primary" style="visibility: hidden;" >占位 </el-button>
+              </div>
+            </el-col>
           </el-row>
 
         </div>
         <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signKey">
           </el-input>
         </div>
       </el-col>
+
+      <!-- 验签结果 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 34px 0">
+        <div style="margin: 0 0 20px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
                 验签结果
               </div>
             </el-col>
+
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
+              <!-- 验签按钮 -->
                 <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER'">验签</el-button>
+                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
               </div>
             </el-col>
           </el-row>
         </div>
+
         <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入内容"
+          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
             v-model="receivedData.signResult">
           </el-input>
         </div>
@@ -138,7 +153,7 @@ export default {
       fits: 'fill',
       dialogVisible: false, // 对话框可见性  
       previewImageUrl: '', // 预览图片URL  
-      previewImageIndex: -1 // 预览图片索引 
+      previewImageIndex: -1, // 预览图片索引 
     };
   },
   created() {
@@ -155,15 +170,17 @@ export default {
   computed: {
     drug() {
       const medicationString = this.receivedData.drug;
+      console.log(medicationString)
       // 拆分字符串为每一行
-      const lines = medicationString.split('\n');
+      let lines = medicationString.split('\n');
+      if (lines.length != 1) lines = lines.slice(0, -1);
       // 将每一行拆分为药物信息对象
       return lines.map(line => {
         const parts = line.split(' ');
         return {
           name: parts[0],
-          dose: parts[1],
-          frequency: parts[2]
+          dose: parts[1] ? parts[1] : parts[0],
+          frequency: parts[2] ? parts[2] : parts[0]
         };
       });
     },
@@ -182,6 +199,7 @@ export default {
       this.previewImageUrl = url;
       this.previewImageIndex = index;
       this.dialogVisible = true;
+      console.log("drug:", this.drug);
     },
 
     load() {
@@ -203,8 +221,10 @@ export default {
     },
     /**
      * 数据解密
+     * 将本地密文发送到服务端，服务端解密后返回明文
      */
     decryptAdviceAndDrug() {
+      // 解密文字
       let params = {
         name: this.receivedData.name,
         advice: this.receivedData.advice,
@@ -214,8 +234,17 @@ export default {
         if (res.code === '200') {
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
+          console.log("drug:", this.receivedData.drug)
         } else {
           this.$message.error(res.msg)
+        }
+      })
+
+      // 解密图片
+      const url = this.receivedData.img.slice(0,-1);
+      this.$request.post('keys/imgDecrypt', url).then(res => {
+        if (res.code === '200'){
+          this.receivedData.img = `data:image/png;base64,${res.data}`;  
         }
       })
     },

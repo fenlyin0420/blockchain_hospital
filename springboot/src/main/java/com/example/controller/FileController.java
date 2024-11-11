@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import com.example.utils.ImgUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.thread.ThreadUtil;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -36,7 +39,9 @@ public class FileController {
      * 文件上传
      */
     @PostMapping("/upload")
-    public Result upload(MultipartFile file) {
+    public Result upload(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam(value = "isTraverse", defaultValue="false") Boolean isTraverse) {
         //获取当前时间戳
         String flag;
         synchronized (FileController.class) {
@@ -49,6 +54,12 @@ public class FileController {
             //如果没file文件夹，那么在当前根目录下创建一个file
             if (!FileUtil.isDirectory(filePath)) {
                 FileUtil.mkdir(filePath);
+            }
+            // 如果是病历图片，进行加密
+            if (isTraverse) {
+                BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
+                img = ImgUtil.ImageEncryptor(img);
+                file = ImgUtil.BufferedImageToMultipartFile(img, file.getOriginalFilename());
             }
             // 文件存储形式：时间戳-文件名
             FileUtil.writeBytes(file.getBytes(), filePath + flag + "-" + fileName);  // ***/manager/files/1697438073596-avatar.png

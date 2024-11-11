@@ -9,9 +9,16 @@ import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.KeyService;
 import com.example.service.UserService;
+import com.example.utils.ImgUtil;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import javax.annotation.Resource;
+
 
 
 @RestController
@@ -76,4 +83,23 @@ public class KeyController {
     public Result decrypt(@RequestBody Params params){
         return Result.success(keyService.decrypt(params));
     }
+
+    @PostMapping("/imgDecrypt")
+    public Result imgDecrypt(@RequestBody String imgURL) {
+        String Url = imgURL.substring(1, imgURL.length() - 1);
+        return Result.success(keyService.imgDecrypt(Url));
+    }
+
+    // public ResponseEntity<byte[]> getImage(@RequestBody String imgURL) throws IOException {
+       
+    //     String Url = imgURL.substring(1, imgURL.length() - 1);
+    //     BufferedImage img = keyService.imgDecrypt(imgURL);
+    //     byte[] imageBytes = ImgUtil.getImageBytes(img);
+
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.setContentType(MediaType.IMAGE_PNG); // 设置响应的Content-Type为图片格式，这里是PNG
+
+    //     return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    // }
+    
 }

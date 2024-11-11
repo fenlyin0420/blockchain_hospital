@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.entity.Doctor;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
 import com.example.service.NurseService;
