@@ -73,7 +73,7 @@ public class MyMultipartFile implements MultipartFile {
     
     public static MultipartFile fromURL(String imageUrl) throws IOException {
         WebClient webClient = WebClient.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5 * 1024 * 1024))
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                 .build();
         
         byte[] imageBytes = webClient.get()
