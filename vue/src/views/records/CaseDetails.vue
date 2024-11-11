@@ -12,7 +12,7 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fit"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
@@ -228,6 +228,8 @@ export default {
         if (res.code === '200') {
           this.receivedData.signData = res.data.signData
           this.receivedData.signKey = res.data.signKey
+          this.$message.success("生成成功")
+          this.$router.push('/reserve')
         } else {
           this.$message.error(res.msg)
         }

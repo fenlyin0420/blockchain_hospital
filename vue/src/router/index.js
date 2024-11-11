@@ -35,6 +35,7 @@ const routes = [
       { path: 'doctorCard', name: 'DoctorCard', meta: { name: '预约挂号' }, component: () => import('../views/manager/DoctorCard') },
       { path: 'reserve', name: 'Reserve', meta: { name: '患者挂号' }, component: () => import('../views/manager/Reserve') },
       { path: 'doctorReserve', name: 'DoctorReserve', meta: { name: '当日诊疗' }, component: () => import('../views/manager/Reserve') },
+      { path: 'hospitalization', name: 'Hospitalization', meta: { name: '当日住院' }, component: () => import('../views/records/Hospitalization.vue') },
       { path: 'record', name: 'Record', meta: { name: '我的就诊' }, component: () => import('../views/manager/Record') },
       { path: 'registration', name: 'Registration', meta: { name: '住院登记' }, component: () => import('../views/manager/Registration') },
       { path: 'MyFiles', name: 'MyFiles', meta: { name: '我的档案' }, component: () => import('../views/records/MyFiles.vue') },

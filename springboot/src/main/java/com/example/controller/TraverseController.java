@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.common.enums.InhospitalEnum;
 import com.example.entity.Traverse;
 import com.example.service.TraverseService;
 import com.example.common.Result;
@@ -55,6 +56,12 @@ public class TraverseController {
 
     @PostMapping("/add")
     public Result add(@RequestBody Traverse traverse) {
+        if(traverse.getInhospital().equals("是")){
+            traverse.setInhospital(InhospitalEnum.Inhospital_YES.status);
+        }
+        if(traverse.getInhospital().equals("否")){
+            traverse.setInhospital(InhospitalEnum.Inhospital_NO.status);
+        }
         traverseService.add(traverse);
         return Result.success();
     }

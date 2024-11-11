@@ -12,14 +12,14 @@
     <div class="table">
       <el-table :data="tableData" stripe>
         <!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
-        <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'"
+        <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'" align="center"></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center"
           show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'"
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"
           show-overflow-tooltip></el-table-column>
-        <el-table-column prop="departmentName" label="科室"></el-table-column>
-        <el-table-column prop="time" label="就诊时间"></el-table-column>
-        <el-table-column prop="status" label="挂号状态"></el-table-column>
+        <el-table-column prop="departmentName" label="科室" align="center"></el-table-column>
+        <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
+        <el-table-column prop="status" label="挂号状态" align="center"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">

@@ -13,7 +13,7 @@
             </div>
           </el-select>
         </el-col> -->
-      <el-col :span="12" >
+      <el-col :span="12">
         <el-form inline label-width="80px">
           <el-form-item class="field-container">
             <span class="field-label">姓名:</span>
@@ -125,7 +125,7 @@
         </el-row> -->
     </el-row>
     <el-row class="info-row" :gutter="24">
-      <el-col :span="15"> 
+      <el-col :span="15">
         <el-button type="primary" @click="ok" class="confirm-button1">确定</el-button>
       </el-col>
     </el-row>
@@ -254,6 +254,7 @@ export default {
     },
     loadAllAdvice() {
       return [
+        {"value" : "住院开药" },
         { "value": "发烧" },
         { "value": "感冒" },
         { "value": "腹泻" },
@@ -272,13 +273,13 @@ export default {
           //服务器端删除图片
           let fileIdentifier = uploadedUrls[i];
           this.$request.delete(`/files/${fileIdentifier}`)
-          .then(response => {
-            // console.log('图片已从服务器删除', response);
-            uploadedUrls.splice(i,1);
-          })
-          .catch(error => {
-            // console.error('删除图片时出错', error);
-          });
+            .then(response => {
+              // console.log('图片已从服务器删除', response);
+              uploadedUrls.splice(i, 1);
+            })
+            .catch(error => {
+              // console.error('删除图片时出错', error);
+            });
           //客户端删除图片
           uploadFiles.splice(i, 1);
           break;
@@ -362,14 +363,20 @@ export default {
       this.information.name = this.caseInfo.userName
       this.information.doctorId = this.caseInfo.doctorId
       this.information.hospitalId = this.caseInfo.hospitalId
-      this.information.advice = this.advice
-      this.information.drug = this.medicine
-      if (this.radio == "是") {
-        this.information.inhospital = "待住院"
+      if (this.advice == '') {
+        this.information.advice = "无"
       } else {
-        this.information.inhospital = "未住院"
+        this.information.advice = this.advice
       }
+      if (this.medicine == '') {
+        this.medicine = "无"
+      }
+      this.information.drug = this.medicine
+      this.information.inhospital = this.radio
       this.information.jurisdiction = "允许"
+      if (this.information.img == null) {
+        this.information.img = " "
+      }
       this.information.signData = " "
       this.information.signResult = " "
       this.information.signPubKey = " "
@@ -388,6 +395,9 @@ export default {
     },
     handleRadioChange() {
       this.radio = this.radio === '是' ? '是' : '否';
+      if (this.radio == "是") {
+        this.medicine = "无"
+      }
     }
   }
 }
@@ -501,36 +511,40 @@ export default {
 
 .upload-container {
   width: 145px;
-  height: 145px; 
-  position: relative; /* 用于定位图片 */
+  height: 145px;
+  position: relative;
+  /* 用于定位图片 */
 }
 
-::v-deep .el-upload--picture-card {  
-  transform: scale(3.5); /*放大上传框*/
+::v-deep .el-upload--picture-card {
+  transform: scale(3.5);
+  /*放大上传框*/
   transform-origin: top left;
   margin: 15px;
   width: 100%;
-  height: 100%; 
-  position: absolute; /* 绝对定位，使图片可以覆盖整个容器 */
+  height: 100%;
+  position: absolute;
+  /* 绝对定位，使图片可以覆盖整个容器 */
   top: 0;
   left: 0;
 }
 
-::v-deep .el-upload-list--picture-card .el-upload-list__item{  
-  transform: scale(3.5); /*放大图像框*/
+::v-deep .el-upload-list--picture-card .el-upload-list__item {
+  transform: scale(3.5);
+  /*放大图像框*/
   transform-origin: top left;
   margin: 15px;
   width: 100%;
-  height: 100%; 
+  height: 100%;
 }
 
 ::v-deep .el-upload-list__item-thumbnail {
   width: 100%;
-  height: 100%; 
-  object-fit: cover; 
+  height: 100%;
+  object-fit: cover;
 }
 
- ::v-deep .disabled .el-upload--picture-card { 
+::v-deep .disabled .el-upload--picture-card {
   display: none !important; /*上传图片后，隐藏下一个上传框 */
 }
 </style>

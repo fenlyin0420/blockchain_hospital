@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入标题查询" style="width: 200px" v-model="title"></el-input>
+      <el-input placeholder="请输入患者ID" style="width: 200px" v-model="userId"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -9,10 +9,10 @@
     <div class="table">
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <!-- <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column> -->
-        <el-table-column prop="hospitalName" label="医院"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="time" label="就诊时间"></el-table-column>
+        <el-table-column prop="hospitalName" label="医院" align="center"></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
 <!--        <el-table-column prop="medicalRecord" label="医嘱病历">-->
 <!--          <template v-slot="scope">-->
 <!--            <el-button type="primary" size="mini" @click="viewEditor(scope.row.medicalRecord)">查看病历</el-button>-->
@@ -93,7 +93,7 @@ export default {
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
-      title: null,
+      userId: null,
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
@@ -201,7 +201,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          title: this.title,
+          userId: this.userId,
         }
       }).then(res => {
         this.tableData = res.data?.list
@@ -209,7 +209,7 @@ export default {
       })
     },
     reset() {
-      this.title = null
+      this.userId = null
       this.load(1)
     },
     handleCurrentChange(pageNum) {
