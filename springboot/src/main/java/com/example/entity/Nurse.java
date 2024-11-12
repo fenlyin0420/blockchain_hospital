@@ -30,13 +30,20 @@ public class Nurse extends Account implements Serializable {
     private String role;
     /** 医院id */
     private Integer hospitalId;
-    /** 医院名称 */
-    private String hospitalName;
+    /** 介绍 */
     private String description;
-    private String time;
-    private String position;
+    /** 科室id */
     private Integer departmentId;
+    /** 职位 */
+    private String position;
+    /** 入职时间 */
+    private String time;
+
     private String publicKey;
     private String privateKey;
+
+    //非数据库属性
+    private String hospitalName;
+    private String departmentName;
 
 }
