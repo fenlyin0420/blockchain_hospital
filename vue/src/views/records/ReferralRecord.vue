@@ -5,9 +5,9 @@
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
-<!--    <div class="operation">-->
-<!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
-<!--    </div>-->
+    <!--    <div class="operation">-->
+    <!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
+    <!--    </div>-->
     <div class="table">
       <el-table :data="tableData" stripe>
         <el-table-column prop="userId" label="id" width="80" align="center" sortable></el-table-column>
@@ -15,7 +15,7 @@
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
         <el-table-column prop="inDoctorName" label="转入医生"></el-table-column>
-        <el-table-column prop="outTime" label="转出时间" ></el-table-column>
+        <el-table-column prop="outTime" label="转出时间"></el-table-column>
         <el-table-column prop="inTime" label="转入时间"></el-table-column>
         <el-table-column prop="why" label="转诊原因"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
@@ -23,25 +23,19 @@
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">接收</el-button>
-            <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">拒收</el-button>
+            <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="refuse(scope.row)">拒收</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination">
-        <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="pageSize"
-            layout="total, prev, pager, next"
-            :total="total">
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>
 
-    <el-dialog title="转诊记录添加" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
+    <!-- <el-dialog title="转诊记录添加" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="out_hospital" label="转出医院">
           <el-input v-model="form.outHospitalName" autocomplete="off" placeholder="请输入转出医院"></el-input>
@@ -72,7 +66,7 @@
         <el-button @click="formVisible = false">取消</el-button>
         <el-button type="primary" @click="save">确定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -130,17 +124,32 @@ export default {
     this.load(1)
   },
   methods: {
-    ok(row){
-      return row.inDoctorId===this.user.id&& this.user.role==="DOCTOR"
+    ok(row) {
+      return row.inDoctorId === this.user.id && this.user.role === "DOCTOR" && row.result === "待接收";
     },
-    update(row){
-      let form={
-        id:row.id,
-        result:"接收"
+    update(row) {
+      let form = {
+        id: row.id,
+        result: "接收"
       }
       this.$request.put('/referal/update', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
           this.$message.success('成功接收')
+          this.load(1)
+          this.record(row)
+        } else {
+          this.$message.error(res.msg)  // 弹出错误的信息
+        }
+      })
+    },
+    refuse(row) {
+      let form = {
+        id: row.id,
+        result: "未接收"
+      }
+      this.$request.put('/referal/update', form).then(res => {
+        if (res.code === '200') {  // 表示成功保存
+          this.$message.success('拒绝接收')
           this.load(1)
           this.record(row)
         } else {
@@ -163,7 +172,7 @@ export default {
       })
     },
     del(id) {
-      this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', {type: "warning"}).then(response => {
+      this.$confirm('您确定取消挂号吗？这个医生不好挂哦！', '灵魂拷问', { type: "warning" }).then(response => {
         this.$request.delete('/referralRecord/delete/' + id).then(res => {
           if (res.code === '200') {
             this.$message.success('操作成功')
@@ -172,7 +181,7 @@ export default {
             this.$message.error(res.msg)
           }
         })
-      }).catch(() => {})
+      }).catch(() => { })
     },
     save() {
       this.$request.post('/referralRecord/add', this.form).then(res => {
@@ -222,6 +231,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

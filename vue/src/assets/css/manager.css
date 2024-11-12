@@ -1,11 +1,12 @@
 .manager-container {
     background-color: #f8f8ff;
-    min-height: 100vh;
+    max-height: 100vh;
 }
 
 .manager-header {
     display: flex;
     background-color: white;
+    max-height: 5vh;
 }
 
 .manager-header-left {
@@ -60,6 +61,7 @@
 
 .manager-main {
     display: flex;
+    max-height: 95vh;
 }
 
 .manager-main-left {
@@ -71,6 +73,8 @@
     flex: 1;
     width: 0;
     padding: 10px;
+    overflow-y: scroll;
+    overflow-x: auto;
 }
 
 .manager-main-right .search {
