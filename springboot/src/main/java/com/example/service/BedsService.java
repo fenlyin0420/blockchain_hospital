@@ -15,9 +15,10 @@ public class BedsService {
     @Resource
     private BedsMapper bedsMapper;
 
-
-    public List<Traverse> findAll() {
-        return bedsMapper.selectAll();
+    public PageInfo<Traverse> selectPage1(Traverse traverse, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Traverse> list = bedsMapper.selectAllTraverse(traverse);
+        return PageInfo.of(list);
     }
 
     public PageInfo<Ward> selectPage(Ward ward, Integer pageNum, Integer pageSize) {

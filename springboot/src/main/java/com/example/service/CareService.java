@@ -12,8 +12,8 @@ public class CareService {
     @Resource
     private CareMapper careMapper;
 
-    public List<Traverse> findAll() {
-        return careMapper.selectAll();
+    public List<Traverse> SearchByHId(Integer id) {
+        return careMapper.SearchByHId(id);
     }
 
     public void updateById(Traverse traverse) {

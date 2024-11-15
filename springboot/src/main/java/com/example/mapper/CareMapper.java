@@ -8,7 +8,7 @@ import java.util.List;
 public interface CareMapper {
 
 
-    List<Traverse> selectAll();
+    List<Traverse> SearchByHId(Integer id);
 
     int updateById(Traverse traverse);
 }

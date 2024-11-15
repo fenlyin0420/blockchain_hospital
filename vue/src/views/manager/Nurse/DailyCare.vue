@@ -42,6 +42,7 @@ export default {
     return {
       input: '',
       tableData: [],
+      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
     }
   },
   created() {
@@ -49,7 +50,8 @@ export default {
   },
   methods: {
     load(){
-      request.get("/DailyCare/search").then(res => {
+      let id = this.user.hospitalId;
+      request.get("/DailyCare/SearchByHId", id).then(res => {
         if(res.code === '200'){
           this.tableData = res.data;
         }else{
