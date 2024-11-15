@@ -157,14 +157,16 @@ export default {
     };
   },
   created() {
-    const queryData = this.$route.query.data;
+    const queryData = this.$route.query;
+    console.log("queryData", queryData)
     if (queryData) {
-      this.receivedData = JSON.parse(decodeURIComponent(queryData));
+      // this.receivedData = JSON.parse(decodeURIComponent(queryData));
+      this.receivedData = queryData
     }
-    else {
-      this.receivedData = this.$route.params.inform;
-    }
-    console.log(this.receivedData)
+    // else {
+    //   this.receivedData = this.$route.params.inform;
+    // }
+    console.log("receiveData", this.receivedData)
     this.load()
   },
   computed: {
