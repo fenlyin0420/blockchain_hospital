@@ -31,7 +31,7 @@
 import request from "@/utils/request";
 
 export default {
-  name: "DailyCare",
+  name: "NurseRecord",
   data() {
     return {
       input: '',
