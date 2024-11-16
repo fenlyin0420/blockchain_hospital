@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.entity.Reserve;
 import com.example.service.ReserveService;
@@ -23,6 +24,7 @@ public class ReserveController {
      * 新增
      */
     @PostMapping("/add")
+    @AutoLog("患者挂号")
     public Result add(@RequestBody Reserve reserve) {
         reserveService.add(reserve);
         return Result.success();

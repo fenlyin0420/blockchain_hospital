@@ -1,8 +1,9 @@
 package com.example.controller;
 
 
-import com.example.entity.Drug;
+import com.example.common.AutoLog;
 import com.example.common.Result;
+import com.example.entity.Drug;
 import com.example.service.DrugService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -44,18 +45,21 @@ public class DrugController {
     }
 
     @PostMapping("/add")
+    @AutoLog("新增药品信息")
     public Result add(@RequestBody Drug drug) {
         drugService.add(drug);
         return Result.success();
     }
 
     @PutMapping("/update")
+    @AutoLog("修改药品信息")
     public Result updateById(@RequestBody Drug drug) {
         drugService.updateById(drug);
         return Result.success();
     }
 
     @DeleteMapping("/delete/{id}")
+    @AutoLog("删除药品信息")
     public Result deleteById(@PathVariable Integer id) {
         drugService.deleteById(id);
         return Result.success();

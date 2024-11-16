@@ -1,15 +1,18 @@
 package com.example.controller;
 
+import com.example.common.AutoLog;
 import com.example.common.enums.InhospitalEnum;
 import com.example.entity.Traverse;
 import com.example.service.TraverseService;
 import com.example.common.Result;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/traverse")
 public class TraverseController {
@@ -27,6 +30,7 @@ public class TraverseController {
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Traverse> page = traverseService.selectPage(traverse, pageNum, pageSize);
+        //log.info("page:{}",page);
         return Result.success(page);
     }
 
@@ -55,6 +59,7 @@ public class TraverseController {
     }
 
     @PostMapping("/add")
+    @AutoLog("新增了一条病历")
     public Result add(@RequestBody Traverse traverse) {
         if(traverse.getInhospital().equals("是")){
             traverse.setInhospital(InhospitalEnum.Inhospital_YES.status);
@@ -73,6 +78,7 @@ public class TraverseController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @AutoLog("删除了一条病历")
     public Result deleteById(@PathVariable Integer id) {
         traverseService.deleteById(id);
         return Result.success();

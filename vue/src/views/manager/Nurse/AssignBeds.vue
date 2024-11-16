@@ -168,7 +168,7 @@ export default {
     handleAssign(row) {   // 新增数据（ward_id == null 的新增一个ward_id）
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
-      this.form.inhospital = '已住院';
+      this.form.inhospital = '住院中';
       this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
