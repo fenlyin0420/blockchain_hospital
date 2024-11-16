@@ -234,11 +234,10 @@ export default {
       this.load(pageNum)
     },
     goToCaseDetails(row) {
+      // console.log("row", row)
       this.$router.push({
         name: 'CaseDetails',
-        params: {
-          inform:row
-        }
+        query: row
       });
     },
   }

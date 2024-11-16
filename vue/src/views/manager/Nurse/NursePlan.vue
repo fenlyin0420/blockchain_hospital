@@ -102,11 +102,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item prop="num" label="看病人数">
+        <el-form-item prop="num" label="护理人数">
           <el-input
               v-model="form.num"
               autocomplete="off"
-              placeholder="请输入看病人数"
+              placeholder="请输入护理人数"
           ></el-input>
         </el-form-item>
         <el-form-item prop="date" label="选择日期">
@@ -179,9 +179,11 @@ export default {
   },
   methods: {
     loadNurse() {
-      let id = this.user.hospitalId; // 各医院管理员只能管理自己医院的排班，所以是selectByhospitalId
+      //这里帮我debug一下
+      let id = this.user.hospitalId; // 各医院管理员只能管理自己医院的排班，所以是selectByHospitalId
       this.$request.get("/nurse/selectByH/" + id).then((res) => {
         if (res.code === "200") {
+          console.log(res.data);
           this.nurseData = res.data;
         } else {
           this.$message.error(res.msg);

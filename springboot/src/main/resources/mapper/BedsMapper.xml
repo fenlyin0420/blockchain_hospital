@@ -19,12 +19,15 @@
 <!--        select * form traverse-->
 
 <!--    </select>-->
-    <select id="selectAll" resultType="com.example.entity.Traverse">
+    <select id="selectAllTraverse" resultType="com.example.entity.Traverse">
         select traverse.*, doctor.name as doctorName, ward.name as wardName
         from traverse
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
-        where traverse.inhospital in ('已住院','待住院')
+        <where>
+            <if test="inhospital != null">and inhospital in ('已住院','待住院')</if>
+            <if test="hospitalId != null">and traverse.hospital_id= #{hospitalId}</if>
+        </where>
     </select>
 
     <select id="selectAllWard" resultType="com.example.entity.Ward">
@@ -35,7 +38,7 @@
             <if test="name != null">and name= #{name}</if>
             <if test="price != null">and price= #{price}</if>
             <if test="img != null">and img= #{img}</if>
-            <if test="description != null">and description= #{description}</if>
+            <if test="description != null">and description = #{description}</if>
             <if test="remain != null">and remain= #{remain}</if>
         </where>
     </select>

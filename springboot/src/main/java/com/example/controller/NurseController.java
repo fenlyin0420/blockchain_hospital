@@ -1,9 +1,11 @@
 package com.example.controller;
 
+import com.example.entity.Doctor;
 import com.example.entity.Nurse;
 import com.example.entity.Params;
 import com.example.service.NurseService;
 import com.example.common.Result;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,34 +22,10 @@ public class NurseController {
      *根据护士所在医院的ID，查本医院护士
      */
     @GetMapping("/selectByH/{id}")
-        public Result selectByH(Integer id) {
+        public Result selectByH(@PathVariable Integer id) {
             List<Nurse> list = nurseService.selectByH(id);
             return Result.success(list);
         }
-
-    @GetMapping
-    public Result findAll() {
-        List<Nurse> l = nurseService.findAll();
-        return Result.success(l);
-    }
-
-    @GetMapping("/research")
-    public Result findBySearch(Params params) {
-        List<Nurse> l = nurseService.findBySearch(params);
-        return Result.success(l);
-    }
-
-    @PutMapping("/update")
-    public Result update(@RequestBody Nurse nurse) {
-        nurseService.updateById(nurse);
-        return Result.success();
-    }
-
-//    @PostMapping("/add")
-//    public Result save(@RequestBody Nurse nurse) {
-//        nurseService.add(nurse);
-//        return Result.success();
-//    }
 
     /**
      * 根据ID查询
@@ -58,6 +36,52 @@ public class NurseController {
         return Result.success(nurse);
     }
 
+    /**
+     * 分页查询
+     */
+    @GetMapping("/selectPage")
+    public Result selectPage(Nurse nurse,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Nurse> page = nurseService.selectPage(nurse, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 新增
+     */
+    @PostMapping("/add")
+    public Result add(@RequestBody Nurse nurse) {
+        nurseService.add(nurse);
+        return Result.success();
+    }
+
+    /**
+     * 修改
+     */
+    @PutMapping("/update")
+    public Result updateById(@RequestBody Nurse nurse) {
+        nurseService.updateById(nurse);
+        return Result.success();
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping("/delete/{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        nurseService.deleteById(id);
+        return Result.success();
+    }
+
+    /**
+     * 批量删除
+     */
+    @DeleteMapping("/delete/batch")
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
+        nurseService.deleteBatch(ids);
+        return Result.success();
+    }
 
 
 }

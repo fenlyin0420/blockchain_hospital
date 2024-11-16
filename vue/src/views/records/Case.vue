@@ -316,7 +316,10 @@ export default {
           this.information.hospitalName = this.caseInfo.hospitalName
           this.information.doctorName = this.caseInfo.doctorName
           let caseData = JSON.parse(JSON.stringify(this.information))
-          this.$router.push(`CaseDetails?data=${encodeURIComponent(JSON.stringify(caseData))}`)
+          // console.log("information", this.information)
+          // console.log("caseData", caseData)
+          // this.$router.push(`CaseDetails?data=${encodeURIComponent(JSON.stringify(caseData))}`)
+          this.$router.push({name:"CaseDetails", query: caseData})
         } else {
           this.$message.error(res.msg)
         }

@@ -15,9 +15,9 @@ public class CareController {
     @Resource
     private CareService careService;
 
-    @GetMapping("/search")
-    public Result findAll(){
-        List<Traverse> l = careService.findAll();
+    @GetMapping("/SearchByHId")
+    public Result SearchByHId(Integer id) {
+        List<Traverse> l = careService.SearchByHId(id);
         return Result.success(l);
     }
 

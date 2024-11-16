@@ -4,10 +4,8 @@
       <el-input placeholder="请输入科室名称" style="width: 200px" v-model="name"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
-    </div>
 
-    <div class="operation">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
+      <el-button type="primary" plain @click="handleAdd" style="margin-left: 10px">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
     </div>
 

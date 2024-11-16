@@ -40,6 +40,7 @@ const routes = [
       { path: 'registration', name: 'Registration', meta: { name: '住院登记' }, component: () => import('../views/manager/Registration') },
       { path: 'MyFiles', name: 'MyFiles', meta: { name: '我的档案' }, component: () => import('../views/records/MyFiles.vue') },
       { path: 'Power', name: 'Power', meta: { name: '权限管理' }, component: () => import('../views/records/Power.vue') },
+      { path: 'log', name: 'Log', meta: { name: '系统监控' }, component: () => import('../views/manager/LogMonitor.vue') },
       { path: 'AddFiles', name: 'AddFiles', meta: { name: '新建档案' }, component: () => import('../views/records/AddFiles.vue') },
       { path: 'SearchFiles', name: 'SearchFiles', meta: { name: '档案检索' }, component: () => import('../views/records/SearchFiles.vue') },
       { path: 'hospital', name: 'hospital', meta: { name: '医院信息' }, component: () => import('../views/records/hospital.vue') },

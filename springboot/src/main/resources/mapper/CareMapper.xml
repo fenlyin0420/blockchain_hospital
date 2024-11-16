@@ -12,12 +12,15 @@
     </update>
 
 
-    <select id="selectAll" resultType="com.example.entity.Traverse">
+    <select id="SearchByHId" resultType="com.example.entity.Traverse">
         select traverse.*, doctor.name as doctorName, ward.name as wardName
         from traverse
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
-        where traverse.inhospital = '已住院'
+        <where>
+            <if test="inhospital != null">and traverse.inhospital == '已住院'</if>
+            <if test="hospitalId != null">and traverse.hospital_id == #{hospitalId}</if>
+        </where>
     </select>
 
 </mapper>

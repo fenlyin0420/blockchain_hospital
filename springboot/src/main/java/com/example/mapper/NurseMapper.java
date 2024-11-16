@@ -12,11 +12,10 @@ import java.util.List;
 public interface NurseMapper{
 
     //查询所有的护士信息
-    @Select("select * from nurse")
-    List<Nurse> selectAll();
 
-    //根据账号或者名字查询护士信息
-    List<Nurse> findBySearch(@Param("params") Params params);
+    List<Nurse> selectAll(Nurse nurse);
+
+
 
     int insert(Nurse nurse);
 
@@ -33,4 +32,6 @@ public interface NurseMapper{
     void updateById(Nurse nurse);
 
     List<Nurse> selectByH(Integer id);
+
+    void deleteById(Integer id);
 }

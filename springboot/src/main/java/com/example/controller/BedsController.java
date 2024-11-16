@@ -17,11 +17,14 @@ public class BedsController {
     @Resource
     private BedsService bedsService;
 
-    @GetMapping("/search")
-    public Result findAll(){
-        List<Traverse> l = bedsService.findAll();
-        return Result.success(l);
+    @GetMapping("/selectPage1")
+    public Result selectPage1(Traverse traverse,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Traverse> page = bedsService.selectPage1(traverse, pageNum, pageSize);
+        return Result.success(page);
     }
+
 
     @GetMapping("/selectPage")
     public Result selectPage(Ward ward,

@@ -8,7 +8,7 @@ import java.util.List;
 public interface BedsMapper {
 
 
-    List<Traverse> selectAll();
+    List<Traverse> selectAllTraverse(Traverse traverse);
 
     List<Ward> selectAllWard(Ward ward);
 

@@ -2,6 +2,7 @@ package com.example.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
@@ -38,6 +39,7 @@ public class WebController {
      * 登录
      */
     @PostMapping("/login")
+    @AutoLog("登录该系统")
     public Result login(@RequestBody Account account) {
         if (ObjectUtil.isEmpty(account.getUsername()) || ObjectUtil.isEmpty(account.getPassword())
                 || ObjectUtil.isEmpty(account.getRole())) {
