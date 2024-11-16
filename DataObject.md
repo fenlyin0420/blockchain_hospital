@@ -20,3 +20,26 @@
     "userDate": "2024-10-26"
 }
 ```
+
+# case
+## caseData
+```JSON
+{
+    "number": 1731666180100,
+    "userDate": "2024-11-11",
+    "name": "李四",
+    "doctorId": 2,
+    "hospitalId": 1,
+    "advice": "住院开药",
+    "drug": "999感冒灵颗粒 2 一日一次\n",
+    "inhospital": "否",
+    "jurisdiction": "允许",
+    "img": " ",
+    "signData": " ",
+    "signResult": " ",
+    "signPubKey": " ",
+    "signKey": " ",
+    "hospitalName": "xx大学第一附属医院",
+    "doctorName": "赵千里"
+}
+```
