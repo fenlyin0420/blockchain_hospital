@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.Department;
 import com.example.entity.Log;
 import com.example.service.LogService;
 import com.github.pagehelper.PageInfo;

@@ -8,11 +8,12 @@ import com.example.utils.JwtSm.MySM2Util;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-
+@Slf4j
 @Service
 public class TraverseService {
 
@@ -29,6 +30,7 @@ public class TraverseService {
     public PageInfo<Traverse> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Traverse> list = traverseMapper.selectAll(traverse);
+        //log.info("list:{}",list);
         return PageInfo.of(list);
     }
 

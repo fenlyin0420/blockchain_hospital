@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.entity.Doctor;
 import com.example.service.DoctorService;
@@ -23,6 +24,7 @@ public class DoctorController {
      * 新增
      */
     @PostMapping("/add")
+    @AutoLog("新增医生信息")
     public Result add(@RequestBody Doctor doctor) {
         doctorService.add(doctor);
         return Result.success();
@@ -32,6 +34,7 @@ public class DoctorController {
      * 删除
      */
     @DeleteMapping("/delete/{id}")
+    @AutoLog("根据ID删除医生信息")
     public Result deleteById(@PathVariable Integer id) {
         doctorService.deleteById(id);
         return Result.success();
@@ -41,6 +44,7 @@ public class DoctorController {
      * 批量删除
      */
     @DeleteMapping("/delete/batch")
+    @AutoLog("批量删除医生信息")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         doctorService.deleteBatch(ids);
         return Result.success();

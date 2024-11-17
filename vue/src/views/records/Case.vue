@@ -142,7 +142,7 @@ export default {
         if (queryData) {
           this.caseInfo = JSON.parse(decodeURIComponent(queryData));
           console.log("caseInfo", this.caseInfo)
-          // 检查tableData以更新caseInfo
+          //检查tableData以更新caseInfo
           this.updateCaseInfoFromTableData();
         }
       } catch (error) {
@@ -316,7 +316,7 @@ export default {
           this.information.hospitalName = this.caseInfo.hospitalName
           this.information.doctorName = this.caseInfo.doctorName
           let caseData = JSON.parse(JSON.stringify(this.information))
-          // console.log("information", this.information)
+          //console.log("information", this.information)
           // console.log("caseData", caseData)
           // this.$router.push(`CaseDetails?data=${encodeURIComponent(JSON.stringify(caseData))}`)
           this.$router.push({name:"CaseDetails", query: caseData})
