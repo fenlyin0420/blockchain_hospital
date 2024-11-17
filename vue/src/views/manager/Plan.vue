@@ -23,7 +23,7 @@
 
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column
             prop="doctorName"
             label="医生姓名"

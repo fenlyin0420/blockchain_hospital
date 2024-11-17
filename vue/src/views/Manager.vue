@@ -58,6 +58,27 @@
           <!--            <span slot="title" style="font-size: 20px;">系统首页</span>-->
           <!--          </el-menu-item>-->
 
+
+          <!-- 患者模块 -->
+          <el-submenu index="userModule" v-if="user.role === 'USER'">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>患者模块</span>
+            </template>
+            <el-menu-item index="/doctorCard">预约挂号</el-menu-item>
+            <el-menu-item index="/reserve">预约管理</el-menu-item>
+            <el-menu-item index="/caseList">溯源病历</el-menu-item>
+          </el-submenu>
+          <el-submenu  v-else index="userModule" disabled>
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>患者模块</span>
+            </template>
+            <el-menu-item index="/doctorCard" disabled>预约挂号</el-menu-item>
+            <el-menu-item index="/reserve" disabled>预约管理</el-menu-item>
+            <el-menu-item index="/caseList" disabled>溯源病历</el-menu-item>
+          </el-submenu>
+
           <!-- 医生模块 -->
             <el-submenu index="doctorModule" v-if="user.role === 'DOCTOR'">
             <template slot="title">
@@ -88,26 +109,64 @@
 
 
 
-          <!-- 转诊模块 -->
 
-          <!-- 患者模块 -->
-          <el-submenu index="userModule" v-if="user.role === 'USER'">
+          <!-- 转诊模块 -->
+          <el-submenu index="Transfer" v-if="user.role === 'ADMIN' || user.role === 'DOCTOR'">
             <template slot="title">
               <i class="el-icon-menu"></i>
-              <span>患者模块</span>
+              <span>转诊模块</span>
             </template>
-            <el-menu-item index="/doctorCard">预约挂号</el-menu-item>
-            <el-menu-item index="/reserve">预约管理</el-menu-item>
-            <el-menu-item index="/caseList">溯源病历</el-menu-item>
+            <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
+            <el-menu-item index="/referralApplication">转诊申请</el-menu-item>
           </el-submenu>
-          <el-submenu  v-else index="userModule" disabled>
+          <el-submenu v-else index="Transfer" disabled="">
             <template slot="title">
               <i class="el-icon-menu"></i>
-              <span>患者模块</span>
+              <span>转诊模块</span>
             </template>
-            <el-menu-item index="/doctorCard" disabled>预约挂号</el-menu-item>
-            <el-menu-item index="/reserve" disabled>预约管理</el-menu-item>
-            <el-menu-item index="/caseList" disabled>溯源病历</el-menu-item>
+            <el-menu-item index="/referralRecord" disabled>转诊记录</el-menu-item>
+            <el-menu-item index="/referralApplication" disabled>转诊申请</el-menu-item>
+          </el-submenu>
+
+
+          <!-- 管理模块 -->
+          <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>管理模块</span>
+            </template>
+            <el-menu-item index="/log">系统监控</el-menu-item>
+            <el-menu-item index="/notice">公告信息</el-menu-item>
+            <el-menu-item index="/hospital">医院信息</el-menu-item>
+            <el-menu-item index="/department">科室信息</el-menu-item>
+            <el-menu-item index="/drug">药品信息</el-menu-item>
+            <el-menu-item index="/doctor">医生管理</el-menu-item>
+            <el-menu-item index="/adminDoctorPlan">医生排班</el-menu-item>
+            <el-menu-item index="/nurse">护士管理</el-menu-item>
+            <el-menu-item index="/nurseplan">护士排班</el-menu-item>
+            <el-menu-item index="/user">患者管理</el-menu-item>
+            <el-menu-item index="/ward">病房管理</el-menu-item>
+            <el-menu-item index="/approval">住院审批</el-menu-item>
+          </el-submenu>
+          <el-submenu v-else index="adminModule" disabled>
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>管理模块</span>
+            </template>
+            <el-menu-item index="/log" disabled>日志信息</el-menu-item>
+            <el-menu-item index="/notice" disabled>公告信息</el-menu-item>
+            <el-menu-item index="/hospital" disabled>医院信息</el-menu-item>
+            <el-menu-item index="/department" disabled>科室信息</el-menu-item>
+            <el-menu-item index="/drug" disabled>药品信息</el-menu-item>
+            <el-menu-item index="/doctor" disabled>医生管理</el-menu-item>
+            <el-menu-item index="/plan" disabled>医生排班</el-menu-item>
+            <el-menu-item index="/nurse" disabled>护士管理</el-menu-item>
+            <el-menu-item index="/plan" disabled>护士排班</el-menu-item>
+            <el-menu-item index="/user" disabled>患者管理</el-menu-item>
+            <el-menu-item index="/referralRecord" disabled>转诊记录</el-menu-item>
+            <el-menu-item index="/referralApplication" disabled>转诊申请</el-menu-item>
+            <el-menu-item index="/ward" disabled>病房管理</el-menu-item>
+            <el-menu-item index="/approval" disabled>住院审批</el-menu-item>
           </el-submenu>
 
 
@@ -134,51 +193,6 @@
             <el-menu-item index="/NursePlan" disabled>护士排班</el-menu-item>
             <el-menu-item index="/NurseRecord" disabled>病床分配记录</el-menu-item>
           </el-submenu>
-
-          <!-- 管理模块 -->
-          <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>管理模块</span>
-            </template>
-            <el-menu-item index="/log">系统监控</el-menu-item>
-            <el-menu-item index="/notice">公告信息</el-menu-item>
-            <el-menu-item index="/hospital">医院信息</el-menu-item>
-            <el-menu-item index="/department">科室信息</el-menu-item>
-            <el-menu-item index="/drug">药品信息</el-menu-item>
-            <el-menu-item index="/doctor">医生管理</el-menu-item>
-            <el-menu-item index="/adminDoctorPlan">医生排班</el-menu-item>
-            <el-menu-item index="/nurse">护士管理</el-menu-item>
-            <el-menu-item index="/nurseplan">护士排班</el-menu-item>
-            <el-menu-item index="/user">患者管理</el-menu-item>
-            <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
-            <el-menu-item index="/referralApplication">转诊申请</el-menu-item>
-            <el-menu-item index="/ward">病房管理</el-menu-item>
-            <el-menu-item index="/approval">住院审批</el-menu-item>
-          </el-submenu>
-          <el-submenu v-else index="adminModule" disabled>
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>管理模块</span>
-            </template>
-            <el-menu-item index="/log" disabled>日志信息</el-menu-item>
-            <el-menu-item index="/notice" disabled>公告信息</el-menu-item>
-            <el-menu-item index="/hospital" disabled>医院信息</el-menu-item>
-            <el-menu-item index="/department" disabled>科室信息</el-menu-item>
-            <el-menu-item index="/drug" disabled>药品信息</el-menu-item>
-            <el-menu-item index="/doctor" disabled>医生管理</el-menu-item>
-            <el-menu-item index="/plan" disabled>医生排班</el-menu-item>
-            <el-menu-item index="/nurse" disabled>护士管理</el-menu-item>
-            <el-menu-item index="/plan" disabled>护士排班</el-menu-item>
-            <el-menu-item index="/user" disabled>患者管理</el-menu-item>
-            <el-menu-item index="/referralRecord" disabled>转诊记录</el-menu-item>
-            <el-menu-item index="/referralApplication" disabled>转诊申请</el-menu-item>
-            <el-menu-item index="/ward" disabled>病房管理</el-menu-item>
-            <el-menu-item index="/approval" disabled>住院审批</el-menu-item>
-          </el-submenu>
-
-
-
 
         </el-menu>
       </div>
