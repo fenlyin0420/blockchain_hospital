@@ -9,13 +9,9 @@ import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.KeyService;
 import com.example.service.UserService;
-import com.example.utils.ImgUtil;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.annotation.Resource;
 
