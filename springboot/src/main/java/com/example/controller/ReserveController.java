@@ -25,6 +25,7 @@ public class ReserveController {
      */
     @AutoLog("用户挂号")
     @PostMapping("/add")
+    @AutoLog("患者挂号")
     public Result add(@RequestBody Reserve reserve) {
         reserveService.add(reserve);
         return Result.success();

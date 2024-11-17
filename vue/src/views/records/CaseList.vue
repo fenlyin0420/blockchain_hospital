@@ -220,11 +220,25 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data?.list
-        for (let i = 0; i < this.tableData.length; i++){
+        for (let i = 0; i < this.tableData.length; i++) {
           this.tableData[i].userDate = this.tableData[i].userDate?.split('T')[0]
+          // 将日期字符串转换为Date对象
+          let date = new Date(this.tableData[i].userDate);
+          // 增加一天（不知为何后端返回前端时间会减少一天？）
+          date.setDate(date.getDate() + 1);
+          // 将Date对象转换回日期字符串，如果需要保持相同的格式
+          this.tableData[i].userDate = this.formatDate(date);
         }
         this.total = res.data?.total
       })
+    },
+    // 辅助函数，用于将Date对象格式化为您需要的字符串格式
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      // 根据您的需要，这里可以是其他格式，例如 YYYY-MM-DD 等
+      return `${year}-${month}-${day}`;
     },
     reset() {
       this.id = null
