@@ -18,8 +18,9 @@
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
         <where>
-            <if test="inhospital != null">and traverse.inhospital == '已住院'</if>
-            <if test="hospitalId != null">and traverse.hospital_id == #{hospitalId}</if>
+            <if test="inhospital != null">and inhospital = '已住院'</if>
+            <if test="inhospital == null">and inhospital = '已住院'</if>
+            <if test="hospitalId != null">and traverse.hospital_id = #{hospitalId}</if>
         </where>
     </select>
 

@@ -16,24 +16,20 @@
         <div class="label">转出信息</div>
         <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable></el-input>
         <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable></el-input>
-<!--        <el-date-picker placeholder="转出时间" v-model="transferOutTime" clearable style="width: 100%;"></el-date-picker>-->
       </div>
 
       <div class="right-form">
         <div class="label">转入信息</div>
-<!--        <el-input placeholder="转入医院" v-model="transferInHospital" clearable></el-input>-->
         <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 500px;margin-bottom: 20px">
           <div v-for="item in infByHospital">
             <el-option :label="item.hospitalName" :value="item.id"></el-option>
           </div>
         </el-select>
-<!--        <el-input placeholder="转入医生" v-model="transferInDoctor" clearable></el-input>-->
         <el-select v-model="transferInDoctor" placeholder="请选择医生" style="width: 500px">
           <div v-for="item in infByDoctor">
             <el-option :label="item.name" :value="item.id"></el-option>
           </div>
         </el-select>
-<!--        <el-date-picker placeholder="转入时间" v-model="transferInTime" clearable style="width: 100%;"></el-date-picker>-->
       </div>
     </div>
 
@@ -95,14 +91,13 @@ export default {
       })
     },
     confirmTransfer() {
-      // Add logic to handle the transfer confirmation here
       this.information.userId=this.caseInfo.userId
       this.information.outHospitalId=this.caseInfo.hospitalId
       this.information.outDoctorId=this.caseInfo.doctorId
       this.information.inHospitalId=this.transferInHospital
       this.information.inDoctorId=this.transferInDoctor
       this.information.why=this.transferReason
-      this.information.result="待接收"
+      // this.information.result="待接收"
       let data = JSON.parse(JSON.stringify(this.information))
       this.$request.post('/referal/add', data).then(res => {
         if (res.code === '200') {

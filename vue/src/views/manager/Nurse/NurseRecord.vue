@@ -45,7 +45,7 @@ export default {
   methods: {
     load(){
       let id = this.user.hospitalId;
-      request.get("/DailyCare/SearchByHId", id).then(res => {
+      request.get("/DailyCare/SearchByHId/"+ id).then(res => {
         if(res.code === '200'){
           this.tableData = res.data;
         }else{
