@@ -1,9 +1,6 @@
 package com.example.service;
 
-import com.example.entity.Department;
 import com.example.entity.Log;
-import com.example.entity.Traverse;
-import com.example.mapper.CareMapper;
 import com.example.mapper.LogMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
