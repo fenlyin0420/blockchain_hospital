@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 选择病房-->
-    <el-select v-model="week" style="width: 300px" placeholder="请选择病房号">
+    <el-select v-model="wardId" style="width: 300px" placeholder="请选择病房号">
       <el-option label="重症监护室" value="重症监护室"></el-option>
       <el-option label="A号房" value="A号房"></el-option>
       <el-option label="B号房" value="B号房"></el-option>
@@ -40,6 +40,7 @@ export default {
   name: "DailyCare",
   data() {
     return {
+      wardId: null,
       input: '',
       tableData: [],
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
@@ -50,12 +51,12 @@ export default {
   },
   methods: {
     load(){
-      let id = this.user.hospitalId;
-      request.get("/DailyCare/SearchByHId", id).then(res => {
-        if(res.code === '200'){
-          this.tableData = res.data;
-        }else{
-          this.$message.error(res.msg);
+      let id = this.user.hospitalId
+      this.$request.get('/DailyCare/SearchByHId/' + id).then(res => {
+        if (res.code === '200') {
+          this.tableData = res.data
+        } else {
+          this.$message.error(res.msg)
         }
       })
     },
@@ -69,7 +70,12 @@ export default {
           this.load();
         }
       })
-    }
+    },
+    reset(){
+
+    },
+    handleSelectionChange(){},
+
   }
 }
 </script>
