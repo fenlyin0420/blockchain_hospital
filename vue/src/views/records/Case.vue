@@ -156,7 +156,7 @@ export default {
           doctorId: this.user.id,
         },
       });
-      this.$message.success("成功");
+      //this.$message.success("成功");
       this.tableData = res.data;
     },
 
@@ -312,7 +312,7 @@ export default {
       this.information.signKey = " "
       this.$request.post('/traverse/add', this.information).then(res => {
         if (res.code === '200') {
-          this.$message.success('插入成功')
+          //this.$message.success('插入成功')
           this.information.hospitalName = this.caseInfo.hospitalName
           this.information.doctorName = this.caseInfo.doctorName
           let caseData = JSON.parse(JSON.stringify(this.information))

@@ -39,20 +39,20 @@
 
     <!-- doctorCard 显示区域 -->
     <div class="table" style="padding: 15px 20px">
-      <el-row :gutter="20">
-        <el-col :span="6" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
+      <el-row :gutter="24">
+        <el-col :span="8" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img
               :src="item.avatar"
               alt=""
               style="width: 100px; height: 100px; border-radius: 50%"
             />
-            <div style="font-weight: 550; margin-top: 10px">
+            <!-- <div style="font-weight: 550; margin-top: 10px">
               医院
               <span style="color: #383535; margin-left: 5px; font-weight: 500">{{
                 item.hospitalName
               }}</span>
-            </div>
+            </div> -->
             <div style="font-weight: 550; margin-top: 10px">
               {{ item.name }}
               <span style="color: #383535; margin-left: 5px; font-weight: 500">{{

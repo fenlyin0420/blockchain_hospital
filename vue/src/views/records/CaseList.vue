@@ -110,6 +110,7 @@ export default {
       pageSize: 10,
       total: 0,
       id: null,
+      doctorId: null,
       formVisible: false,
       form: {
         number: '',
@@ -210,13 +211,14 @@ export default {
 
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum
+      if (this.user.role  === 'DOCTOR') this.doctorId =this.user.id
       this.$request.get('/traverse/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.user.role === 'DOCTOR' ? '' : this.user.name,
+          name: this.user.role  === 'DOCTOR' ? '' : this.user.name,
+          doctorId: this.doctorId,
           id: this.id,
-          //name: this.user.name
         }
       }).then(res => {
         this.tableData = res.data?.list
