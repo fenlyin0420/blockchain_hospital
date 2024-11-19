@@ -53,5 +53,13 @@ public class WardController {
         return Result.success();
     }
 
+    @PostMapping("/updateNum")
+    public Result updateNum(@RequestBody Ward ward) {
+        if (wardService.updateNum(ward))
+            return Result.success();
+        else
+            return Result.error("更新病房剩余数量失败");
+    }
+
 
 }

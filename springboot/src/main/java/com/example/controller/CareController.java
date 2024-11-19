@@ -15,8 +15,9 @@ public class CareController {
     @Resource
     private CareService careService;
 
-    @GetMapping("/SearchByHId")
-    public Result SearchByHId(Integer id) {
+    @GetMapping("/SearchByHId/{id}")
+    public Result SearchByHId(@PathVariable Integer id) {
+        System.out.println("Received ID: " + id);
         List<Traverse> l = careService.SearchByHId(id);
         return Result.success(l);
     }

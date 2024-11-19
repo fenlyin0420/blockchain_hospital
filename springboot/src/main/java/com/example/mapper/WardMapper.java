@@ -21,4 +21,6 @@ public interface WardMapper {
 
     @Select("select * from ward")
     List<Ward> findAll();
+
+    int updateNum(Ward ward);
 }

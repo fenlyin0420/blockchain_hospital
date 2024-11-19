@@ -70,8 +70,6 @@
 <!--        </div>-->
       </div>
 
-
-
     </div>
 
     <!-- dialog -->
@@ -168,7 +166,7 @@ export default {
     handleAssign(row) {   // 新增数据（ward_id == null 的新增一个ward_id）
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
-      this.form.inhospital = '住院中';
+      this.form.inhospital = '已住院';
       this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
@@ -176,13 +174,22 @@ export default {
       request.put("/AssignBeds/save", this.form).then(res => {
         if (res.code === "200") {
           this.$message.success('保存成功');
-          this.load(); // 查询病例
+          this.load(); // 在此查询渲染病例
           this.fromVisible = false;
         } else {
           this.$message.error(res.msg);
         }
       });
-    }
+      /** 修改病房表中的剩余挂号数量 plan */
+      let wardBody = {
+        id : this.form.wardId
+      }
+      request.post("/ward/updateNum", wardBody).then((res) => {
+        if (res.code == "200") {
+          this.load1(1);
+        }
+      });
+    },
   }
 };
 </script>

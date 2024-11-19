@@ -49,4 +49,11 @@ public class WardService {
     public List<Ward> findAll() {
         return wardMapper.findAll();
     }
+
+    public boolean updateNum(Ward ward) {
+        if (wardMapper.updateNum(ward) != 1)
+            return false;
+        else
+            return true;
+    }
 }
