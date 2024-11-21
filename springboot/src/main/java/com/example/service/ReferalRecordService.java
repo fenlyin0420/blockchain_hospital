@@ -65,11 +65,13 @@ public class ReferalRecordService {
         }
     }
 
+    /**
+     * 医生访问，新加一个转诊申请
+     * @param referalRecord
+     */
     public void add(ReferalRecord referalRecord) {
-        referalRecord.setOutTime(DateUtil.now());
         referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
-        send(referalRecord, "http://localhost:8091/referal/b/com");
     }
 
     /**
@@ -78,8 +80,11 @@ public class ReferalRecordService {
      * @return
      */
     public Result send(ReferalRecord referalRecord, String url) {
-        RestTemplate restTemplate = new RestTemplate();
+        // 设置本医院的转诊状态
+        referalRecord.setOutTime(DateUtil.now());
+        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
 
+        RestTemplate restTemplate = new RestTemplate();
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

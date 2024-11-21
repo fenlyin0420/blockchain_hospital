@@ -4,11 +4,16 @@ package com.example.controller;
 import com.example.entity.ReferalRecord;
 import com.example.service.ReferalRecordService;
 import com.example.common.Result;
+import com.example.common.enums.ReferalEnum;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/referal")
@@ -40,10 +45,23 @@ public class ReferalRecordController {
         return Result.success(referalRecord);
     }
 
+    // 该接口即将被废弃！！！！！！ 不要使用！！！！！！
     @PutMapping("/update")
     public Result updateById(@RequestBody ReferalRecord referalRecord) {
         referalRecordService.updateById(referalRecord);
         return Result.success();
+    }
+
+    @PutMapping("/refuse")
+    public Result refuseReferal(@RequestBody ReferalRecord referalRecord) {
+        referalRecord.setResult(ReferalEnum.REFUSED_BY_OUT_ADMIN.toString()); 
+        return Result.success("已拒绝");
+    }
+
+    @PutMapping("/send")
+    public Result sendReferal(@RequestBody ReferalRecord referalRecord) {
+        referalRecordService.send(referalRecord, "http://localhost:9091/referal/b/com"); 
+        return Result.success("发送成功");
     }
 
     @DeleteMapping("/delete/{id}")

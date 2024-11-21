@@ -22,8 +22,8 @@
           <template v-slot="scope">
             <!-- <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">接收</el-button>
             <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="refuse(scope.row)">拒收</el-button> -->
-            <el-button plain type="danger" size="mini" @click="update(scope.row)">同意</el-button>
-            <el-button plain type="danger" size="mini" @click="refuse(scope.row)">拒绝</el-button>
+            <el-button plain type="danger" size="mini" v-if="user.role === 'ADMIN'" @click="update(scope.row)">同意</el-button>
+            <el-button plain type="danger" size="mini" v-if="user.role === 'ADMIN'" @click="refuse(scope.row)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,9 +97,8 @@ export default {
     update(row) {
       let form = {
         id: row.id,
-        result: "接收"
       }
-      this.$request.put('/referal/update', form).then(res => {
+      this.$request.put('/referal/send', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
           this.load(1)
           this.record(row)
@@ -111,13 +110,12 @@ export default {
     refuse(row) {
       let form = {
         id: row.id,
-        result: "未接收"
       }
-      this.$request.put('/referal/update', form).then(res => {
+      this.$request.put('/referal/refuse', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
           this.$message.success('拒绝接收')
           this.load(1)
-          this.record(row)
+          // this.record(row)
         } else {
           this.$message.error(res.msg)  // 弹出错误的信息
         }
