@@ -69,7 +69,7 @@ public class ReferalRecordService {
         referalRecord.setOutTime(DateUtil.now());
         referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
-        send(referalRecord, "http://localhost:8081/refera/b/com");
+        send(referalRecord, "http://localhost:8091/referal/b/com");
     }
 
     /**
