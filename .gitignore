@@ -4,3 +4,6 @@ springboot/target
 .vscode
 springboot/src/main/resources/application.yml
 diagram
+
+# 转诊端口自行配置，不做同步了
+vue/vue.config.js
