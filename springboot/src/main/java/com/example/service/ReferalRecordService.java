@@ -3,12 +3,19 @@ package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
 
+import com.example.common.Result;
 import com.example.common.enums.ReferalEnum;
 import com.example.entity.ReferalRecord;
 import com.example.mapper.ReferalRecordMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -62,6 +69,37 @@ public class ReferalRecordService {
         referalRecord.setOutTime(DateUtil.now());
         referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
+        send(referalRecord, "http://localhost:8081/refera/b/com");
+    }
+
+    /**
+     * 将申请发送到另一家医院
+     * @param referalRecord
+     * @return
+     */
+    public Result send(ReferalRecord referalRecord, String url) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 设置请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<ReferalRecord> body = new HttpEntity<>(referalRecord, headers);
+        ResponseEntity<Result> res = restTemplate.postForEntity(url, body, Result.class);
+
+        // 处理响应
+        // if (res.getStatusCode().is2xxSuccessful()) {
+        //     Result response = res.getBody();
+        //     if (response.isSuccess()) {
+        //         System.out.println("用户注册成功：" + response.getMessage());
+        //     } else {
+        //         System.out.println("用户注册失败：" + response.getMessage());
+        //     }
+        // } else {
+        //     System.out.println("请求失败，状态码：" + responseEntity.getStatusCodeValue());
+        // }
+
+        Result response = res.getBody();
+        return response;
     }
 
     /**
