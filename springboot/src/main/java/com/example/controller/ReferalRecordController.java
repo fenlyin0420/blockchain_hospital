@@ -64,8 +64,13 @@ public class ReferalRecordController {
         return Result.success();
     }
 
-    @GetMapping("/commu")
-    public String communication() {
+    /**
+     * 该接口只暴露给后端，作为接收转诊申请的接口
+     * @return
+     */
+    @PostMapping("/b/com")
+    public String communication(ReferalRecord referalRecord) {
+        referalRecordService.recieve(referalRecord);
         return "This is a test message!";
     }
 
