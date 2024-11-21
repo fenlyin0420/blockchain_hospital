@@ -90,12 +90,15 @@ export default {
         this.infByHospital=res.data
       })
     },
+    /**
+     * 转诊申请
+     */
     confirmTransfer() {
       this.information.userId=this.caseInfo.userId
       this.information.outHospitalId=this.caseInfo.hospitalId
       this.information.outDoctorId=this.caseInfo.doctorId
       this.information.inHospitalId=this.transferInHospital
-      this.information.inDoctorId=this.transferInDoctor
+      // this.information.inDoctorId=this.transferInDoctor // 医生由管理员分配
       this.information.why=this.transferReason
       // this.information.result="待接收"
       let data = JSON.parse(JSON.stringify(this.information))

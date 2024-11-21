@@ -64,5 +64,13 @@ public class ReferalRecordService {
         referalRecordMapper.add(referalRecord);
     }
 
+    /**
+     * 接收其他医院的转诊申请
+     * @param referalRecord
+     */
+    public void recieve(ReferalRecord referalRecord) {
+        referalRecordMapper.add(referalRecord);
+    }
+
 
 }
