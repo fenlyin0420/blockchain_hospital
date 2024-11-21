@@ -74,4 +74,9 @@ public class ReferalRecordController {
         return Result.success("接收成功");
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "This is a test";
+    }
+
 }

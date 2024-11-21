@@ -19,6 +19,8 @@ public class WebConfig implements  WebMvcConfigurer {
                 .excludePathPatterns("/")     //exclude：排除  排除下面这些路径：不能拦截登录，注册等等
                 .excludePathPatterns("/login")
                 .excludePathPatterns("/register")
-                .excludePathPatterns("/files/**");
+                .excludePathPatterns("/files/**")
+                .excludePathPatterns("/referal/b/**")
+                .excludePathPatterns("/referal/test");
     }
 }

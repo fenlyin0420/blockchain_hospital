@@ -107,8 +107,7 @@ public class ReferalRecordService {
      * @param referalRecord
      */
     public void recieve(ReferalRecord referalRecord) {
+        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
     }
-
-
 }
