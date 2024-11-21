@@ -69,9 +69,9 @@ public class ReferalRecordController {
      * @return
      */
     @PostMapping("/b/com")
-    public String communication(ReferalRecord referalRecord) {
+    public Result recieve(@RequestBody ReferalRecord referalRecord) {
         referalRecordService.recieve(referalRecord);
-        return "This is a test message!";
+        return Result.success("接收成功");
     }
 
 }
