@@ -64,4 +64,9 @@ public class ReferalRecordController {
         return Result.success();
     }
 
+    @GetMapping("/commu")
+    public String communication() {
+        return "This is a test message!";
+    }
+
 }
