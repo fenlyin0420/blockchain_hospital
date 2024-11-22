@@ -2,6 +2,8 @@ package com.example.service;
 
 
 import cn.hutool.core.date.DateUtil;
+
+import com.example.common.enums.ReferalEnum;
 import com.example.entity.ReferalRecord;
 import com.example.mapper.ReferalRecordMapper;
 import com.github.pagehelper.PageHelper;
@@ -12,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 管理员业务处理
+ * 转诊业务处理
  **/
 @Service
 public class ReferalRecordService {
@@ -21,6 +23,8 @@ public class ReferalRecordService {
     private ReferalRecordMapper referalRecordMapper;
 
     public PageInfo<ReferalRecord> selectPage(ReferalRecord referalRecord, Integer pageNum, Integer pageSize) {
+        // referalRecord.setInDoctorId(referalRecord.getDoc_id());
+        // referalRecord.setOutDoctorId(referalRecord.getDoc_id());
         PageHelper.startPage(pageNum, pageSize);
         List<ReferalRecord> list = referalRecordMapper.selectAll(referalRecord);
         return PageInfo.of(list);
@@ -40,6 +44,7 @@ public class ReferalRecordService {
 
     public void updateById(ReferalRecord referalRecord) {
         referalRecord.setInTime(DateUtil.now());
+        
         referalRecordMapper.updateById(referalRecord);
     }
 
@@ -55,6 +60,7 @@ public class ReferalRecordService {
 
     public void add(ReferalRecord referalRecord) {
         referalRecord.setOutTime(DateUtil.now());
+        referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
     }
 

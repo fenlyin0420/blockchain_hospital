@@ -1,3 +1,49 @@
+/* 基础样式 */
+.manager-header {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    justify-content: space-between; /* 元素之间保持间距 */
+  }
+  
+  .manager-header-left, .manager-header-center, .manager-header-right {
+    display: flex;
+    align-items: center; /* 子元素垂直居中 */
+  }
+  /* 大屏幕样式 */
+  .manager-header-left {
+    justify-content: flex-start;
+  }
+  
+  .manager-header-center {
+    flex-grow: 2;
+    text-align: center;
+  }
+  
+  .manager-header-right {
+    justify-content: flex-end;
+  }
+  
+  /* 小屏幕样式 */
+  @media (max-width: 768px) {
+    .manager-header-left, .manager-header-center, .manager-header-right {
+      flex-direction: row; /* 保持水平排列 */
+      align-items: center; /* 垂直居中对齐 */
+    }
+  
+    /* 如果需要调整顺序，可以在这里设置 order */
+    .manager-header-center {
+      order: 1;
+    }
+    
+    .manager-header-left {
+      order: 2;
+    }
+    
+    .manager-header-right {
+      order: 3;
+    }
+  }
+
 .manager-container {
     background-color: #f8f8ff;
     max-height: 100vh;
@@ -10,7 +56,7 @@
 }
 
 .manager-header-left {
-    width: 450px;
+    width: 550px;
     height: 50px;
     padding-left: 10px;
     display: flex;
@@ -19,7 +65,8 @@
 
 .manager-header-left img {
     width: 30px;
-    height: 30px;
+    max-width: 100%;
+    height: auto;
 }
 
 .manager-header-left .title {
@@ -121,13 +168,15 @@
 .el-submenu__title {
     height: 50px;
     line-height: 50px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .el-menu-item {
     height: 50px;
     line-height: 50px;
+    font-family: "SimSun", "宋体", serif;
     font-size: 16px;
+    font-weight: 500;
     background-color: white !important; /* 必须加上这个背景色，否则鼠标离开会出现白色 */
 }
 
@@ -173,3 +222,9 @@ th.el-table__cell {
     background-color: #f8f8f8 !important;
     color: #666;
 }
+
+.el-table{
+    font-family: "SimSun", "宋体", serif;
+    font-size: 16px;
+}
+

@@ -25,7 +25,7 @@
           <template v-slot="scope">
             <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
               @click=del(scope.row.id)>取消挂号</el-button>
-            <el-button plain type="warning" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
+            <el-button plain type="warning" style="color: blue;" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
               @click=call(scope.row)>叫号</el-button>
           </template>
         </el-table-column>
@@ -93,7 +93,7 @@ export default {
       }
       this.$request.post('/record/add', data).then(res => {
         if (res.code === '200') {
-          this.$message.success('数据同步成功')
+          //this.$message.success('数据同步成功')
         } else {
           this.$message.error(res.msg)
         }

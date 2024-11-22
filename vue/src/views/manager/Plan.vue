@@ -11,7 +11,7 @@
         ></el-option>
       </el-select>
 
-      <el-button type="success" plain @click="load(1)" style="margin-left: 10px">查询</el-button>
+      <el-button type="success" plain @click="load(1)" style="margin-left: 10px;">查询</el-button>
       <el-button type="warning" plain @click="reset" style="margin-left: 10px" v-if="user.role === 'ADMIN'">重置</el-button>
 
       <el-button type="primary" plain @click="handleAdd" style="margin-left: 10px" v-if="user.role === 'ADMIN'">新增
@@ -27,23 +27,26 @@
         <el-table-column
             prop="doctorName"
             label="医生姓名"
+            align="center"
             show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
             prop="departmentName"
             label="科室"
+            align="center"
             show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
             prop="hospitalName"
             label="医院"
+            width="200"
             align="center"
         ></el-table-column>
 
         <el-table-column prop="num" label="就诊数量" align="center"></el-table-column>
-        <el-table-column prop="date" label="日期" align="center"></el-table-column>
+        <el-table-column prop="date" label="日期" width="180" align="center"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN'">
           <template v-slot="scope">

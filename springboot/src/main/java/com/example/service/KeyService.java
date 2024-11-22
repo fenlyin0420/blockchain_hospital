@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
-import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 
 import javax.annotation.Resource;

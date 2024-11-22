@@ -5,9 +5,7 @@
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
-    <!--    <div class="operation">-->
-    <!--      <el-button type="primary" plain @click="handleAdd">新增</el-button>-->
-    <!--    </div>-->
+
     <div class="table">
       <el-table :data="tableData" stripe>
         <el-table-column prop="userId" label="id" width="80" align="center" sortable></el-table-column>
@@ -34,39 +32,6 @@
         </el-pagination>
       </div>
     </div>
-
-    <!-- <el-dialog title="转诊记录添加" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
-      <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
-        <el-form-item prop="out_hospital" label="转出医院">
-          <el-input v-model="form.outHospitalName" autocomplete="off" placeholder="请输入转出医院"></el-input>
-        </el-form-item>
-        <el-form-item prop="in_hospital" label="转入医院">
-          <el-input v-model="form.inHospitalName" autocomplete="off" placeholder="请输入转入医院"></el-input>
-        </el-form-item>
-        <el-form-item prop="out_doctor" label="转出医生">
-          <el-input v-model="form.outDoctorName" autocomplete="off" placeholder="请输入转出医生"></el-input>
-        </el-form-item>
-        <el-form-item prop="in_doctor" label="转入医生">
-          <el-input v-model="form.inDoctorName" autocomplete="off" placeholder="请输入转入医生"></el-input>
-        </el-form-item>
-        <el-form-item prop="out_time" label="转出时间">
-          <el-input v-model="form.outTime" autocomplete="off" placeholder="请输入转出时间"></el-input>
-        </el-form-item>
-        <el-form-item prop="in_time" label="转入时间">
-          <el-input v-model="form.inTime" autocomplete="off" placeholder="请输入转入时间"></el-input>
-        </el-form-item>
-        <el-form-item prop="why" label="转诊原因">
-          <el-input v-model="form.why" autocomplete="off" placeholder="请输入转诊原因"></el-input>
-        </el-form-item>
-        <el-form-item prop="result" label="结果">
-          <el-input v-model="form.result" autocomplete="off" placeholder="请输入结果"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="formVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">确定</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
@@ -134,7 +99,6 @@ export default {
       }
       this.$request.put('/referal/update', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
-          this.$message.success('成功接收')
           this.load(1)
           this.record(row)
         } else {
@@ -208,12 +172,13 @@ export default {
       this.formVisible = true
     },
     load(pageNum) {
+      console.log(this.user)
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/referal/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          status: this.status,
+          doc_id: this.user.id,
         }
       }).then(res => {
         this.tableData = res.data?.list
