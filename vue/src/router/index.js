@@ -61,6 +61,7 @@ const routes = [
       { path: 'HealthCheck', name: 'HealthCheck', meta: { name: '健康检测' }, component: () => import('../views/manager/Nurse/HealthCheck.vue') },
       { path: 'NurseRecord', name: 'NurseRecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
       { path: 'Ward', name: 'Ward', meta: { name: '病房管理' }, component: () => import('../views/manager/Ward.vue') },
+      { path: 'SendReferralRecord', name: 'SendReferralRecord', meta: { name: '发送病历' }, component: () => import('../views/records/SendReferralRecord.vue') }
     ]
   },
   {

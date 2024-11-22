@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+
 @RestController
 @RequestMapping("/referal")
-public class ReferalRecordController {
+public class ReferralRecordController {
     @Resource
     private ReferalRecordService referalRecordService;
 
@@ -52,16 +53,49 @@ public class ReferalRecordController {
         return Result.success();
     }
 
-    @PutMapping("/refuse")
-    public Result refuseReferal(@RequestBody ReferalRecord referalRecord) {
+    /**
+     * 拒绝转出
+     * @param referalRecord
+     * @return
+     */
+    @PutMapping("/refuseOut")
+    public Result refuseReferalOut(@RequestBody ReferalRecord referalRecord) {
         referalRecord.setResult(ReferalEnum.REFUSED_BY_OUT_ADMIN.toString()); 
         return Result.success("已拒绝");
     }
 
-    @PutMapping("/send")
-    public Result sendReferal(@RequestBody ReferalRecord referalRecord) {
-        referalRecordService.send(referalRecord, "http://localhost:9091/referal/b/com"); 
-        return Result.success("发送成功");
+    /**
+     * 拒绝转入
+     * @param referalRecord
+     * @return
+     */
+    @PutMapping("/refuseIn")
+    public Result refuseReferalIn(@RequestBody ReferalRecord referalRecord) {
+        referalRecord.setResult(ReferalEnum.REFUSED_BY_IN_ADMIN.toString()); 
+        return Result.success("已拒绝");
+    }
+
+    /**
+     * 同意转出
+     * @param referalRecord
+     * @return
+     */
+    @PutMapping("/agreenOut")
+    public Result agreenReferalOut(@RequestBody ReferalRecord referalRecord) {
+        referalRecordService.send(referalRecord, "http://localhost:8091/referal/b/com"); 
+        return Result.success("同意转入");
+    }
+
+    /**
+     * 同意转入
+     * @param referalRecord
+     * @return
+     */
+    @PutMapping("/agreenIn")
+    public Result agreenReferalIn(@RequestBody ReferalRecord referalRecord) {
+        referalRecord.setResult(ReferalEnum.WAIT_DOCTOR.toString());
+        
+        return Result.success("同意转出");
     }
 
     @DeleteMapping("/delete/{id}")
@@ -76,8 +110,13 @@ public class ReferalRecordController {
         return Result.success();
     }
 
+    /**
+     *  
+     * @param referalRecord
+     * @return
+     */
     @PostMapping("/add")
-    public Result add(@RequestBody ReferalRecord referalRecord) {
+    public Result addNewReferalRecord(@RequestBody ReferalRecord referalRecord) {
         referalRecordService.add(referalRecord);
         return Result.success();
     }
@@ -87,8 +126,8 @@ public class ReferalRecordController {
      * @return
      */
     @PostMapping("/b/com")
-    public Result recieve(@RequestBody ReferalRecord referalRecord) {
-        referalRecordService.recieve(referalRecord);
+    public Result recieveReferalRecord(@RequestBody ReferalRecord referalRecord) {
+        referalRecordService.recieveReferalRecord(referalRecord);
         return Result.success("接收成功");
     }
 
@@ -96,5 +135,4 @@ public class ReferalRecordController {
     public String test() {
         return "This is a test";
     }
-
 }

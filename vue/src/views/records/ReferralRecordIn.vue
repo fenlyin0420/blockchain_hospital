@@ -12,16 +12,14 @@
         <el-table-column prop="outHospitalName" label="转出医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
-        <!-- <el-table-column prop="inDoctorName" label="转入医生"></el-table-column> -->
+        <el-table-column prop="inDoctorName" label="转入医生"></el-table-column>
         <el-table-column prop="outTime" label="转出时间"></el-table-column>
-        <!-- <el-table-column prop="inTime" label="转入时间"></el-table-column> -->
+        <el-table-column prop="inTime" label="转入时间"></el-table-column>
         <el-table-column prop="why" label="转诊原因"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <!-- <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">接收</el-button>
-            <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="refuse(scope.row)">拒收</el-button> -->
             <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">同意</el-button>
             <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="refuse(scope.row)">拒绝</el-button>
           </template>
@@ -103,7 +101,7 @@ export default {
       let form = {
         id: row.id,
       }
-      this.$request.put('/referal/agreenOut', form).then(res => {
+      this.$request.put('/referal/agreenIn', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
           this.load(1)
           this.record(row)
@@ -116,7 +114,7 @@ export default {
       let form = {
         id: row.id,
       }
-      this.$request.put('/referal/refuseOut', form).then(res => {
+      this.$request.put('/referal/refuseIn', form).then(res => {
         if (res.code === '200') {  // 表示成功保存
           this.$message.success('拒绝接收')
           this.load(1)

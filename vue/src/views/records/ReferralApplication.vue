@@ -1,41 +1,33 @@
 <template>
   <div>
-    <rl-row class="info-row">
-      <span class="field-label">选择:</span>
-      <el-select v-model="caseInfo" placeholder="请选择医院" >
-        <div v-for="item in tableData">
-          <el-option :label="item.userName+'-'+item.hospitalName" :value="item"></el-option>
-        </div>
-      </el-select>
-        <span style="margin-left: 50px">姓名：</span>
-      <span style="margin-left: 50px">{{caseInfo.userName}}</span>
-
-    </rl-row>
     <div class="form-container">
       <div class="left-form">
+        <el-select v-model="caseInfo" placeholder="请选择" style="width:100%">
+          <div v-for="item in tableData">
+            <el-option :label="item.userName" :value="item"></el-option>
+          </div>
+        </el-select>
+
         <div class="label">转出信息</div>
         <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable></el-input>
         <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable></el-input>
-      </div>
-
-      <div class="right-form">
         <div class="label">转入信息</div>
-        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 500px;margin-bottom: 20px">
+        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 100%;margin-bottom: 20px">
           <div v-for="item in infByHospital">
             <el-option :label="item.hospitalName" :value="item.id"></el-option>
           </div>
         </el-select>
-        <el-select v-model="transferInDoctor" placeholder="请选择医生" style="width: 500px">
-          <div v-for="item in infByDoctor">
-            <el-option :label="item.name" :value="item.id"></el-option>
-          </div>
-        </el-select>
+        
+        <el-input type="textarea" placeholder="转院理由" v-model="transferReason" clearable :rows="8"></el-input>
+        <el-button type="primary" style="margin-top: 10px; " @click="confirmTransfer">确定</el-button>
+      </div>
+
+      <div class="right-form">
+
       </div>
     </div>
 
-    <el-input type="textarea" placeholder="转院理由" v-model="transferReason" clearable :rows="4"></el-input>
-
-    <el-button type="primary" style="margin-top: 10px;" @click="confirmTransfer">确定</el-button>
+    
   </div>
 </template>
 

@@ -80,9 +80,12 @@ public class ReferalRecordService {
      * @return
      */
     public Result send(ReferalRecord referalRecord, String url) {
-        // 设置本医院的转诊状态
+        // 设置转诊状态
         referalRecord.setOutTime(DateUtil.now());
         referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
+        referalRecordMapper.updateById(referalRecord);
+
+        referalRecord = referalRecordMapper.selectById(referalRecord.getId());
 
         RestTemplate restTemplate = new RestTemplate();
         // 设置请求头
@@ -111,7 +114,7 @@ public class ReferalRecordService {
      * 接收其他医院的转诊申请
      * @param referalRecord
      */
-    public void recieve(ReferalRecord referalRecord) {
+    public void recieveReferalRecord(ReferalRecord referalRecord) {
         referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
     }

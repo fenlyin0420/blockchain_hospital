@@ -43,3 +43,45 @@
     "doctorName": "赵千里"
 }
 ```
+
+# referralRecord
+## row
+```JSON
+{
+    "id": 27,
+    "userId": 2,
+    "outHospitalId": 1,
+    "inHospitalId": 2,
+    "outDoctorId": 2,
+    "inDoctorId": null,
+    "outTime": "2024-11-21 13:50:33",
+    "inTime": null,
+    "why": "我要转诊了",
+    "result": "待审批",
+    "userName": "李四",
+    "outHospitalName": "xx大学第一附属医院",
+    "inHospitalName": "xx大学第二附属医院",
+    "outDoctorName": "赵千里",
+    "inDoctorName": null
+}
+```
+
+# this.user
+```JSON
+{
+    "id": 1,
+    "username": "admin11",
+    "name": "管理员A",
+    "password": "123456",
+    "role": "ADMIN",
+    "newPassword": null,
+    "avatar": "http://localhost:8090/files/1728913230123-adminA.jpg",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxLUFETUlOIiwiZXhwIjoxNzMyMTc2OTk4fQ.eq7in9nYqaCc2aYNMeX3FF8miAVQZpTuh1WpXt4QHuI",
+    "publicKey": "MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABKNHbtoxR9iSAet7FnTCfXPL/t/jHxAgMu+LtjBYdLM8BZ7D4rTe8cfpjtRBlJSXFzQNCI6es+lSgxq+h9j5dX8=",
+    "privateKey": "MIICSwIBADCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBBIIBVTCCAVECAQEEIFWTdau37n66/sTwQXfsdmcayc2tQIOCpyjD9MVbhUq1oIHjMIHgAgEBMCwGByqGSM49AQECIQD////+/////////////////////wAAAAD//////////zBEBCD////+/////////////////////wAAAAD//////////AQgKOn6np2fXjRNWp5Lz2UJp/OXifUVq4+S3by9QU2UDpMEQQQyxK4sHxmBGV+ZBEZqOcmUj+MLv/JmC+FxWkWJM0x0x7w3NqL09necWb3O42tpIVPQqYd8xipHQALfMuUhOfCgAiEA/////v///////////////3ID32shxgUrU7v0CTnVQSMCAQGhRANCAASjR27aMUfYkgHrexZ0wn1zy/7f4x8QIDLvi7YwWHSzPAWew+K03vHH6Y7UQZSUlxc0DQiOnrPpUoMavofY+XV/",
+    "hospitalId": 1,
+    "hospitalName": null,
+    "phone": "13677889922",
+    "email": "admin11@xm.com"
+}
+```
