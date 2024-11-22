@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.Traverse;
 import com.example.entity.User;
+import com.example.exception.CustomException;
 import com.example.mapper.TraverseMapper;
 import com.example.mapper.UserMapper;
 import com.example.utils.JwtSm.MySM2Util;
@@ -11,6 +12,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+
 import java.util.List;
 
 @Slf4j
@@ -42,7 +44,7 @@ public class TraverseService {
 
     public Traverse selectByName(String name) {
         Traverse traverse = new Traverse();
-        traverse.setName(name);
+        traverse.setUserName(name);
         return traverseMapper.selectAll(traverse).get(0);
     }
 
@@ -58,18 +60,21 @@ public class TraverseService {
         return traverseMapper.selectAll(traverse).get(0);
     }
 
-    public void add(Traverse traverse) {
+    public void add(Traverse traverse) throws ClassCastException{
         try {
-            User user = userMapper.selectByName(traverse.getName());
+            User user = userMapper.selectById(traverse.getUserId());
             // 加密医生建议
             String cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getAdvice());
             traverse.setAdvice(cipherText);
             // 加密医嘱
             cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
             traverse.setDrug(cipherText);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
+        } catch (NullPointerException e){
             e.printStackTrace();
+            throw new CustomException("400", "患者不存在");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException("400", "加密失败");
         }
         traverseMapper.add(traverse);
     }

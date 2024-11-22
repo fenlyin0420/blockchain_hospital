@@ -10,14 +10,12 @@
 
     <select id="selectAll" resultType="com.example.entity.Department">
         select
-            department.*,hospital.hospital_name as hospitalName
+            department.*
         from department
-        left join hospital on department.hospital_id = hospital.id
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="name != null"> and name like concat('%', #{name}, '%')</if>
             <if test="description != null"> and description= #{description}</if>
-            <if test="hospitalId != null"> and hospital_id= #{hospitalId}</if>
         </where>
         order by id desc
     </select>
@@ -43,13 +41,11 @@
                 <if test="id != null">id,</if>
                 <if test="name != null">name,</if>
                 <if test="description != null">description,</if>
-                <if test="hospitalId != null">hospital_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="name != null">#{name},</if>
                 <if test="description != null">#{description},</if>
-                <if test="hospitalId != null">#{hospitalId},</if>
         </trim>
     </insert>
 
@@ -61,9 +57,6 @@
             </if>
             <if test="description != null">
                 description = #{description},
-            </if>
-            <if test="hospitalId != null">
-                hospital_id = #{hospitalId},
             </if>
         </set>
         where id = #{id} 

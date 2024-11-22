@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Params {
     /** 时间戳 */
-    private String number;
+    private String timestamp;
     private String name;
     private String username;
     private String phone;

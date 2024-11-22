@@ -8,26 +8,10 @@
 
     <div class="table">
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
-        <!-- <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column> -->
         <el-table-column prop="hospitalName" label="医院" align="center"></el-table-column>
         <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
-<!--        <el-table-column prop="medicalRecord" label="医嘱病历">-->
-<!--          <template v-slot="scope">-->
-<!--            <el-button type="primary" size="mini" @click="viewEditor(scope.row.medicalRecord)">查看病历</el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-        <!-- <el-table-column prop="inhospital" label="是否住院"></el-table-column>
-        <el-table-column prop="inhostpitalRecord" label="是否住院登记"></el-table-column> -->
-
-        <!-- <el-table-column label="操作" width="180" align="center">
-          <template v-slot="scope">
-            <el-popconfirm title="确定住院吗？" v-if="user.role==='DOCTOR'" @confirm="registration(scope.row)">
-              <el-button slot="reference" type="success" style="margin-left: 5px;font-size: 18px" >住院登记</el-button>
-            </el-popconfirm>
-          </template>
-        </el-table-column> -->
       </el-table>
 
       <div class="pagination">
@@ -43,13 +27,8 @@
       </div>
     </div>
 
-
-<!--    <el-dialog title="医嘱病历填写" :visible.sync="fromVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">-->
     <el-dialog title="住院登记" :visible.sync="fromVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
-<!--        <el-form-item prop="medicalRecord" label="医嘱病历">-->
-<!--          <div id="editor"></div>-->
-<!--        </el-form-item>-->
         <el-form-item prop="inhospital" label="是否住院">
           <el-select v-model="form.inhospital" placeholder="请选择" style="width: 100%;">
             <el-option label="是" value="是"></el-option>

@@ -26,7 +26,7 @@
         <el-form label-width="100px">
           <el-form-item label="患者姓名" class="custom-layout">
             <div class="content-wrapper">
-              <span class="name">{{ receivedData.name }}</span>
+              <span class="name">{{ receivedData.userName }}</span>
               <el-button type="primary" class="decrypt-button" @click="decryptAdviceAndDrug">解密</el-button>
             </div>
           </el-form-item>
@@ -250,11 +250,14 @@ export default {
         }
       })
     },
+    /**
+     * 签名
+     */
     sign() {
       console.log(this.receivedData)
       this.params.role = this.user.role
-      this.params.name = this.receivedData.name
-      this.params.number = this.receivedData.number + ''
+      this.params.name = this.receivedData.userName
+      this.params.timestamp = this.receivedData.timestamp + ''
       this.$request.post('/keys/sign', this.params).then(res => {
         if (res.code === '200') {
           this.receivedData.signData = res.data.signData

@@ -20,7 +20,32 @@
     "userDate": "2024-10-26"
 }
 ```
-
+# caseList
+## tableData
+```JSON
+{
+    "id": 20,
+    "name": "李四",
+    "doctorId": 2,
+    "hospitalId": 1,
+    "advice": "BP92G7XajIq8SOOdz41bD/zGwXqgCIlFQHMFSyOzHLtVoSBEnTf0Y6GNDWb9iU8hEtSXg8I/6Fp/6y3F2sD9gIXKZDNIUqz71+bSEbsEQos0JZogZxMq6QJKa3syuXsEZHDhY+JTEatifdUDuA==",
+    "drug": "BBga9/pPpLYY3kO6Tv8Lo71AhJ/FS2bajN8q1vKRdgBal7opUsmpDtr9qRImPFzN3xTRwS7NqFL0yRmvTmBk3c9yIFA0baY/t1VLOzZp5c/J2HPzIAuWaCvSESqprKeKdSCErMsW8u/vJB7/XdM3agzdTWG+YaYliKykusKNx9S/w3FrRpaC3f4=",
+    "inhospital": "未住院",
+    "jurisdiction": "允许",
+    "doctorName": "赵千里",
+    "hospitalName": "xx大学第一附属医院",
+    "careStatus": null,
+    "wardId": null,
+    "wardName": null,
+    "number": "1732164945675",
+    "signData": " ",
+    "signResult": " ",
+    "signPubKey": " ",
+    "signKey": " ",
+    "userDate": "2024-11-21",
+    "img": " "
+}
+```
 # case
 ## caseData
 ```JSON
@@ -83,5 +108,24 @@
     "hospitalName": null,
     "phone": "13677889922",
     "email": "admin11@xm.com"
+}
+```
+
+# referralApplication
+## caseInfo
+```JSON
+{
+    "id": 34,
+    "userId": 2,
+    "doctorId": 2,
+    "time": "2024-11-21",
+    "medicalRecord": null,
+    "inhospital": null,
+    "inhostpitalRecord": "否",
+    "userName": "李四",
+    "doctorName": "赵千里",
+    "hospitalId": 1,
+    "hospitalName": "xx大学第一附属医院",
+    "departmentName": "外科"
 }
 ```

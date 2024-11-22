@@ -8,8 +8,8 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column>
-        <el-table-column prop="outHospitalName" label="转出医院" show-overflow-tooltip></el-table-column>
+        <!-- <el-table-column prop="id" label="id" width="80" align="center" sortable></el-table-column> -->
+        <!-- <el-table-column prop="outHospitalName" label="转出医院" show-overflow-tooltip></el-table-column> -->
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
         <!-- <el-table-column prop="inDoctorName" label="转入医生"></el-table-column> -->

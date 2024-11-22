@@ -6,15 +6,14 @@
     <insert id="add" parameterType="com.example.entity.Traverse" useGeneratedKeys="true">
         insert into traverse
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="userDate != null">user_date,</if>
-            <if test="name != null">name,</if>
+            <if test="treatmentDate != null">treatment_date,</if>
+            <if test="userId != null">user_id,</if>
             <if test="doctorId != null">doctor_id,</if>
             <if test="hospitalId != null">hospital_id,</if>
-            <if test="number != null">number,</if>
+            <if test="timestamp != null">timestamp,</if>
             <if test="advice != null">advice,</if>
             <if test="drug != null">drug,</if>
-            <if test="inhospital != null">inhospital,</if>
-            <if test="jurisdiction != null">jurisdiction,</if>
+            <if test="inHospital != null">in_hospital,</if>
             <if test="signData != null">sign_data,</if>
             <if test="signResult != null">sign_result,</if>
             <if test="signPubKey != null">sign_pub_key,</if>
@@ -22,15 +21,14 @@
             <if test="img != null">img,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="userDate != null">#{userDate},</if>
-            <if test="name != null">#{name},</if>
+            <if test="treatmentDate != null">#{treatmentDate},</if>
+            <if test="userId != null">#{userId},</if>
             <if test="doctorId != null">#{doctorId},</if>
             <if test="hospitalId != null">#{hospitalId},</if>
-            <if test="number != null">#{number},</if>
+            <if test="timestamp != null">#{timestamp},</if>
             <if test="advice != null">#{advice},</if>
             <if test="drug != null">#{drug},</if>
-            <if test="inhospital != null">#{inhospital},</if>
-            <if test="jurisdiction != null">#{jurisdiction},</if>
+            <if test="inHospital != null">#{inHospital},</if>
             <if test="signData != null">#{signData},</if>
             <if test="signResult != null">#{signResult},</if>
             <if test="signPubKey != null">#{signPubKey},</if>
@@ -41,8 +39,8 @@
     <update id="updateById">
         update traverse
         <set>
-            <if test="name!=null">
-                name = #{name},
+            <if test="userId!=null">
+                user_id = #{userId},
             </if>
             <if test="doctorId!=null">
                 doctor_id = #{doctorId},
@@ -56,11 +54,8 @@
             <if test="drug!=null">
                 drug = #{drug},
             </if>
-            <if test="number!=null">
-                number = #{number},
-            </if>
-            <if test="jurisdiction!=null">
-                jurisdiction = #{jurisdiction},
+            <if test="timestamp!=null">
+                timestamp = #{timestamp},
             </if>
             <if test="signData!=null">
                 sign_data = #{signData},
@@ -82,21 +77,25 @@
     </delete>
 
     <select id="selectAll" resultType="com.example.entity.Traverse">
-        select traverse.*,hospital.hospital_name as hospitalName,doctor.name as doctorName
+        select traverse.*, hospital.hospital_name as hospitalName, doctor.name as doctorName, user.name as userName, ward.name as wardName
         from traverse
         left join hospital on hospital.id = traverse.hospital_id
         left join doctor on doctor.id = traverse.doctor_id
+        left join user on user.id = traverse.user_id
+        left join ward on ward.id = traverse.ward_id
         <where>
             <if test="id != null">and traverse.id = #{id}</if>
-            <if test="name != null">and traverse.name like concat('%', #{name}, '%')</if>
+            <if test="userId != null">and traverse.user_id = #{userId}</if>
             <if test="doctorId!= null">and doctor_id = #{doctorId}</if>
-            <if test="hospitalId!= null">and hospital_id = #{hospitalId}</if>
-            <if test="drug!= null">and drug = #{drug}</if>
+            <if test="hospitalId!= null">and traverse.hospital_id = #{hospitalId}</if>
+            <if test="wardId != null"> and traverse.ward_id = #{wardId}</if>
+            <if test="drug!= null">and drug like concat('%', #{drug}, '%')</if>
+            <if test="userName != null"> and user.name like concat('%', #{userName}, '%')</if>
         </where>
         order by traverse.id
     </select>
-    <select id="selectByNumber" resultType="com.example.entity.Traverse">
-        select * from traverse where number=#{number}
+    <select id="selectByTimestamp" resultType="com.example.entity.Traverse">
+        select * from traverse where timestamp=#{timestamp}
     </select>
     <select id="selectById" resultType="com.example.entity.Traverse">
         select * from traverse where id=#{id}

@@ -8,12 +8,10 @@
 
     <div class="table">
       <el-table :data="tableData"  stripe>
-        <el-table-column prop="userDate" label="就诊日期" width="100" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" width="100" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="100" align="center"></el-table-column>
-        <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="100" align="center"></el-table-column>
-
-        <el-table-column prop="inhospital" label="住院情况" width="200" align="center"></el-table-column>
+        <el-table-column prop="treatmentDate" label="就诊日期" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userName" label="姓名" v-if="user.role === 'DOCTOR'" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名"  width="100" align="center"></el-table-column>
+        <el-table-column prop="hospitalName" label="医院名称" width="200" align="center"></el-table-column>
         <el-table-column label="详情"  align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
@@ -21,11 +19,10 @@
         </el-table-column>
         <el-table-column label="发送"  align="center">
           <template v-slot="scope">
-            <el-button plain type="danger" size="mini" @click="sendTraverse(scope.row)">发送</el-button>
+            <el-button plain type="danger"  size="mini" @click="sendTraverse(scope.row)">发送</el-button>
           </template>
         </el-table-column>
       </el-table>
-
       <div class="pagination">
         <el-pagination
             background
@@ -37,6 +34,16 @@
             :total="total">
         </el-pagination>
       </div>
+
+      <el-dialog :visible="showProgress" top="calc(100% / 4)">
+        <p>接收医院：{{ this.tableData[0].hospitalName }}</p>
+        <el-progress v-if="showProgress" :percentage="progressPercentage" class="progress-demo"></el-progress>
+        <div v-if="showProgress" style="font-size: 10px; left:0">正在发送: {{ fileName }}</div>
+      </el-dialog>
+            
+    </div>
+    <div>
+      
     </div>
   </div>
 </template>
@@ -44,7 +51,7 @@
 <script>
 
 export default {
-  name: "CaseList",
+  name: "SendReferralRecord",
   data() {
     return {
       tableData: [],
@@ -61,6 +68,9 @@ export default {
         jurisdiction: ''
       },
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      showProgress: false,
+      progressPercentage: 0,
+      fileName: '',
     }
   },
   created() {
@@ -75,19 +85,10 @@ export default {
           pageSize: this.pageSize,
           name: this.user.role === 'DOCTOR' ? '' : this.user.name,
           id: this.id,
-          //name: this.user.name
         }
       }).then(res => {
         this.tableData = res.data?.list
-        for (let i = 0; i < this.tableData.length; i++) {
-          this.tableData[i].userDate = this.tableData[i].userDate?.split('T')[0]
-          // 将日期字符串转换为Date对象
-          let date = new Date(this.tableData[i].userDate);
-          // 增加一天（不知为何后端返回前端时间会减少一天？）
-          date.setDate(date.getDate() + 1);
-          // 将Date对象转换回日期字符串，如果需要保持相同的格式
-          this.tableData[i].userDate = this.formatDate(date);
-        }
+        console.log(this.tableData)
         this.total = res.data?.total
       })
     },
@@ -113,12 +114,52 @@ export default {
       });
     },
     sendTraverse(row) {
-
-    }
+      this.$confirm('你确定要发送这份病历吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        this.showProgress = true;
+        this.startProgress();
+      }).catch(() => {
+        console.log('取消操作');
+      });
+    },
+    startProgress() {
+      var index = 0
+      const keys = Object.keys(this.tableData[0])
+      this.progressPercentage = 0
+        let interval = setInterval(() => {
+          if (this.progressPercentage >= 100) {
+            clearInterval(interval);
+          } else {
+            this.progressPercentage += 10;
+          }
+          if (index <= keys.length){
+            this.fileName = keys[index] + ' : ' + this.tableData[0][keys[index]]
+            index++ 
+          }
+        }, 1000);
+  
+        // 模拟操作完成后，可以取消进度条显示
+        setTimeout(() => {
+          clearInterval(interval);
+          this.showProgress = false;
+          this.$message({
+            message: '发送成功',
+            type: 'success',
+          });
+        }, 11000); // 假设操作需要5秒
+    },
   }
 }
 </script>
 
 <style scoped>
+.progress-demo {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
 </style>

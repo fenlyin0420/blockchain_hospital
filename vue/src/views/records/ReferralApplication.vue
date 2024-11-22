@@ -2,28 +2,44 @@
   <div>
     <div class="form-container">
       <div class="left-form">
-        <el-select v-model="caseInfo" placeholder="请选择" style="width:100%">
+        <div class="label">转诊患者</div>
+        <el-select v-model="caseInfo" placeholder="请选择患者" style="width:80%; margin-bottom: 20px;">
           <div v-for="item in tableData">
             <el-option :label="item.userName" :value="item"></el-option>
           </div>
         </el-select>
 
         <div class="label">转出信息</div>
-        <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable></el-input>
-        <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable></el-input>
+        <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable style="width:80%;"></el-input>
+        <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable style="width:80%;"></el-input>
         <div class="label">转入信息</div>
-        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 100%;margin-bottom: 20px">
+        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 80%;margin-bottom: 20px">
           <div v-for="item in infByHospital">
             <el-option :label="item.hospitalName" :value="item.id"></el-option>
           </div>
         </el-select>
         
-        <el-input type="textarea" placeholder="转院理由" v-model="transferReason" clearable :rows="8"></el-input>
-        <el-button type="primary" style="margin-top: 10px; " @click="confirmTransfer">确定</el-button>
+        <el-input type="textarea" placeholder="转院理由" v-model="transferReason" clearable :rows="4" style="width:80%;"></el-input><br/>
+        <el-button type="primary" style="margin-top: 10px; position:absolute; right:50%" @click="confirmTransfer">确定</el-button>
       </div>
 
       <div class="right-form">
-
+        <el-form label-width="100px" style="margin-top: 20px;">
+          <div class="label">诊断结果</div>
+          <el-form-item>
+            <el-input  :autosize="{ minRows: 4, maxRows: 4 }"
+              v-model="advice">
+            </el-input>
+          </el-form-item>
+          <div class="label">药品信息</div>
+          <el-form-item>
+            <el-table :data="drug" style="width: 100%"  border>
+              <el-table-column prop="name" label="药品名称"></el-table-column>
+              <el-table-column prop="dose" label="数量"></el-table-column>
+              <el-table-column prop="frequency" label="用法用量"></el-table-column>
+            </el-table>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
 
@@ -49,7 +65,25 @@ export default {
       tableData:[],
       infByHospital:[],
       infByDoctor:[],
-      information:{}
+      information:{},
+      drug:[
+        {        
+        name: "999感冒灵颗粒",
+        dose: 3,
+        frequency: "一日3次"
+        },
+        {        
+        name: "盐酸左氧氟沙星片",
+        dose: 3,
+        frequency: "一日3次"
+        },
+        {        
+        name: "健胃消食片",
+        dose: 3,
+        frequency: "一日3次"
+        },
+      ],
+      advice: "多喝水"
     }
   },
   created() {
@@ -65,6 +99,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
+        console.log(this.tableData)
       })
     },
     loadByDoctor() {
@@ -128,9 +163,7 @@ export default {
   margin-right: 20px;
 }
 
-.right-form {
-  margin-right: 0;
-}
+
 
 .label {
   margin-bottom: 10px;
