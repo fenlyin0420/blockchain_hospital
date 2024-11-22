@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
@@ -35,6 +36,7 @@ public class BedsController {
     }
 
     @PutMapping("/save")
+    @AutoLog("分配病房")
     public Result save(@RequestBody Traverse traverse){
         bedsService.updateById(traverse);
         return Result.success();

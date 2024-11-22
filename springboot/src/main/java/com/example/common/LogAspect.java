@@ -31,12 +31,7 @@ public class LogAspect {
         String content = autoLog.value();
         // 操作时间（当前时间）
         String time = DateUtil.now();
-        // 操作人
-        String name = "";
-        Account user = TokenUtils.getCurrentUser();
-        if (ObjectUtil.isNotNull(user)) {
-            name = user.getName();
-        }
+
 
         //角色
         String role = "";
@@ -45,8 +40,17 @@ public class LogAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String ip = request.getRemoteAddr();
 
+        // 操作人
+        String name = "";
+        Account user = TokenUtils.getCurrentUser();
+        if (ObjectUtil.isNotNull(user)) {
+            name = user.getName();
+        }
+
         // 执行具体的接口
         Result result = (Result) joinPoint.proceed();
+
+
 
         Object data =result.getData();
         if (data instanceof Admin) {

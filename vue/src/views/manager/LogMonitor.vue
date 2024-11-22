@@ -16,6 +16,18 @@
       </el-table>
     </div>
 
+    <div class="pagination">
+      <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[5, 10, 20]"
+          :page-size="pageSize"
+          layout="total, prev, pager, next"
+          :total="total">
+      </el-pagination>
+    </div>
+
   </div>
 </template>
 
@@ -27,7 +39,7 @@ export default {
   data() {
     return {
       pageNum: 1,   // 当前的页码
-      pageSize: 10,  // 每页显示的个数
+      pageSize: 13,  // 每页显示的个数
       total: 0,
       name: null,
       tableData: [],
@@ -35,7 +47,7 @@ export default {
     }
   },
   created() {
-    this.load(); //查询病例
+    this.load(1); //查询病例
   },
   methods: {
     load(pageNum) {  // 分页查询
@@ -54,8 +66,10 @@ export default {
     reset(){
       this.name = null;
       this.load(1);
+    },
+    handleCurrentChange(pageNum) {
+      this.load(pageNum);
     }
-
   }
 }
 </script>
