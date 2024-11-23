@@ -30,12 +30,16 @@ public class User extends Account implements Serializable {
     private String avatar;
     /** 角色标识 */
     private String role;
-    /**医院id*/
+    /** 医院 id*/
     private Integer hospitalId;
-    /**医院id*/
-    private String hospitalName;
+    /** 账户余额 */
     private Double account;
+    /** 患者公钥 */
     private String publicKey;
+    /** 患者私钥 */
     private String privateKey;
 
+    // 非数据库属性
+    /** 医院名称 */
+    private String hospitalName;
 }

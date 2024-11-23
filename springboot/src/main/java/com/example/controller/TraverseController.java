@@ -19,6 +19,11 @@ public class TraverseController {
     @Resource
     private TraverseService traverseService;
 
+    /**
+     * 
+     * @param traverse
+     * @return
+     */
     @GetMapping("/selectAll")
     public Result selectAll(Traverse traverse) {
         List<Traverse> list = traverseService.selectAll(traverse);
@@ -35,6 +40,7 @@ public class TraverseController {
 
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
+        
         Traverse traverse = traverseService.selectById(id);
         return Result.success(traverse);
     }
