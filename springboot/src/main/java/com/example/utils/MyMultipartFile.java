@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 public class MyMultipartFile implements MultipartFile {
     private final byte[] fileContent;
@@ -71,7 +72,7 @@ public class MyMultipartFile implements MultipartFile {
         return new MyMultipartFile(imageBytes, fileName, "image/" + format);
     }
     
-    public static MultipartFile fromURL(String imageUrl) throws IOException {
+    public static MultipartFile fromURL(String imageUrl) throws IOException, WebClientRequestException {
         WebClient webClient = WebClient.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                 .build();
@@ -84,7 +85,7 @@ public class MyMultipartFile implements MultipartFile {
                 .block();
 
         if (imageBytes == null) {
-            throw new IOException("Failed to download image from URL");
+            throw new IOException("Failed to fetch image from URL");
         }
 
         // 从 URL 中提取文件名

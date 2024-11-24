@@ -11,7 +11,9 @@ import com.example.utils.JwtSm.MySM2Util;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.support.WebRequestDataBinder;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
+import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 
 import javax.annotation.Resource;
@@ -197,32 +200,34 @@ public class KeyService {
     /**
      * 解密病历
      * 
-     * @param params 与病历相关的参数
+     * @param traverse 与病历相关的参数
      * @return
      */
-    public Params decrypt(Params params) {
-        User user = userMapper.selectByName(params.getName());
+    public Traverse decrypt(Traverse traverse) throws CustomException{
         try {
-            String advicePlainText = MySM2Util.decrypt(user.getPrivateKey(), params.getAdvice());
-            String drugPlainText = MySM2Util.decrypt(user.getPrivateKey(), params.getDrug());
-            params.setAdvice(advicePlainText);
-            params.setDrug(drugPlainText);
+            User user = userMapper.selectById(traverse.getUserId());
+            if (user == null) throw new CustomException("用户不存在");
+            String advicePlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getAdvice());
+            String drugPlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getDrug());
+            traverse.setAdvice(advicePlainText);
+            traverse.setDrug(drugPlainText);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
-        return params;
+        return traverse;
     }
 
-    public String imgDecrypt(String imgURL) {
-        try {
-            MultipartFile file = MyMultipartFile.fromURL(imgURL);
-            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
-            img = ImgUtil.ImageDecryptor(img);
-            return ImgUtil.getImageBytes(img);
-        } catch (IOException e) {
-            System.out.print("error:( " + e.getMessage());
-            return null;
-        }
+    /**
+     * 图像解密函数
+     * @param imgURL 加密图像再服务器的url
+     * @return 解密后图片的base64编码
+     */
+    public Result imgDecrypt(String imgURL) throws IOException, NullPointerException, WebClientRequestException, RuntimeException{
+        MultipartFile file = MyMultipartFile.fromURL(imgURL);
+        BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
+        img = ImgUtil.ImageDecryptor(img);
+        return Result.success(ImgUtil.getImageBase64(img));
     }
 
     public Account selectById(Account account) {

@@ -158,7 +158,6 @@ export default {
   },
   created() {
     const queryData = this.$route.query;
-    console.log("queryData", queryData)
     if (queryData) {
       // this.receivedData = JSON.parse(decodeURIComponent(queryData));
       this.receivedData = queryData
@@ -166,13 +165,11 @@ export default {
     // else {
     //   this.receivedData = this.$route.params.inform;
     // }
-    console.log("receiveData", this.receivedData)
     this.load()
   },
   computed: {
     drug() {
       const medicationString = this.receivedData.drug;
-      console.log(medicationString)
       // 拆分字符串为每一行
       let lines = medicationString.split('\n');
       if (lines.length != 1) lines = lines.slice(0, -1);
@@ -201,7 +198,6 @@ export default {
       this.previewImageUrl = url;
       this.previewImageIndex = index;
       this.dialogVisible = true;
-      console.log("drug:", this.drug);
     },
 
     load() {
@@ -228,7 +224,7 @@ export default {
     decryptAdviceAndDrug() {
       // 解密文字
       let params = {
-        name: this.receivedData.name,
+        userId: this.receivedData.userId,
         advice: this.receivedData.advice,
         drug: this.receivedData.drug
       }
@@ -236,17 +232,20 @@ export default {
         if (res.code === '200') {
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
-          console.log("drug:", this.receivedData.drug)
         } else {
           this.$message.error(res.msg)
         }
       })
 
       // 解密图片
-      const url = this.receivedData.img.slice(0,-1);
-      this.$request.post('keys/imgDecrypt', url).then(res => {
+      const imgUrl = {
+        "img": this.receivedData.img.slice(0,-1)
+      }
+      this.$request.post('keys/imgDecrypt', imgUrl).then(res => {
         if (res.code === '200'){
           this.receivedData.img = `data:image/png;base64,${res.data}`;  
+        } else {
+          this.$message.error(res.msg)
         }
       })
     },
@@ -254,7 +253,6 @@ export default {
      * 签名
      */
     sign() {
-      console.log(this.receivedData)
       this.params.role = this.user.role
       this.params.name = this.receivedData.userName
       this.params.timestamp = this.receivedData.timestamp + ''

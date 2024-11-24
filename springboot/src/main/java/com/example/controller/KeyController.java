@@ -5,15 +5,20 @@ import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Params;
 import com.example.entity.RingSign;
+import com.example.entity.Traverse;
+import com.example.exception.CustomException;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.KeyService;
 import com.example.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
+import java.io.IOException;
 
 import javax.annotation.Resource;
+import javax.print.DocFlavor.READER;
 
 
 
@@ -76,26 +81,44 @@ public class KeyController {
 
     //进行解密
     @PostMapping("/decrypt")
-    public Result decrypt(@RequestBody Params params){
-        return Result.success(keyService.decrypt(params));
+    public Result decrypt(@RequestBody Traverse traverse){
+        try {
+            traverse = keyService.decrypt(traverse);
+        } catch(CustomException e) {
+            System.out.println(e.getMsg());
+            return Result.error(e.getMsg());
+        }
+        return Result.success(traverse);
     }
 
+    /**
+     * 图片解密
+     * @param imgURL 加密图片再服务器的url
+     * @return 
+     */
     @PostMapping("/imgDecrypt")
-    public Result imgDecrypt(@RequestBody String imgURL) {
-        String Url = imgURL.substring(1, imgURL.length() - 1);
-        return Result.success(keyService.imgDecrypt(Url));
+    public Result imgDecrypt(@RequestBody Traverse traverse) {
+        if (" ".equals(traverse.getImg()) || traverse.getImg() == null || traverse.getImg().equals("")) {
+            return Result.error("图像URL为空");
+        }
+
+        Object data;
+        String Url = traverse.getImg().substring(1, traverse.getImg().length() - 1);
+        try {
+            data = keyService.imgDecrypt(Url);
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
+            return Result.error("图像传输失败");
+        } catch(NullPointerException e) {
+            System.out.println(e.getMessage());
+            return Result.error("无法找到病历图片");
+        } catch(WebClientRequestException e) {
+            System.out.println(e.getMessage());
+            return Result.error("图像URL无效，请检查病历");
+        } catch(RuntimeException e) {
+            System.out.println(e.getMessage());
+            return Result.error("解密失败:(");
+        }
+        return Result.success(data);
     }
-
-    // public ResponseEntity<byte[]> getImage(@RequestBody String imgURL) throws IOException {
-       
-    //     String Url = imgURL.substring(1, imgURL.length() - 1);
-    //     BufferedImage img = keyService.imgDecrypt(imgURL);
-    //     byte[] imageBytes = ImgUtil.getImageBytes(img);
-
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setContentType(MediaType.IMAGE_PNG); // 设置响应的Content-Type为图片格式，这里是PNG
-
-    //     return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-    // }
-    
 }
