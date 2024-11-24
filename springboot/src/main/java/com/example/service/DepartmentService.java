@@ -69,8 +69,4 @@ public class DepartmentService {
         List<Department> list = departmentMapper.selectAll(department);
         return PageInfo.of(list);
     }
-
-    public List<Department> selectByH(Integer H_id) {
-        return departmentMapper.selectByH(H_id);
-    }
 }
