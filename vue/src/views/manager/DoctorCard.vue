@@ -90,7 +90,7 @@
                 >挂号</el-button>
             </div>
 
-            <el-dialog title="确认订单" :visible.sync="dialogVisible" width="50%">
+            <el-dialog title="确认订单" :visible.sync="dialogVisible" width="30%">
               <Payment :form="dialogDate"></Payment>
 
               <span slot="footer" class="dialog-footer">
