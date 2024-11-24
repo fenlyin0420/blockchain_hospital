@@ -18,7 +18,7 @@ const routes = [
     redirect: '/home',  // 重定向到主页//需要有前台时必须注册掉，负责就会重定向
     children: [ //二级路由
       { path: '403', name: 'NoAuth', meta: { name: '无权限' }, component: () => import('../views/manager/403') },
-      { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/manager/Home') },
+      { path: 'home', name: 'Home', meta: { name: '系统首页'}, component: () => import('../views/manager/Home') },
       { path: 'admin', name: 'Admin', meta: { name: '管理员信息' }, component: () => import('../views/manager/Admin') },
       { path: 'doctor', name: 'Doctor', meta: { name: '医生信息' }, component: () => import('../views/manager/Doctor') },
       { path: 'nurse', name: 'Nurse', meta: { name: '护士信息' }, component: () => import('../views/manager/Nurse.vue') },
