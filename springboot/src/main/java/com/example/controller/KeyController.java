@@ -103,7 +103,8 @@ public class KeyController {
         }
 
         Object data;
-        String Url = traverse.getImg().substring(1, traverse.getImg().length() - 1);
+        // String Url = traverse.getImg().substring(1, traverse.getImg().length() - 1);
+        String Url = traverse.getImg();
         try {
             data = keyService.imgDecrypt(Url);
         } catch(IOException e) {

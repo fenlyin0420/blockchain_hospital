@@ -76,7 +76,7 @@ public class MyMultipartFile implements MultipartFile {
         WebClient webClient = WebClient.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                 .build();
-        
+        System.out.println(imageUrl + "test!!!!!!!!!!!!!!!!!!!"); 
         byte[] imageBytes = webClient.get()
                 .uri(imageUrl)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)

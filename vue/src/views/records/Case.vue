@@ -119,7 +119,7 @@ export default {
       uploadedUrls: [],
       uploadDisabled: false, // 控制上传组件的显示与隐藏
       extraData: { isTraverse: true },
-      imgURL: ' '
+      imgURL: ''
     }
   },
   created() {
@@ -257,10 +257,10 @@ export default {
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
       //存入数据库的url
-      if (this.imgURL.img === ' ') {
-        this.imgURL.img = response.data + "\n";
+      if (this.imgURL === ' ') {
+        this.imgURL = response.data + "\n";
       } else {
-        this.imgURL.img = this.imgURL.img + response.data + "\n";
+        this.imgURL = this.imgURL + response.data + "\n";
       }
     },
     beforeUpload(file) {

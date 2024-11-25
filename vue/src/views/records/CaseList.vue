@@ -44,36 +44,23 @@ export default {
       tableData: [],
       pageNum: 1,
       pageSize: 10,
-      total: 0,
-      id: null,
-      doctorId: null,
-      formVisible: false,
-      form: {
-        number: '',
-        name: '',
-        doctorName: '',
-        hospitalName: '',
-        jurisdiction: ''
-      },
+      total: null,
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      
     }
   },
   created() {
     this.load(1)
   },
   methods: {
-    
+    /** 页面初始化，加载相关数据 */
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum
-      if (this.user.role  === 'DOCTOR') this.doctorId =this.user.id
       this.$request.get('/traverse/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.user.role  === 'DOCTOR' ? '' : this.user.name,
-          doctorId: this.doctorId,
-          id: this.id,
+          doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
+          userId: this.user.role === 'USER' ? this.user.id : null
         }
       }).then(res => {
         this.tableData = res.data?.list

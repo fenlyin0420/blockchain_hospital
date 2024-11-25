@@ -223,11 +223,11 @@ public class KeyService {
      * @param imgURL 加密图像再服务器的url
      * @return 解密后图片的base64编码
      */
-    public Result imgDecrypt(String imgURL) throws IOException, NullPointerException, WebClientRequestException, RuntimeException{
+    public String imgDecrypt(String imgURL) throws IOException, NullPointerException, WebClientRequestException, RuntimeException{
         MultipartFile file = MyMultipartFile.fromURL(imgURL);
         BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
         img = ImgUtil.ImageDecryptor(img);
-        return Result.success(ImgUtil.getImageBase64(img));
+        return ImgUtil.getImageBase64(img);
     }
 
     public Account selectById(Account account) {

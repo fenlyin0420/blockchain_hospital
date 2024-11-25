@@ -54,7 +54,6 @@ const routes = [
       { path: 'doctorReferralApplication', name: 'DoctorReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/records/ReferralApplication') },
       { path: 'caseDetails', name: 'CaseDetails', meta: { name: '病历详情' }, component: () => import('../views/records/CaseDetails.vue') },
       { path: 'PersonalInformation', name: 'PersonalInformation', meta: { name: '密钥管理' }, component: () => import('../views/records/PersonalInformation.vue') },
-      // { path: 'nurseplan', name: 'nurseplan', meta:{name: '测试'}, component: () => import('../views/records/ReferralRecord.vue') },
       { path: 'nursePlan', name: 'NursePlan', meta: { name: '护士排班' }, component: () => import('../views/manager/Nurse/NursePlan.vue') },
       { path: 'AssignBeds', name: 'AssignBeds', meta: { name: '分配床位' }, component: () => import('../views/manager/Nurse/AssignBeds.vue') },
       { path: 'DailyCare', name: 'DailyCare', meta: { name: '生活照料' }, component: () => import('../views/manager/Nurse/DailyCare.vue') },

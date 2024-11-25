@@ -12,7 +12,7 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fits"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="receivedData.img" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
@@ -159,12 +159,8 @@ export default {
   created() {
     const queryData = this.$route.query;
     if (queryData) {
-      // this.receivedData = JSON.parse(decodeURIComponent(queryData));
       this.receivedData = queryData
     }
-    // else {
-    //   this.receivedData = this.$route.params.inform;
-    // }
     this.load()
   },
   computed: {
@@ -239,10 +235,11 @@ export default {
 
       // 解密图片
       const imgUrl = {
-        "img": this.receivedData.img.slice(0,-1)
+        "img": this.receivedData.img.slice(0, -1)
       }
       this.$request.post('keys/imgDecrypt', imgUrl).then(res => {
         if (res.code === '200'){
+          console.log(res.data)
           this.receivedData.img = `data:image/png;base64,${res.data}`;  
         } else {
           this.$message.error(res.msg)
@@ -281,7 +278,7 @@ export default {
     verifySign() {
       this.params.role = this.user.role
       this.params.name = this.receivedData.name
-      this.params.number = this.receivedData.number
+      this.params.timestamp = this.receivedData.timestamp
       this.params.signKey = this.receivedData.signKey
       this.$request.post('/keys/verifySign', this.params).then(res => {
         if (res.code === '200') {
