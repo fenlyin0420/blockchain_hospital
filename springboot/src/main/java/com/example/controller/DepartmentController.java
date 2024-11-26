@@ -74,15 +74,6 @@ public class DepartmentController {
     }
 
     /**
-     * 查询医院
-     */
-    @GetMapping("/selectByH/{id}")
-    public Result selectByH(@PathVariable Integer id) {
-        List<Department> list = departmentService.selectByH(id);
-        return Result.success(list);
-    }
-
-    /**
      * 分页查询
      */
     @GetMapping("/selectPage")

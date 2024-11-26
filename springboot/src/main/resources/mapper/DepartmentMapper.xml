@@ -13,9 +13,9 @@
             department.*
         from department
         <where>
-            <if test="id != null"> and id= #{id}</if>
-            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
-            <if test="description != null"> and description= #{description}</if>
+            <if test="id != null">and id= #{id}</if>
+            <if test="name != null">and name like concat('%', #{name}, '%')</if>
+            <if test="description != null">and description like concat('%', #{description}, '%')</if>
         </where>
         order by id desc
     </select>
@@ -25,9 +25,6 @@
         <include refid="Base_Column_List" />
         from department
         where id = #{id}
-    </select>
-    <select id="selectByH" resultType="com.example.entity.Department">
-        select * from department where hospital_id =#{H_id}
     </select>
 
     <delete id="deleteById">

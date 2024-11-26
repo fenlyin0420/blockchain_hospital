@@ -35,10 +35,9 @@
         </el-pagination>
       </div>
 
-      <el-dialog :visible="showProgress" top="calc(100% / 4)">
-        <p>接收医院：{{ this.tableData[0].hospitalName }}</p>
+      <el-dialog :visible="showProgress" top="calc(100% / 4)" title="接收医院：xx大学第二附属医院" center="true">
         <el-progress v-if="showProgress" :percentage="progressPercentage" class="progress-demo"></el-progress>
-        <div v-if="showProgress" style="font-size: 10px; left:0">正在发送: {{ fileName }}</div>
+        <div v-if="showProgress" style="font-size: 10px; left:0">正在发送: {{ sendData }}</div>
       </el-dialog>
             
     </div>
@@ -70,7 +69,8 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       showProgress: false,
       progressPercentage: 0,
-      fileName: '',
+      sendHospital: '',
+      sendData: '',
     }
   },
   created() {
@@ -119,6 +119,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
+        this.sendHospital = row.hospitalName
+        this.sendData = row
         this.showProgress = true;
         this.startProgress();
       }).catch(() => {
@@ -136,7 +138,7 @@ export default {
             this.progressPercentage += 10;
           }
           if (index <= keys.length){
-            this.fileName = keys[index] + ' : ' + this.tableData[0][keys[index]]
+            this.sendData = keys[index] + ' : ' + this.tableData[0][keys[index]]
             index++ 
           }
         }, 1000);

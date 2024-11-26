@@ -22,7 +22,6 @@ public class Account {
     private String newPassword;
     /** 头像 */
     private String avatar;
-
     private String token;
     private String publicKey;
     private String privateKey;

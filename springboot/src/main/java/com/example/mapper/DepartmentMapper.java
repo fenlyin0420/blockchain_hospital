@@ -33,6 +33,4 @@ public interface DepartmentMapper {
       * 查询所有
     */
     List<Department> selectAll(Department department);
-
-    List<Department> selectByH(Integer hId);
 }
