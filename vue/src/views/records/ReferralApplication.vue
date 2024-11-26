@@ -22,15 +22,10 @@
             <el-option :label="item.hospitalName" :value="item.id"></el-option>
           </div>
         </el-select>
-        <el-autocomplete class="inline-input" type="textarea" v-model="transferReason" clearable :rows="4" style="width:80%;"
-          :fetch-suggestions="querySearch" placeholder="转院理由" @select="handleSelect"></el-autocomplete>
-        <br/>
-        <el-button type="primary" style="margin-top: 10px; position:absolute; right:50%"
-          @click="confirmTransfer">确定</el-button>
 
         <el-autocomplete type="textarea" v-model="transferReason" :fetch-suggestions="transferReasonComplete" clearable
           placeholder="请输入转诊原因" @select="handleSelect" style="width: 80%;display:block" />
-        <el-button type="primary" style="margin-top: 10px; position: relative; left:400px"
+        <el-button type="primary" style="margin-top: 10px; position: relative; left:450px"
           @click="confirmTransfer">确定</el-button>
       </div>
 
@@ -73,54 +68,30 @@ export default {
       transferInDoctor: '',
       transferInTime: null,
       transferReason: '',
-      caseInfo:[],
-      tableData:[],
-      infByHospital:[],
-      infByDoctor:[],
-      information:{},
-      // drug:[
-      //   {        
-      //   name: "999感冒灵颗粒",
-      //   dose: 3,
-      //   frequency: "一日3次"
-      //   },
-      //   {        
-      //   name: "盐酸左氧氟沙星片",
-      //   dose: 3,
-      //   frequency: "一日3次"
-      //   },
-      //   {        
-      //   name: "健胃消食片",
-      //   dose: 3,
-      //   frequency: "一日3次"
-      //   },
-      // ],
-      signature: '',
-      advice: "要求自动转院，自愿承担转院风险，后果自负。",
       restaurants: [],
       caseInfo: [],
       tableData: [],
       infByHospital: [],
       infByDoctor: [],
       information: {},
-      drug: [
-        {
-          name: "999感冒灵颗粒",
-          dose: 3,
-          frequency: "一日3次"
-        },
-        {
-          name: "盐酸左氧氟沙星片",
-          dose: 3,
-          frequency: "一日3次"
-        },
-        {
-          name: "健胃消食片",
-          dose: 3,
-          frequency: "一日3次"
-        },
-      ],
-      advice: "多喝水",
+      // drug: [
+      //   {
+      //     name: "999感冒灵颗粒",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      //   {
+      //     name: "盐酸左氧氟沙星片",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      //   {
+      //     name: "健胃消食片",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      // ],
+      // advice: "多喝水",
       transferReason: '',
       suggestions: [
         { value: "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。" },
@@ -134,9 +105,6 @@ export default {
     this.loadByHospital()
     //this.loadByDoctor()
   },
-  mounted() {
-      this.restaurants = this.loadTransferReason();
-    },
   methods: {
     loadByUser() {
       this.$request.get('/record/selectAll', { // 只能再就诊记录中选择要转诊的患者
@@ -196,25 +164,6 @@ export default {
     },
 
     //转院理由联想
-    querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      loadTransferReason() {
-        return [
-          { "value": "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。"},
-          { "value": "患者病情稳定。" },
-          { "value": "患者及家属要求转诊转院者。"},
-        ];
-      },
-    },
     transferReasonComplete(queryString, cb) {
       let results = this.suggestions.filter(item => item.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
       cb(results);
