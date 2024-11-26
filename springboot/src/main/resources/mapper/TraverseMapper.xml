@@ -12,6 +12,7 @@
             <if test="hospitalId != null">hospital_id,</if>
             <if test="timestamp != null">timestamp,</if>
             <if test="advice != null">advice,</if>
+            <if test="diagnosis != null">diagnosis,</if>
             <if test="drug != null">drug,</if>
             <if test="inHospital != null">in_hospital,</if>
             <if test="signData != null">sign_data,</if>
@@ -28,6 +29,7 @@
             <if test="hospitalId != null">#{hospitalId},</if>
             <if test="timestamp != null">#{timestamp},</if>
             <if test="advice != null">#{advice},</if>
+            <if test="diagnosis != null">#{diagnosis},</if>
             <if test="drug != null">#{drug},</if>
             <if test="inHospital != null">#{inHospital},</if>
             <if test="signData != null">#{signData},</if>

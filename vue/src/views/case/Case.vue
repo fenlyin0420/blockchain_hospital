@@ -1,11 +1,11 @@
 <template>
   <div class="case-container">
-    <div class="case-header">
+    <!-- <div class="case-header">
       <h2 style="margin: 0; text-align: left;">病历详情</h2>
-    </div>
+    </div> -->
 
     <el-row class="info-row" :gutter="24">
-      <el-col :span="12" >
+      <el-col :span="12">
         <el-form inline label-width="80px">
           <el-form-item class="field-container">
             <span class="field-label">姓名:</span>
@@ -17,8 +17,18 @@
           <el-form-item>
             <div class="field-container">
               <span class="field-label">病情:</span>
-              <el-autocomplete type="textarea" v-model="advice" clearable :rows="5" resize="vertical"
+              <el-autocomplete type="textarea" v-model="advice" clearable :rows="3" resize="vertical"
                 class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
+            </div>
+            <div class="field-container">
+              <span class="field-label">诊断结果:</span>
+              <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="3" resize="vertical"
+                class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
+            </div>
+            <div class="info-field">
+              <span class="field-label"> 是否需要住院 : </span>
+              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
             </div>
           </el-form-item>
         </el-form>
@@ -41,17 +51,12 @@
             <div class="info-field">
               <span class="field-label">每日次数:</span>
               <el-autocomplete class="frequency-input" v-model="medicineFrequency" :fetch-suggestions="querySearch"
-                placeholder="一日几次" @select="handleSelect"></el-autocomplete>
+                placeholder="一日几次" @select="handleSelectFrequency"></el-autocomplete>
               <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
             </div>
             <div>
-              <el-input type="textarea" v-model="medicine" clearable :rows="5" resize="vertical"
+              <el-input type="textarea" v-model="medicine" clearable :rows="3" resize="vertical"
                 class="medicine-textarea"></el-input>
-            </div>
-            <div class="info-field">
-              <span class="field-label"> 是否需要住院 : </span>
-              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
-              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
             </div>
           </el-form-item>
         </el-form>
@@ -64,7 +69,8 @@
             <div class="upload-container">
               <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
                 :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
-                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" multiple :limit="3">
+                :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" multiple
+                :limit="3">
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{file}">
                   <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
@@ -84,12 +90,10 @@
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
+          <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+          <br><br><br><br><br> <!-- 空白占位，不要删 -->
+          <el-button type="primary" @click="ok" class="confirm-button1">确定</el-button>
         </el-form>
-      </el-col>
-    </el-row>
-    <el-row class="info-row" :gutter="24">
-      <el-col :span="15">
-        <el-button type="primary" @click="ok" class="confirm-button1">确定</el-button>
       </el-col>
     </el-row>
   </div>
@@ -102,7 +106,8 @@ export default {
     return {
       caseInfo: { inHospital: this.radio }, // 单个病历信息
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      advice: '', // 医嘱
+      advice: '', // 病情
+      diagnosis: '',//诊断结果
       medicine: '', // 药品
       selectedMedicine: '', // 选择的药品
       medicineQuantity: '', // 药品数量
@@ -111,15 +116,16 @@ export default {
       tableData: [],
       drugList: [],
       receivedData: {},
-      restaurants: [],
+      restaurantsFrequency: [],
       restaurantsAdvice: [],
+      restaurantsDiagnosis: [],
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
       uploadedUrls: [],
       uploadDisabled: false, // 控制上传组件的显示与隐藏
       extraData: { isTraverse: true },
-      imgURL: { img:'' }
+      imgURL: { img: '' }
     }
   },
   created() {
@@ -127,16 +133,24 @@ export default {
     this.loadByDrug(); //获取drugList
   },
   mounted() {
-    this.restaurants = this.loadAll();
-    this.restaurantsAdvice = this.loadAllAdvice();
+    this.restaurantsFrequency = this.loadFrequency();
+    this.restaurantsAdvice = this.loadAdvice();
+    this.restaurantsDiagnosis = this.loadDiagnosis();
   },
   methods: {
     async loadData() {
       try {
         // loadByUser返回Promises  
         await Promise.all([this.loadByUser()]);
+        console.log("tableData", this.tableData)
         // 从URL查询参数中解析caseInfo  
-        this.caseInfo = this.$route.query;
+        const queryData = this.$route.query.data;
+        if (queryData) {
+          this.caseInfo = JSON.parse(decodeURIComponent(queryData));
+          console.log("caseInfo", this.caseInfo)
+          //检查tableData以更新caseInfo
+          this.updateCaseInfoFromTableData();
+        }
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -163,7 +177,7 @@ export default {
 
     updateCaseInfoFromTableData() {
       // 更新caseInfo以匹配tableData中的项 
-      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName||item.userName === this.caseInfo.name);
+      const matchingItem = this.tableData.find(item => item.userName === this.caseInfo.userName || item.userName === this.caseInfo.name);
       if (matchingItem) {
         // 使用解构赋值或直接赋值来更新caseInfo  
         // 注意：直接赋值整个对象可能会覆盖Vue的响应式跟踪，除非matchingItem本身是一个响应式对象  
@@ -174,24 +188,24 @@ export default {
 
     //每日次数输入框
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      var restaurantsFrequency = this.restaurantsFrequency;
+      var results = queryString ? restaurantsFrequency.filter(this.createFilter(queryString)) : restaurantsFrequency;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      return (restaurantsFrequency) => {
+        return (restaurantsFrequency.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
-    loadAll() {
+    loadFrequency() {
       return [
         { "value": "一日一次" },
         { "value": "一日两次" },
         { "value": "一日三次" },
       ];
     },
-    handleSelect(item) {
+    handleSelectFrequency(item) {
     },
 
     //病情联想
@@ -206,16 +220,36 @@ export default {
         return (restaurantsAdvice.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
-    loadAllAdvice() {
+    loadAdvice() {
       return [
-        {"value" : "住院开药" },
-        { "value": "发烧" },
-        { "value": "感冒" },
+        { "value": "住院开药" },
+        { "value": "发烧，四肢无力" },
+        { "value": "咳嗽，鼻塞，咽喉红肿" },
         { "value": "腹泻" },
-        { "value": "过敏" },
+        { "value": "皮肤红肿" },
       ];
     },
-    handleSelect(item) {
+
+    //诊断结果联想
+    querySearchDiagnosis(queryString, cb) {
+      var restaurantsDiagnosis = this.restaurantsDiagnosis;
+      var results = queryString ? restaurantsDiagnosis.filter(this.createFilter(queryString)) : restaurantsDiagnosis;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurantsDiagnosis) => {
+        return (restaurantsDiagnosis.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    loadDiagnosis() {
+      return [
+        { "value": "肺炎" },
+        { "value": "发烧" },
+        { "value": "流感" },
+        { "value": "肠胃炎" },
+        { "value": "皮肤过敏" },
+      ];
     },
 
     //图片删除
@@ -226,11 +260,11 @@ export default {
           //服务器端删除图片
           let fileIdentifier = uploadedUrls[i];
           this.$request.delete(`/files/${fileIdentifier}`)
-          .then(response => {
-            uploadedUrls.splice(i,1);
-          })
-          .catch(error => {
-          });
+            .then(response => {
+              uploadedUrls.splice(i, 1);
+            })
+            .catch(error => {
+            });
           //客户端删除图片
           uploadFiles.splice(i, 1);
           break;
@@ -249,13 +283,14 @@ export default {
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
+      console.log(response, response.data)
       //存入数据库的url
-      if (this.imgURL.img === '' ) {
+      if (this.imgURL.img === '') {
         this.imgURL.img = response.data + "\n";
       } else {
         this.imgURL = this.imgURL + response.data + "\n";
       }
-     },
+    },
     beforeUpload(file) {
       const isImage = file.type.startsWith('image/');
 
@@ -277,12 +312,14 @@ export default {
      */
     ok() {
       var information = {}
+      console.log("caseInfo", this.caseInfo)
       information.userId = this.caseInfo.userId
       information.timestamp = new Date().getTime()
       information.treatmentDate = this.caseInfo.time
-      information.doctorId = this.user.id
+      information.doctorId = this.caseInfo.doctorId
       information.hospitalId = this.caseInfo.hospitalId
       this.advice == '' ? information.advice = "无" : information.advice = this.advice
+      this.diagnosis == '' ? information.diagnosis = "无" : information.diagnosis = this.diagnosis
       this.medicine == '' ? this.medicine = "无" : ''
       information.drug = this.medicine
       information.inHospital = this.radio
@@ -300,15 +337,11 @@ export default {
           information.doctorName = this.caseInfo.doctorName
           information.userName = this.caseInfo.userName
           // 跳转到加密视图
-          this.$router.push({name:"CaseEncrypt", query: information})
+          this.$router.push({ name: "CaseEncrypt", query: information })
         } else {
           this.$message.error(res.msg)
         }
       })
-    },
-    gotoCaseEncrypt() {
-      // 跳转到加密视图
-      this.$router.push({name:"CaseEncrypt"})
     },
     handleRadioChange() {
       this.radio = this.radio === '是' ? '是' : '否';
@@ -353,7 +386,7 @@ export default {
   font-family: "SimSun", "宋体", serif;
   font-size: 16px;
   margin-right: 10px;
-  width: 45px;
+  width: 80px;
   font-weight: bold;
 }
 
@@ -365,7 +398,7 @@ export default {
 
 .info-textarea {
   margin-bottom: 26px;
-  width: 570px
+  width: 525px
 }
 
 .medicine-select {
@@ -397,10 +430,10 @@ export default {
 
 .confirm-button1 {
   float: right;
-  margin-top: -10px;
-  margin-right: 12px;
+  margin-top: 10px;
+  margin-right: 30px;
   font-size: 12px;
-  width: 40%;
+  width: 20%;
 }
 
 .edit-button {
@@ -464,6 +497,12 @@ export default {
 }
 
 ::v-deep .disabled .el-upload--picture-card {
-  display: none !important; /*上传图片后，隐藏下一个上传框 */
+  display: none !important;
+  /*上传图片后，隐藏下一个上传框 */
+}
+
+::v-deep .el-textarea__inner {
+  color: blue;
+  font-size: 16px;
 }
 </style>
