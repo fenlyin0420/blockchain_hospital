@@ -59,7 +59,7 @@ export default {
   methods: {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
-      caseData.status = '已叫号'
+      // caseData.status = '已叫号'
       console.log("caseData",caseData);
       this.$request.put('/reserve/update', caseData).then(res => {
         if (res.code === '200') {
@@ -71,11 +71,11 @@ export default {
             hospitalName: caseData?.hospitalName,
             departmentName: caseData?.departmentName,
             time: caseData?.time,
-          };
+          }
           this.load(1)
           // 往就诊记录里同步一条数据
           this.record(row)
-          this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseinfo))}`)
+          this.$router.push({name: "Case", query: caseinfo})
         }
       })
     },

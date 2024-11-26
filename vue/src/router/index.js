@@ -45,10 +45,6 @@ const routes = [
       { path: 'SearchFiles', name: 'SearchFiles', meta: { name: '档案检索' }, component: () => import('../views/records/SearchFiles.vue') },
       { path: 'hospital', name: 'hospital', meta: { name: '医院信息' }, component: () => import('../views/records/hospital.vue') },
       { path: 'drug', name: 'Drug', meta: { name: '药品信息' }, component: () => import('../views/records/Drug') },
-      { path: 'caseList', name: 'CaseList', meta: { name: '病历列表' }, component: () => import('../views/records/CaseList') },
-      { path: 'doctorCaseList', name: 'DoctorCaseList', meta: { name: '病历列表' }, component: () => import('../views/records/CaseList') },
-      { path: 'case', name: 'Case', meta: { name: '病历信息' }, component: () => import('../views/records/Case') },
-      { path: 'caseDetails', name: 'CaseDetails', meta: { name: '病历详情' }, component: () => import('../views/records/CaseDetails.vue') },
       { path: 'PersonalInformation', name: 'PersonalInformation', meta: { name: '密钥管理' }, component: () => import('../views/records/PersonalInformation.vue') },
       { path: 'nursePlan', name: 'NursePlan', meta: { name: '护士排班' }, component: () => import('../views/manager/Nurse/NursePlan.vue') },
       { path: 'AssignBeds', name: 'AssignBeds', meta: { name: '分配床位' }, component: () => import('../views/manager/Nurse/AssignBeds.vue') },
@@ -56,7 +52,15 @@ const routes = [
       { path: 'HealthCheck', name: 'HealthCheck', meta: { name: '健康检测' }, component: () => import('../views/manager/Nurse/HealthCheck.vue') },
       { path: 'NurseRecord', name: 'NurseRecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
       { path: 'Ward', name: 'Ward', meta: { name: '病房管理' }, component: () => import('../views/manager/Ward.vue') },
-      /** 转诊 */
+      /** 病历相关 */
+      { path: 'caseList', name: 'CaseList', meta: { name: '病历列表' }, component: () => import('../views/case/CaseList.vue') },
+      { path: 'doctorCaseList', name: 'DoctorCaseList', meta: { name: '病历列表' }, component: () => import('../views/case/CaseList.vue') },
+      { path: 'case', name: 'Case', meta: { name: '病历信息' }, component: () => import('../views/case/Case.vue') },
+      { path: 'caseDetail', name: 'CaseDetail', meta: { name: '病历详情' }, component: () => import('../views/case/CaseDetail.vue') },
+      { path: 'caseEncrypt', name: 'CaseEncrypt', meta: { name: '病历加密' }, component: () => import('../views/case/CaseEncrypt.vue') },
+      { path: 'caseSign', name: 'CaseSign', meta: { name: '病历签名' }, component: () => import('../views/case/CaseSign.vue') },
+      
+      /** 转诊相关 */
       { path: 'doctorReferralApplication', name: 'DoctorReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/referral/ReferralApplication') },
       { path: 'referralApplication', name: 'ReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/referral/ReferralApplication') },
       { path: 'referralOut', name: 'ReferralOut', meta: { name: '转出审批' }, component: () => import('../views/referral/ReferralOut') },

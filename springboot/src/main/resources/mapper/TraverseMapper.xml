@@ -105,4 +105,10 @@
     <select id="selectById" resultType="com.example.entity.Traverse">
         select * from traverse where id=#{id}
     </select>
+
+    <select id="selectByCanSend" resultType="com.example.entity.Traverse">
+        select * from traverse 
+        left join referal_record on traverse.doctor_id = referal_record.out_doctor_id
+        where result = "待审核" and doctor_id = #{id}
+    </select>
 </mapper>
