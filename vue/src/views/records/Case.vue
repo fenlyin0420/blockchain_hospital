@@ -119,7 +119,7 @@ export default {
       uploadedUrls: [],
       uploadDisabled: false, // 控制上传组件的显示与隐藏
       extraData: { isTraverse: true },
-      imgURL: ' '
+      imgURL: { img:'' }
     }
   },
   created() {
@@ -256,13 +256,14 @@ export default {
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
+      console.log(response,response.data)
       //存入数据库的url
-      if (this.imgURL.img === ' ') {
+      if (this.imgURL.img === '' ) {
         this.imgURL.img = response.data + "\n";
       } else {
         this.imgURL.img = this.imgURL.img + response.data + "\n";
       }
-    },
+     },
     beforeUpload(file) {
       const isImage = file.type.startsWith('image/');
 
@@ -294,7 +295,7 @@ export default {
       this.medicine == '' ? this.medicine = "无" : ''
       information.drug = this.medicine
       information.inHospital = this.radio
-      information.img = this.imgURL
+      information.img = this.imgURL.img
       information.signData = " "
       information.signResult = " "
       information.signPubKey = " "
@@ -352,8 +353,10 @@ export default {
 }
 
 .field-label {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
   margin-right: 10px;
-  width: 40px;
+  width: 45px;
   font-weight: bold;
 }
 
@@ -374,7 +377,7 @@ export default {
 }
 
 .quantity-input {
-  width: 34%;
+  width: 29%;
   margin-right: 10px;
 }
 

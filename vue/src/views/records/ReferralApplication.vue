@@ -10,40 +10,46 @@
         </el-select>
 
         <div class="label">转出信息</div>
-        <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable style="width:80%;"></el-input>
-        <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable style="width:80%;"></el-input>
+        <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable
+          style="width:80%;"></el-input>
+        <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable
+          style="width:80%;"></el-input>
         <div class="label">转入信息</div>
-        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()" style="width: 80%;margin-bottom: 20px">
+        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()"
+          style="width: 80%;margin-bottom: 20px">
           <div v-for="item in infByHospital">
             <el-option :label="item.hospitalName" :value="item.id"></el-option>
           </div>
         </el-select>
-        
-        <el-input type="textarea" placeholder="转院理由" v-model="transferReason" clearable :rows="4" style="width:80%;"></el-input><br/>
-        <el-button type="primary" style="margin-top: 10px; position:absolute; right:50%" @click="confirmTransfer">确定</el-button>
+        <el-autocomplete class="inline-input" type="textarea" v-model="transferReason" clearable :rows="4" style="width:80%;"
+          :fetch-suggestions="querySearch" placeholder="转院理由" @select="handleSelect"></el-autocomplete>
+        <br/>
+        <el-button type="primary" style="margin-top: 10px; position:absolute; right:50%"
+          @click="confirmTransfer">确定</el-button>
       </div>
 
       <div class="right-form">
-        <el-form label-width="100px" style="margin-top: 20px;">
-          <div class="label">诊断结果</div>
+        <el-form label-width="0px" style="margin-top: 20px;">
+          <div class="label">沟通记录表</div>
           <el-form-item>
-            <el-input  :autosize="{ minRows: 4, maxRows: 4 }"
-              v-model="advice">
-            </el-input>
+            <el-input type="textarea" placeholder="患者承诺" v-model="advice" clearable :rows="4"
+              style="width:90%;"></el-input>
           </el-form-item>
-          <div class="label">药品信息</div>
+          <div class="label">患者签字</div>
           <el-form-item>
-            <el-table :data="drug" style="width: 100%"  border>
+            <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
+              style="width:90%;"></el-input>
+            <!-- <el-table :data="drug" style="width: 100%"  border>
               <el-table-column prop="name" label="药品名称"></el-table-column>
               <el-table-column prop="dose" label="数量"></el-table-column>
               <el-table-column prop="frequency" label="用法用量"></el-table-column>
-            </el-table>
+            </el-table> -->
           </el-form-item>
         </el-form>
       </div>
     </div>
 
-    
+
   </div>
 </template>
 
@@ -66,24 +72,26 @@ export default {
       infByHospital:[],
       infByDoctor:[],
       information:{},
-      drug:[
-        {        
-        name: "999感冒灵颗粒",
-        dose: 3,
-        frequency: "一日3次"
-        },
-        {        
-        name: "盐酸左氧氟沙星片",
-        dose: 3,
-        frequency: "一日3次"
-        },
-        {        
-        name: "健胃消食片",
-        dose: 3,
-        frequency: "一日3次"
-        },
-      ],
-      advice: "多喝水"
+      // drug:[
+      //   {        
+      //   name: "999感冒灵颗粒",
+      //   dose: 3,
+      //   frequency: "一日3次"
+      //   },
+      //   {        
+      //   name: "盐酸左氧氟沙星片",
+      //   dose: 3,
+      //   frequency: "一日3次"
+      //   },
+      //   {        
+      //   name: "健胃消食片",
+      //   dose: 3,
+      //   frequency: "一日3次"
+      //   },
+      // ],
+      signature: '',
+      advice: "要求自动转院，自愿承担转院风险，后果自负。",
+      restaurants: [],
     }
   },
   created() {
@@ -91,6 +99,9 @@ export default {
     this.loadByHospital()
     //this.loadByDoctor()
   },
+  mounted() {
+      this.restaurants = this.loadTransferReason();
+    },
   methods: {
     loadByUser(){
       this.$request.get('/record/selectAll',{ // 只能再就诊记录中选择要转诊的患者
@@ -147,7 +158,27 @@ export default {
           this.$message.error(res.msg)
         }
       })
-    }
+    },
+
+    //转院理由联想
+    querySearch(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadTransferReason() {
+        return [
+          { "value": "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。"},
+          { "value": "患者病情稳定。" },
+          { "value": "患者及家属要求转诊转院者。"},
+        ];
+      },
   }
 }
 </script>

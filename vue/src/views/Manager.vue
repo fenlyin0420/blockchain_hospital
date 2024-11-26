@@ -130,8 +130,13 @@
               <img src="../assets/imgs/referral.png" alt="" class="el-icon-img">
               <span>转诊模块</span>
             </template>
-            <el-menu-item index="/referralRecord" disabled>转诊记录</el-menu-item>
-            <el-menu-item index="/referralApplication" disabled>转诊申请</el-menu-item>
+            <el-menu-item index="/referralApplication">转出申请</el-menu-item>
+            <el-menu-item index="/referralRecord">转出审批</el-menu-item>
+            <el-menu-item index="/SendReferralRecord">发送病历</el-menu-item>
+            <el-menu-item>转入审核</el-menu-item>
+            <el-menu-item>接收病历</el-menu-item>
+            <el-menu-item>转入接诊</el-menu-item>
+            <el-menu-item index="/referralRecor">转诊记录</el-menu-item>
           </el-submenu>
 
 
