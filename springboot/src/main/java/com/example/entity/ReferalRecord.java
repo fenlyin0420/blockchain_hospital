@@ -18,11 +18,12 @@ public class ReferalRecord {
     private String inTime;
     private String why;
     private String result;
+
+    // 非数据库字段
     private String userName;
     private String outHospitalName;
     private String inHospitalName;
     private String outDoctorName;
     private String inDoctorName;
-
 }
 

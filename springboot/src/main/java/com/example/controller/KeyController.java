@@ -92,9 +92,9 @@ public class KeyController {
     }
 
     /**
-     * 图片解密
-     * @param imgURL 加密图片再服务器的url
-     * @return 
+     * 图像解密接口
+     * @param traverse 接收图像url
+     * @return 图像base64编码
      */
     @PostMapping("/imgDecrypt")
     public Result imgDecrypt(@RequestBody Traverse traverse) {
@@ -103,7 +103,6 @@ public class KeyController {
         }
 
         Object data;
-        // String Url = traverse.getImg().substring(1, traverse.getImg().length() - 1);
         String Url = traverse.getImg();
         try {
             data = keyService.imgDecrypt(Url);

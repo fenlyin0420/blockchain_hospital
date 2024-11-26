@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/referal")
+@RequestMapping("/referral")
 public class ReferralRecordController {
     @Resource
     private ReferalRecordService referalRecordService;

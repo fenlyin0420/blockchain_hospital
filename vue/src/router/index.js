@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { component } from 'vue/types/umd'
 
 Vue.use(VueRouter)
 
@@ -48,10 +49,6 @@ const routes = [
       { path: 'caseList', name: 'CaseList', meta: { name: '病历列表' }, component: () => import('../views/records/CaseList') },
       { path: 'doctorCaseList', name: 'DoctorCaseList', meta: { name: '病历列表' }, component: () => import('../views/records/CaseList') },
       { path: 'case', name: 'Case', meta: { name: '病历信息' }, component: () => import('../views/records/Case') },
-      { path: 'referralRecord', name: 'ReferralRecord', meta: { name: '转诊记录' }, component: () => import('../views/records/ReferralRecord') },
-      { path: 'doctorReferralRecord', name: 'DoctorReferralRecord', meta: { name: '转诊记录' }, component: () => import('../views/records/ReferralRecord') },
-      { path: 'referralApplication', name: 'ReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/records/ReferralApplication') },
-      { path: 'doctorReferralApplication', name: 'DoctorReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/records/ReferralApplication') },
       { path: 'caseDetails', name: 'CaseDetails', meta: { name: '病历详情' }, component: () => import('../views/records/CaseDetails.vue') },
       { path: 'PersonalInformation', name: 'PersonalInformation', meta: { name: '密钥管理' }, component: () => import('../views/records/PersonalInformation.vue') },
       { path: 'nursePlan', name: 'NursePlan', meta: { name: '护士排班' }, component: () => import('../views/manager/Nurse/NursePlan.vue') },
@@ -60,7 +57,17 @@ const routes = [
       { path: 'HealthCheck', name: 'HealthCheck', meta: { name: '健康检测' }, component: () => import('../views/manager/Nurse/HealthCheck.vue') },
       { path: 'NurseRecord', name: 'NurseRecord', meta: { name: '病床分配记录' }, component: () => import('../views/manager/Nurse/NurseRecord.vue') },
       { path: 'Ward', name: 'Ward', meta: { name: '病房管理' }, component: () => import('../views/manager/Ward.vue') },
-      { path: 'SendReferralRecord', name: 'SendReferralRecord', meta: { name: '发送病历' }, component: () => import('../views/records/SendReferralRecord.vue') }
+      /** 转诊 */
+      { path: 'doctorReferralApplication', name: 'DoctorReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/referral/ReferralApplication') },
+      { path: 'referralApplication', name: 'ReferralApplication', meta: { name: '转诊申请' }, component: () => import('../views/referral/ReferralApplication') },
+      { path: 'referralOut', name: 'ReferralOut', meta: { name: '转出审批' }, component: () => import('../views/referral/ReferralOut') },
+      { path: 'sendTraverse', name: 'SendTraverse', meta: { name: '发送病历' }, component: () => import('../views/referral/SendTraverse.vue') },
+      { path: 'referralIn', name: 'ReferralIn', meta: { name: '转入审核' }, component: () => import('../views/referral/ReferralIn.vue') },
+      { path: 'receiveTraverse', name: 'ReceiveTraverse', meta: { name: '接收病历' }, component: () => import('../views/referral/ReceiveTraverse.vue') },
+      { path: 'receivePatients', name:'ReceivePatients', meta: {name: '转入接诊'}, component: () => import('../views/referral/RecievePatients.vue')},
+      // 转诊记录
+      { path: 'referralRecord', name: 'ReferralRecord', meta: { name: '转诊记录' }, component: () => import('../views/referral/ReferralRecord') },
+      { path: 'doctorReferralRecord', name: 'DoctorReferralRecord', meta: { name: '转诊记录' }, component: () => import('../views/referral/ReferralRecord') },
     ]
   },
   {

@@ -72,11 +72,17 @@ public class MyMultipartFile implements MultipartFile {
         return new MyMultipartFile(imageBytes, fileName, "image/" + format);
     }
     
+    /**
+     * 从URL中获取图片
+     * @param imageUrl 图像url
+     * @return MultipartFile
+     * @throws IOException 读取图片时发生IO异常
+     * @throws WebClientRequestException 网络请求异常
+     */
     public static MultipartFile fromURL(String imageUrl) throws IOException, WebClientRequestException {
         WebClient webClient = WebClient.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                 .build();
-        System.out.println(imageUrl + "test!!!!!!!!!!!!!!!!!!!"); 
         byte[] imageBytes = webClient.get()
                 .uri(imageUrl)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)

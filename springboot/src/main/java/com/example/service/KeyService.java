@@ -220,7 +220,7 @@ public class KeyService {
 
     /**
      * 图像解密函数
-     * @param imgURL 加密图像再服务器的url
+     * @param imgURL 加密图像在服务器的url
      * @return 解密后图片的base64编码
      */
     public String imgDecrypt(String imgURL) throws IOException, NullPointerException, WebClientRequestException, RuntimeException{

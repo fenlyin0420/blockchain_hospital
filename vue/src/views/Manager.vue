@@ -116,12 +116,12 @@
             </template>
 
             <el-menu-item index="/referralApplication">转出申请</el-menu-item>
-            <el-menu-item index="/referralRecord">转出审批</el-menu-item>
-            <el-menu-item index="/SendReferralRecord">发送病历</el-menu-item>
-            <el-menu-item>转入审核</el-menu-item>
-            <el-menu-item>接收病历</el-menu-item>
-            <el-menu-item>转入接诊</el-menu-item>
-            <el-menu-item index="/referralRecor">转诊记录</el-menu-item>
+            <el-menu-item index="/referralOut">转出审批</el-menu-item>
+            <el-menu-item index="/sendTraverse">发送病历</el-menu-item>
+            <el-menu-item index="/referralIn">转入审核</el-menu-item>
+            <el-menu-item index="/receiveTraverse">接收病历</el-menu-item>
+            <el-menu-item index="/receivePatients">转入接诊</el-menu-item>
+            <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
           </el-submenu>
 
           <el-submenu v-else index="Transfer" disabled>

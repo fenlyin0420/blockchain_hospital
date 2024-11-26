@@ -85,7 +85,7 @@ public class ImgUtil {
     
     /**
      * 图像的解密
-     * @param file 加密过的图像
+     * @param img 加密过的图像
      * @return 解密后的图像
      */
     public static BufferedImage ImageDecryptor(BufferedImage img) {

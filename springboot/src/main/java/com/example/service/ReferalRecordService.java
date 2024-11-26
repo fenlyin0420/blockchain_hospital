@@ -30,8 +30,6 @@ public class ReferalRecordService {
     private ReferalRecordMapper referalRecordMapper;
 
     public PageInfo<ReferalRecord> selectPage(ReferalRecord referalRecord, Integer pageNum, Integer pageSize) {
-        // referalRecord.setInDoctorId(referalRecord.getDoc_id());
-        // referalRecord.setOutDoctorId(referalRecord.getDoc_id());
         PageHelper.startPage(pageNum, pageSize);
         List<ReferalRecord> list = referalRecordMapper.selectAll(referalRecord);
         return PageInfo.of(list);

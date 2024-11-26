@@ -35,6 +35,8 @@ public class Traverse {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date treatmentDate;
     private String img;
+    /** 是否有效 */
+    private String isValid;
 
     // 非数据库字段
     /** 患者姓名（可能重复） */
