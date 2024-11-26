@@ -131,6 +131,7 @@ export default {
   created() {
     this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法 
     this.loadByDrug(); //获取drugList
+    console.log(this.user)
   },
   mounted() {
     this.restaurantsFrequency = this.loadFrequency();
@@ -144,13 +145,13 @@ export default {
         await Promise.all([this.loadByUser()]);
         console.log("tableData", this.tableData)
         // 从URL查询参数中解析caseInfo  
-        const queryData = this.$route.query.data;
-        if (queryData) {
-          this.caseInfo = JSON.parse(decodeURIComponent(queryData));
-          console.log("caseInfo", this.caseInfo)
-          //检查tableData以更新caseInfo
-          this.updateCaseInfoFromTableData();
-        }
+        this.caseInfo = this.$route.query;
+        // if (queryData) {
+        //   this.caseInfo = JSON.parse(decodeURIComponent(queryData));
+        //   console.log("caseInfo", this.caseInfo)
+        //   //检查tableData以更新caseInfo
+        //   this.updateCaseInfoFromTableData();
+        // }
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -316,7 +317,7 @@ export default {
       information.userId = this.caseInfo.userId
       information.timestamp = new Date().getTime()
       information.treatmentDate = this.caseInfo.time
-      information.doctorId = this.caseInfo.doctorId
+      information.doctorId = this.user.id
       information.hospitalId = this.caseInfo.hospitalId
       this.advice == '' ? information.advice = "无" : information.advice = this.advice
       this.diagnosis == '' ? information.diagnosis = "无" : information.diagnosis = this.diagnosis
@@ -328,11 +329,10 @@ export default {
       information.signResult = " "
       information.signPubKey = " "
       information.signKey = " "
-
+      console.log("information", information)
       // 确认病历，上传到数据库
       this.$request.post('/traverse/add', information).then(res => {
         if (res.code === '200') {
-          information.id = res.data.id
           information.hospitalName = this.caseInfo.hospitalName
           information.doctorName = this.caseInfo.doctorName
           information.userName = this.caseInfo.userName
