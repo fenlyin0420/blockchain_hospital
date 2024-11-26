@@ -30,13 +30,13 @@ public class RecordService {
      */
     public void add(Record record) {
         // 先去查看一下该患者、该医生在当天是否已经有了就诊记录
-        String time = DateUtil.format(new Date(), "yyyy-MM-dd");
-        record.setTime(time);
-        List<Record> records = recordMapper.selectAll(record);
-        if (CollectionUtil.isEmpty(records)) {
+        //String time = DateUtil.format(new Date(), "yyyy-MM-dd");
+        //record.setTime(time);
+        //List<Record> records = recordMapper.selectAll(record);
+        //if (CollectionUtil.isEmpty(records)) {
             record.setInhostpitalRecord(StatusEnum.NO.status);
             recordMapper.insert(record);
-        }
+        //}
     }
 
     /**

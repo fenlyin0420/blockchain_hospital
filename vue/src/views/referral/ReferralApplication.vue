@@ -25,24 +25,26 @@
 
         <el-autocomplete type="textarea" v-model="transferReason" :fetch-suggestions="transferReasonComplete" clearable
           placeholder="请输入转诊原因" @select="handleSelect" style="width: 80%;display:block" />
-        <el-button type="primary" style="margin-top: 10px; position: relative; left:400px"
+        <el-button type="primary" style="margin-top: 10px; position: relative; left:450px"
           @click="confirmTransfer">确定</el-button>
       </div>
 
       <div class="right-form">
-        <el-form  style="margin-top: 20px;">
-          <div class="label">诊断结果</div>
+        <el-form label-width="0px" style="margin-top: 20px;">
+          <div class="label">沟通记录表</div>
           <el-form-item>
-            <el-input :autosize="{ minRows: 4, maxRows: 4 }" v-model="advice">
-            </el-input>
+            <el-input type="textarea" placeholder="患者承诺" v-model="advice" clearable :rows="4"
+              style="width:90%;"></el-input>
           </el-form-item>
-          <div class="label">药品信息</div>
+          <div class="label">患者签字</div>
           <el-form-item>
-            <el-table :data="drug" style="width: 100%" border>
+            <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
+              style="width:90%;"></el-input>
+            <!-- <el-table :data="drug" style="width: 100%"  border>
               <el-table-column prop="name" label="药品名称"></el-table-column>
               <el-table-column prop="dose" label="数量"></el-table-column>
               <el-table-column prop="frequency" label="用法用量"></el-table-column>
-            </el-table>
+            </el-table> -->
           </el-form-item>
         </el-form>
       </div>
@@ -66,29 +68,30 @@ export default {
       transferInDoctor: '',
       transferInTime: null,
       transferReason: '',
+      restaurants: [],
       caseInfo: [],
       tableData: [],
       infByHospital: [],
       infByDoctor: [],
       information: {},
-      drug: [
-        {
-          name: "999感冒灵颗粒",
-          dose: 3,
-          frequency: "一日3次"
-        },
-        {
-          name: "盐酸左氧氟沙星片",
-          dose: 3,
-          frequency: "一日3次"
-        },
-        {
-          name: "健胃消食片",
-          dose: 3,
-          frequency: "一日3次"
-        },
-      ],
-      advice: "多喝水",
+      // drug: [
+      //   {
+      //     name: "999感冒灵颗粒",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      //   {
+      //     name: "盐酸左氧氟沙星片",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      //   {
+      //     name: "健胃消食片",
+      //     dose: 3,
+      //     frequency: "一日3次"
+      //   },
+      // ],
+      // advice: "多喝水",
       transferReason: '',
       suggestions: [
         { value: "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。" },
@@ -159,6 +162,8 @@ export default {
         }
       })
     },
+
+    //转院理由联想
     transferReasonComplete(queryString, cb) {
       let results = this.suggestions.filter(item => item.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
       cb(results);

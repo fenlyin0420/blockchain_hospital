@@ -21,7 +21,7 @@
           <template v-slot="scope">
             <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
               @click=del(scope.row.id)>取消挂号</el-button>
-            <el-button plain type="warning" style="color: blue;" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
+            <el-button plain type="warning" class="button" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
               @click=call(scope.row)>叫号</el-button>
           </template>
         </el-table-column>
@@ -60,7 +60,7 @@ export default {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
       caseData.status = '已叫号'
-      console.log(caseData);
+      console.log("caseData",caseData);
       this.$request.put('/reserve/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('叫号成功')
@@ -83,7 +83,8 @@ export default {
       let data = {
         userId: row.userId,
         doctorId: row.doctorId,
-        hospitalId: this.user.hospitalId
+        hospitalId: this.user.hospitalId,
+        time: row.time,
       }
       this.$request.post('/record/add', data).then(res => {
         if (res.code === '200') {
@@ -131,5 +132,9 @@ export default {
 </script>
 
 <style scoped>
-
+.button{
+  color: rgb(55, 3, 90);
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
+}
 </style>
