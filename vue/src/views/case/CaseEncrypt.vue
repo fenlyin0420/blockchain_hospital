@@ -73,6 +73,7 @@ export default {
       this.receivedData = queryData
     }
     this.load()
+    this.encrypt()
   },
   computed: {
     drug() {
@@ -124,6 +125,24 @@ export default {
         this.pubs = ss
       }
     }, 
+    encrypt() {
+      this.$request.patch('keys/encrypt', {
+          id: 51,
+          userId:2,
+          advice: this.receivedData.advice,
+          drug: this.receivedData.drug
+      }).then((res) => {
+        if (res.code === '200') {
+          this.receivedData.advice = res.data.advice
+          this.receivedData.drug = res.data.drug
+          console.log(this.receivedData)
+        }
+      })
+    },
+    gotoSign() {
+      this.$router.push({name: "CaseSign", query: this.receivedData})
+    }
+
   }
 };
 </script>
