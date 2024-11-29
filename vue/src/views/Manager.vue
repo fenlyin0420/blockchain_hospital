@@ -140,6 +140,32 @@
           </el-submenu>
 
 
+          <!-- 护士模块 -->
+          <el-submenu index="nurseModule" v-if="user.role === 'NURSE'">
+            <template slot="title">
+              <!-- <i class="el-icon-nurse"></i>  -->
+              <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
+              <span>护士模块</span>
+            </template>
+            <el-menu-item index="/HealthCheck">健康检测</el-menu-item>
+            <el-menu-item index="/AssignBeds">分配床位</el-menu-item>
+            <el-menu-item index="/DailyCare">日常护理</el-menu-item>
+            <el-menu-item index="/NursePlan">护士排班</el-menu-item>
+            <el-menu-item index="/NurseRecord">病床分配记录</el-menu-item>
+          </el-submenu>
+          <el-submenu v-else index="nurseModule" disabled="" >
+            <template slot="title">
+              <!-- <i class="el-icon-nurse"></i> -->
+              <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
+              <span>护士模块</span>
+            </template>
+            <el-menu-item index="/HealthCheck" disabled>健康检测</el-menu-item>
+            <el-menu-item index="/AssignBeds" disabled>分配床位</el-menu-item>
+            <el-menu-item index="/DailyCare" disabled>日常护理</el-menu-item>
+            <el-menu-item index="/NursePlan" disabled>护士排班</el-menu-item>
+            <el-menu-item index="/NurseRecord" disabled>病床分配记录</el-menu-item>
+          </el-submenu>
+
           <!-- 管理模块 -->
           <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
             <template slot="title">
@@ -181,31 +207,7 @@
           </el-submenu>
 
 
-          <!-- 护士模块 -->
-          <el-submenu index="nurseModule" v-if="user.role === 'NURSE'">
-            <template slot="title">
-              <!-- <i class="el-icon-nurse"></i>  -->
-              <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
-              <span>护士模块</span>
-            </template>
-            <el-menu-item index="/HealthCheck">健康检测</el-menu-item>
-            <el-menu-item index="/AssignBeds">分配床位</el-menu-item>
-            <el-menu-item index="/DailyCare">日常护理</el-menu-item>
-            <el-menu-item index="/NursePlan">护士排班</el-menu-item>
-            <el-menu-item index="/NurseRecord">病床分配记录</el-menu-item>
-          </el-submenu>
-          <el-submenu v-else index="nurseModule" disabled="" >
-            <template slot="title">
-              <!-- <i class="el-icon-nurse"></i> -->
-              <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img"> 
-              <span>护士模块</span>
-            </template>
-            <el-menu-item index="/HealthCheck" disabled>健康检测</el-menu-item>
-            <el-menu-item index="/AssignBeds" disabled>分配床位</el-menu-item>
-            <el-menu-item index="/DailyCare" disabled>日常护理</el-menu-item>
-            <el-menu-item index="/NursePlan" disabled>护士排班</el-menu-item>
-            <el-menu-item index="/NurseRecord" disabled>病床分配记录</el-menu-item>
-          </el-submenu>
+
 
         </el-menu>
       </div>
