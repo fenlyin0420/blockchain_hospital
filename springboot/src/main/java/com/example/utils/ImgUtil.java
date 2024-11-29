@@ -85,7 +85,7 @@ public class ImgUtil {
     
     /**
      * 图像的解密
-     * @param file 加密过的图像
+     * @param img 加密过的图像
      * @return 解密后的图像
      */
     public static BufferedImage ImageDecryptor(BufferedImage img) {
@@ -135,18 +135,18 @@ public class ImgUtil {
     }
 
     /**
-     * Convert BufferedImage to bytes[]
+     * Convert BufferedImage base64
      * @param img BufferedImage
-     * @return bytes[]
+     * @return string of base64
      */
-    public static String getImageBytes(BufferedImage img) {
+    public static String getImageBase64(BufferedImage img) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(img, "png", byteArrayOutputStream); 
             byte[] imgBytes = byteArrayOutputStream.toByteArray();
             return Base64.getEncoder().encodeToString(imgBytes);
         } catch(IOException e) {
-            System.out.println("convert to bytes failed:(" + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

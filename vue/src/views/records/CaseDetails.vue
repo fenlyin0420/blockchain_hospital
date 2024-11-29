@@ -12,7 +12,7 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="url" :fit="fits"></el-image>
+                  <el-image style="width: 350px; height: 350px" :src="receivedData.img" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
@@ -26,7 +26,7 @@
         <el-form label-width="100px">
           <el-form-item label="患者姓名" class="custom-layout">
             <div class="content-wrapper">
-              <span class="name">{{ receivedData.name }}</span>
+              <span class="name">{{ receivedData.userName }}</span>
               <el-button type="primary" class="decrypt-button" @click="decryptAdviceAndDrug">解密</el-button>
             </div>
           </el-form-item>
@@ -158,21 +158,14 @@ export default {
   },
   created() {
     const queryData = this.$route.query;
-    console.log("queryData", queryData)
     if (queryData) {
-      // this.receivedData = JSON.parse(decodeURIComponent(queryData));
       this.receivedData = queryData
     }
-    // else {
-    //   this.receivedData = this.$route.params.inform;
-    // }
-    console.log("receiveData", this.receivedData)
     this.load()
   },
   computed: {
     drug() {
       const medicationString = this.receivedData.drug;
-      console.log(medicationString)
       // 拆分字符串为每一行
       let lines = medicationString.split('\n');
       if (lines.length != 1) lines = lines.slice(0, -1);
@@ -201,7 +194,6 @@ export default {
       this.previewImageUrl = url;
       this.previewImageIndex = index;
       this.dialogVisible = true;
-      console.log("drug:", this.drug);
     },
 
     load() {
@@ -228,7 +220,7 @@ export default {
     decryptAdviceAndDrug() {
       // 解密文字
       let params = {
-        name: this.receivedData.name,
+        userId: this.receivedData.userId,
         advice: this.receivedData.advice,
         drug: this.receivedData.drug
       }
@@ -236,25 +228,31 @@ export default {
         if (res.code === '200') {
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
-          console.log("drug:", this.receivedData.drug)
         } else {
           this.$message.error(res.msg)
         }
       })
 
       // 解密图片
-      const url = this.receivedData.img.slice(0,-1);
-      this.$request.post('keys/imgDecrypt', url).then(res => {
+      const imgUrl = {
+        "img": this.receivedData.img.slice(0, -1)
+      }
+      this.$request.post('keys/imgDecrypt', imgUrl).then(res => {
         if (res.code === '200'){
+          console.log(res.data)
           this.receivedData.img = `data:image/png;base64,${res.data}`;  
+        } else {
+          this.$message.error(res.msg)
         }
       })
     },
+    /**
+     * 签名
+     */
     sign() {
-      console.log(this.receivedData)
       this.params.role = this.user.role
-      this.params.name = this.receivedData.name
-      this.params.number = this.receivedData.number + ''
+      this.params.name = this.receivedData.userName
+      this.params.timestamp = this.receivedData.timestamp + ''
       this.$request.post('/keys/sign', this.params).then(res => {
         if (res.code === '200') {
           this.receivedData.signData = res.data.signData
@@ -280,7 +278,7 @@ export default {
     verifySign() {
       this.params.role = this.user.role
       this.params.name = this.receivedData.name
-      this.params.number = this.receivedData.number
+      this.params.timestamp = this.receivedData.timestamp
       this.params.signKey = this.receivedData.signKey
       this.$request.post('/keys/verifySign', this.params).then(res => {
         if (res.code === '200') {

@@ -167,7 +167,7 @@ export default {
       this.load(1)
     },
     handleCurrentChange(pageNum) {
-      this.load(pageNum);
+      this.load(pageNum)
     },
   }
 }

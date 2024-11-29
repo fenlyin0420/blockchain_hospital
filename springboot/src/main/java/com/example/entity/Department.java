@@ -21,8 +21,4 @@ public class Department implements Serializable {
     private String name;
     /** 科室描述 */
     private String description;
-    /**医院id*/
-    private Integer hospitalId;
-    /**医院id*/
-    private String hospitalName;
 }

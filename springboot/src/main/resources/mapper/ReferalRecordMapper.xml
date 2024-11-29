@@ -98,4 +98,18 @@
         </where>
         order by id desc
     </select>
+
+    <select id="selectById" resultType="com.example.entity.ReferalRecord">
+        select referal_record.*,user.name as userName,h1.hospital_name as outHospitalName,h2.hospital_name as
+        inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName
+        from referal_record
+        left join user on user.id = referal_record.user_id
+        left join hospital as h1 on out_hospital_id = h1.id
+        left join hospital as h2 on in_hospital_id = h2.id
+        left join doctor as d1 on referal_record.out_doctor_id = d1.id
+        left join doctor as d2 on referal_record.in_doctor_id = d2.id
+        <where>
+           referal_record.id = #{id}
+        </where>
+    </select>
 </mapper>

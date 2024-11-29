@@ -20,5 +20,5 @@ public interface TraverseMapper {
 
     Traverse selectById(Integer id);
     
-    Traverse selectByNumber(String number);
+    Traverse selectByTimestamp(String number);
 }

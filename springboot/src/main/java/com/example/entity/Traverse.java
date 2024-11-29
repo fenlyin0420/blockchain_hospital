@@ -6,30 +6,42 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Traverse {
     private Integer id;
-    /** 患者姓名 */
-    private String name;
+    /** 患者id */
+    private Integer userId;
     private Integer doctorId;
     private Integer hospitalId;
     private String advice;
     private String drug;
-    private String inhospital;
-    private String jurisdiction;
-    private String doctorName; //非数据库字段
-    private String hospitalName;
+    private String inHospital;
     private String careStatus;
+    /** 病房id */
     private Integer wardId;
-    private String wardName; //非数据库字段
     /** 时间戳 */
-    private String number;
+    private String timestamp;
+    /** 签名数据 */
     private String signData;
+    /** 签名结果 */
     private String signResult;
     private String signPubKey;
     private String signKey;
-    private Date userDate;
+    /** 就诊日期 */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date treatmentDate;
     private String img;
+    /** 是否有效 */
+    private String isValid;
+
+    // 非数据库字段
+    /** 患者姓名（可能重复） */
+    private String userName;
+    private String doctorName; 
+    private String hospitalName; 
+    private String wardName; 
 }

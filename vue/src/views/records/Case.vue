@@ -100,7 +100,7 @@ export default {
   name: "Case",
   data() {
     return {
-      caseInfo: { inhospital: this.radio }, // 单个病历信息
+      caseInfo: { inHospital: this.radio }, // 单个病历信息
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       advice: '', // 医嘱
       medicine: '', // 药品
@@ -110,7 +110,6 @@ export default {
       radio: '',
       tableData: [],
       drugList: [],
-      information: {},
       receivedData: {},
       restaurants: [],
       restaurantsAdvice: [],
@@ -120,6 +119,7 @@ export default {
       uploadedUrls: [],
       uploadDisabled: false, // 控制上传组件的显示与隐藏
       extraData: { isTraverse: true },
+      imgURL: { img:'' }
     }
   },
   created() {
@@ -138,7 +138,6 @@ export default {
         console.log("tableData", this.tableData)
         // 从URL查询参数中解析caseInfo  
         const queryData = this.$route.query.data;
-        console.log("queryData", queryData)
         if (queryData) {
           this.caseInfo = JSON.parse(decodeURIComponent(queryData));
           console.log("caseInfo", this.caseInfo)
@@ -156,7 +155,6 @@ export default {
           doctorId: this.user.id,
         },
       });
-      //this.$message.success("成功");
       this.tableData = res.data;
     },
 
@@ -253,19 +251,19 @@ export default {
     },
     handleImgSuccess(response) {
       // 设置uploadDisabled为true，隐藏上传组件
-      console.log("res:", response)
       this.uploadDisabled = true;
       const uploadedUrlString = response.data;  //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
+      console.log(response,response.data)
       //存入数据库的url
-      if (this.information.img === undefined) {
-        this.information.img = response.data + "\n";
+      if (this.imgURL.img === '' ) {
+        this.imgURL.img = response.data + "\n";
       } else {
-        this.information.img = this.information.img + response.data + "\n";
+        this.imgURL = this.imgURL + response.data + "\n";
       }
-    },
+     },
     beforeUpload(file) {
       const isImage = file.type.startsWith('image/');
 
@@ -286,40 +284,30 @@ export default {
      * 确认病历，并插入到数据库中
      */
     ok() {
+      var information = {}
       console.log("caseInfo", this.caseInfo)
-      this.information.number = new Date().getTime()
-      this.information.userDate = this.caseInfo.time
-      this.information.name = this.caseInfo.userName
-      this.information.doctorId = this.caseInfo.doctorId
-      this.information.hospitalId = this.caseInfo.hospitalId
-      if (this.advice == '') {
-        this.information.advice = "无"
-      } else {
-        this.information.advice = this.advice
-      }
-      if (this.medicine == '') {
-        this.medicine = "无"
-      }
-      this.information.drug = this.medicine
-      this.information.inhospital = this.radio
-      this.information.jurisdiction = "允许"
-      if (this.information.img == null) {
-        this.information.img = " "
-      }
-      this.information.signData = " "
-      this.information.signResult = " "
-      this.information.signPubKey = " "
-      this.information.signKey = " "
-      this.$request.post('/traverse/add', this.information).then(res => {
+      information.userId = this.caseInfo.userId
+      information.timestamp = new Date().getTime()
+      information.treatmentDate = this.caseInfo.time
+      information.doctorId = this.caseInfo.doctorId
+      information.hospitalId = this.caseInfo.hospitalId
+      this.advice == '' ? information.advice = "无" : information.advice = this.advice
+      this.medicine == '' ? this.medicine = "无" : ''
+      information.drug = this.medicine
+      information.inHospital = this.radio
+      information.img = this.imgURL.img
+      information.signData = " "
+      information.signResult = " "
+      information.signPubKey = " "
+      information.signKey = " "
+
+      this.$request.post('/traverse/add', information).then(res => {
         if (res.code === '200') {
-          //this.$message.success('插入成功')
-          this.information.hospitalName = this.caseInfo.hospitalName
-          this.information.doctorName = this.caseInfo.doctorName
-          let caseData = JSON.parse(JSON.stringify(this.information))
-          //console.log("information", this.information)
-          // console.log("caseData", caseData)
-          // this.$router.push(`CaseDetails?data=${encodeURIComponent(JSON.stringify(caseData))}`)
-          this.$router.push({name:"CaseDetails", query: caseData})
+          information.hospitalName = this.caseInfo.hospitalName
+          information.doctorName = this.caseInfo.doctorName
+          information.userName = this.caseInfo.userName
+          console.log("information", information)
+          this.$router.push({name:"CaseDetails", query: information})
         } else {
           this.$message.error(res.msg)
         }
@@ -365,8 +353,10 @@ export default {
 }
 
 .field-label {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
   margin-right: 10px;
-  width: 40px;
+  width: 45px;
   font-weight: bold;
 }
 
@@ -387,7 +377,7 @@ export default {
 }
 
 .quantity-input {
-  width: 34%;
+  width: 29%;
   margin-right: 10px;
 }
 

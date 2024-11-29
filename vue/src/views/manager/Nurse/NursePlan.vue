@@ -179,6 +179,7 @@ export default {
   },
   methods: {
     loadNurse() {
+      //这里帮我debug一下
       let id = this.user.hospitalId; // 各医院管理员只能管理自己医院的排班，所以是selectByHospitalId
       this.$request.get("/nurse/selectByH/" + id).then((res) => {
         if (res.code === "200") {
@@ -298,3 +299,4 @@ export default {
 <style scoped>
 
 </style>
+
