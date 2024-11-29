@@ -95,6 +95,10 @@
             <if test="inDoctorId != null">
                 and in_doctor_id = #{inDoctorId}
             </if>
+            <if test="result != null">
+                and result = #{result} 
+            </if>
+"
         </where>
         order by id desc
     </select>

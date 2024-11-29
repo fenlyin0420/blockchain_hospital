@@ -19,8 +19,8 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.print.DocFlavor.READER;
-
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/keys")
@@ -34,9 +34,9 @@ public class KeyController {
     @Resource
     private UserService userService;
 
-    //查看个人信息
+    // 查看个人信息
     @PostMapping("searchById")
-    public Result searchById(@RequestBody Account account){
+    public Result searchById(@RequestBody Account account) {
         if (RoleEnum.ADMIN.name().equals(account.getRole())) {
             return Result.success(adminService.selectById(account.getId()));
         }
@@ -48,9 +48,10 @@ public class KeyController {
         }
         return Result.success();
     }
-    //修改公钥和私钥
+
+    // 修改公钥和私钥
     @PutMapping("/updateKey")
-    public Result updateKey(@RequestBody Account account){
+    public Result updateKey(@RequestBody Account account) {
         if (RoleEnum.ADMIN.name().equals(account.getRole())) {
             adminService.updateKey(account);
         }
@@ -63,28 +64,38 @@ public class KeyController {
         return Result.success();
     }
 
-    //进行环签名
+    // 进行环签名
     @PostMapping("/sign")
-    public Result sign(@RequestBody Params params){
-        RingSign ringSign=keyService.sign(params);
+    public Result sign(@RequestBody Params params) {
+        RingSign ringSign = keyService.sign(params);
         return Result.success(ringSign);
     }
-    //进行验签
+
+    // 进行验签
     @PostMapping("/verifySign")
-    public Result verifySign(@RequestBody Params params){
-        RingSign ringSign=keyService.verifySign(params);
+    public Result verifySign(@RequestBody Params params) {
+        RingSign ringSign = keyService.verifySign(params);
         return Result.success(ringSign);
     }
 
-    //进行加密
+    // 进行加密
+    @PatchMapping("encrypt")
+    public Result encrypt(@RequestBody Traverse traverse) {
+        try {
+            traverse = keyService.encrypt(traverse);
+        } catch (CustomException e) {
+            System.out.println(e.getMsg());
+            return Result.error(e.getMsg());
+        }
+        return Result.success(traverse);
+    }
 
-
-    //进行解密
+    // 进行解密
     @PostMapping("/decrypt")
-    public Result decrypt(@RequestBody Traverse traverse){
+    public Result decrypt(@RequestBody Traverse traverse) {
         try {
             traverse = keyService.decrypt(traverse);
-        } catch(CustomException e) {
+        } catch (CustomException e) {
             System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
@@ -93,6 +104,7 @@ public class KeyController {
 
     /**
      * 图像解密接口
+     * 
      * @param traverse 接收图像url
      * @return 图像base64编码
      */
@@ -106,16 +118,16 @@ public class KeyController {
         String Url = traverse.getImg();
         try {
             data = keyService.imgDecrypt(Url);
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             return Result.error("图像传输失败");
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println(e.getMessage());
             return Result.error("无法找到病历图片");
-        } catch(WebClientRequestException e) {
+        } catch (WebClientRequestException e) {
             System.out.println(e.getMessage());
             return Result.error("图像URL无效，请检查病历");
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return Result.error("解密失败:(");
         }

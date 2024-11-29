@@ -18,6 +18,7 @@ public class Traverse {
     private Integer doctorId;
     private Integer hospitalId;
     private String advice;
+    private String diagnosis;
     private String drug;
     private String inHospital;
     private String careStatus;
