@@ -119,11 +119,9 @@ export default {
       this.information.outHospitalId = this.caseInfo.hospitalId
       this.information.outDoctorId = this.caseInfo.doctorId
       this.information.inHospitalId = this.transferInHospital
-      // this.information.inDoctorId=this.transferInDoctor // 医生由管理员分配
       this.information.why = this.transferReason
-      // this.information.result="待接收"
       let data = JSON.parse(JSON.stringify(this.information))
-      this.$request.post('/referal/add', data).then(res => {
+      this.$request.post('/referral/add', data).then(res => {
         if (res.code === '200') {
           // 自动跳转
           const countdownSeconds = 3;

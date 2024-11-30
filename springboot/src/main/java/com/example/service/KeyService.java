@@ -41,8 +41,11 @@ public class KeyService {
     private KeyMapper keyMapper;
     @Resource
     private TraverseMapper traverseMapper;
+    @Resource
+    private TraverseService traverseService;
 
     /**
+     * 签名
      * params.getId()病历id
      * params.getName()患者姓名
      *
@@ -197,16 +200,38 @@ public class KeyService {
         return doctors;
     }
 
+    public Traverse encrypt(Traverse traverse) {
+        try {
+            User user = userMapper.selectById(traverse.getUserId());
+            // 加密医生建议
+            String cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getAdvice());
+            traverse.setAdvice(cipherText);
+            // 加密医嘱
+            cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
+            traverse.setDrug(cipherText);
+            // 将病历添加进数据库
+            traverseService.updateById(traverse);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new CustomException("400", "患者不存在");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException("400", "加密失败");
+        }
+        return traverse;
+    }
+
     /**
      * 解密病历
      * 
      * @param traverse 与病历相关的参数
      * @return
      */
-    public Traverse decrypt(Traverse traverse) throws CustomException{
+    public Traverse decrypt(Traverse traverse) throws CustomException {
         try {
             User user = userMapper.selectById(traverse.getUserId());
-            if (user == null) throw new CustomException("用户不存在");
+            if (user == null)
+                throw new CustomException("用户不存在");
             String advicePlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getAdvice());
             String drugPlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getDrug());
             traverse.setAdvice(advicePlainText);
@@ -220,10 +245,12 @@ public class KeyService {
 
     /**
      * 图像解密函数
+     * 
      * @param imgURL 加密图像在服务器的url
      * @return 解密后图片的base64编码
      */
-    public String imgDecrypt(String imgURL) throws IOException, NullPointerException, WebClientRequestException, RuntimeException{
+    public String imgDecrypt(String imgURL)
+            throws IOException, NullPointerException, WebClientRequestException, RuntimeException {
         MultipartFile file = MyMultipartFile.fromURL(imgURL);
         BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
         img = ImgUtil.ImageDecryptor(img);

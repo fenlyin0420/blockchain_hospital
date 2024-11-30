@@ -83,8 +83,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.user.role === 'DOCTOR' ? '' : this.user.name,
-          id: this.id,
+          doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
         }
       }).then(res => {
         this.tableData = res.data?.list
