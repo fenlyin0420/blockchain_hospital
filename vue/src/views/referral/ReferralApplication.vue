@@ -25,7 +25,8 @@
 
         <el-autocomplete type="textarea" v-model="transferReason" :fetch-suggestions="transferReasonComplete" clearable
           placeholder="请输入转诊原因" @select="handleSelect" style="width: 80%;display:block" />
-        <el-button type="primary" style="margin-top: 10px; position: relative; left:450px"
+          <br/>
+          <el-button type="primary" style="margin-top: 10px; position:absolute; right: 45%;"
           @click="confirmTransfer">确定</el-button>
       </div>
 
@@ -33,18 +34,13 @@
         <el-form label-width="0px" style="margin-top: 20px;">
           <div class="label">沟通记录表</div>
           <el-form-item>
-            <el-input type="textarea" placeholder="患者承诺" v-model="advice" clearable :rows="4"
+            <el-input type="textarea" placeholder="患者承诺" v-model="promise" clearable :rows="4"
               style="width:90%;"></el-input>
           </el-form-item>
           <div class="label">患者签字</div>
           <el-form-item>
             <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
               style="width:90%;"></el-input>
-            <!-- <el-table :data="drug" style="width: 100%"  border>
-              <el-table-column prop="name" label="药品名称"></el-table-column>
-              <el-table-column prop="dose" label="数量"></el-table-column>
-              <el-table-column prop="frequency" label="用法用量"></el-table-column>
-            </el-table> -->
           </el-form-item>
         </el-form>
       </div>
@@ -74,25 +70,9 @@ export default {
       infByHospital: [],
       infByDoctor: [],
       information: {},
-      // drug: [
-      //   {
-      //     name: "999感冒灵颗粒",
-      //     dose: 3,
-      //     frequency: "一日3次"
-      //   },
-      //   {
-      //     name: "盐酸左氧氟沙星片",
-      //     dose: 3,
-      //     frequency: "一日3次"
-      //   },
-      //   {
-      //     name: "健胃消食片",
-      //     dose: 3,
-      //     frequency: "一日3次"
-      //   },
-      // ],
-      // advice: "多喝水",
+      promise: "要求自动转院，自愿承担转院风险，后果自负",
       transferReason: '',
+      signature:'',
       suggestions: [
         { value: "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。" },
         { value: "患者病情稳定。" },
@@ -187,6 +167,8 @@ export default {
 }
 
 .label {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
   margin-bottom: 10px;
   font-weight: bold;
 }
@@ -198,5 +180,16 @@ export default {
 
 .el-textarea {
   margin-top: 20px;
+}
+
+::v-deep .el-textarea__inner {
+  color: blue;
+  font-size: 16px;
+}
+
+::v-deep .el-input__inner{
+  font-family: "SimSun", "宋体", serif;
+  color: blue;
+  font-size: 16px;
 }
 </style>
