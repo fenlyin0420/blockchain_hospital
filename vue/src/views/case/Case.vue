@@ -1,9 +1,5 @@
 <template>
-  <div class="case-container">
-    <!-- <div class="case-header">
-      <h2 style="margin: 0; text-align: left;">病历详情</h2>
-    </div> -->
-
+  <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <el-col :span="12">
         <el-form inline label-width="80px">
@@ -96,7 +92,7 @@
         </el-form>
       </el-col>
     </el-row>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -131,7 +127,6 @@ export default {
   created() {
     this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法 
     this.loadByDrug(); //获取drugList
-    console.log(this.user)
   },
   mounted() {
     this.restaurantsFrequency = this.loadFrequency();
@@ -143,17 +138,9 @@ export default {
       try {
         // loadByUser返回Promises  
         await Promise.all([this.loadByUser()]);
-        console.log("tableData", this.tableData)
         // 从URL查询参数中解析caseInfo  
         this.caseInfo = this.$route.query;
-        // if (queryData) {
-        //   this.caseInfo = JSON.parse(decodeURIComponent(queryData));
-        //   console.log("caseInfo", this.caseInfo)
-        //   //检查tableData以更新caseInfo
-        //   this.updateCaseInfoFromTableData();
-        // }
       } catch (error) {
-        console.error('Error loading data:', error);
       }
     },
 
@@ -284,7 +271,6 @@ export default {
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
-      console.log(response, response.data)
       //存入数据库的url
       if (this.imgURL.img === '') {
         this.imgURL.img = response.data + "\n";
@@ -312,32 +298,33 @@ export default {
      * 确认病历，并插入到数据库中
      */
     ok() {
-      var information = {}
-      console.log("caseInfo", this.caseInfo)
-      information.userId = this.caseInfo.userId
-      information.timestamp = new Date().getTime()
-      information.treatmentDate = this.caseInfo.time
-      information.doctorId = this.user.id
-      information.hospitalId = this.caseInfo.hospitalId
-      this.advice == '' ? information.advice = "无" : information.advice = this.advice
-      this.diagnosis == '' ? information.diagnosis = "无" : information.diagnosis = this.diagnosis
+      let newTraverse = {}
+      newTraverse.userId = this.caseInfo.userId
+      newTraverse.timestamp = new Date().getTime()
+      newTraverse.treatmentDate = this.caseInfo.time
+      newTraverse.doctorId = this.user.id
+      newTraverse.hospitalId = this.caseInfo.hospitalId
+      this.advice == '' ? newTraverse.advice = "无" : newTraverse.advice = this.advice
+      this.diagnosis == '' ? newTraverse.diagnosis = "无" : newTraverse.diagnosis = this.diagnosis
       this.medicine == '' ? this.medicine = "无" : ''
-      information.drug = this.medicine
-      information.inHospital = this.radio
-      information.img = this.imgURL.img
-      information.signData = " "
-      information.signResult = " "
-      information.signPubKey = " "
-      information.signKey = " "
-      console.log("information", information)
+      newTraverse.drug = this.medicine
+      newTraverse.inHospital = this.radio
+      newTraverse.img = this.imgURL.img
+      // newTraverse.signData = " "
+      // newTraverse.signResult = " "
+      // newTraverse.signPubKey = " "
+      // newTraverse.signKey = " "
       // 确认病历，上传到数据库
-      this.$request.post('/traverse/add', information).then(res => {
+      this.$request.post('/traverse/add', newTraverse).then(res => {
         if (res.code === '200') {
-          information.hospitalName = this.caseInfo.hospitalName
-          information.doctorName = this.caseInfo.doctorName
-          information.userName = this.caseInfo.userName
-          // 跳转到加密视图
-          this.$router.push({ name: "CaseEncrypt", query: information })
+          newTraverse.id = res.data
+          newTraverse.hospitalName = this.caseInfo.hospitalName
+          newTraverse.doctorName = this.caseInfo.doctorName
+          newTraverse.userName = this.caseInfo.userName
+          // 如果不需要住院，则跳转到加密界面
+          // 进行加密、签名后，诊疗结束
+          if (this.radio === '否')
+          this.$router.push({ name: "CaseEncrypt", query: newTraverse })
         } else {
           this.$message.error(res.msg)
         }
@@ -363,9 +350,7 @@ export default {
 
 .case-container {
   padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 100%;
 }
 
 .case-header {

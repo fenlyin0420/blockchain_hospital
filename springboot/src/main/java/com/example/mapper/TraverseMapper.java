@@ -13,7 +13,7 @@ public interface TraverseMapper {
 
     List<Traverse> selectAll(Traverse traverse);
 
-    void add(Traverse traverse);
+    Integer add(Traverse traverse);
 
     void updateById(Traverse traverse);
 
@@ -24,4 +24,6 @@ public interface TraverseMapper {
     Traverse selectByTimestamp(String number);
 
     List<Traverse> selectByCanSend(Integer id);
+
+    Integer selectLastInsertId();
 }

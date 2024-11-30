@@ -60,9 +60,8 @@ export default {
         if (valid) {
           this.$request.post('/login', this.form).then(res => {
             if (res.code === '200') {
-              localStorage.setItem("xm-user", JSON.stringify(res.data))  // 在前台存储用户数据
               //key: xm-user     value:转成字符串的res.data
-              console.log(res.data)
+              localStorage.setItem("xm-user", JSON.stringify(res.data))  
               if (res.data.role === 'USER'){
                 this.$router.push('/doctorCard')
               }

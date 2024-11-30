@@ -1,5 +1,5 @@
 <template>
-  <el-card class="case-details">
+  <el-card class="container">
     <div class="header">
       <h2>病例详情</h2>
     </div>
@@ -293,7 +293,7 @@ export default {
 </script>
 
 <style scoped>
-.case-details {
+.container {
   margin: 20px;
 }
 

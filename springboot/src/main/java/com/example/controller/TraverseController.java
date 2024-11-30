@@ -81,6 +81,7 @@ public class TraverseController {
     @PostMapping("/add")
     @AutoLog("新增了一条病历")
     public Result add(@RequestBody Traverse traverse) {
+        Integer id;
         try {
             if(traverse.getInHospital().equals("是")){
                 traverse.setInHospital(InhospitalEnum.Inhospital_YES.status);
@@ -88,11 +89,11 @@ public class TraverseController {
             if(traverse.getInHospital().equals("否")){
                 traverse.setInHospital(InhospitalEnum.Inhospital_NO.status);
             }
-            traverseService.add(traverse);
+            id = traverseService.add(traverse);
         } catch(NullPointerException e) {
             return Result.error("病历信息不全（是否住院？）");
         }
-        return Result.success();
+        return Result.success(id);
     }
 
     @PutMapping("/update")

@@ -11,7 +11,6 @@ import com.example.utils.JwtSm.MySM2Util;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.support.WebRequestDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 
@@ -24,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
-import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 
 import javax.annotation.Resource;
@@ -45,18 +43,22 @@ public class KeyService {
     private TraverseService traverseService;
 
     /**
-     * 签名
-     * params.getId()病历id
-     * params.getName()患者姓名
-     *
+     * <p> 签名 </p>
+     * <p> {@code params.id} 病历id </p>
+     * <p> {@code params.name} 患者姓名 </p>
+     * 
+     * @param params
      */
     public RingSign sign(Params params) {
-        Traverse traverse = traverseMapper.selectByTimestamp(params.getTimestamp());
+        RingSign ringSign = new RingSign();
+        Traverse traverse = traverseMapper.selectById(params.getId());
         Doctor doctor = doctorMapper.selectById(traverse.getDoctorId());
-        if (Objects.equals(traverse.getSignPubKey(), " ") || traverse.getSignPubKey() == null) {
-            setSignPublicKey(traverse);
-            traverse = traverseMapper.selectByTimestamp(params.getTimestamp());
-        }
+        // 生成公钥环
+        String signPublicKey = getPubKeyRing(traverse);
+        ringSign.setSignPubKey(signPublicKey);
+        traverse.setSignPubKey(signPublicKey);
+        traverseMapper.updateById(traverse);
+        traverse = traverseMapper.selectById(params.getId());
 
         // 合成data
         Instant now = Instant.now();
@@ -67,13 +69,11 @@ public class KeyService {
         String data = params.getName() + "+" + formattedDate;
 
         // 提取环公钥
-        List<Doctor> doctors = getSignPubKey(traverse);
+        List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
         List<String> publicKeys = new ArrayList<>();
         for (Doctor doctorTemp : doctors) {
             publicKeys.add(doctorTemp.getPublicKey());
         }
-        System.out.println(doctors);
-        // List<String> publicKeys=ringSignMapper.findToPubKey();
         // 匹配私钥，确定pi
         int pi = -1;
         for (int i = 0; i < publicKeys.size(); i++) {
@@ -94,9 +94,6 @@ public class KeyService {
             throw new RuntimeException(e);
         }
         for (String pubKey : publicKeys) {
-            System.out.println(
-                    "____________________________________________________________________________________________________________________________________________"
-                            + pubKey);
             try {
                 list.add(MySM2Util.str2pub(pubKey));
             } catch (Exception e) {
@@ -112,11 +109,10 @@ public class KeyService {
         String key = BestRingSignUtil.generate(data, list, bcecPrivateKey, pi);
 
         // 返回数据
-        RingSign ringSign = new RingSign();
         ringSign.setSignData(data);
         ringSign.setSignKey(key);
-        traverse.setSignKey(key);
         traverse.setSignData(data);
+        traverse.setSignKey(key);
         traverseMapper.updateById(traverse);
         return ringSign;
     }
@@ -124,12 +120,11 @@ public class KeyService {
     public RingSign verifySign(Params params) {
         Traverse traverse = traverseMapper.selectByTimestamp(params.getTimestamp());
         String key = params.getSignKey();
-        List<Doctor> doctors = getSignPubKey(traverse);
+        List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
         List<String> publicKeys = new ArrayList<>();
         for (Doctor doctor : doctors) {
             publicKeys.add(doctor.getPublicKey());
         }
-        // List<String> publicKeys=ringSignMapper.findToPubKey();
         List<BCECPublicKey> list = new ArrayList<>();
         for (String pubKey : publicKeys) {
             try {
@@ -154,13 +149,19 @@ public class KeyService {
         return ringSign;
     }
 
-    public void setSignPublicKey(Traverse traverse) {
-        // 查询所有的公钥
+    /**
+     * 获取病历公钥环
+     * 
+     * 
+     * 环上每个节点格式为： 姓名:公钥
+     * 节点与节点之间通过 {@code', '} 分隔
+     * @param traverse 待设置公钥环的病历
+     */
+    public String getPubKeyRing(Traverse traverse) {
+        // 查询所有的医生
         List<Doctor> doctors = doctorMapper.select();
-        System.out.println(
-                "___________________________________________________________________________________________________________"
-                        + doctors.size());
-        // 合并环公钥
+        // 提取并合并环公钥、
+
         StringBuilder mergedString = new StringBuilder();
         for (Doctor doctor : doctors) {
             mergedString.append(doctor.getName()).append(":").append(doctor.getPublicKey()).append(", ");
@@ -170,14 +171,16 @@ public class KeyService {
         if (mergedString.length() > 0) {
             mergedString.delete(mergedString.length() - 2, mergedString.length());
         }
-        // 输出合并后的字符串
-        System.out.println(mergedString.toString());
-        // 添加公钥信息
-        traverse.setSignPubKey(mergedString.toString());
-        traverseMapper.updateById(traverse);
+        return mergedString.toString();
     }
 
-    public List<Doctor> getSignPubKey(Traverse traverse) {
+    /**
+     * 根据公钥环获取医生列表
+     * @param traverse 病历
+     * @return 公钥环上的医生列表医生列表
+     * @throws CustomException 公钥环为空
+     */
+    public List<Doctor> getDoctorsByPubKeyRing(Traverse traverse) {
         // 查询环公钥字符串
         String s = traverse.getSignPubKey();
         // 数据操作
@@ -196,7 +199,6 @@ public class KeyService {
                 doctors.add(doctor);
             }
         }
-
         return doctors;
     }
 
@@ -209,7 +211,12 @@ public class KeyService {
             // 加密医嘱
             cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
             traverse.setDrug(cipherText);
-            // 将病历添加进数据库
+            // 加密患者姓名
+            // 患者姓名不不会存在数据库中，因为病历里只有患者id
+            // 所以该加密后的姓名将仅仅被返回该前端，除此之外，不会有任何用途
+            cipherText = MySM2Util.encryption(user.getPublicKey(), user.getName());
+            traverse.setUserName(cipherText);
+            // 将病历更新进数据库
             traverseService.updateById(traverse);
         } catch (NullPointerException e) {
             e.printStackTrace();

@@ -11,4 +11,6 @@ public class RingSign {
     private String signData;
     private String signKey;
     private String message;
+    /** 公钥环 */
+    private String signPubKey;
 }

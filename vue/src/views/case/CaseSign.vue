@@ -1,5 +1,5 @@
 <template>
-  <el-card class="case-details">
+  <el-card class="container">
     <div class="header">
       <h2>病历签名</h2>
     </div>
@@ -23,7 +23,7 @@
 
         <div class="grid-content bg-purple">
           <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signData">
+            v-model="signData">
           </el-input>
         </div>
       </el-col>
@@ -48,7 +48,7 @@
         </div>
         <div class="grid-content bg-purple-light">
           <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signKey">
+            v-model="signKey">
           </el-input>
         </div>
       </el-col>
@@ -73,9 +73,9 @@
           </el-row>
         </div>
 
-        <div class="grid-content bg-purple-light">
+        <div>
           <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signResult">
+            v-model="signResult">
           </el-input>
         </div>
       </el-col>
@@ -85,14 +85,13 @@
       <h2>环公钥组成信息</h2>
     </div>
 
-    <div v-if="pubs.length !== 0">
-      <el-table :data="pubs" height="250" border style="width: 100%">
-        <el-table-column prop="name" label="姓名" width="180">
-        </el-table-column>
-        <el-table-column prop="key" label="公钥">
-        </el-table-column>
-      </el-table>
-    </div>
+    <el-table :data="pubs" border style="width: 100%;" >
+      <el-table-column prop="name" label="姓名" width="180">
+      </el-table-column>
+      <el-table-column prop="key" label="公钥">
+      </el-table-column>
+    </el-table>
+
   </el-card>
 </template>
 
@@ -103,60 +102,21 @@ export default {
       receivedData: [],
       params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      pubs: {},
       fits: 'fill',
-      dialogVisible: false, // 对话框可见性  
-      previewImageUrl: '', // 预览图片URL  
-      previewImageIndex: -1, // 预览图片索引 
+      signData: '',
+      signKey: '',
+      signResult: '',
+      signPubKey: ''
     };
   },
   created() {
-    const queryData = this.$route.query;
-    if (queryData) {
-      this.receivedData = queryData
-    }
+    this.receivedData = this.$route.query
     this.load()
   },
   computed: {
-    drug() {
-      const medicationString = this.receivedData.drug;
-      // 拆分字符串为每一行
-      let lines = medicationString.split('\n');
-      if (lines.length != 1) lines = lines.slice(0, -1);
-      // 将每一行拆分为药物信息对象
-      return lines.map(line => {
-        const parts = line.split(' ');
-        return {
-          name: parts[0],
-          dose: parts[1] ? parts[1] : parts[0],
-          frequency: parts[2] ? parts[2] : parts[0]
-        };
-      });
-    },
-    ImageLines() {
-      const urlImageString = this.receivedData.img;
-      const urlImageLines = urlImageString.split('\n');
-      if (urlImageLines.length > 0 && urlImageLines[urlImageLines.length - 1] === '') {
-        urlImageLines.pop();
-      }
-      return urlImageLines;
-    }
-  },
-  methods: {
-    //图片预览
-    previewImage(url, index) {
-      this.previewImageUrl = url;
-      this.previewImageIndex = index;
-      this.dialogVisible = true;
-    },
-
-    load() {
-      if (this.receivedData.length) {
-        this.$router.push("/caseList")
-      }
-
-      if (this.receivedData.signPubKey !== null || this.receivedData.signPubKey !== "") {
-        const s = this.receivedData.signPubKey.split(",")
+    pubs() {
+      if (this.signPubKey != '') {
+        const s = this.signPubKey.split(",")
         const ss = s.map(line => {
           const parts = line.split(':');
           return {
@@ -164,33 +124,38 @@ export default {
             key: parts[1],
           };
         });
-        this.pubs = ss
+        return ss
       }
+    }
+  },
+  methods: {
+    load() {
+
     },
     /**
      * 签名
      */
     sign() {
-      this.params.role = this.user.role
       this.params.name = this.receivedData.userName
-      this.params.timestamp = this.receivedData.timestamp + ''
+      this.params.id = this.receivedData.id
       this.$request.post('/keys/sign', this.params).then(res => {
         if (res.code === '200') {
-          this.receivedData.signData = res.data.signData
-          this.receivedData.signKey = res.data.signKey
+          this.signData = res.data.signData
+          this.signKey = res.data.signKey
+          this.signPubKey = res.data.signPubKey
 
           // 自动跳转
-          const countdownSeconds = 3;
-          let countdown = countdownSeconds;
-          const countdownInterval = setInterval(() => {
-            if (countdown > 0) {
-              this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
-              countdown--;
-            } else {
-              clearInterval(countdownInterval);
-              this.$router.push('/doctorReserve');
-            }
-          }, 1000);
+          // const countdownSeconds = 3;
+          // let countdown = countdownSeconds;
+          // const countdownInterval = setInterval(() => {
+          //   if (countdown > 0) {
+          //     this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
+          //     countdown--;
+          //   } else {
+          //     clearInterval(countdownInterval);
+          //     this.$router.push('/doctorReserve');
+          //   }
+          // }, 1000);
         } else {
           this.$message.error(res.msg)
         }
@@ -214,36 +179,21 @@ export default {
 </script>
 
 <style scoped>
-.case-details {
-  margin: 20px;
+.container {
+  padding: 20px;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .header {
   margin-bottom: 20px;
 }
 
-.custom-layout .content-wrapper {
-  display: flex;
-  align-items: center;
-  /* 垂直方向上居中对齐 */
-  justify-content: space-between;
-  /* 水平方向上两端对齐 */
-  width: 100%;
-  /* 确保容器宽度充满父元素 */
+.el-table {
+  color: blue;
+}
+::v-deep .el-textarea__inner {
+  color: blue;
 }
 
-.custom-layout .decrypt-button {
-  margin-left: auto;
-  /* 利用自动外边距将按钮推至最右侧 */
-}
-
-.image-container {
-  display: flex;
-  /* 启用flexbox布局 */
-  flex-wrap: wrap;
-  /* 若图片数量超出容器宽度，则自动换行 */
-  gap: 10px;
-  /* 图片间的间距，可根据需求调整 */
-}
 </style>

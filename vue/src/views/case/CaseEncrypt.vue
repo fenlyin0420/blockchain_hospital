@@ -1,14 +1,15 @@
 <template>
-  <el-card class="case-details">
+  <el-card class="container">
     <div class="header">
       <h2>病历加密</h2>
     </div>
+
     <el-row :gutter="24">
       <el-col :span="9">
         <el-form label-width="10px">
           <el-form-item>
             <!-- 这里放图 -->
-            <span class="field-label">医疗影像:</span>
+            <span class="field-label">医疗影像</span>
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
@@ -22,20 +23,20 @@
           </el-form-item>
         </el-form>
       </el-col>
+
       <el-col :span="15">
         <el-form label-width="100px">
-          <el-form-item label="患者姓名" class="custom-layout">
+          <el-form-item label="患者姓名" class="custom-layout" style="overflow-x: hidden;">
             <div class="content-wrapper">
               <span class="name">{{ receivedData.userName }}</span>
-              <el-button type="primary" class="decrypt-button" @click="decryptAdviceAndDrug">解密</el-button>
+              <el-button type="primary" class="decrypt-button" @click="encrypt">加密</el-button>
             </div>
           </el-form-item>
         </el-form>
         <el-form label-width="100px">
           <el-form-item label="医嘱信息" >
             <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4 }" placeholder="请输入内容" class="blue-text"
-              v-model="receivedData.advice"
-            >
+              v-model="receivedData.advice">
             </el-input>
           </el-form-item>
           <el-form-item label="药品信息">
@@ -58,7 +59,6 @@ export default {
     return {
       /** 接收查询参数 */
       receivedData: {},
-      params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       pubs: {},
       fits: 'fill',
@@ -68,12 +68,8 @@ export default {
     };
   },
   created() {
-    const queryData = this.$route.query;
-    if (queryData) {
-      this.receivedData = queryData
-    }
+    this.receivedData = this.$route.query
     this.load()
-    this.encrypt()
   },
   computed: {
     drug() {
@@ -112,8 +108,8 @@ export default {
       if (this.receivedData.length) {
         this.$router.push("/caseList")
       }
-
-      if (this.receivedData.signPubKey !== null || this.receivedData.signPubKey !== "") {
+      
+      if (this.receivedData.signPubKey != null) {
         const s = this.receivedData.signPubKey.split(",")
         const ss = s.map(line => {
           const parts = line.split(':');
@@ -125,17 +121,21 @@ export default {
         this.pubs = ss
       }
     }, 
+    /**
+     * 加密病历文字字段
+     */
     encrypt() {
       this.$request.patch('keys/encrypt', {
-          id: 51,
-          userId:2,
+          id: this.receivedData.id,
+          userId: this.receivedData.userId,
           advice: this.receivedData.advice,
           drug: this.receivedData.drug
       }).then((res) => {
         if (res.code === '200') {
+          // 更新数据为加密后的内容
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
-          console.log(this.receivedData)
+          this.receivedData.userName = res.data.userName
         }
       })
     },
@@ -148,8 +148,8 @@ export default {
 </script>
 
 <style scoped>
-.case-details {
-  margin: 20px;
+.container {
+  padding: 20px;
   height: 100%;
 }
 

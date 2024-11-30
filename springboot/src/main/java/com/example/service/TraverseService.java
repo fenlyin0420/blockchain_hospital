@@ -68,9 +68,14 @@ public class TraverseService {
      * 插入一条病历
      * @param traverse
      * @throws ClassCastException
+     * @return 病历id
      */
-    public void add(Traverse traverse) throws ClassCastException{
-        traverseMapper.add(traverse);
+    public Integer add(Traverse traverse) throws ClassCastException{
+        Integer success = traverseMapper.add(traverse);
+        if(success == 0)
+            throw new CustomException("插入病历失败");
+        Integer id = traverseMapper.selectLastInsertId();
+        return id;
     }
 
     public void updateById(Traverse traverse) {
