@@ -368,4 +368,14 @@ export default {
   margin: 0 15px;
 }
 
+::v-deep .el-dialog {
+    position: relative;
+    margin: 0px auto 50px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
+    box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
+    box-sizing: border-box;
+    width: 40%;
+}
 </style>

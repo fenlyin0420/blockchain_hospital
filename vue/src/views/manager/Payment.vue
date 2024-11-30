@@ -74,6 +74,9 @@ export default {
 }
 
 .user-input {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
+  color: blue;
   width: 100%;
   height: 50px;
   margin-bottom: -20px;
@@ -87,5 +90,11 @@ export default {
 
 .el-form-item {
   margin-bottom: 24px;
+}
+
+::v-deep .el-input__inner{
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
+  color: blue !important;
 }
 </style>
