@@ -427,7 +427,7 @@ export default {
 
 .confirm-button1 {
   float: right;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-right: 30px;
   font-size: 12px;
   width: 20%;

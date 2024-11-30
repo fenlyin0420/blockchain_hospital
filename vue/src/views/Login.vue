@@ -95,4 +95,10 @@ export default {
 a {
   color: #2a60c9;
 }
+
+::v-deep .el-input__inner{
+  font-family: "SimSun", "宋体", serif;
+  color: blue;
+  font-size: 16px;
+}
 </style>
