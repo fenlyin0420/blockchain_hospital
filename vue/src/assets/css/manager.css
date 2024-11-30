@@ -226,5 +226,6 @@ th.el-table__cell {
 .el-table{
     font-family: "SimSun", "宋体", serif;
     font-size: 16px;
+    color: #3a8ee6 ; /*#3a8ee6*/
 }
 
