@@ -16,6 +16,17 @@
       </el-table>
     </div>
 
+    <div class="pagination">
+          <el-pagination
+              background
+              @current-change="handleCurrentChange"
+              :current-page="pageNum"
+              :page-sizes="[5, 10, 20]"
+              :page-size="pageSize"
+              layout="total, prev, pager, next"
+              :total="total">
+          </el-pagination>
+        </div>
   </div>
 </template>
 
@@ -35,7 +46,7 @@ export default {
     }
   },
   created() {
-    this.load(); //查询病例
+    this.load(1); //查询病例
   },
   methods: {
     load(pageNum) {  // 分页查询
@@ -44,6 +55,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
+          id:this.id,
           name: this.name,
         }
       }).then(res => {
@@ -51,15 +63,20 @@ export default {
         this.total = res.data?.total
       })
     },
-    reset(){
+    reset() {
       this.name = null;
       this.load(1);
-    }
-
+    },
+    handleCurrentChange(pageNum) {
+      this.load(pageNum)
+    },
   }
 }
 </script>
 
 
 <style scoped>
+.pagination{
+  margin-top: 10px;
+}
 </style>
