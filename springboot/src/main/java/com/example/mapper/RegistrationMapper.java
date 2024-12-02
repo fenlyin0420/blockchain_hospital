@@ -1,7 +1,6 @@
 package com.example.mapper;
 
 import com.example.entity.Registration;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

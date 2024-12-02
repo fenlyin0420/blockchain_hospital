@@ -56,17 +56,16 @@ public class SM2PreprocessSigner implements ECConstants {
         }
         this.digest = digest;
 
-        if (param instanceof ParametersWithID) {
-            baseParam = ((ParametersWithID) param).getParameters();
-            userID = ((ParametersWithID) param).getID();
+        if (param instanceof ParametersWithID iD) {
+            baseParam = iD.getParameters();
+            userID = iD.getID();
         } else {
             baseParam = param;
             userID = Hex.decode("31323334353637383132333435363738"); // the default value
         }
 
         if (forSigning) {
-            if (baseParam instanceof ParametersWithRandom) {
-                ParametersWithRandom rParam = (ParametersWithRandom) baseParam;
+            if (baseParam instanceof ParametersWithRandom rParam) {
 
                 ecKey = (ECKeyParameters) rParam.getParameters();
                 ecParams = ecKey.getParameters();
@@ -197,6 +196,7 @@ public class SM2PreprocessSigner implements ECConstants {
         return expectedR.equals(r);
     }
 
+    @SuppressWarnings("unused")
     private byte[] digestDoFinal() {
         byte[] result = new byte[digest.getDigestSize()];
         digest.doFinal(result, 0);

@@ -1,10 +1,8 @@
 package com.example.mapper;
 
-
-import com.example.entity.ReferalRecord;
 import com.example.entity.Traverse;
-import org.apache.ibatis.annotations.Mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper

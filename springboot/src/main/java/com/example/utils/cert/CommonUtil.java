@@ -35,6 +35,7 @@ public class CommonUtil {
      * @return
      * @throws InvalidX500NameException
      */
+    @SuppressWarnings("rawtypes")
     public static X500Name buildX500Name(Map<String, String> names) throws InvalidX500NameException {
         if (names == null || names.size() == 0) {
             throw new InvalidX500NameException("names can not be empty");

@@ -1,6 +1,5 @@
 package com.example.service;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.example.common.Constants;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
@@ -12,13 +11,14 @@ import com.example.mapper.PlanMapper;
 import com.example.mapper.ReserveMapper;
 import com.example.utils.JwtSm.MySM2Util;
 import com.example.utils.TokenUtils;
+
+import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -126,6 +126,7 @@ public class DoctorService {
     /**
      * 获取今天是星期几
      */
+    @SuppressWarnings("unused")
     private String getTodayWeek() {
         LocalDate today = LocalDate.now();
         DayOfWeek dayOfWeek = today.getDayOfWeek();

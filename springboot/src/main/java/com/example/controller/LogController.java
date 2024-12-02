@@ -6,7 +6,7 @@ import com.example.service.LogService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 
 @RestController //表明是接口的入口

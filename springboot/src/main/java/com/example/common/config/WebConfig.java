@@ -1,16 +1,18 @@
 package com.example.common.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+// import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Configuration
 public class WebConfig implements  WebMvcConfigurer {
 
     @Resource
     private JwtInterceptor jwtInterceptor;
+
+    // 先不用拦截器，便于测试api -- LuHao :)     
 
     // 加自定义拦截器JwtInterceptor，设置拦截规则
     // @Override

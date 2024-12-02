@@ -1,14 +1,12 @@
 package com.example.controller;
 
-import com.example.entity.Doctor;
 import com.example.entity.Nurse;
-import com.example.entity.Params;
 import com.example.service.NurseService;
 import com.example.common.Result;
+
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 @RestController //表明是接口的入口

@@ -1,9 +1,6 @@
 package com.example.mapper;
 
-
-
 import com.example.entity.Hospital;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

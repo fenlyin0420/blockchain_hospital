@@ -4,7 +4,7 @@ import com.example.entity.Traverse;
 import com.example.mapper.CareMapper;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 @Service

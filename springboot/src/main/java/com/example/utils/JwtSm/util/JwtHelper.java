@@ -46,6 +46,7 @@ public class JwtHelper {
     /**
      * 设置发行人
      */
+    @SuppressWarnings("unused")
     private static final String ISSUER = "machao";
 
     /**
@@ -57,6 +58,7 @@ public class JwtHelper {
     /**
      * 初始化SM3WithSM2算法
      */
+    @SuppressWarnings("unused")
     private static final SMAlgorithm ALGORITHM = SMAlgorithm.builder().publicKey(publicKey).privateKey(privateKey).build();
 
     /**

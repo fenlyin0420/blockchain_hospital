@@ -1,14 +1,13 @@
 package com.example.controller;
 
-
 import com.example.entity.ReferalRecord;
 import com.example.service.ReferalRecordService;
 import com.example.common.Result;
 import com.example.common.enums.ReferalEnum;
+
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

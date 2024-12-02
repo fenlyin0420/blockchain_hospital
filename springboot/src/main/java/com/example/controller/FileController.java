@@ -1,18 +1,17 @@
 package com.example.controller;
 
-import cn.hutool.core.collection.CollUtil;
 import com.example.utils.ImgUtil;
+import com.example.common.Result;
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
-import com.example.common.Result;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -40,8 +39,8 @@ public class FileController {
      */
     @PostMapping("/upload")
     public Result upload(
-        @RequestParam("file") MultipartFile file,
-        @RequestParam(value = "isTraverse", defaultValue="false") Boolean isTraverse) {
+        @RequestParam MultipartFile file,
+        @RequestParam(defaultValue="false") Boolean isTraverse) {
         //获取当前时间戳
         String flag;
         synchronized (FileController.class) {

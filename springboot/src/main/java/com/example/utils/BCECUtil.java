@@ -432,10 +432,10 @@ public class BCECUtil {
             java.security.spec.ECParameterSpec ecSpec, boolean withCompression) {
         X962Parameters params;
 
-        if (ecSpec instanceof ECNamedCurveSpec) {
-            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) ecSpec).getName());
+        if (ecSpec instanceof ECNamedCurveSpec spec) {
+            ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(spec.getName());
             if (curveOid == null) {
-                curveOid = new ASN1ObjectIdentifier(((ECNamedCurveSpec) ecSpec).getName());
+                curveOid = new ASN1ObjectIdentifier(spec.getName());
             }
             params = new X962Parameters(curveOid);
         } else if (ecSpec == null) {

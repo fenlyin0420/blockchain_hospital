@@ -1,8 +1,8 @@
 package com.example.mapper;
 
 import com.example.entity.Admin;
-import org.apache.ibatis.annotations.Select;
 
+import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**

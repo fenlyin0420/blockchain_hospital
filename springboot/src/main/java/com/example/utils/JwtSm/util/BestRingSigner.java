@@ -45,6 +45,7 @@ public class BestRingSigner {
         byte[] hash = calculateSM3Hash(encodedL, m, g);
         BigInteger h=new BigInteger(hash);
         // 打印哈希结果
+        @SuppressWarnings("unused")
         String hashHex = Hex.toHexString(hash);
         for(int i=0;i<pi;i++){
             C.add(BigInteger.ZERO);

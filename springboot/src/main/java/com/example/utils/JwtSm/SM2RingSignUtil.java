@@ -2,11 +2,11 @@ package com.example.utils.JwtSm;
 
 import com.example.utils.BCECUtil;
 import com.example.utils.JwtSm.util.SM2RingSigner;
+
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,10 +55,11 @@ public class SM2RingSignUtil {
     }
 
     // 将 byte 数组转换为十六进制字符串
+    @SuppressWarnings("unused")
     private static String toHexString(byte[] byteArray) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : byteArray) {
-            hexString.append(String.format("%02X", b));
+            hexString.append("%02X".formatted(b));
         }
         return hexString.toString();
     }

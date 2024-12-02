@@ -7,7 +7,7 @@ import com.example.service.DoctorService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

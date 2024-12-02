@@ -1,7 +1,7 @@
 package com.example.mapper;
+
 import com.example.entity.Nurse;
-import com.example.entity.Params;
-import org.apache.ibatis.annotations.Param;
+
 import org.apache.ibatis.annotations.Select;
 import java.util.List;
 

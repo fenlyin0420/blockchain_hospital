@@ -1,15 +1,13 @@
 package com.example.controller;
 
-
 import com.example.common.Result;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
 import com.example.service.BedsService;
+
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.util.List;
+import jakarta.annotation.Resource;
 
 @RestController //表明是接口的入口
 @RequestMapping("/AssignBeds")

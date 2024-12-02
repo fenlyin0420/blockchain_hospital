@@ -30,6 +30,7 @@ public class BestRingSignUtil {
         //计算公钥
         ECMultiplier var1 = createBasePointMultiplier();
         // 将私钥与点 G 相乘得到公钥
+        @SuppressWarnings("unused")
         ECPoint ecPoint=var1.multiply(publicKeys.get(0).getParameters().getG(),ecPrivateKeyParameters.getD()).normalize();//公钥
 
         List<ECPoint> L = new ArrayList<>();
@@ -74,10 +75,11 @@ public class BestRingSignUtil {
     }
 
     // 将 byte 数组转换为十六进制字符串
+    @SuppressWarnings("unused")
     private static String toHexString(byte[] byteArray) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : byteArray) {
-            hexString.append(String.format("%02X", b));
+            hexString.append("%02X".formatted(b));
         }
         return hexString.toString();
     }

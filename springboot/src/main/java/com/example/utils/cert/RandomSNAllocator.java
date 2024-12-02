@@ -52,9 +52,9 @@ public class RandomSNAllocator implements CertSNAllocator {
      */
     public RandomSNAllocator(int bitLen) {
         if (bitLen < MIN_SERIALNUMBER_SIZE || bitLen > MAX_SERIALNUMBER_SIZE) {
-            throw new IllegalArgumentException(String.format(
-                "%s may not be out of the range [%d, %d]: %d",
-                "bitLen", MIN_SERIALNUMBER_SIZE, MAX_SERIALNUMBER_SIZE, bitLen));
+            throw new IllegalArgumentException(
+                    "%s may not be out of the range [%d, %d]: %d".formatted(
+                    "bitLen", MIN_SERIALNUMBER_SIZE, MAX_SERIALNUMBER_SIZE, bitLen));
         }
 
         this.random = new SecureRandom();

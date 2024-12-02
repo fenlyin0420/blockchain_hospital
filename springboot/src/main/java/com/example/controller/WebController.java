@@ -1,7 +1,6 @@
 package com.example.controller;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
+
 import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
@@ -11,9 +10,11 @@ import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
 import com.example.service.UserService;
-import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import jakarta.annotation.Resource;
 
 /**
  * 基础前端接口

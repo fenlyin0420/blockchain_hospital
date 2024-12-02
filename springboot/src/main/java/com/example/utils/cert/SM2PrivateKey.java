@@ -19,6 +19,7 @@ import java.security.spec.ECParameterSpec;
 
 public class SM2PrivateKey extends BCECPrivateKey {
     private transient DERBitString sm2PublicKey;
+    @SuppressWarnings("unused")
     private boolean withCompression;
 
     public SM2PrivateKey(BCECPrivateKey privateKey, BCECPublicKey publicKey) {

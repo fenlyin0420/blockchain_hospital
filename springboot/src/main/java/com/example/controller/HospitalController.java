@@ -1,13 +1,12 @@
 package com.example.controller;
 
+import com.example.common.Result;
 
 import com.example.entity.Hospital;
 import com.example.service.HospitalService;
-import com.example.common.Result;
 import org.springframework.web.bind.annotation.*;
 import com.github.pagehelper.PageInfo;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

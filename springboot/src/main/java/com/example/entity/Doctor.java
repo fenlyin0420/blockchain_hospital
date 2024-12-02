@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -49,7 +48,7 @@ public class Doctor extends Account implements Serializable {
     private String publicKey;
     private String privateKey;
 
-    /* 非数据库属性 */
+    // 非数据库属性
     /** 医院名称 */
     private String hospitalName;
     /** 星期 */

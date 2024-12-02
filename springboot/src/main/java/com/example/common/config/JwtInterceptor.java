@@ -1,10 +1,5 @@
 package com.example.common.config;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.common.Constants;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
@@ -14,22 +9,23 @@ import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
 import com.example.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import cn.hutool.core.util.ObjectUtil;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * jwt拦截器
  */
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
-
-    private static final Logger log = LoggerFactory.getLogger(JwtInterceptor.class);
 
     @Resource
     private AdminService adminService;
@@ -80,6 +76,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         try {
             // 用户密码加签验证 token
+            @SuppressWarnings("null")
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(account.getPassword())).build();
             jwtVerifier.verify(token); // 验证token
         } catch (JWTVerificationException e) {

@@ -2,20 +2,18 @@ package com.example.common;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.example.common.enums.ResultCodeEnum;
-import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.service.LogService;
 import com.example.utils.TokenUtils;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 @Aspect
@@ -49,23 +47,19 @@ public class LogAspect {
         Result result = (Result) joinPoint.proceed();
 
         Object data =result.getData();
-        if (data instanceof Admin) {
-            Admin admin = (Admin) data;
+        if (data instanceof Admin admin) {
             name = admin.getName();
             role = admin.getRole();
         }
-        else if (data instanceof Doctor) {
-            Doctor doctor = (Doctor) data;
+        else if (data instanceof Doctor doctor) {
             name = doctor.getName();
             role = doctor.getRole();
         }
-        else if (data instanceof Nurse) {
-            Nurse nurse = (Nurse) data;
+        else if (data instanceof Nurse nurse) {
             name = nurse.getName();
             role = nurse.getRole();
         }
-        else if (data instanceof User) {
-            User user1 = (User) data;
+        else if (data instanceof User user1) {
             name = user1.getName();
             role = user1.getRole();
         }

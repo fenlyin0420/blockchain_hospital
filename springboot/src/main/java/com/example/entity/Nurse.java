@@ -1,7 +1,9 @@
 package com.example.entity;
 
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
@@ -38,7 +40,6 @@ public class Nurse extends Account implements Serializable {
     private String position;
     /** 入职时间 */
     private String time;
-
     private String publicKey;
     private String privateKey;
 

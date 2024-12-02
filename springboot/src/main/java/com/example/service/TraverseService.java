@@ -1,19 +1,15 @@
 package com.example.service;
 
-import com.example.entity.ReferalRecord;
 import com.example.entity.Traverse;
-import com.example.entity.User;
 import com.example.exception.CustomException;
 import com.example.mapper.TraverseMapper;
 import com.example.mapper.UserMapper;
-import com.example.utils.JwtSm.MySM2Util;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
+import jakarta.annotation.Resource;
 import java.util.List;
 
 @Slf4j
