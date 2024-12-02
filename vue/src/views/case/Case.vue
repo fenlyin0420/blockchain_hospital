@@ -310,10 +310,6 @@ export default {
       newTraverse.drug = this.medicine
       newTraverse.inHospital = this.radio
       newTraverse.img = this.imgURL.img
-      // newTraverse.signData = " "
-      // newTraverse.signResult = " "
-      // newTraverse.signPubKey = " "
-      // newTraverse.signKey = " "
       // 确认病历，上传到数据库
       this.$request.post('/traverse/add', newTraverse).then(res => {
         if (res.code === '200') {

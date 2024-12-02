@@ -13,11 +13,11 @@
             <el-divider></el-divider>
           </div>
           <div>
-            <div class="info-item">年龄: {{dataP.age}}</div>
-            <div class="info-item">性别: {{dataP.gender}}</div>
-            <div class="info-item">身份证号: {{dataP.idNumber}}</div>
-            <div class="info-item">电话号码: {{dataP.phone}}</div>
-            <div class="info-item">病历号: {{dataP.medicalRecordNumber}}</div>
+            <div class="info-item">年龄: <span class="for-color-_-">{{dataP.age}}</span></div>
+            <div class="info-item">性别: <span class="for-color-_-">{{dataP.sex}}</span></div>
+            <div class="info-item">身份证号: <span class="for-color-_-">{{dataP.idCard}}</span></div>
+            <div class="info-item">电话号码: <span class="for-color-_-">{{dataP.phone}}</span></div>
+            <div class="info-item">病历号: <span class="for-color-_-">{{dataP.medicalRecordNumber ? dataP.medicalRecordNumber : '无'}}</span></div>
           </div>
         </div>
       </div>
@@ -77,8 +77,6 @@ export default {
   },
   created() {
     this.searchA();
-     // this.searchB();
-     // this.searchPerson();
   },
   methods: {
     searchA() {
@@ -152,7 +150,6 @@ export default {
 .info-item {
   padding: 10px 30px;
   font-size: 18px;
-  color: #333333;
 }
 
 .section-title {
@@ -190,7 +187,7 @@ export default {
   box-sizing: border-box;
   width: 100%;
   font-size: inherit;
-  color: #000000;
+  color: blue;
   background-color: #f5f5f5;
   border: 1px solid #bdbdbd;
   border-radius: 4px;
@@ -239,5 +236,8 @@ export default {
   height: 50px;
   font-size: 20px;
   border-radius: 25px;
+}
+.for-color-_- {
+  color:blue
 }
 </style>

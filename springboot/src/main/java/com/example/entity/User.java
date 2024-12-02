@@ -38,6 +38,12 @@ public class User extends Account implements Serializable {
     private String publicKey;
     /** 患者私钥 */
     private String privateKey;
+    /** 年龄 */
+    private Integer age;
+    /** 性别 */
+    private String sex;
+    /** 身份证号 */
+    private String idCard;
 
     // 非数据库属性
     /** 医院名称 */
