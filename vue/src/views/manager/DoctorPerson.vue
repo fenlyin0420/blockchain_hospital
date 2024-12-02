@@ -117,4 +117,14 @@ export default {
   display: block;
   border-radius: 50%;
 }
+::v-deep .el-input__inner {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 16px;
+  color: blue !important;
+}
+::v-deep .el-textarea__inner {
+  font-family: "SimSun", "宋体", serif;
+  color: blue;
+  font-size: 16px;
+}
 </style>

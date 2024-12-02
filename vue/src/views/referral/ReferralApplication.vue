@@ -183,6 +183,7 @@ export default {
 }
 
 ::v-deep .el-textarea__inner {
+  font-family: "SimSun", "宋体", serif;
   color: blue;
   font-size: 16px;
 }
