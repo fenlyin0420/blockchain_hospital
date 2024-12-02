@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -155,6 +156,7 @@ public class KeyService {
      * 
      * 环上每个节点格式为： 姓名:公钥
      * 节点与节点之间通过 {@code', '} 分隔
+     * 
      * @param traverse 待设置公钥环的病历
      */
     public String getPubKeyRing(Traverse traverse) {
@@ -176,6 +178,7 @@ public class KeyService {
 
     /**
      * 根据公钥环获取医生列表
+     * 
      * @param traverse 病历
      * @return 公钥环上的医生列表医生列表
      * @throws CustomException 公钥环为空
@@ -205,18 +208,30 @@ public class KeyService {
     public Traverse encrypt(Traverse traverse) {
         try {
             User user = userMapper.selectById(traverse.getUserId());
-            // 加密医生建议
-            String cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getAdvice());
-            traverse.setAdvice(cipherText);
-            // 加密医嘱
-            cipherText = MySM2Util.encryption(user.getPublicKey(), traverse.getDrug());
-            traverse.setDrug(cipherText);
-            // 加密患者姓名
-            // 患者姓名不不会存在数据库中，因为病历里只有患者id
-            // 所以该加密后的姓名将仅仅被返回该前端，除此之外，不会有任何用途
-            cipherText = MySM2Util.encryption(user.getPublicKey(), user.getName());
-            traverse.setUserName(cipherText);
-            // 将病历更新进数据库
+            Class<?> clazz = traverse.getClass();
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object value = field.get(traverse);
+                String strValue = null;
+                Boolean isStep = false;
+                if (value != null){
+                    if (value instanceof Integer || value instanceof Date){
+                        // strValue = value.toString();
+                        isStep = true;
+                        continue;
+                    } else {
+                        strValue = (String) value;
+                    }
+                    // 加密字段
+                    String cipherText = MySM2Util.encryption(user.getPublicKey(), strValue);
+                    System.out.println("加密后：" + cipherText);
+                    // 对于整数，先不更新，类型不匹配
+                    if (!isStep) {
+                        field.set(traverse, cipherText);
+                    }
+                }
+            }
             traverseService.updateById(traverse);
         } catch (NullPointerException e) {
             e.printStackTrace();

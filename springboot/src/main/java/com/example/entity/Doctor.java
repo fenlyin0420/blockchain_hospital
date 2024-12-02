@@ -62,6 +62,6 @@ public class Doctor extends Account implements Serializable {
     private String departmentName;
     /** 挂号剩余数量 */
     private Integer num;
-    /** 用户挂号是选择的日期 */ // 临时作为医生的成员查一查吧
+    /** 用户挂号时选择的日期 */ // 临时作为医生的成员查一查吧
     private String selectedDate;
 }
