@@ -108,25 +108,10 @@
           </el-submenu>
 
 
-          <!-- 转诊模块 -->
-          <el-submenu index="Transfer" v-if="user.role === 'ADMIN' || user.role === 'DOCTOR'">
-            <template slot="title">
-              <img src="../assets/imgs/referral.png" alt="" class="el-icon-img">
-              <span>转诊模块</span>
-            </template>
 
-            <el-menu-item index="/referralApplication">转出申请</el-menu-item>
-            <el-menu-item index="/referralOut">转出审批</el-menu-item>
-            <el-menu-item index="/sendTraverse">发送病历</el-menu-item>
-            <el-menu-item index="/referralIn">转入审核</el-menu-item>
-            <el-menu-item index="/receiveTraverse">接收病历</el-menu-item>
-            <el-menu-item index="/receivePatients">转入接诊</el-menu-item>
-            <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
-          </el-submenu>
 
-          <el-submenu v-else index="Transfer" disabled>
+          <!-- <el-submenu v-else index="Transfer" disabled>
             <template slot="title">
-              <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/referral.png" alt="" class="el-icon-img">
               <span>转诊模块</span>
             </template>
@@ -137,7 +122,7 @@
             <el-menu-item>接收病历</el-menu-item>
             <el-menu-item>转入接诊</el-menu-item>
             <el-menu-item index="/referralRecor">转诊记录</el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
 
 
           <!-- 护士模块 -->
@@ -166,6 +151,22 @@
             <el-menu-item index="/NurseRecord" disabled>病床分配记录</el-menu-item>
           </el-submenu>
 
+          <!-- 转诊模块 -->
+          <el-submenu index="Transfer" v-if="user.role === 'ADMIN' || user.role === 'DOCTOR'">
+            <template slot="title">
+              <img src="../assets/imgs/referral.png" alt="" class="el-icon-img">
+              <span>转诊模块</span>
+            </template>
+
+            <el-menu-item index="/referralApplication">转出申请</el-menu-item>
+            <el-menu-item index="/referralOut">转出审批</el-menu-item>
+            <el-menu-item index="/sendTraverse">发送病历</el-menu-item>
+            <el-menu-item index="/referralIn">转入审核</el-menu-item>
+            <el-menu-item index="/receiveTraverse">接收病历</el-menu-item>
+            <el-menu-item index="/receivePatients">转入接诊</el-menu-item>
+            <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
+          </el-submenu>
+          
           <!-- 管理模块 -->
           <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
             <template slot="title">

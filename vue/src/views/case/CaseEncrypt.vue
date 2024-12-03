@@ -26,7 +26,7 @@
 
       <el-col :span="15">
         <el-form label-width="100px">
-          <el-form-item label="患者姓名" class="custom-layout" style="overflow-x: hidden;">
+          <el-form-item label="患者姓名" class="custom-layout">
             <div class="content-wrapper">
               <span class="name">{{ receivedData.userName }}</span>
               <el-button type="primary" class="decrypt-button" @click="encrypt">加密</el-button>
@@ -129,7 +129,8 @@ export default {
           id: this.receivedData.id,
           userId: this.receivedData.userId,
           advice: this.receivedData.advice,
-          drug: this.receivedData.drug
+          drug: this.receivedData.drug,
+          userName: this.receivedData.userName
       }).then((res) => {
         if (res.code === '200') {
           // 更新数据为加密后的内容
@@ -164,9 +165,14 @@ export default {
   justify-content: space-between;
   /* 水平方向上两端对齐 */
   width: 100%;
-  /* 确保容器宽度充满父元素 */
+  overflow-x: hidden;
+  color: blue;
 }
 
+.name {
+  width: 80%;
+  overflow-x: hidden;
+}
 .custom-layout .decrypt-button {
   margin-left: auto;
   /* 利用自动外边距将按钮推至最右侧 */
@@ -179,5 +185,9 @@ export default {
   /* 若图片数量超出容器宽度，则自动换行 */
   gap: 10px;
   /* 图片间的间距，可根据需求调整 */
+}
+
+::v-deep .el-textarea__inner {
+  color: blue;
 }
 </style>

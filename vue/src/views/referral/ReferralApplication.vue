@@ -83,7 +83,6 @@ export default {
   created() {
     this.loadByUser()
     this.loadByHospital()
-    //this.loadByDoctor()
   },
   methods: {
     loadByUser() {

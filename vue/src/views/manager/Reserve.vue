@@ -68,6 +68,7 @@ export default {
             userId: caseData?.userId,
             userName: caseData?.userName,
             doctorName: caseData?.doctorName,
+            hospitalId: caseData?.hospitalId,
             hospitalName: caseData?.hospitalName,
             departmentName: caseData?.departmentName,
             time: caseData?.time,
