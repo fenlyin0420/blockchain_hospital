@@ -3,7 +3,7 @@
     <div class="search">
       <el-select v-model="status" placeholder="请选择挂号状态" style="width: 200px">
         <el-option label="未接诊" value="未接诊"></el-option>
-        <el-option label="已叫号" value="已叫号"></el-option>
+        <el-option label="已接诊" value="已接诊"></el-option>
       </el-select>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
@@ -19,8 +19,6 @@
         <el-table-column prop="status" label="挂号状态" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
-              @click=del(scope.row.id)>取消挂号</el-button>
             <el-button plain type="warning" style="color: blue;" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
               @click=call(scope.row)>叫号</el-button>
           </template>

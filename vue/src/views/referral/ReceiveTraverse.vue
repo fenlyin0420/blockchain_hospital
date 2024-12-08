@@ -37,7 +37,7 @@
 
       <el-dialog :visible="showProgress" top="calc(100% / 4)" title="接收医院：xx大学第二附属医院" center>
         <el-progress v-if="showProgress" :percentage="progressPercentage" class="progress-demo"></el-progress>
-        <div v-if="showProgress" style="font-size: 10px; left:0">正在发送: {{ sendData }}</div>
+        <div v-if="showProgress" style="font-size: 10px; left:0">正在接收: {{ sendData }}</div>
       </el-dialog>
             
     </div>
@@ -114,7 +114,7 @@ export default {
       });
     },
     sendTraverse(row) {
-      this.$confirm('你确定要发送这份病历吗？', '提示', {
+      this.$confirm('你确定要接收这份病历吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -123,7 +123,7 @@ export default {
         this.showProgress = true;
         this.startProgress(row);
       }).catch(() => {
-        this.$message('取消发送')
+        this.$message('取消接收')
       });
     },
     startProgress(row) {
@@ -147,7 +147,7 @@ export default {
           clearInterval(interval);
           this.showProgress = false;
           this.$message({
-            message: '发送成功',
+            message: '接收成功',
             type: 'success',
           });
         }, 11000); // 假设操作需要5秒
