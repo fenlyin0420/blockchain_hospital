@@ -19,6 +19,7 @@ import jakarta.annotation.Resource;
 /**
  * 基础前端接口
  */
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class WebController {
 

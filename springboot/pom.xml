@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-             
+
         </dependency>
 
 
@@ -159,7 +159,7 @@
                 <version>3.0.1</version>
             </dependency>
 
-            
+
         </dependencies>
     </dependencyManagement>
 </project>
