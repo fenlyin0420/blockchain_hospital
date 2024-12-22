@@ -7,6 +7,7 @@ import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.ReferralRecord;
+import com.example.entity.Traverse;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 /**
  * 基础前端接口
@@ -101,9 +105,28 @@ public class WebController {
         }
         return Result.success();
     }
+    /**
+     * 接收转诊记录
+     *
+     * @param referralRecord 转诊记录
+     * @return 接收结果
+     */
     @PostMapping("/com/recieveReferralRecord")
     public Result recieveReferralRecord(@RequestBody ReferralRecord referralRecord) {
         referalRecordService.recieveReferralRecord(referralRecord);
         return Result.success("接收成功");
     }
+
+    @PatchMapping("/com/updateReferralRecord")
+    public Result updateReferralRecord(@RequestBody ReferralRecord referralRecord) {
+        referalRecordService.updateById(referralRecord);
+        return Result.success("更新成功");
+    }
+
+    @PostMapping("/com/recieveTraverse")
+    public Result recieveTraverse(@RequestBody Traverse traverse) {
+        
+        return Result.success("病历接收成功");
+    }
+    
 }
