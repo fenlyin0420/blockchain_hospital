@@ -248,7 +248,8 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/manager.css";
+/* @import "@/assets/css/manager.css"; */
+@import "@/assets/css/newCSS.css"; 
 
 .el-icon-menu span {
   font-size: 30px;
