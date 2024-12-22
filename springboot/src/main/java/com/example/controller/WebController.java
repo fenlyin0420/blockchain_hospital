@@ -6,10 +6,12 @@ import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
+import com.example.entity.ReferralRecord;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
 import com.example.service.UserService;
+import com.example.service.ReferralRecordService;
 
 import org.springframework.web.bind.annotation.*;
 import cn.hutool.core.util.ObjectUtil;
@@ -31,6 +33,8 @@ public class WebController {
     private UserService userService;
     @Resource
     private NurseService nurseService;
+    @Resource
+    private ReferralRecordService referalRecordService;
 
     @GetMapping("/")
     public Result hello() {
@@ -97,5 +101,9 @@ public class WebController {
         }
         return Result.success();
     }
-
+    @PostMapping("/com/recieveReferralRecord")
+    public Result recieveReferralRecord(@RequestBody ReferralRecord referralRecord) {
+        referalRecordService.recieveReferralRecord(referralRecord);
+        return Result.success("接收成功");
+    }
 }
