@@ -106,7 +106,7 @@
         order by id desc
     </select> -->
 
-    <select id="selectById" resultType="com.example.entity.ReferalRecord">
+    <!-- <select id="selectById" resultType="com.example.entity.ReferalRecord">
         select referal_record.*,user.name as userName,h1.hospital_name as outHospitalName,h2.hospital_name as
         inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName
         from referal_record
@@ -118,5 +118,5 @@
         <where>
            referal_record.id = #{id}
         </where>
-    </select>
+    </select> -->
 </mapper>
