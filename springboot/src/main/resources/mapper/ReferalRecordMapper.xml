@@ -44,7 +44,7 @@
                 out_doctor_id = #{outDoctorId},
             </if>
             <if test="inDoctorId != null">
-                in_doctor_id = #{outDoctorId},
+                in_doctor_id = #{inDoctorId},
             </if>
             <if test="outTime != null">
                 out_time = #{outTime},
@@ -67,7 +67,7 @@
         where id = #{id}
     </delete>
 
-    <select id="selectAll" resultType="com.example.entity.ReferalRecord">
+    <!-- <select id="selectAll" resultType="com.example.entity.ReferalRecord">
         select referal_record.*, 
         user.name           as userName, 
         h1.hospital_name    as outHospitalName, 
@@ -104,7 +104,7 @@
             </if>
         </where>
         order by id desc
-    </select>
+    </select> -->
 
     <select id="selectById" resultType="com.example.entity.ReferalRecord">
         select referal_record.*,user.name as userName,h1.hospital_name as outHospitalName,h2.hospital_name as
