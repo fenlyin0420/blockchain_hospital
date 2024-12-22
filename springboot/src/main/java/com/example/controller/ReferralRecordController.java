@@ -7,7 +7,7 @@ import com.example.common.enums.ReferalEnum;
 
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -14,7 +14,7 @@ import com.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 /**
  * 基础前端接口

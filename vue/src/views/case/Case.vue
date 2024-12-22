@@ -8,31 +8,31 @@
             <span class="field-value">{{ caseInfo.userName }}</span>
           </el-form-item>
         </el-form>
-        <hr class="divider" />
+        <!-- <hr class="divider" /> -->
         <el-form inline label-width="80px" class="custom-form-inline">
           <el-form-item>
             <div class="field-container">
               <span class="field-label">病情:</span>
-              <el-autocomplete type="textarea" v-model="advice" clearable :rows="3" resize="vertical"
+              <el-autocomplete type="textarea" v-model="advice" clearable :rows="1" resize="vertical"
                 class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
             </div>
             <div class="field-container">
               <span class="field-label">诊断结果:</span>
-              <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="3" resize="vertical"
+              <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
                 class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
             </div>
-            <div class="info-field">
+            <!-- <div class="info-field">
               <span class="field-label"> 是否需要住院 : </span>
               <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
               <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
-            </div>
+            </div> -->
           </el-form-item>
         </el-form>
-        <hr class="divider" />
+        <!-- <hr class="divider" /> -->
         <el-form inline label-width="80px" class="custom-form-inline">
           <el-form-item>
-            <span class="field-label">药品信息:</span>
             <div class="info-field">
+              <!-- <span class="field-label">药品信息:</span> -->
               <span class="field-label">选择药品:</span>
               <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
                 <div>
@@ -40,6 +40,9 @@
                     :key="item.id"></el-option>
                 </div>
               </el-select>
+
+            </div>
+            <div class="info-field">
               <span class="field-label">药品数量:</span>
               <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
                 class="quantity-input"></el-input-number>
@@ -51,7 +54,7 @@
               <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
             </div>
             <div>
-              <el-input type="textarea" v-model="medicine" clearable :rows="3" resize="vertical"
+              <el-input type="textarea" v-model="medicine" clearable :rows="2" resize="vertical"
                 class="medicine-textarea"></el-input>
             </div>
           </el-form-item>
@@ -86,9 +89,21 @@
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
-          <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-          <br><br><br><br><br> <!-- 空白占位，不要删 -->
-          <el-button type="primary" @click="ok" class="confirm-button1">确定</el-button>
+          
+          <br><br><br><br><br><br><br><br>
+          <!-- <br> -->
+          <!-- <br><br><br><br><br> -->
+          <!-- <br><br><br><br><br> 空白占位，不要删 -->
+
+          <el-button type="primary" @click="ok" class="confirm-button1">诊疗结束</el-button>
+          <div class="info-field">
+            <br>
+              <span class="field-label"> 是否需要住院 : </span>
+              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
+
+            </div>
+
         </el-form>
       </el-col>
     </el-row>
@@ -345,7 +360,7 @@ export default {
 }
 
 .case-container {
-  padding: 20px;
+  padding: 0px;
   height: 100%;
 }
 
@@ -364,7 +379,7 @@ export default {
 }
 
 .field-label {
-  font-family: "SimSun", "宋体", serif;
+  font-family: "SimHei", "黑体", sans-serif;
   font-size: 16px;
   margin-right: 10px;
   width: 80px;
@@ -379,21 +394,22 @@ export default {
 
 .info-textarea {
   margin-bottom: 26px;
-  width: 525px
+  width: 220px;
+  height: 20px
 }
 
 .medicine-select {
-  width: 35%;
+  width: 50%;
   margin-right: 40px;
 }
 
 .quantity-input {
-  width: 29%;
+  width:50%;
   margin-right: 10px;
 }
 
 .frequency-input {
-  width: 35%;
+  width: 50%;
 }
 
 .medicine-textarea {
@@ -406,22 +422,22 @@ export default {
   float: right;
   margin-top: 1px;
   margin-right: 12px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .confirm-button1 {
   float: right;
   margin-top: 10px;
-  margin-right: 30px;
-  font-size: 12px;
-  width: 20%;
+  margin-right:5px;
+  font-size: 16px;
+  width: 30%;
 }
 
 .edit-button {
   float: right;
   margin-top: 10px;
   margin-right: 10px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .divider {
@@ -450,7 +466,7 @@ export default {
 }
 
 ::v-deep .el-upload--picture-card {
-  transform: scale(3.5);
+  transform: scale(2);
   /*放大上传框*/
   transform-origin: top left;
   margin: 15px;
@@ -463,7 +479,7 @@ export default {
 }
 
 ::v-deep .el-upload-list--picture-card .el-upload-list__item {
-  transform: scale(3.5);
+  transform: scale(2);
   /*放大图像框*/
   transform-origin: top left;
   margin: 15px;

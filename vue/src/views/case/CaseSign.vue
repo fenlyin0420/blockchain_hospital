@@ -8,8 +8,8 @@
         <div style="margin: 0 0 20px 0">
           <el-row>
             <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                环签名数据
+              <div style="margin: 5px  0 25px">
+                <span style="display: inline-block; width: 200px;font-size: 16px;">环签名数据</span>
               </div>
             </el-col>
             <el-col :span="14">
@@ -34,7 +34,7 @@
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
-                环签名信息
+                <span style="display: inline-block; width: 200px; font-size: 16px;">环签名信息</span>
               </div>
             </el-col>
 
@@ -59,7 +59,7 @@
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
-                验签结果
+                <sapn style="display: inline-block; width: 200px; font-size: 16px;">验签结果</sapn>
               </div>
             </el-col>
 

@@ -13,8 +13,9 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="receivedData.img" :fit="fits"></el-image>
+                  <el-image style="width: 250px; height: 250px" :src="receivedData.img" :fit="fits"></el-image>
                 </div>
+                <el-button type="primary" class="submit-button" @click="gotoSign">去签名</el-button>
               </div>
             </div>
             <el-dialog :visible.sync="dialogVisible">
@@ -35,7 +36,7 @@
         </el-form>
         <el-form label-width="100px">
           <el-form-item label="医嘱信息" >
-            <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4 }" placeholder="请输入内容" class="blue-text"
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 2 }" placeholder="请输入内容" class="blue-text"
               v-model="receivedData.advice">
             </el-input>
           </el-form-item>
@@ -49,7 +50,6 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-button type="primary" class="submit-button" @click="gotoSign">去签名</el-button>
   </el-card>
 </template>
 
@@ -150,7 +150,7 @@ export default {
 
 <style scoped>
 .container {
-  padding: 20px;
+  padding: 0px;
   height: 100%;
 }
 
@@ -170,7 +170,7 @@ export default {
 }
 
 .name {
-  width: 80%;
+  width: 70%;
   overflow-x: hidden;
 }
 .custom-layout .decrypt-button {
