@@ -6,7 +6,7 @@ import com.example.entity.Traverse;
 import com.example.service.CareService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 @RestController //表明是接口的入口
