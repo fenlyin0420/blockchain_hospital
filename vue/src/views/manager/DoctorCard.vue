@@ -3,7 +3,7 @@
     <!-- 搜索区 -->
     <div class="search">
       <!-- 选择医院 -->
-      <label for="hospital">医院:</label>
+      <!-- <label for="hospital">医院:</label>
       <el-select id="hospital" placeholder="请选择医院" v-model="hospitalId" @change="query()">
         <el-option
           v-for="item in hospitalList"
@@ -11,7 +11,7 @@
           :label="item.hospitalName"
           :value="item.id"
         ></el-option>
-      </el-select>
+      </el-select> -->
 
       <!-- 选择科室 -->
       <label for="departmentSelect">科室:</label>
@@ -38,14 +38,14 @@
     </div>
 
     <!-- doctorCard 显示区域 -->
-    <div class="table" style="padding: 15px 20px">
+    <div class="table" style="padding: 15px 15px">
       <el-row :gutter="24">
         <el-col :span="8" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img
               :src="item.avatar"
               alt=""
-              style="width: 100px; height: 100px; border-radius: 50%"
+              style="width: 50px; height: 50px; border-radius: 50%"
             />
             <!-- <div style="font-weight: 550; margin-top: 10px">
               医院
@@ -90,7 +90,7 @@
                 >挂号</el-button>
             </div>
 
-            <el-dialog title="确认订单" :visible.sync="dialogVisible" width="50%">
+            <el-dialog title="确认订单" :visible.sync="dialogVisible" width="62%">
               <Payment :form="dialogDate"></Payment>
 
               <span slot="footer" class="dialog-footer">

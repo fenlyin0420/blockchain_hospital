@@ -5,7 +5,7 @@ import com.example.entity.Notice;
 import com.example.service.NoticeService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**

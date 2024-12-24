@@ -9,33 +9,32 @@
 
       <!-- 面包屑导航栏 -->
       <div class="manager-header-center">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: $route.path }">{{
             $route.meta.name
-          }}</el-breadcrumb-item> -->
-        </el-breadcrumb>
+          }}</el-breadcrumb-item>
+        </el-breadcrumb> -->
+          <!-- <div>
+          <el-button type="primary" v-if="user.role === 'USER'" @click="register">注册</el-button>
+          <el-button class="button-margin" type="primary" @click="login">登录</el-button>
+          </div> -->
       </div>
 
-      <div class="manager-header-right my-avatar">
+      <div class="manager-header-right">
+
         <el-dropdown placement="bottom">
           <div class="avatar">
-            <img
-              :src="
+            <img :src="
                 user.avatar ||
                 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-              "
-            />
+              " />
             <div style="color: blue;">{{ user.name || "管理员" }}</div>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="PersonalInformation"
-              >密钥管理</el-dropdown-item
-            >
+            <el-dropdown-item @click.native="PersonalInformation">密钥管理</el-dropdown-item>
             <el-dropdown-item @click.native="goToPerson">个人信息</el-dropdown-item>
-            <el-dropdown-item @click.native="$router.push('/password')"
-              >修改密码</el-dropdown-item
-            >
+            <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -46,12 +45,7 @@
     <div class="manager-main">
       <!--  侧边栏  -->
       <div class="manager-main-left">
-        <el-menu
-          :unique-opened="true"
-          router
-          style="border: none"
-          :default-active="$route.path"
-        >
+        <el-menu :unique-opened="true" router style="border: none" :default-active="$route.path">
           <!--default-openeds="['info','powerDoctor', 'reserve', 'user','powerUser']"-->
           <!--          <el-menu-item index="/home">-->
           <!--            <i class="el-icon-s-home"></i>-->
@@ -70,7 +64,7 @@
             <el-menu-item index="/reserve">预约管理</el-menu-item>
             <el-menu-item index="/caseList">溯源病历</el-menu-item>
           </el-submenu>
-          <el-submenu  v-else index="userModule" disabled>
+          <el-submenu v-else index="userModule" disabled>
             <template slot="title">
               <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/patient.png" alt="" class="el-icon-img">
@@ -82,15 +76,16 @@
           </el-submenu>
 
           <!-- 医生模块 -->
-            <el-submenu index="doctorModule" v-if="user.role === 'DOCTOR'">
+          <el-submenu index="doctorModule" v-if="user.role === 'DOCTOR'">
             <template slot="title">
               <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
-            <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">排班信息</el-menu-item>
-            <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">当日诊疗</el-menu-item>
-            <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">当日住院</el-menu-item>
+            <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">门诊排班</el-menu-item>
+            <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">门诊业务</el-menu-item>
+            <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">住院业务</el-menu-item>
+            <el-menu-item index="/record" v-if="user.role === 'DOCTOR'">就诊记录</el-menu-item>
             <el-menu-item index="/doctorCaseList" v-if="user.role === 'DOCTOR'">病历列表</el-menu-item>
           </el-submenu>
           <el-submenu v-else index="doctorModule" disabled>
@@ -120,7 +115,7 @@
             <el-menu-item index="/NursePlan">护士排班</el-menu-item>
             <el-menu-item index="/NurseRecord">病床分配记录</el-menu-item>
           </el-submenu>
-          <el-submenu v-else index="nurseModule" disabled="" >
+          <el-submenu v-else index="nurseModule" disabled="">
             <template slot="title">
               <!-- <i class="el-icon-nurse"></i> -->
               <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
@@ -149,7 +144,7 @@
             <el-menu-item index="/receivePatients">转诊执行</el-menu-item>
             <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
           </el-submenu>
-          
+
           <!-- 管理模块 -->
           <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
             <template slot="title">
@@ -242,6 +237,14 @@ export default {
       localStorage.removeItem("xm-user");
       this.$router.push("/login");
     },
+    register(){
+      localStorage.removeItem("xm-user");
+      this.$router.push("/register");
+    },
+    login(){
+      localStorage.removeItem("xm-user");
+      this.$router.push("/login");
+    },
   },
 };
 </script>
@@ -253,10 +256,6 @@ export default {
 .el-icon-menu span {
   font-size: 30px;
 }
-::v-deep .my-avatar {
-  position: relative;
-  right: 80px;
-}
 
 .el-icon-s-custom:before {
     content: "\e7ab";
@@ -265,5 +264,23 @@ export default {
 .el-icon-img {
   width: 20px; 
   height: 20px;
+}
+
+.manager-header-right {
+  width: 150px;
+  display: flex; 
+  justify-content: flex-start;
+}
+
+.manager-header-center {
+    display: flex; 
+    justify-content: flex-end;
+}
+
+.manager-header{
+  margin-top: 10px;
+}
+.button-margin{
+  margin-right: 20px;
 }
 </style>

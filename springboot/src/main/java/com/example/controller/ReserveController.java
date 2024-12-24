@@ -7,7 +7,7 @@ import com.example.service.ReserveService;
 
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**

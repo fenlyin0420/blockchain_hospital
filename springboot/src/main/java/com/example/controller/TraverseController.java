@@ -9,7 +9,7 @@ import com.example.common.Result;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 
 

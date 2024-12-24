@@ -9,9 +9,9 @@
             </div>
             <div class="info-item">姓名: {{dataP.name}}</div>
           </div>
-          <div style="padding-top: 10px">
+          <!-- <div style="padding-top: 0px">
             <el-divider></el-divider>
-          </div>
+          </div> -->
           <div>
             <div class="info-item">年龄: <span class="for-color-_-">{{dataP.age}}</span></div>
             <div class="info-item">性别: <span class="for-color-_-">{{dataP.sex}}</span></div>
@@ -72,7 +72,7 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       infA: [],
       infB: [],
-      dataP: {}
+      dataP: {},
     }
   },
   created() {
@@ -136,8 +136,8 @@ export default {
   align-items: center;
   border: 2px solid #000000;
   border-radius: 50%;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -153,7 +153,7 @@ export default {
 }
 
 .section-title {
-  margin: 20px;
+  margin: 0px;
   font-size: 25px;
   color: #050505;
   background-color: rgba(169, 169, 169, 0.3);
@@ -168,15 +168,15 @@ export default {
 }
 
 .box-card {
-  height: 280px;
+  height: 200px;
   background-color: #e0e0e0;
   color: #333333;
   border-radius: 10px;
 }
 
 .key-textarea {
-  min-height: 150px;
-  height: 180px;
+  min-height: 100px;
+  height: 100px;
 }
 
 .el-textarea__inner {

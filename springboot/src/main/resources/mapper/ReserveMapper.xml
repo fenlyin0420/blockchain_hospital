@@ -23,7 +23,7 @@
             <if test="time != null"> and reserve.time= #{time}</if>
             <if test="hospitalId != null"> and hospital_id = #{hospitalId}</if>
         </where>
-        order by id desc
+        order by id ASC
     </select>
 
     <select id="selectById" resultType="com.example.entity.Reserve">

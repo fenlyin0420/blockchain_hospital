@@ -17,10 +17,14 @@ import com.example.service.ReferralRecordService;
 import org.springframework.web.bind.annotation.*;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+<<<<<<< HEAD
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+=======
+import javax.annotation.Resource;
+>>>>>>> c6ddd2616c8f3e7eaecdf178ff7d23f80d24385b
 
 /**
  * 基础前端接口

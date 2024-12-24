@@ -6,7 +6,7 @@ import com.example.entity.Hospital;
 import com.example.service.HospitalService;
 import org.springframework.web.bind.annotation.*;
 import com.github.pagehelper.PageInfo;
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**

@@ -26,7 +26,7 @@ import java.util.*;
 
 import com.example.common.enums.ResultCodeEnum;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 @Service
 public class KeyService {

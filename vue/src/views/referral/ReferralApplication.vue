@@ -70,7 +70,7 @@ export default {
       infByHospital: [],
       infByDoctor: [],
       information: {},
-      promise: "要求自动转院，自愿承担转院风险，后果自负",
+      promise: "要求自动转院，自愿承担转院风险，后果自负。",
       transferReason: '',
       signature:'',
       suggestions: [
