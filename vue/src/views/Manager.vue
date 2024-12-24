@@ -88,10 +88,10 @@
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
-            <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">排班信息</el-menu-item>
-            <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">当日诊疗</el-menu-item>
-            <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">当日住院</el-menu-item>
-            <el-menu-item index="/record" v-if="user.role === 'DOCTOR'">就诊记录</el-menu-item>
+            <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">门诊排班</el-menu-item>
+            <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">门诊业务</el-menu-item>
+            <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">住院业务</el-menu-item>
+<!--            <el-menu-item index="/record" v-if="user.role === 'DOCTOR'">就诊记录</el-menu-item>-->
             <el-menu-item index="/doctorCaseList" v-if="user.role === 'DOCTOR'">病历列表</el-menu-item>
           </el-submenu>
           <el-submenu v-else index="doctorModule" disabled>
@@ -100,10 +100,10 @@
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
-            <el-menu-item index="/doctorPlan" disabled>医生排班信息</el-menu-item>
-            <el-menu-item index="/doctorReserve" disabled>当日诊疗</el-menu-item>
-            <el-menu-item index="/hospitalization" disabled>当日住院</el-menu-item>
-            <el-menu-item index="/record" disabled>就诊记录</el-menu-item>
+            <el-menu-item index="/doctorPlan" disabled>门诊排班</el-menu-item>
+            <el-menu-item index="/doctorReserve" disabled>门诊业务</el-menu-item>
+            <el-menu-item index="/hospitalization" disabled>住院业务</el-menu-item>
+<!--            <el-menu-item index="/record" disabled>就诊记录</el-menu-item>-->
             <el-menu-item index="/doctorCaseList" disabled>病历列表</el-menu-item>
           </el-submenu>
 
@@ -248,8 +248,8 @@ export default {
 </script>
 
 <style scoped>
-/* @import "@/assets/css/manager.css"; */
-@import "@/assets/css/newCSS.css"; 
+@import "@/assets/css/manager.css";
+/*@import "@/assets/css/newCSS.css";*/
 
 .el-icon-menu span {
   font-size: 30px;

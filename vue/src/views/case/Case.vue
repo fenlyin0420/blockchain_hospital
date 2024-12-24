@@ -388,7 +388,7 @@ export default {
 }
 
 .quantity-input {
-  width: 29%;
+  width: 28%;
   margin-right: 10px;
 }
 

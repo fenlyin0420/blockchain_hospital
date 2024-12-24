@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="search">
     <!-- 选择病房-->
     <el-select v-model="wardId" style="width: 300px" placeholder="请选择病房号">
       <el-option label="重症监护室" value="重症监护室"></el-option>
@@ -13,7 +14,7 @@
 
     <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
     <el-button type="success" plain style="margin-left: 10px" @click="reset">重置</el-button>
-
+  </div>
     <div class="table" style="margin-top: 15px">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="userName" label="姓名" align="center"></el-table-column>

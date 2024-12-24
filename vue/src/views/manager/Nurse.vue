@@ -72,9 +72,9 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    
 
-    <div class="paginat ion">
+    <div class="pagination">
       <el-pagination
         background
         @current-change="handleCurrentChange"
@@ -86,7 +86,7 @@
       >
       </el-pagination>
     </div>
-
+</div>
     <div>
       <el-dialog
         title="管理员"
@@ -201,7 +201,7 @@ export default {
   methods: {
     loadDepartment() {
       let id = this.user.hospitalId;
-      this.$request.get("/department/selectAll/").then((res) => {
+      this.$request.get("/department/selectAll").then((res) => {
         if (res.code === "200") {
           this.departmentData = res.data;
         } else {

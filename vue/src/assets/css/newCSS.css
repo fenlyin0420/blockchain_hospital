@@ -174,7 +174,7 @@
 .el-menu-item {
     height: 50px;
     line-height: 50px;
-    font-family: "SimSun", "宋体", serif;
+    font-family: "黑体", sans-serif;
     font-size: 16px;
     font-weight: 500;
     background-color: white !important; /* 必须加上这个背景色，否则鼠标离开会出现白色 */
@@ -226,7 +226,8 @@ th.el-table__cell {
 
 .el-table__body {
     font-size: 16px !important;
-    font-family: "黑体", sans-serif;;
+    font-family: "黑体", sans-serif;
+    color: blue;
 }
 
 .case-container {
