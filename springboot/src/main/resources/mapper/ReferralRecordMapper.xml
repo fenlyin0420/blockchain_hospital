@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReferalRecordMapper">
+    <insert id="add">
+        insert into referal_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="outHospitalId != null">out_hospital_id,</if>
+            <if test="inHospitalId != null">in_hospital_id,</if>
+            <if test="outDoctorId != null">out_doctor_id,</if>
+            <if test="inDoctorId != null">in_doctor_id,</if>
+            <if test="outTime != null">out_time,</if>
+            <if test="inTime != null">in_time,</if>
+            <if test="why != null">why,</if>
+            <if test="result != null">result,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="outHospitalId != null">#{outHospitalId},</if>
+            <if test="inHospitalId != null">#{inHospitalId},</if>
+            <if test="outDoctorId != null">#{outDoctorId},</if>
+            <if test="inDoctorId != null">#{inDoctorId},</if>
+            <if test="outTime != null">#{outTime},</if>
+            <if test="inTime != null">#{inTime},</if>
+            <if test="why != null">#{why},</if>
+            <if test="result != null">#{result},</if>
+        </trim>
+    </insert>
+    <update id="updateById">
+        update referal_record
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="outHospitalId != null">
+                out_hospital_id = #{outHospitalId},
+            </if>
+            <if test="inHospitalId != null">
+                in_hospital_id = #{inHospitalId},
+            </if>
+            <if test="outDoctorId != null">
+                out_doctor_id = #{outDoctorId},
+            </if>
+            <if test="inDoctorId != null">
+                in_doctor_id = #{inDoctorId},
+            </if>
+            <if test="outTime != null">
+                out_time = #{outTime},
+            </if>
+            <if test="inTime != null">
+                in_time = #{inTime},
+            </if>
+            <if test="why != null">
+                why = #{why},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete
+        from referal_record
+        where id = #{id}
+    </delete>
+
+    <!-- <select id="selectAll" resultType="com.example.entity.ReferalRecord">
+        select referal_record.*, 
+        user.name           as userName, 
+        h1.hospital_name    as outHospitalName, 
+        h2.hospital_name    as inHospitalName, 
+        d1.name             as outDoctorName, 
+        d2.name             as inDoctorName
+        from referal_record
+        left join user              on user.id = referal_record.user_id
+        left join hospital as h1    on out_hospital_id = h1.id
+        left join hospital as h2    on in_hospital_id = h2.id
+        left join doctor as d1      on referal_record.out_doctor_id = d1.id
+        left join doctor as d2      on referal_record.in_doctor_id = d2.id
+        <where>
+            <if test="id != null">
+                and referal_record.id = #{id}
+            </if>
+            <if test="userId != null">
+                and referal_record.user_id = #{userId}
+            </if>
+            <if test="outHospitalId != null">
+                and out_hospital_id = #{outHospitalId}
+            </if>
+            <if test="inHospitalId != null">
+                and in_hospital_id = #{inHospitalId}
+            </if>
+            <if test="outDoctorId != null">
+                and out_doctor_id = #{outDoctorId}
+            </if>
+            <if test="inDoctorId != null">
+                and in_doctor_id = #{inDoctorId}
+            </if>
+            <if test="result != null">
+                and result = #{result} 
+            </if>
+        </where>
+        order by id desc
+    </select> -->
+
+    <!-- <select id="selectById" resultType="com.example.entity.ReferalRecord">
+        select referal_record.*,user.name as userName,h1.hospital_name as outHospitalName,h2.hospital_name as
+        inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName
+        from referal_record
+        left join user on user.id = referal_record.user_id
+        left join hospital as h1 on out_hospital_id = h1.id
+        left join hospital as h2 on in_hospital_id = h2.id
+        left join doctor as d1 on referal_record.out_doctor_id = d1.id
+        left join doctor as d2 on referal_record.in_doctor_id = d2.id
+        <where>
+           referal_record.id = #{id}
+        </where>
+    </select> -->
+</mapper>

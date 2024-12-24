@@ -15,7 +15,7 @@
                 <div class="demo-image" @click="previewImage(url, index)">
                   <el-image style="width: 250px; height: 250px" :src="receivedData.img" :fit="fits"></el-image>
                 </div>
-                <el-button type="primary" class="submit-button" @click="gotoSign">去签名</el-button>
+                <!-- <el-button type="primary" class="submit-button" @click="gotoSign">去签名</el-button> -->
               </div>
             </div>
             <el-dialog :visible.sync="dialogVisible">
@@ -50,7 +50,6 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-button type="primary" class="submit-button" @click="gotoSign" style="visibility: hidden;">去签名</el-button>
   </el-card>
 </template>
 

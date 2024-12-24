@@ -3,7 +3,7 @@ package com.example.controller;
 import com.example.entity.ReferralRecord;
 import com.example.service.ReferralRecordService;
 import com.example.common.Result;
-import com.example.common.enums.ReferalEnum;
+import com.example.common.enums.ReferralEnum;
 
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +59,7 @@ public class ReferralRecordController {
      */
     @PutMapping("/refuseOut")
     public Result refuseReferalOut(@RequestBody ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.REFUSED_BY_OUT_ADMIN.toString()); 
+        referalRecord.setResult(ReferralEnum.REFUSED_BY_OUT_ADMIN.toString()); 
         return Result.success("已拒绝");
     }
 
@@ -70,7 +70,7 @@ public class ReferralRecordController {
      */
     @PutMapping("/refuseIn")
     public Result refuseReferalIn(@RequestBody ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.REFUSED_BY_IN_ADMIN.toString()); 
+        referalRecord.setResult(ReferralEnum.REFUSED_BY_IN_ADMIN.toString()); 
         return Result.success("已拒绝");
     }
 
@@ -92,7 +92,7 @@ public class ReferralRecordController {
      */
     @PutMapping("/agreenIn")
     public Result agreenReferalIn(@RequestBody ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.WAIT_DOCTOR.toString());
+        referalRecord.setResult(ReferralEnum.WAIT_DOCTOR.toString());
         
         return Result.success("同意转出");
     }
