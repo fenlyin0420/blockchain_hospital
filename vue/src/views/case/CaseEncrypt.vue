@@ -49,7 +49,7 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-button type="primary" class="submit-button" @click="gotoSign">去签名</el-button>
+    <el-button type="primary" class="submit-button" @click="gotoSign" style="visibility: hidden;">去签名</el-button>
   </el-card>
 </template>
 

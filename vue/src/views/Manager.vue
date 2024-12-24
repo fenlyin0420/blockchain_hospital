@@ -91,7 +91,6 @@
             <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">排班信息</el-menu-item>
             <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">当日诊疗</el-menu-item>
             <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">当日住院</el-menu-item>
-            <el-menu-item index="/record" v-if="user.role === 'DOCTOR'">就诊记录</el-menu-item>
             <el-menu-item index="/doctorCaseList" v-if="user.role === 'DOCTOR'">病历列表</el-menu-item>
           </el-submenu>
           <el-submenu v-else index="doctorModule" disabled>
