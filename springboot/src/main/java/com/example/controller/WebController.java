@@ -6,13 +6,10 @@ import com.example.common.Result;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
-import com.example.entity.ReferralRecord;
-import com.example.entity.Traverse;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
 import com.example.service.UserService;
-import com.example.service.ReferralRecordService;
 
 import org.springframework.web.bind.annotation.*;
 import cn.hutool.core.util.ObjectUtil;
@@ -34,8 +31,6 @@ public class WebController {
     private UserService userService;
     @Resource
     private NurseService nurseService;
-    @Resource
-    private ReferralRecordService referalRecordService;
 
     @GetMapping("/")
     public Result hello() {
@@ -102,28 +97,5 @@ public class WebController {
         }
         return Result.success();
     }
-    /**
-     * 接收转诊记录
-     *
-     * @param referralRecord 转诊记录
-     * @return 接收结果
-     */
-    @PostMapping("/com/recieveReferralRecord")
-    public Result recieveReferralRecord(@RequestBody ReferralRecord referralRecord) {
-        referalRecordService.recieveReferralRecord(referralRecord);
-        return Result.success("接收成功");
-    }
 
-    @PatchMapping("/com/updateReferralRecord")
-    public Result updateReferralRecord(@RequestBody ReferralRecord referralRecord) {
-        referalRecordService.updateById(referralRecord);
-        return Result.success("更新成功");
-    }
-
-    @PostMapping("/com/recieveTraverse")
-    public Result recieveTraverse(@RequestBody Traverse traverse) {
-        
-        return Result.success("病历接收成功");
-    }
-    
 }
