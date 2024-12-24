@@ -1,12 +1,11 @@
 package com.example.service;
 
-
 import cn.hutool.core.date.DateUtil;
 
 import com.example.common.Result;
-import com.example.common.enums.ReferalEnum;
-import com.example.entity.ReferalRecord;
-import com.example.mapper.ReferalRecordMapper;
+import com.example.common.enums.ReferralEnum;
+import com.example.entity.ReferralRecord;
+import com.example.mapper.ReferralRecordMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -17,37 +16,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 转诊业务处理
  **/
 @Service
-public class ReferalRecordService {
+public class ReferralRecordService {
 
     @Resource
-    private ReferalRecordMapper referalRecordMapper;
+    private ReferralRecordMapper referalRecordMapper;
 
-    public PageInfo<ReferalRecord> selectPage(ReferalRecord referalRecord, Integer pageNum, Integer pageSize) {
+    public PageInfo<ReferralRecord> selectPage(ReferralRecord referalRecord, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<ReferalRecord> list = referalRecordMapper.selectAll(referalRecord);
+        List<ReferralRecord> list = referalRecordMapper.selectAll(referalRecord);
         return PageInfo.of(list);
     }
 
 
-    public List<ReferalRecord> selectAll(ReferalRecord referalRecord) {
+    public List<ReferralRecord> selectAll(ReferralRecord referalRecord) {
         return referalRecordMapper.selectAll(referalRecord);
     }
 
-    public ReferalRecord selectById(Integer id) {
-        ReferalRecord referalRecord = new ReferalRecord();
+    public ReferralRecord selectById(Integer id) {
+        ReferralRecord referalRecord = new ReferralRecord();
         referalRecord.setId(id);
         return referalRecordMapper.selectAll(referalRecord).get(0);
     }
 
 
-    public void updateById(ReferalRecord referalRecord) {
+    public void updateById(ReferralRecord referalRecord) {
         referalRecord.setInTime(DateUtil.now());
         
         referalRecordMapper.updateById(referalRecord);
@@ -67,8 +66,8 @@ public class ReferalRecordService {
      * 医生访问，新加一个转诊申请
      * @param referalRecord
      */
-    public void add(ReferalRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
+    public void add(ReferralRecord referalRecord) {
+        referalRecord.setResult(ReferralEnum.WAIT_OUT_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
     }
 
@@ -77,10 +76,10 @@ public class ReferalRecordService {
      * @param referalRecord
      * @return
      */
-    public Result send(ReferalRecord referalRecord, String url) {
+    public Result send(ReferralRecord referalRecord, String url) {
         // 设置转诊状态
         referalRecord.setOutTime(DateUtil.now());
-        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
+        referalRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
         referalRecordMapper.updateById(referalRecord);
 
         referalRecord = referalRecordMapper.selectById(referalRecord.getId());
@@ -89,7 +88,7 @@ public class ReferalRecordService {
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<ReferalRecord> body = new HttpEntity<>(referalRecord, headers);
+        HttpEntity<ReferralRecord> body = new HttpEntity<>(referalRecord, headers);
         ResponseEntity<Result> res = restTemplate.postForEntity(url, body, Result.class);
 
         // 处理响应
@@ -112,8 +111,8 @@ public class ReferalRecordService {
      * 接收其他医院的转诊申请
      * @param referalRecord
      */
-    public void recieveReferalRecord(ReferalRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
+    public void recieveReferralRecord(ReferralRecord referalRecord) {
+        referalRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
         referalRecordMapper.add(referalRecord);
     }
 }
