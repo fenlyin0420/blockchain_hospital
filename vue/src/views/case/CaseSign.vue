@@ -16,6 +16,8 @@
               <div class="grid-content bg-purple-light">
                 <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
                 <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
+                <!-- <span><p style="color:red; display:inline; margin: 0px 0px 0px 10px">未检测到私钥 :(</p></span> -->
+                <span><p style="color:green; display:inline; margin: 0px 0px 0px 10px">已检测到私钥</p></span>
               </div>
             </el-col>
           </el-row>

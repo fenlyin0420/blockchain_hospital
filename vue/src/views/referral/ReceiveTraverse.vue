@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入病历ID" style="width: 200px" v-model="id"></el-input>
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
-      <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <!-- <el-input placeholder="请输入病历ID" style="width: 200px" v-model="id"></el-input> -->
+      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">自动更新</el-button>
+      <el-button type="warning" plain style="margin-left: 10px" @click="reset">手动更新</el-button>
     </div>
 
     <div class="table">
@@ -35,7 +35,7 @@
         </el-pagination>
       </div>
 
-      <el-dialog :visible="showProgress" top="calc(100% / 4)" title="接收医院：xx大学第二附属医院" center>
+      <el-dialog :visible="showProgress" top="calc(100% / 4)" title="正在从区块链拉取对应病历..." center>
         <el-progress v-if="showProgress" :percentage="progressPercentage" class="progress-demo"></el-progress>
         <div v-if="showProgress" style="font-size: 10px; left:0">正在接收: {{ sendData }}</div>
       </el-dialog>

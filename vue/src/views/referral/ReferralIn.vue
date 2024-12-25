@@ -15,8 +15,10 @@
         <el-table-column prop="result" label="结果"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="operation(scope.row)" @click="update(scope.row)">同意</el-button>
-            <el-button plain type="danger" size="mini" v-if="operation(scope.row)" @click="refuse(scope.row)">拒绝</el-button>
+            <!-- <el-button plain type="danger" size="mini" v-if="operation(scope.row)" @click="update(scope.row)">同意</el-button>
+            <el-button plain type="danger" size="mini" v-if="operation(scope.row)" @click="refuse(scope.row)">拒绝</el-button> -->
+            <el-button plain type="danger" size="mini"  @click="update(scope.row)">同意</el-button>
+            <el-button plain type="danger" size="mini"  @click="refuse(scope.row)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>

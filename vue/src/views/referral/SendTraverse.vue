@@ -35,7 +35,7 @@
         </el-pagination>
       </div>
 
-      <el-dialog :visible="showProgress" top="calc(100% / 4)" title="接收医院：xx大学第二附属医院" center>
+      <el-dialog :visible="showProgress" top="calc(100% / 4)" title="正在上传病历至区块链..." center>
         <el-progress v-if="showProgress" :percentage="progressPercentage" class="progress-demo"></el-progress>
         <div v-if="showProgress" style="font-size: 10px; left:0">正在发送: {{ sendData }}</div>
       </el-dialog>

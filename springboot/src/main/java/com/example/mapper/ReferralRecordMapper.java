@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReferralRecordMapper {
 
 
-    List<ReferralRecord> selectAll(ReferralRecord referalRecord);
+    List<ReferralRecord> selectAll(ReferralRecord referralRecord);
 
     ReferralRecord selectById(Integer id);
 
