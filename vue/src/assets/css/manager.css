@@ -114,6 +114,8 @@
 .manager-main-left {
     width: 200px;
     min-height: calc(100vh - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .manager-main-right {
