@@ -73,7 +73,7 @@
     </div>
 
     <!-- dialog -->
-    <el-dialog title="分配病床" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+    <el-dialog title="分配病床"  :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form :model="form" label-width="100px" style="padding-right: 50px">
 
         <el-form-item label="病房名" prop="wardName">
@@ -217,5 +217,6 @@ export default {
     box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
     box-sizing: border-box;
     width: 40%;
+    margin-left: 57%;
 }
 </style>

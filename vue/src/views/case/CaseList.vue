@@ -10,9 +10,9 @@
       <el-table :data="tableData"  stripe>
         <el-table-column prop="treatmentDate" label="就诊日期" width="200" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="userName" label="姓名" v-if="user.role === 'DOCTOR'" width="200" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="150" align="center"></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="100" align="center"></el-table-column>
         <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="200" align="center"></el-table-column>
-        <el-table-column prop="inHospital" label="住院情况" width="200" align="center"></el-table-column>
+        <el-table-column prop="inHospital" label="住院情况" width="100" align="center"></el-table-column>
         <el-table-column label="详情"  align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>

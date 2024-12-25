@@ -20,11 +20,11 @@
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" width="90" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hospitalName" label="医院" width="200" align="center"></el-table-column>
+        <el-table-column prop="hospitalName" label="医院" width="165" align="center"></el-table-column>
         <el-table-column prop="num" label="就诊数量" align="center"></el-table-column>
-        <el-table-column prop="date" label="日期" width="180" align="center"></el-table-column>
+        <el-table-column prop="date" label="日期" width="100" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN'">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini"
