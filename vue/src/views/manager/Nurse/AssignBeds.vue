@@ -42,7 +42,7 @@
       <div class="table" style="flex: 1;">
         <el-table :data="tableDataRecord" strip>
           <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
           <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column>
@@ -166,7 +166,7 @@ export default {
     handleAssign(row) {   // 新增数据（ward_id == null 的新增一个ward_id）
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
-      this.form.inhospital = '已住院';
+      this.form.inHospital = '已住院';
       this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },

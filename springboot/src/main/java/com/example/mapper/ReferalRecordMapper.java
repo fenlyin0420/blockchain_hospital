@@ -1,7 +1,7 @@
 package com.example.mapper;
 
 
-import com.example.entity.ReferalRecord;
+import com.example.entity.ReferralRecord;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public interface ReferalRecordMapper {
 
 
-    List<ReferalRecord> selectAll(ReferalRecord referalRecord);
+    List<ReferralRecord> selectAll(ReferralRecord referralRecord);
 
-    ReferalRecord selectById(Integer id);
+    ReferralRecord selectById(Integer id);
 
-    void updateById(ReferalRecord referalRecord);
+    void updateById(ReferralRecord referralRecord);
 
     void deleteById(Integer id);
 
-    void add(ReferalRecord referalRecord);
+    void add(ReferralRecord referralRecord);
 
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReferalRecord {
+public class ReferralRecord {
     private Integer id;
     private Integer userId;
     private Integer outHospitalId;
