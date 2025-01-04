@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <el-select v-model="status" placeholder="请选择挂号状态" style="width: 200px">
+      <el-select v-model="status" placeholder="请选择接诊状态" style="width: 200px">
         <el-option label="未接诊" value="未接诊"></el-option>
         <el-option label="已接诊" value="已接诊"></el-option>
       </el-select>
@@ -20,7 +20,7 @@
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-button plain type="warning" style="color: blue;" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
-              @click=call(scope.row)>叫号</el-button>
+              @click=call(scope.row)>接诊</el-button>
           </template>
         </el-table-column>
       </el-table>

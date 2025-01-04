@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.mapper.ReferalRecordMapper">
+<mapper namespace="com.example.mapper.ReferralRecordMapper">
     <insert id="add">
         insert into referal_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -67,7 +67,7 @@
         where id = #{id}
     </delete>
 
-    <select id="selectAll" resultType="com.example.entity.ReferalRecord">
+    <select id="selectAll" resultType="com.example.entity.ReferralRecord">
         select referal_record.*, 
         user.name           as userName, 
         h1.hospital_name    as outHospitalName, 
@@ -106,7 +106,7 @@
         order by id desc
     </select>
 
-    <select id="selectById" resultType="com.example.entity.ReferalRecord">
+    <select id="selectById" resultType="com.example.entity.ReferralRecord">
         select referal_record.*,user.name as userName,h1.hospital_name as outHospitalName,h2.hospital_name as
         inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName
         from referal_record

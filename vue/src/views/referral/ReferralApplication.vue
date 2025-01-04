@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <el-card class="container">
     <div class="form-container">
-
+      <!-- 左侧表单 -->
       <div class="left-form">
         <div class="label">转诊患者</div>
         <el-select v-model="caseInfo" placeholder="请选择患者" style="width:80%; margin-bottom: 20px;">
@@ -10,44 +10,57 @@
           </div>
         </el-select>
 
-        <div class="label">转出信息</div>
-        <el-input placeholder="转出医院" v-model="caseInfo.hospitalName" :readonly="true" clearable
-          style="width:80%;"></el-input>
-        <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable
-          style="width:80%;"></el-input>
-        <div class="label">转入信息</div>
-        <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()"
-          style="width: 80%;margin-bottom: 20px">
-          <div v-for="item in infByHospital">
-            <el-option :label="item.hospitalName" :value="item.id"></el-option>
-          </div>
-        </el-select>
+        <div class="label">转出时间</div>
+        <el-input v-model="caseInfo.referralDate" :readonly="true" clearable style="width:80%;"></el-input>
+        <!-- <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable
+          style="width:80%;"></el-input> -->
 
+        <div class="label">沟通记录表</div>
+        <el-input type="textarea" placeholder="患者承诺" v-model="promise" style="width:80%;"></el-input>
+
+        <div class="label">转诊理由</div>
         <el-autocomplete type="textarea" v-model="transferReason" :fetch-suggestions="transferReasonComplete" clearable
-          placeholder="请输入转诊原因" @select="handleSelect" style="width: 80%;display:block" />
-          <br/>
-          <el-button type="primary" style="margin-top: 10px; position:absolute; right: 45%;"
-          @click="confirmTransfer">确定</el-button>
+          placeholder="请输入转诊理由" @select="handleSelect" style="width: 80%;display:block" />
+
+        <el-button type="primary" style="margin-top: 10px; position:absolute; right: 45%;"
+          @click="confirmTransfer">授权提交</el-button>
       </div>
 
+      <!-- 右侧表单 -->
       <div class="right-form">
         <el-form label-width="0px" style="margin-top: 20px;">
-          <div class="label">沟通记录表</div>
-          <el-form-item>
-            <el-input type="textarea" placeholder="患者承诺" v-model="promise" clearable :rows="4"
-              style="width:90%;"></el-input>
-          </el-form-item>
-          <div class="label">患者签字</div>
+          <div class="label">转入信息</div>
+          <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()"
+            style="width: 90%;margin-bottom: 20px">
+            <div v-for="item in infByHospital">
+              <el-option :label="item.hospitalName" :value="item.id"></el-option>
+            </div>
+          </el-select>
+
+          <!-- <div class="label">患者签字</div>
           <el-form-item>
             <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
               style="width:90%;"></el-input>
+          </el-form-item> -->
+
+          <div class="label">患者签字</div>
+          <el-form-item>
+            <!-- 用 canvas 实现签字 -->
+            <canvas ref="signatureCanvas" width="400" height="200"
+              style="border: 1px solid #ccc; background-color: #f9f9f9;" @mousedown="startDrawing"
+              @mousemove="drawSignature" @mouseup="endDrawing" @mouseleave="endDrawing"></canvas>
           </el-form-item>
+
+          <!-- <el-form-item>
+            <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
+              style="width:90%;"></el-input>
+          </el-form-item> -->
+
+          <el-button @click="clearSignature">清空签字</el-button>
         </el-form>
       </div>
     </div>
-
-
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -65,24 +78,34 @@ export default {
       transferInTime: null,
       transferReason: '',
       restaurants: [],
-      caseInfo: [],
+      caseInfo: { "referralDate": "2023-05-01" },
       tableData: [],
       infByHospital: [],
       infByDoctor: [],
       information: {},
       promise: "要求自动转院，自愿承担转院风险，后果自负。",
       transferReason: '',
-      signature:'',
+      signature: '',
       suggestions: [
         { value: "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。" },
         { value: "患者病情稳定。" },
         { value: "患者及家属要求转诊转院者。" }
-      ]
+      ],
+      signature: '',
+      isDrawing: false,
+      canvasContext: null
     }
   },
   created() {
     this.loadByUser()
     this.loadByHospital()
+  },
+  mounted() {
+    // 获取 canvas 的上下文
+    this.canvasContext = this.$refs.signatureCanvas.getContext('2d');
+    this.canvasContext.lineWidth = 2;
+    this.canvasContext.lineCap = 'round';
+    this.canvasContext.strokeStyle = '#000'; // 签字颜色
   },
   methods: {
     loadByUser() {
@@ -148,12 +171,40 @@ export default {
     handleSelect(item) {
       // 这里可以添加当选中某个联想数据后的具体处理逻辑，比如赋值给其他变量等
       this.transferReason = item.value;
+    },
+    startDrawing(event) {
+      this.isDrawing = true;
+      const { offsetX, offsetY } = event;
+      this.canvasContext.moveTo(offsetX, offsetY);
+      this.canvasContext.beginPath();
+    },
+    drawSignature(event) {
+      if (!this.isDrawing) return;
+      const { offsetX, offsetY } = event;
+      this.canvasContext.lineTo(offsetX, offsetY);
+      this.canvasContext.stroke();
+    },
+    endDrawing() {
+      if (this.isDrawing) {
+        this.isDrawing = false;
+        this.signature = this.$refs.signatureCanvas.toDataURL(); // 将签名转为 Base64 数据
+      }
+    },
+    clearSignature() {
+      this.canvasContext.clearRect(0, 0, this.$refs.signatureCanvas.width, this.$refs.signatureCanvas.height); // 清除 canvas 内容
+      this.signature = ''; // 清空输入框内容
     }
   }
 }
 </script>
 
 <style scoped>
+.container {
+  padding: 20px;
+  height: 95%;
+  overflow-y: scroll;
+}
+
 .form-container {
   display: flex;
   justify-content: space-between;
@@ -187,7 +238,7 @@ export default {
   font-size: 16px;
 }
 
-::v-deep .el-input__inner{
+::v-deep .el-input__inner {
   font-family: "SimSun", "宋体", serif;
   color: blue;
   font-size: 16px;

@@ -31,8 +31,8 @@ public class RecordService {
         //record.setTime(time);
         //List<Record> records = recordMapper.selectAll(record);
         //if (CollectionUtil.isEmpty(records)) {
-        record.setInhostpitalRecord(StatusEnum.NO.status);
-        recordMapper.insert(record);
+            record.setInhostpitalRecord(StatusEnum.NO.status);
+            recordMapper.insert(record);
         //}
     }
 
