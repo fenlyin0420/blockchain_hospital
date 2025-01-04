@@ -126,7 +126,7 @@ export default {
   methods: {
     loadDepartment() {
       let id = this.user.hospitalId;
-      this.$request.get("/department/selectAll").then((res) => {
+      this.$request.get("/department/selectAll/").then((res) => {
         if (res.code === "200") {
           this.departmentData = res.data;
         } else {

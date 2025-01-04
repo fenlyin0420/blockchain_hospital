@@ -24,6 +24,8 @@ public class Reserve implements Serializable {
     private String status;
     /** 医院 id*/
     private Integer hospitalId;
+    /** 病情描述 */
+    private String illnessDetail;
 
     // 非数据库成员
     private String doctorName;

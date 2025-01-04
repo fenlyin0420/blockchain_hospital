@@ -47,6 +47,7 @@
                 <if test="time != null">time,</if>
                 <if test="status != null">status,</if>
                 <if test="hospitalId != null">hospital_id,</if>
+                <if test="illnessDetail != null">illness_detail,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -55,6 +56,7 @@
                 <if test="time != null">#{time},</if>
                 <if test="status != null">#{status},</if>
                 <if test="hospitalId != null">#{hospitalId},</if>
+                <if test="illnessDetail != null">#{illnessDetail},</if>
         </trim>
     </insert>
 
@@ -75,6 +77,9 @@
             </if>
             <if test="hospitalId != null">
                 hospital_id = #{hospitalId},
+            </if>
+            <if test="illnessDetail != null">
+                illness_detail = #{illnessDetail},
             </if>
         </set>
         where id = #{id} 

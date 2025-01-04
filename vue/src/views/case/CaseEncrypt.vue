@@ -29,7 +29,7 @@
           <el-form-item label="患者姓名" class="custom-layout">
             <div class="content-wrapper">
               <span class="name">{{ receivedData.userName }}</span>
-              <el-button type="primary" class="decrypt-button" @click="encrypt">加密</el-button>
+              <el-button type="primary" class="decrypt-button" @click="encrypt" style="opacity:0">加密</el-button>  <!-- 隐藏加密按钮 -->
             </div>
           </el-form-item>
         </el-form>
@@ -48,7 +48,8 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-button type="primary" class="submit-button" @click="gotoSign" style="visibility: none;">去签名</el-button>
+
+      <el-button type="primary" class="submit-button" @click="gotoSign" style="opacity:0">去签名</el-button>   <!-- 隐藏签名按钮 -->
     </el-row>
   </el-card>
 </template>
@@ -70,6 +71,8 @@ export default {
   created() {
     this.receivedData = this.$route.query
     this.load()
+    this.autoOp()
+
   },
   computed: {
     drug() {
@@ -142,8 +145,18 @@ export default {
     },
     gotoSign() {
       this.$router.push({name: "CaseSign", query: this.receivedData})
+    },
+    autoOp(){
+      // 模拟自动加密并跳转页面
+      this.$message.info(`正在加密病历...`);
+      setTimeout(() => {
+        this.encrypt()
+        this.$message.success(`加密成成功，即将跳转到签名页面...`);
+        setTimeout(() => {
+          this.$router.push({name: "CaseSign", query: this.receivedData})
+        }, 2000);
+      }, 2000);
     }
-
   }
 };
 </script>

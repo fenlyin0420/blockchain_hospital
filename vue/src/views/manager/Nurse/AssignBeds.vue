@@ -42,7 +42,7 @@
       <div class="table" style="flex: 1;">
         <el-table :data="tableDataRecord" strip>
           <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-          <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
           <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column>
@@ -73,7 +73,7 @@
     </div>
 
     <!-- dialog -->
-    <el-dialog title="分配病床"  :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+    <el-dialog title="分配病床" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form :model="form" label-width="100px" style="padding-right: 50px">
 
         <el-form-item label="病房名" prop="wardName">
@@ -166,7 +166,7 @@ export default {
     handleAssign(row) {   // 新增数据（ward_id == null 的新增一个ward_id）
       this.form = JSON.parse(JSON.stringify(row)); // Clear form and assign row data
       this.assignedIds.add(row.id);  // Add to assigned IDs
-      this.form.inHospital = '已住院';
+      this.form.inhospital = '已住院';
       this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
@@ -217,6 +217,5 @@ export default {
     box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
     box-sizing: border-box;
     width: 40%;
-    margin-left: 57%;
 }
 </style>
