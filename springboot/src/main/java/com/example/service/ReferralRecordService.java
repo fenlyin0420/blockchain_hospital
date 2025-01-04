@@ -26,7 +26,7 @@ import java.util.List;
 public class ReferralRecordService {
 
     @Resource
-    private ReferralRecordMapper referalRecordMapper;
+    private ReferralRecordMapper referralRecordMapper;
 
     public PageInfo<ReferralRecord> selectPage(ReferralRecord referralRecord, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -66,9 +66,9 @@ public class ReferralRecordService {
      * 医生访问，新加一个转诊申请
      * @param referralRecord
      */
-    public void add(ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferralEnum.WAIT_OUT_ADMIN.toString());
-        referalRecordMapper.add(referalRecord);
+    public void add(ReferralRecord referralRecord) {
+        referralRecord.setResult(ReferralEnum.WAIT_OUT_ADMIN.toString());
+        referralRecordMapper.add(referralRecord);
     }
 
     /**
@@ -78,9 +78,9 @@ public class ReferralRecordService {
      */
     public Result send(ReferralRecord referralRecord, String url) {
         // 设置转诊状态
-        referalRecord.setOutTime(DateUtil.now());
-        referalRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
-        referalRecordMapper.updateById(referalRecord);
+        referralRecord.setOutTime(DateUtil.now());
+        referralRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
+        referralRecordMapper.updateById(referralRecord);
 
         referralRecord = referralRecordMapper.selectById(referralRecord.getId());
 
@@ -111,8 +111,8 @@ public class ReferralRecordService {
      * 接收其他医院的转诊申请
      * @param referralRecord
      */
-    public void recieveReferralRecord(ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
-        referalRecordMapper.add(referalRecord);
+    public void recieveReferralRecord(ReferralRecord referralRecord) {
+        referralRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
+        referralRecordMapper.add(referralRecord);
     }
 }
