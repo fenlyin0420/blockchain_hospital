@@ -35,8 +35,8 @@ public class ReferralRecordService {
     }
 
 
-    public List<ReferralRecord> selectAll(ReferralRecord referalRecord) {
-        return referralRecordMapper.selectAll(referalRecord);
+    public List<ReferralRecord> selectAll(ReferralRecord referralRecord) {
+        return referralRecordMapper.selectAll(referralRecord);
     }
 
     public ReferralRecord selectById(Integer id) {
