@@ -8,18 +8,13 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
-        <el-table-column prop="outTime" label="转出时间"></el-table-column>
+        <el-table-column prop="userName" label="患者" width="80px" show-overflow-tooltip></el-table-column>
         <el-table-column prop="why" label="转诊原因"></el-table-column>
-        <el-table-column prop="result" label="结果"></el-table-column>
-
-        <el-table-column label="操作" width="180" align="center">
-          <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="update(scope.row)">同意</el-button>
-            <el-button plain type="danger" size="mini" v-if="ok(scope.row)" @click="refuse(scope.row)">拒绝</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="result" label="结果" width="120px"></el-table-column>
+        <el-table-column prop="outHospitalName" label="转出医院" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="outTime" label="转出时间" width="120px"></el-table-column>
+        <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="inTime" label="转入时间" width="120px"></el-table-column>
       </el-table>
 
       <div class="pagination">

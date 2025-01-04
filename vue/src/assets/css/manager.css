@@ -60,7 +60,7 @@
     height: 50px;
     padding-left: 10px;
     display: flex;
-    align-items: center;
+    align-items: center
 }
 
 .manager-header-left img {
@@ -114,7 +114,6 @@
 .manager-main-left {
     width: 200px;
     min-height: calc(100vh - 60px);
-    overflow-y: auto;
 }
 
 .manager-main-right {

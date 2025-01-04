@@ -17,7 +17,7 @@
     <div class="table" style="margin-top: 15px">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-        <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
         <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>

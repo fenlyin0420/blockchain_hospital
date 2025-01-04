@@ -44,7 +44,7 @@
                 out_doctor_id = #{outDoctorId},
             </if>
             <if test="inDoctorId != null">
-                in_doctor_id = #{outDoctorId},
+                in_doctor_id = #{inDoctorId},
             </if>
             <if test="outTime != null">
                 out_time = #{outTime},

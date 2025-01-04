@@ -11,14 +11,13 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="id" label="序号" align="center"></el-table-column>
+        <el-table-column prop="id" label="序号" align="center" width="80px"></el-table-column>
         <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'" align="center"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center"show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center" show-overflow-tooltip width="80px"></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室" v-if="user.role === 'USER'" align="center"></el-table-column>
-        <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
-        <el-table-column prop="status" label="挂号状态" align="center"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column prop="illnessDetail" label="病情描述" v-if="user.role === 'DOCTOR'" align="center" show-overflow-tooltip width="700px"></el-table-column>
+        <el-table-column label="操作" align="center">
           <template v-slot="scope">
             <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
               @click=del(scope.row.id)>取消挂号</el-button>
