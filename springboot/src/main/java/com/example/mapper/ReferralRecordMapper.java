@@ -14,10 +14,10 @@ public interface ReferralRecordMapper {
 
     ReferralRecord selectById(Integer id);
 
-    void updateById(ReferralRecord referalRecord);
+    void updateById(ReferralRecord referralRecord);
 
     void deleteById(Integer id);
 
-    void add(ReferralRecord referalRecord);
+    void add(ReferralRecord referralRecord);
 
 }

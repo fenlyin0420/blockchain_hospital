@@ -6,7 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import com.example.common.Result;
 import com.example.common.enums.ReferalEnum;
 import com.example.entity.ReferralRecord;
-import com.example.mapper.ReferalRecordMapper;
+import com.example.mapper.ReferralRecordMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -27,69 +27,69 @@ import java.util.List;
 public class ReferralRecordService {
 
     @Resource
-    private ReferalRecordMapper referalRecordMapper;
+    private ReferralRecordMapper referralRecordMapper;
 
-    public PageInfo<ReferralRecord> selectPage(ReferralRecord referalRecord, Integer pageNum, Integer pageSize) {
+    public PageInfo<ReferralRecord> selectPage(ReferralRecord referralRecord, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<ReferralRecord> list = referalRecordMapper.selectAll(referalRecord);
+        List<ReferralRecord> list = referralRecordMapper.selectAll(referralRecord);
         return PageInfo.of(list);
     }
 
 
     public List<ReferralRecord> selectAll(ReferralRecord referalRecord) {
-        return referalRecordMapper.selectAll(referalRecord);
+        return referralRecordMapper.selectAll(referalRecord);
     }
 
     public ReferralRecord selectById(Integer id) {
-        ReferralRecord referalRecord = new ReferralRecord();
-        referalRecord.setId(id);
-        return referalRecordMapper.selectAll(referalRecord).get(0);
+        ReferralRecord referralRecord = new ReferralRecord();
+        referralRecord.setId(id);
+        return referralRecordMapper.selectAll(referralRecord).get(0);
     }
 
 
-    public void updateById(ReferralRecord referalRecord) {
-        referalRecord.setInTime(DateUtil.now());
+    public void updateById(ReferralRecord referralRecord) {
+        referralRecord.setInTime(DateUtil.now());
         
-        referalRecordMapper.updateById(referalRecord);
+        referralRecordMapper.updateById(referralRecord);
     }
 
     public void deleteById(Integer id) {
-        referalRecordMapper.deleteById(id);
+        referralRecordMapper.deleteById(id);
     }
 
     public void deleteBatch(List<Integer> ids) {
         for (Integer id : ids) {
-            referalRecordMapper.deleteById(id);
+            referralRecordMapper.deleteById(id);
         }
     }
 
     /**
      * 医生访问，新加一个转诊申请
-     * @param referalRecord
+     * @param referralRecord
      */
-    public void add(ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
-        referalRecordMapper.add(referalRecord);
+    public void add(ReferralRecord referralRecord) {
+        referralRecord.setResult(ReferalEnum.WAIT_OUT_ADMIN.toString());
+        referralRecordMapper.add(referralRecord);
     }
 
     /**
      * 将申请发送到另一家医院
-     * @param referalRecord
+     * @param referralRecord
      * @return
      */
-    public Result send(ReferralRecord referalRecord, String url) {
+    public Result send(ReferralRecord referralRecord, String url) {
         // 设置转诊状态
-        referalRecord.setOutTime(DateUtil.now());
-        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
-        referalRecordMapper.updateById(referalRecord);
+        referralRecord.setOutTime(DateUtil.now());
+        referralRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
+        referralRecordMapper.updateById(referralRecord);
 
-        referalRecord = referalRecordMapper.selectById(referalRecord.getId());
+        referralRecord = referralRecordMapper.selectById(referralRecord.getId());
 
         RestTemplate restTemplate = new RestTemplate();
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<ReferralRecord> body = new HttpEntity<>(referalRecord, headers);
+        HttpEntity<ReferralRecord> body = new HttpEntity<>(referralRecord, headers);
         ResponseEntity<Result> res = restTemplate.postForEntity(url, body, Result.class);
 
         // 处理响应
@@ -110,10 +110,10 @@ public class ReferralRecordService {
 
     /**
      * 接收其他医院的转诊申请
-     * @param referalRecord
+     * @param referralRecord
      */
-    public void recieveReferalRecord(ReferralRecord referalRecord) {
-        referalRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
-        referalRecordMapper.add(referalRecord);
+    public void recieveReferalRecord(ReferralRecord referralRecord) {
+        referralRecord.setResult(ReferalEnum.WAIT_IN_ADMIN.toString());
+        referralRecordMapper.add(referralRecord);
     }
 }
