@@ -7,7 +7,7 @@
     <el-row :gutter="24">
       <el-col :span="9">
         <el-form label-width="10px">
-          <el-form-item>
+          <el-form-item >
             <!-- 这里放图 -->
             <span class="field-label">医疗影像</span>
             <div class="image-container">
@@ -20,6 +20,17 @@
             <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="previewImageUrl" :alt="'Preview of ' + (previewImageIndex + 1)" />
             </el-dialog>
+          </el-form-item>
+          <!-- 二维码 -->
+          <el-form-item>
+            <span class="field-label">区块链存储地址</span>
+            <div class="image-container">
+              <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
+                <div class="demo-image" @click="previewImage(url, index)">
+                  <el-image style="width: 130px; height: 130px" :src="QR" :fit="fits"></el-image>
+                </div>
+              </div>
+            </div>
           </el-form-item>
         </el-form>
       </el-col>
@@ -46,15 +57,19 @@
               <el-table-column prop="frequency" label="用法用量"></el-table-column>
             </el-table>
           </el-form-item>
+          <el-form-item label="存储地址" class="blue-text">
+            <p style="color:blue; border:solid 1px #ebeef5; padding: 5px; overflow-x: hidden;">{{ blockHash }}</p>
+          </el-form-item>
         </el-form>
       </el-col>
-
       <el-button type="primary" class="submit-button" @click="gotoSign" style="opacity:0">去签名</el-button>   <!-- 隐藏签名按钮 -->
     </el-row>
   </el-card>
 </template>
 
 <script>
+import axios from 'axios' 
+
 export default {
   data() {
     return {
@@ -66,12 +81,15 @@ export default {
       dialogVisible: false, // 对话框可见性  
       previewImageUrl: '', // 预览图片URL  
       previewImageIndex: -1, // 预览图片索引 
+      /** 区块链存储地址 */
+      blockHash: 'NULL', 
+      QR: ''
     };
   },
   created() {
     this.receivedData = this.$route.query
     this.load()
-    this.autoOp()
+    // this.autoOp()
 
   },
   computed: {
@@ -124,6 +142,45 @@ export default {
         this.pubs = ss
       }
     }, 
+    upChain() {
+      if (true){
+        this.blockHash = 'BHkqLP8LiF+G2K1qRJm18f71xQJLqtL9BA0qEt9PBOS4JIZCBCPBLSrODGShog3BoEgfWs62bP'
+        this.$request.get('/files/generateQR', {
+          params: {
+            seed: this.blockHash
+          }
+        }).then(res => {
+          if (res.code === '200'){
+            this.QR = res.data
+          }
+        })
+        return 
+      }
+      let traverse = {
+                "_doctorId": this.receivedData.doctorId,
+                "_userId": this.receivedData.userId,
+                "_advice": this.receivedData.advice,
+                "_drug": this.receivedData.drug
+      }
+      const Request = axios.create({
+            baseURL: 'http://localhost:8088', // 区块链管理平台的 baseURL
+            timeout: 50000 
+          });
+      Request.post('/caseRecordSystem/addCase', traverse).then(res => {
+        if (res.code === '200'){
+          console.log(res.data)
+          this.blockHash = res.data.data.transactionReceipt.blockHash
+          this.QR = 'http://localhost:8090/files/QRtest.png'
+        } else {
+          this.$message.error("上传区块链失败 :(")
+          console.log(res)
+          // Promise失败，但是可以接收到数据
+          // 等待研究。。。
+          this.blockHash = res.data.data.transactionReceipt.blockHash
+          this.QR = 'http://localhost:8090/files/QRtest.png'
+        }
+      })
+    },
     /**
      * 加密病历文字字段
      */
@@ -140,6 +197,7 @@ export default {
           this.receivedData.advice = res.data.advice
           this.receivedData.drug = res.data.drug
           this.receivedData.userName = res.data.userName
+          this.upChain();
         }
       })
     },
@@ -156,9 +214,9 @@ export default {
           this.$router.push({name: "CaseSign", query: this.receivedData})
         }, 2000);
       }, 2000);
-    }
+    },
   }
-};
+}
 </script>
 
 <style scoped>

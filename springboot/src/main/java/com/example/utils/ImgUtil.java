@@ -4,10 +4,21 @@ import javax.imageio.ImageIO;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class ImgUtil {
@@ -150,4 +161,26 @@ public class ImgUtil {
             return null;
         }
     }
+
+public static String generateQR(String seed, String baseFilePath, String ip, String port) {
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    Map<EncodeHintType, Object> hints = new HashMap<>();
+    hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+    // 设置错误校正级别为 Q（25%）
+    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
+    // 设置边距为 8
+    hints.put(EncodeHintType.MARGIN, 8);
+    String fileName = System.currentTimeMillis() + "-blockAddrQR.png";
+    String fullFilePath = baseFilePath + fileName;
+    try {
+        // 增加二维码的尺寸为 800x800
+        BitMatrix bitMatrix = qrCodeWriter.encode(seed, BarcodeFormat.QR_CODE, 800, 800, hints);
+        File file = new File(fullFilePath);
+        MatrixToImageWriter.writeToPath(bitMatrix, "png", file.toPath());
+        return "http://" + ip + ":" + port + "/files/" + fileName;
+    } catch (WriterException | IOException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
 }

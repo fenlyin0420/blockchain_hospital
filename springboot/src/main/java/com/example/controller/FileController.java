@@ -129,4 +129,12 @@ public class FileController {
         return resMap;
     }
 
+    @GetMapping("/generateQR")
+    public Result generateQR(String seed) {
+        String url = ImgUtil.generateQR(seed, filePath, ip, port);
+        if (url == null) {
+            return Result.error("二维码生成失败");
+        }
+        return Result.success(url);
+    }
 }

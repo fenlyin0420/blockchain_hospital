@@ -205,6 +205,9 @@ public class KeyService {
         return doctors;
     }
 
+    /**
+     * 加密病历
+     */
     public Traverse encrypt(Traverse traverse) {
         try {
             User user = userMapper.selectById(traverse.getUserId());

@@ -1,3 +1,7 @@
+/* 全局样式 */
+* {
+    font-family:"黑体", sans-serif;
+}
 /* 基础样式 */
 .manager-header {
     display: flex;
@@ -227,7 +231,7 @@ th.el-table__cell {
 .el-table__body {
     font-size: 16px !important;
     color: blue;
-    font-family: "黑体", sans-serif;;
+    font-family: "黑体", sans-serif;
 }
 
 .case-container {
