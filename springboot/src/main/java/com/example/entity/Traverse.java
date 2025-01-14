@@ -4,8 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.lang.reflect.Field;
+import java.util.List;
 
+import com.example.utils.Sign;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
@@ -17,10 +21,15 @@ public class Traverse {
     private Integer userId;
     private Integer doctorId;
     private Integer hospitalId;
+    @Sign
     private String advice;
+    @Sign
     private String diagnosis;
+    @Sign
     private String drug;
+    @Sign
     private String inHospital;
+    @Sign
     private String careStatus;
     /** 病房id */
     private Integer wardId;
@@ -45,4 +54,30 @@ public class Traverse {
     private String doctorName; 
     private String hospitalName; 
     private String wardName; 
+
+    public String signData(){
+        StringBuilder result = new StringBuilder();
+        Class<?> clazz = this.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        List<String> concatenatedParts = new ArrayList<>();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Sign.class)) {
+                field.setAccessible(true);
+                try {
+                    Object value = field.get(this);
+                    concatenatedParts.add(field.getName() + ":" + value.toString());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for (int i = 0; i < concatenatedParts.size(); i++) {
+            result.append(concatenatedParts.get(i));
+            if (i < concatenatedParts.size() - 1) {
+                result.append(",");
+            }
+        }
+        System.out.println(result.toString());
+        return result.toString();
+    }
 }
