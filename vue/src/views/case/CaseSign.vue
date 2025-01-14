@@ -195,16 +195,7 @@ export default {
         }
       })
     },
-    verifySign() {
-      this.params.id = this.receivedData.id
-      this.$request.post('/keys/verifySign', this.params).then(res => {
-        if (res.code === '200') {
-          this.receivedData.signResult = res.data.message
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    }
+
   }
 };
 </script>
