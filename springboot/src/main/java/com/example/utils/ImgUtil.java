@@ -168,8 +168,8 @@ public static String generateQR(String seed, String baseFilePath, String ip, Str
     hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
     // 设置错误校正级别为 Q（25%）
     hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
-    // 设置边距为 8
-    hints.put(EncodeHintType.MARGIN, 8);
+    // 设置边距为 0
+    hints.put(EncodeHintType.MARGIN, 0);
     String fileName = System.currentTimeMillis() + "-blockAddrQR.png";
     String fullFilePath = baseFilePath + fileName;
     try {

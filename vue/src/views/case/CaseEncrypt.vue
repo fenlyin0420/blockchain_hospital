@@ -27,7 +27,7 @@
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 130px; height: 130px" :src="QR" :fit="fits"></el-image>
+                  <el-image style="width: 170px; height: 170px" :src="QR" :fit="fits"></el-image>
                 </div>
               </div>
             </div>
@@ -61,8 +61,8 @@
             <p style="color:blue; border:solid 1px #ebeef5; padding: 5px; overflow-x: hidden;">{{ blockHash }}</p>
           </el-form-item>
         </el-form>
+        <el-button type="primary" class="submit-button" @click="gotoSign" style="opacity:0">去签名</el-button>   <!-- 隐藏签名按钮 -->
       </el-col>
-      <el-button type="primary" class="submit-button" @click="gotoSign" style="opacity:0">去签名</el-button>   <!-- 隐藏签名按钮 -->
     </el-row>
   </el-card>
 </template>

@@ -5,10 +5,10 @@
     </div>
     <el-row :gutter="24">
       <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
+        <div style="margin: 0 0 10px 0">
           <el-row>
             <el-col :span="10">
-              <div style="margin: 5px  0 25px">
+              <div style="margin: 5px 0 0 25px">
                 <span style="display: inline-block; width: 200px;font-size: 16px;">环签名数据</span>
               </div>
             </el-col>
@@ -17,14 +17,14 @@
                 <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
                 <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
                 <!-- <span><p style="color:red; display:inline; margin: 0px 0px 0px 10px">未检测到私钥 :(</p></span> -->
-                <span><p style="color:green; display:inline; margin: 0px 0px 0px 10px">已检测到私钥</p></span>
+                <span ><p style="color:green; display:inline; margin: 0px 0px 0px 10px; padding:0px;">已检测到私钥</p></span>
               </div>
             </el-col>
           </el-row>
         </div>
 
         <div class="grid-content bg-purple">
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
+          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
             v-model="signData">
           </el-input>
         </div>
@@ -32,7 +32,7 @@
 
       <!-- 签名信息 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
+        <div style="margin: 0 0 10px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
@@ -42,14 +42,14 @@
 
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
-                <el-button  type="primary" style="visibility: hidden;" >占位 </el-button>
+                <el-button  type="primary" style="opacity:0" >占位 </el-button>
               </div>
             </el-col>
           </el-row>
-
         </div>
+
         <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
+          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
             v-model="signKey">
           </el-input>
         </div>
@@ -57,7 +57,7 @@
 
       <!-- 验签结果 --> 
       <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
+        <div style="margin: 0 0 10px 0">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
@@ -76,21 +76,34 @@
         </div>
 
         <div>
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
+          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
             v-model="signResult">
           </el-input>
         </div>
       </el-col>
     </el-row>
 
-    <div class="header" style="margin: 20px 0">
+    <div class="header" style="margin: 10px 0">
+      <h2>签名数据区块链地址</h2>
+    </div>
+    <el-table :data="blockInfo" border style="width: 100%;" >
+      <el-table-column prop="QR" align="center" label=" 二维码" width="180">
+        <template slot-scope="scope">
+          <img :src="scope.row.QR" width="100px" height="100px">
+        </template>
+      </el-table-column>
+      <el-table-column prop="blockHash" align="center" label="区块链存储地址">
+      </el-table-column>
+    </el-table>
+
+    <div class="header" style="margin: 10px 0">
       <h2>环公钥组成信息</h2>
     </div>
 
     <el-table :data="pubs" border style="width: 100%;" >
-      <el-table-column prop="name" label="姓名" width="180">
+      <el-table-column prop="name" align="center" label="姓名" width="180">
       </el-table-column>
-      <el-table-column prop="key" label="公钥">
+      <el-table-column prop="key" align="center" label="公钥">
       </el-table-column>
     </el-table>
 
@@ -108,7 +121,8 @@ export default {
       signData: '',
       signKey: '',
       signResult: '',
-      signPubKey: ''
+      signPubKey: '',
+      blockInfo: [{ QR: '', blockHash: 'NULL' }]
     };
   },
   created() {
@@ -134,40 +148,55 @@ export default {
     load() {
 
     },
+    upChain() {
+      if (true){
+        this.blockInfo[0].blockHash = 'BPcYz3sejN3rkSAmVLQWxhx6Hr/Tf4Q37YR+raOPeTb9e/DzVOHkSAmVLQWxhxR+raOPeTb9e/D'
+        this.$request.get('/files/generateQR', {
+          params: {
+            seed: this.blockInfo[0].blockHash
+          }
+        }).then(res => {
+          if (res.code === '200'){
+            this.blockInfo[0].QR = res.data
+          }
+        })
+        return 
+      }
+      // 1. 获取签名数据的区块链地址
+
+      // 2. 根据地址生成二维码，得到二维码的url
+    },
     /**
      * 签名
      */
     sign() {
-      this.params.name = this.receivedData.userName
+      // 病历 id
       this.params.id = this.receivedData.id
       this.$request.post('/keys/sign', this.params).then(res => {
         if (res.code === '200') {
           this.signData = res.data.signData
           this.signKey = res.data.signKey
           this.signPubKey = res.data.signPubKey
-
+          this.upChain()
           // 自动跳转
-          const countdownSeconds = 3;
-          let countdown = countdownSeconds;
-          const countdownInterval = setInterval(() => {
-            if (countdown > 0) {
-              this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
-              countdown--;
-            } else {
-              clearInterval(countdownInterval);
-              this.$router.push('/doctorReserve');
-            }
-          }, 1000);
+          // const countdownSeconds = 3;
+          // let countdown = countdownSeconds;
+          // const countdownInterval = setInterval(() => {
+          //   if (countdown > 0) {
+          //     this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
+          //     countdown--;
+          //   } else {
+          //     clearInterval(countdownInterval);
+          //     this.$router.push('/doctorReserve');
+          //   }
+          // }, 1000);
         } else {
           this.$message.error(res.msg)
         }
       })
     },
     verifySign() {
-      this.params.role = this.user.role
-      this.params.name = this.receivedData.name
-      this.params.timestamp = this.receivedData.timestamp
-      this.params.signKey = this.receivedData.signKey
+      this.params.id = this.receivedData.id
       this.$request.post('/keys/verifySign', this.params).then(res => {
         if (res.code === '200') {
           this.receivedData.signResult = res.data.message

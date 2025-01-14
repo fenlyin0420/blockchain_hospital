@@ -46,7 +46,6 @@ public class KeyService {
     /**
      * <p> 签名 </p>
      * <p> {@code params.id} 病历id </p>
-     * <p> {@code params.name} 患者姓名 </p>
      * 
      * @param params
      */
@@ -62,12 +61,7 @@ public class KeyService {
         traverse = traverseMapper.selectById(params.getId());
 
         // 合成data
-        Instant now = Instant.now();
-        long timestamp = now.toEpochMilli();
-        Date date = new Date(timestamp);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = sdf.format(date);
-        String data = params.getName() + "+" + formattedDate;
+        String data = traverse.signData();
 
         // 提取环公钥
         List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
@@ -112,6 +106,7 @@ public class KeyService {
         // 返回数据
         ringSign.setSignData(data);
         ringSign.setSignKey(key);
+        ringSign.setMessage("签名成功");
         traverse.setSignData(data);
         traverse.setSignKey(key);
         traverseMapper.updateById(traverse);
@@ -119,8 +114,8 @@ public class KeyService {
     }
 
     public RingSign verifySign(Params params) {
-        Traverse traverse = traverseMapper.selectByTimestamp(params.getTimestamp());
-        String key = params.getSignKey();
+        Traverse traverse = traverseMapper.selectById(params.getId());
+        String key = traverse.getSignKey();
         List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
         List<String> publicKeys = new ArrayList<>();
         for (Doctor doctor : doctors) {
@@ -134,7 +129,7 @@ public class KeyService {
                 throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
             }
         }
-        boolean result = BestRingSignUtil.verifySign(traverse.getSignData(), list, key);
+        boolean result = BestRingSignUtil.verifySign(traverse.signData(), list, key);
 
         RingSign ringSign = new RingSign();
         ringSign.setSignData(traverse.getSignData());
