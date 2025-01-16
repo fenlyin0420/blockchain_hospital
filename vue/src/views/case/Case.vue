@@ -2,17 +2,25 @@
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <el-col :span="12">
-        <el-form inline label-width="80px">
-          <el-form-item class="field-container">
-            <span class="field-label">姓名:</span>
-            <span class="field-value">{{ caseInfo.userName }}</span>
-          </el-form-item>
-        </el-form>
+        <!-- <el-form inline label-width="80px">
+          <el-form-item class="field-container"> -->
+            <el-row class="info-row" :gutter="24">
+              <el-col :span="9">
+                <span class="field-label2">姓名:</span>
+                <span class="field-value2">{{ caseInfo.userName }}</span>
+              </el-col>
+              <el-col :span="15">
+                <span class="field-label2">诊疗日期:</span>
+                <span class="field-value2">{{ caseInfo.time }}</span>
+              </el-col>
+            </el-row>
+          <!-- </el-form-item>
+        </el-form> -->
         <!-- <hr class="divider" /> -->
         <el-form inline label-width="80px" class="custom-form-inline">
           <el-form-item>
             <div class="field-container">
-              <span class="field-label">病情:</span>
+              <span class="field-label">病情详细:</span>
               <el-autocomplete type="textarea" v-model="advice" clearable :rows="1" resize="vertical"
                 class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
             </div>
@@ -89,7 +97,7 @@
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
-          
+
           <br><br><br><br><br><br><br><br>
           <!-- <br> -->
           <!-- <br><br><br><br><br> -->
@@ -98,11 +106,11 @@
           <el-button type="primary" @click="ok" class="confirm-button1">诊疗结束</el-button>
           <div class="info-field">
             <br>
-              <span class="field-label"> 是否需要住院 : </span>
-              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
-              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
+            <span class="field-label"> 是否需要住院 : </span>
+            <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
+            <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
 
-            </div>
+          </div>
 
         </el-form>
       </el-col>
@@ -344,7 +352,7 @@ export default {
     handleRadioChange() {
       this.radio = this.radio === '是' ? '是' : '否';
       if (this.radio == "是") {
-        this.medicine = "无"
+        this.medicine = "住院开药"
       }
     }
   }
@@ -362,6 +370,7 @@ export default {
 .case-container {
   padding: 0px;
   height: 100%;
+  overflow: hidden;
 }
 
 .case-header {
@@ -371,7 +380,7 @@ export default {
 
 .info-row {
   margin-top: 15px;
-  margin-bottom: 6px;
+  margin-bottom: 30px;
 }
 
 .info-field {
@@ -385,13 +394,22 @@ export default {
   width: 80px;
   font-weight: bold;
 }
+.field-label2 {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  margin-right: 0px;
+  width: 80px;
+  font-weight: bold;
 
-
+}
 .field-value {
   margin-left: 10px;
   margin-right: 150px;
 }
-
+.field-value2 {
+  margin-left: 10px;
+  margin-right: 0px;
+}
 .info-textarea {
   margin-bottom: 26px;
   width: 220px;
@@ -452,11 +470,11 @@ export default {
   /* 移除默认的底边距 */
 }
 
-.field-container {
+/* .field-container {
   display: flex;
   align-items: flex-start;
-  /* 根据需要调整垂直对齐方式 */
-}
+  /* 根据需要调整垂直对齐方式 
+} */
 
 .upload-container {
   width: 145px;

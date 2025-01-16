@@ -120,20 +120,21 @@
     width: 100%;
     border-radius: 10px !important; 
     box-shadow : 0 4px 8px rgba(0, 0, 0, 0.1) !important; 
-    background-image: url("@/assets/imgs/calendar5.jpg") !important; /* 设置背景图片 */
-    background-size: cover; /* 背景图片覆盖整个表格 */
-    background-position: center; /* 背景图片居中 */
+    background-color: #F8F8F8;
+    /* background-image: url("@/assets/imgs/calendar5.jpg") !important; 设置背景图片 */
+    /* background-size: cover; 背景图片覆盖整个表格 */
+    /* background-position: center; 背景图片居中 */ 
 }
 ::v-deep .el-calendar-table td.is-today {
     color: #409eff;
 }
-::v-deep .el-calendar-table td.is-selected {
-    background-color:transparent; /* 聚焦设置为透明 */
+/* ::v-deep .el-calendar-table td.is-selected {
+    background-color:transparent; /* 聚焦设置为透明 
 }
 ::v-deep .el-calendar-table .el-calendar-day:hover {
     cursor: pointer;
-    background-color: transparent;/* 鼠标聚焦也设置为透明 */
-}
+    background-color: transparent;/* 鼠标聚焦也设置为透明 
+} */
 ::v-deep.el-calendar__header {
     display: flex;
     justify-content: space-between;

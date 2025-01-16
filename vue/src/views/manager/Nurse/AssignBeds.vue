@@ -42,7 +42,7 @@
       <div class="table" style="flex: 1;">
         <el-table :data="tableDataRecord" strip>
           <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
           <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column>

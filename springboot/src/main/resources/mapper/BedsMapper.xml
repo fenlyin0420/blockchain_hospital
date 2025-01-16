@@ -20,10 +20,11 @@
 
 <!--    </select>-->
     <select id="selectAllTraverse" resultType="com.example.entity.Traverse">
-        select traverse.*, doctor.name as doctorName, ward.name as wardName
+        select traverse.*, doctor.name as doctorName,user.name as userName ,ward.name as wardName
         from traverse
         left join ward on traverse.ward_id = ward.id
         left join doctor on traverse.doctor_id = doctor.id
+        left join user on traverse.user_id = user.id
         <where>
             <if test="inHospital == null">and in_hospital in ('已住院','待住院')</if>
             <if test="hospitalId != null">and traverse.hospital_id= #{hospitalId}</if>
