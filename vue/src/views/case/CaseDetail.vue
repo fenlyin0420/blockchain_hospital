@@ -157,10 +157,7 @@ export default {
     };
   },
   created() {
-    const queryData = this.$route.query;
-    if (queryData) {
-      this.receivedData = queryData
-    }
+    this.receivedData = this.$route.query
     this.load()
   },
   computed: {
@@ -246,40 +243,8 @@ export default {
         }
       })
     },
-    /**
-     * 签名
-     */
-    sign() {
-      this.params.role = this.user.role
-      this.params.name = this.receivedData.userName
-      this.params.timestamp = this.receivedData.timestamp + ''
-      this.$request.post('/keys/sign', this.params).then(res => {
-        if (res.code === '200') {
-          this.receivedData.signData = res.data.signData
-          this.receivedData.signKey = res.data.signKey
-
-          // 自动跳转
-          const countdownSeconds = 3;
-          let countdown = countdownSeconds;
-          const countdownInterval = setInterval(() => {
-            if (countdown > 0) {
-              this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
-              countdown--;
-            } else {
-              clearInterval(countdownInterval);
-              this.$router.push('/doctorReserve');
-            }
-          }, 1000);
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
     verifySign() {
-      this.params.role = this.user.role
-      this.params.name = this.receivedData.name
-      this.params.timestamp = this.receivedData.timestamp
-      this.params.signKey = this.receivedData.signKey
+      this.params.id = this.receivedData.id
       this.$request.post('/keys/verifySign', this.params).then(res => {
         if (res.code === '200') {
           this.receivedData.signResult = res.data.message

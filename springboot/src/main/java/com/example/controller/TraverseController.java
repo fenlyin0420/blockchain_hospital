@@ -2,15 +2,19 @@ package com.example.controller;
 
 import com.example.common.AutoLog;
 import com.example.common.enums.InhospitalEnum;
+import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.service.TraverseService;
 import com.example.common.Result;
 
 import com.github.pagehelper.PageInfo;
+
+import cn.hutool.db.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
 import java.util.List;
+
 
 
 @Slf4j
@@ -113,4 +117,12 @@ public class TraverseController {
         traverseService.deleteBatch(ids);
         return Result.success();
     }
+
+    @GetMapping("/selectPageReferralTraverse")
+    public Result selectPageReferralTraverse(@RequestParam(defaultValue = "1") Integer pageNum,
+                                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<ReferralTraverse> page = traverseService.selectPageReferralTraverse(pageNum, pageSize);
+        return Result.success(page);
+    }
+    
 }

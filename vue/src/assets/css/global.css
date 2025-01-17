@@ -9,3 +9,7 @@ body {
 a {
     text-decoration: none;
 }
+
+.el-table .cell{
+    text-align: center !important;
+}

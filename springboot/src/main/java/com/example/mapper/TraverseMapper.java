@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -24,4 +25,6 @@ public interface TraverseMapper {
     List<Traverse> selectByCanSend(Integer id);
 
     Integer selectLastInsertId();
+
+    List<ReferralTraverse> selectAlReferralTraverse();
 }

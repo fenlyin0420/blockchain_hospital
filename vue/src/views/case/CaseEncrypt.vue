@@ -5,11 +5,11 @@
     </div>
 
     <el-row :gutter="24">
-      <el-col :span="9">
+      <!-- 这里放图 -->
+      <el-col :span="9" style="display: flex; justify-content: center;">
         <el-form label-width="10px">
-          <el-form-item >
-            <!-- 这里放图 -->
-            <span class="field-label">医疗影像</span>
+          <el-form-item>
+            <span class="field-label" style="display: flex; justify-content: center;"><strong>医疗影像</strong></span>
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
@@ -23,7 +23,7 @@
           </el-form-item>
           <!-- 二维码 -->
           <el-form-item>
-            <span class="field-label">区块链存储地址</span>
+            <span class="field-label" style="display: flex; justify-content: center;"><strong>区块链存储地址</strong></span>
             <div class="image-container">
               <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
                 <div class="demo-image" @click="previewImage(url, index)">
@@ -59,6 +59,9 @@
           </el-form-item>
           <el-form-item label="存储地址" class="blue-text">
             <p style="color:blue; border:solid 1px #ebeef5; padding: 5px; overflow-x: hidden;">{{ blockHash }}</p>
+          </el-form-item>
+          <el-form-item label="加密公钥" class="blue-text">
+            <p style="color:blue; border:solid 1px #ebeef5; padding: 5px; overflow-x: scroll;">{{ user.publicKey }}</p> 
           </el-form-item>
         </el-form>
         <el-button type="primary" class="submit-button" @click="gotoSign" style="opacity:0">去签名</el-button>   <!-- 隐藏签名按钮 -->
@@ -256,6 +259,7 @@ export default {
   /* 若图片数量超出容器宽度，则自动换行 */
   gap: 10px;
   /* 图片间的间距，可根据需求调整 */
+  justify-content: center;
 }
 
 ::v-deep .el-textarea__inner {

@@ -57,9 +57,10 @@ public class ReferralRecordController {
      * @param referralRecord
      * @return
      */
-    @PutMapping("/refuseOut")
+    @PatchMapping("/refuseOut")
     public Result refuseReferralOut(@RequestBody ReferralRecord referralRecord) {
         referralRecord.setResult(ReferralEnum.REFUSED_BY_OUT_ADMIN.toString()); 
+        referralRecordService.updateById(referralRecord);
         return Result.success("已拒绝");
     }
 
