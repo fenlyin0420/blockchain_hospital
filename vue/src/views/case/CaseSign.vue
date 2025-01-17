@@ -86,15 +86,18 @@
     <div class="header" style="margin: 10px 0">
       <h2>签名数据区块链地址</h2>
     </div>
-    <el-table :data="blockInfo" border style="width: 100%;" >
+    
+      <img :src="blockInfo[0].QR" width="150px" height="150px" style="display: inline-block;">
+      <p style="color: blue; padding: 20px; border-radius: 5px; border: 2px solid rgb(235, 238, 245); font-size: 20px; display:inline-block; margin-left: 50px; position:relative;bottom:55px"> {{ blockInfo[0].blockHash }}</p>
+    <!-- <el-table :data="blockInfo" border style="width: 100%;" >
       <el-table-column prop="QR" align="center" label=" 二维码" width="180">
         <template slot-scope="scope">
-          <img :src="scope.row.QR" width="100px" height="100px">
+          <img :src="scope.row.QR" width="150px" height="150px">
         </template>
       </el-table-column>
       <el-table-column prop="blockHash" align="center" label="区块链存储地址">
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
     <div class="header" style="margin: 10px 0">
       <h2>环公钥组成信息</h2>

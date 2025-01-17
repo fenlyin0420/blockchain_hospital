@@ -47,8 +47,6 @@ public class ReferralRecordService {
 
 
     public void updateById(ReferralRecord referralRecord) {
-        referralRecord.setInTime(DateUtil.now());
-        
         referralRecordMapper.updateById(referralRecord);
     }
 

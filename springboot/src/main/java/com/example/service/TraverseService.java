@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.exception.CustomException;
 import com.example.mapper.TraverseMapper;
@@ -10,6 +11,8 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
+
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +32,7 @@ public class TraverseService {
     public PageInfo<Traverse> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Traverse> list = traverseMapper.selectAll(traverse);
-        //log.info("list:{}",list);
+        Collections.reverse(list);
         return PageInfo.of(list);
     }
 
@@ -86,5 +89,11 @@ public class TraverseService {
         for(Integer id : ids){
             traverseMapper.deleteById(id);
         }
+    }
+
+    public PageInfo<ReferralTraverse> selectPageReferralTraverse(Integer pageNum, Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<ReferralTraverse> list = traverseMapper.selectAlReferralTraverse();
+        return PageInfo.of(list);
     }
 }

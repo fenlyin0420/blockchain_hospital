@@ -117,4 +117,8 @@
     <select id="selectLastInsertId" resultType="java.lang.Integer">
         select last_insert_id()
     </select>
+
+    <select id="selectAlReferralTraverse" resultType="com.example.entity.ReferralTraverse">
+        select * from referral_traverse
+    </select>
 </mapper>
