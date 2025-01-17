@@ -73,6 +73,7 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
+    handleSelectionChange(){ }, //批量
   }
 }
 </script>

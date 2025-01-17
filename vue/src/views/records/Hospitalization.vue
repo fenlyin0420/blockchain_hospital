@@ -8,15 +8,15 @@
 
         <div class="table">
             <el-table :data="tableData" stripe>
-                <el-table-column prop="userDate" label="就诊日期" width="200" align="center"
+                <el-table-column prop="treatmentDate" label="就诊日期" width="200" align="center"
                     show-overflow-tooltip></el-table-column>
-                <el-table-column prop="name" label="姓名" v-if="user.role === 'DOCTOR'" width="200" align="center"
+                <el-table-column prop="userName" label="姓名" v-if="user.role === 'DOCTOR'" width="200" align="center"
                     show-overflow-tooltip></el-table-column>
                 <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="150"
                     align="center"></el-table-column>
                 <el-table-column prop="hospitalName" label="医院名称" v-if="user.role === 'USER'" width="200"
                     align="center"></el-table-column>
-                <el-table-column prop="inhospital" label="住院情况" width="200" align="center"></el-table-column>
+                <el-table-column prop="inHospital" label="住院情况" width="200" align="center"></el-table-column>
                 <el-table-column label="详情" align="center">
                     <template v-slot="scope">
                         <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
@@ -52,22 +52,41 @@ export default {
             formVisible: false,
             form: {
                 number: '',
-                name: '',
+                userName: '',
                 doctorName: '',
                 hospitalName: '',
                 jurisdiction: ''
             },
             user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+            currentDate: '', //当前日期
         }
     },
     created() {
-        this.load(1)
+        this.load(1);  //获取当前日期
+        this.getCurrentDate();
     },
     methods: {
+        //获取当前日期
+        getCurrentDate() {    
+            const date = new Date();
+            const year = date.getFullYear().toString(); // 获取年份
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 获取月份，加1是因为getMonth()返回的月份是从0开始的
+            const day = date.getDate().toString().padStart(2, '0'); // 获取日期
+            this.currentDate = `${year}-${month}-${day}`;
+        },
         update(row) {
             let caseData = JSON.parse(JSON.stringify(row));
-            console.log(caseData);
-            this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseData))}`)
+            let caseInfo = {
+            userId: caseData?.userId,
+            userName: caseData?.userName,
+            doctorName: caseData?.doctorName,
+            hospitalId: caseData?.hospitalId,
+            hospitalName: caseData?.hospitalName,
+            departmentName: caseData?.departmentName,
+            time: this.currentDate,
+          }
+            this.$router.push({name: "Case", query: caseInfo})
+            this.$message.success('住院开药')
         },
         load(pageNum) {
             if (pageNum) this.pageNum = pageNum
@@ -75,15 +94,13 @@ export default {
                 params: {
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    name: this.user.role === 'DOCTOR' ? '' : this.user.name,
-                    id: this.id,
+                    doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
+                    userId: this.user.role === 'USER' ? this.user.id : null,
+                    id:this.id, //病历Id，用于查询
                 }
             }).then(res => {
                 this.tableData = res.data?.list
-                for (let i = 0; i < this.tableData.length; i++) {
-                    this.tableData[i].userDate = this.tableData[i].userDate?.split('T')[0]
-                }
-                this.tableData = this.tableData.filter(item => item.inhospital === "住院中"); // 只保留 "住院中" 的记录
+                this.tableData = this.tableData.filter(item => item.inHospital === "已住院"); 
                 this.total = res.data?.total
             })
         },
@@ -96,10 +113,8 @@ export default {
         },
         goToCaseDetails(row) {
             this.$router.push({
-                name: 'CaseDetails',
-                params: {
-                    inform: row
-                }
+                name: 'CaseDetail',
+                query: row
             });
         },
     }

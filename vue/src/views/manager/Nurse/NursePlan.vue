@@ -183,7 +183,6 @@ export default {
       let id = this.user.hospitalId; // 各医院管理员只能管理自己医院的排班，所以是selectByHospitalId
       this.$request.get("/nurse/selectByH/" + id).then((res) => {
         if (res.code === "200") {
-          console.log(res.data);
           this.nurseData = res.data;
         } else {
           this.$message.error(res.msg);
@@ -283,7 +282,6 @@ export default {
           .then((res) => {
             this.tableData = res.data?.list;
             this.total = res.data?.total;
-            console.log("888",this.tableData);
           });
     },
     reset() {

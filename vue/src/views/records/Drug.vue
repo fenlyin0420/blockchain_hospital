@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <el-dialog title="药品添加" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
+    <el-dialog title="药品添加" :visible.sync="formVisible" width="60%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="drugNumber" label="生产批号">
           <el-input v-model="form.drugNumber" autocomplete="off" placeholder="请输入生产批号"></el-input>

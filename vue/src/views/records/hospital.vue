@@ -34,7 +34,7 @@
     </div>
 
 
-    <el-dialog title="医院添加" :visible.sync="fromVisible" width="60%" :close-on-click-modal="false" destroy-on-close @close="cancel">
+    <el-dialog title="医院添加" :visible.sync="fromVisible" width="60%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="num" label="医院名称">
           <el-input v-model="form.hospitalName" autocomplete="off" placeholder="请输入医院名称"></el-input>
@@ -67,7 +67,7 @@ export default {
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
-        inhospital: [
+        inHospital: [
           {required: true, message: '请选择是否住院', trigger: 'blur'},
         ],
       },
@@ -133,6 +133,7 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
+    handleSelectionChange(){ }, //批量
   }
 }
 </script>

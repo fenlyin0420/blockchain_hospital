@@ -4,10 +4,10 @@
     <update id="updateById" parameterType="com.example.entity.Traverse">
         update traverse
         <set>
-            <if test="wardId != null">
-                ward_id = #{wardId},
+            <if test="bedId != null">
+                bed_id = #{bedId},
             </if>
-            inhospital = #{inhospital},
+            in_hospital = #{inHospital},
             <if test="careStatus != null">
                 care_status = #{careStatus},
             </if>
@@ -15,14 +15,20 @@
         where id = #{id}
     </update>
 
-    <!--    <select id="selectAll" resultType="com.example.entity.Traverse">-->
-<!--        select * form traverse-->
+    <update id="updateBedById" parameterType="com.example.entity.Bed">
+        update bed
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
-<!--    </select>-->
     <select id="selectAllTraverse" resultType="com.example.entity.Traverse">
-        select traverse.*, doctor.name as doctorName,user.name as userName ,ward.name as wardName
+        select traverse.*, doctor.name as doctorName,user.name as userName
         from traverse
-        left join ward on traverse.ward_id = ward.id
+        left join bed on traverse.bed_id = bed.id
         left join doctor on traverse.doctor_id = doctor.id
         left join user on traverse.user_id = user.id
         <where>
@@ -31,16 +37,36 @@
         </where>
     </select>
 
-    <select id="selectAllWard" resultType="com.example.entity.Ward">
-        select *
-        from ward
+    <select id="selectBedPage" resultType="com.example.entity.Bed">
+        select bed.*,ward.name as wardName,ward.img as wardImg
+        from bed
+        left join ward on bed.ward_id = ward.id
         <where>
-            <if test="id != null">and id= #{id}</if>
-            <if test="name != null">and name= #{name}</if>
-            <if test="price != null">and price= #{price}</if>
-            <if test="img != null">and img= #{img}</if>
-            <if test="description != null">and description = #{description}</if>
-            <if test="remain != null">and remain= #{remain}</if>
+            <if test="wardName != null">and ward.name=#{wardName}</if>
         </where>
     </select>
+
+    <select id="selectBedAll" resultType="com.example.entity.Bed">
+        select bed.*,ward.name as wardName
+        from bed
+        left join ward on bed.ward_id = ward.id
+    </select>
+
+    <!--    <select id="selectAll" resultType="com.example.entity.Traverse">-->
+<!--        select * form traverse-->
+<!--    </select>-->
+
+<!--    <select id="selectAllWard" resultType="com.example.entity.Ward">-->
+<!--        select *-->
+<!--        from ward-->
+<!--        <where>-->
+<!--            <if test="id != null">and id= #{id}</if>-->
+<!--            <if test="name != null">and name= #{name}</if>-->
+<!--            <if test="price != null">and price= #{price}</if>-->
+<!--            <if test="img != null">and img= #{img}</if>-->
+<!--            <if test="description != null">and description = #{description}</if>-->
+<!--            <if test="remain != null">and remain= #{remain}</if>-->
+<!--        </where>-->
+<!--    </select>-->
+
 </mapper>

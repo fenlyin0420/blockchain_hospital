@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.entity.Bed;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
 import com.example.mapper.BedsMapper;
@@ -15,19 +16,28 @@ public class BedsService {
     @Resource
     private BedsMapper bedsMapper;
 
-    public PageInfo<Traverse> selectPage1(Traverse traverse, Integer pageNum, Integer pageSize) {
+    public PageInfo<Traverse> selectTraversePage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Traverse> list = bedsMapper.selectAllTraverse(traverse);
         return PageInfo.of(list);
     }
 
-    public PageInfo<Ward> selectPage(Ward ward, Integer pageNum, Integer pageSize) {
+    public void updateById(Traverse traverse) {
+        bedsMapper.updateById(traverse);
+    }
+
+    public PageInfo<Bed> selectBedPage(Bed bed, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Ward> list = bedsMapper.selectAllWard(ward);
+        List<Bed> list = bedsMapper.selectBedPage(bed);
         return PageInfo.of(list);
     }
 
-    public void updateById(Traverse traverse) {
-        bedsMapper.updateById(traverse);
+    public List<Bed> selectBedAll(Bed bed) {
+
+        return bedsMapper.selectBedAll(bed);
+    }
+
+    public void updateBedById(Bed bed) {
+        bedsMapper.updateBedById(bed);
     }
 }

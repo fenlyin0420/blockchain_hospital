@@ -51,7 +51,6 @@
           .then((res) => {
             this.tableData = res.data?.list || []; // 将排班数据存储到 tableData 中
             this.total = res.data?.total || 0; // 更新总记录数
-            console.log("Loaded data:", this.tableData); // 输出加载的数据，调试用
           });
       },
       /**

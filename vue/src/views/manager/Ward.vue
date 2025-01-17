@@ -4,13 +4,13 @@
       <el-input placeholder="请输入病房名称查询" style="width: 200px" v-model="name"></el-input>
       <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
-      <el-button type="success" style="margin-left: 10px" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+      <el-button type="success" v-if="user.role === 'ADMIN'" style="margin-left: 10px" plain @click="handleAdd">新增</el-button>
+      <el-button type="danger" v-if="user.role === 'ADMIN'" plain @click="delBatch">批量删除</el-button>
     </div>
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" v-if="user.role === 'ADMIN'"  width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column label="图片">
           <template v-slot="scope">
@@ -27,7 +27,7 @@
         <el-table-column prop="name" label="病房名称"></el-table-column>
         <el-table-column prop="description" label="病房介绍"></el-table-column>
         <el-table-column prop="price" label="价格"></el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="操作" align="center" v-if="user.role === 'ADMIN'"  width="180">
           <template v-slot="scope">
             <el-button type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
             <el-button type="danger" plain @click="del(scope.row.id)">删除</el-button>
@@ -35,7 +35,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="paginat ion">
+      <div class="pagination">
         <el-pagination
             background
             @current-change="handleCurrentChange"
@@ -174,7 +174,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          username: this.username,
+          name: this.name,
         }
       }).then(res => {
         this.tableData = res.data?.list
@@ -182,7 +182,7 @@ export default {
       })
     },
     reset() {
-      this.username = null
+      this.name = null
       this.load(1)
     },
     handleCurrentChange(pageNum) {
