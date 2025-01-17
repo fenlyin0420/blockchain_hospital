@@ -283,6 +283,7 @@ export default {
           .then((res) => {
             this.tableData = res.data?.list;
             this.total = res.data?.total;
+            console.log("888",this.tableData);
           });
     },
     reset() {

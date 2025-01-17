@@ -1,23 +1,23 @@
 <template>
   <div>
-    <!-- 选择病房-->
-    <el-select v-model="week" style="width: 300px" placeholder="请选择病房号">
-      <el-option label="重症监护室" value="重症监护室"></el-option>
-      <el-option label="A号房" value="A号房"></el-option>
-      <el-option label="B号房" value="B号房"></el-option>
-      <el-option label="C号房" value="C号房"></el-option>
-    </el-select>
+    <div class="search">
+      <!-- 选择病房-->
+      <el-select v-model="week" style="width: 300px" placeholder="请选择病房号">
+        <el-option label="重症监护室" value="重症监护室"></el-option>
+        <el-option label="A号房" value="A号房"></el-option>
+        <el-option label="B号房" value="B号房"></el-option>
+        <el-option label="C号房" value="C号房"></el-option>
+      </el-select>
 
-    <!--  输入姓名   -->
-    <el-input v-model="input" style="width: 300px; margin-left: 10px" placeholder="请输入姓名"></el-input>
-
-    <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
-    <el-button type="success" plain style="margin-left: 10px" @click="reset">重置</el-button>
-
+      <!--  输入姓名   -->
+      <el-input v-model="input" style="width: 300px; margin-left: 10px" placeholder="请输入姓名"></el-input>
+      <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
+      <el-button type="success" plain style="margin-left: 10px" @click="reset">重置</el-button>
+    </div>
     <div class="table" style="margin-top: 15px">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
         <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
