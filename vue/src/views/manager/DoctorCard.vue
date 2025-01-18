@@ -67,7 +67,7 @@
             </div>
 
             <el-dialog title="确认订单" :visible.sync="dialogVisible" width="62%">
-              <Payment :form="dialogDate"></Payment>
+              <Payment :form="dialogDate" @condition-changed="handleConditionChanged"></Payment>
 
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>
@@ -97,7 +97,7 @@ export default {
   name: "Doctor",
   data() {
     return {
-      /** API: /doctor/selectpage2 */
+      /** API: /doctor/selectPage2 */
       tableData: [],
       /** API: /plan/selectAll */
       planList: [],
@@ -135,6 +135,7 @@ export default {
        * }
        */
       timestamp: [],
+      illnessDetail: '',
       clickedItem: null
     };
   },
@@ -188,6 +189,7 @@ export default {
         userId: this.user.id,
         doctorId: item.id,
         hospitalId: item.hospitalId,
+        illnessDetail: this.illnessDetail,
         time: item.selectedDate,
       };
       let planBody = {
@@ -310,6 +312,10 @@ export default {
             this.$message.error(res.msg);
           }
         });
+    },
+    handleConditionChanged(newCondition) {
+      // 处理病情描述数据,对话框回传
+      this.illnessDetail = newCondition;
     },
     reset() {
       this.departmentId = this.departmentList[0]?.id;
