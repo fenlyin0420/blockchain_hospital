@@ -84,18 +84,18 @@
     </delete>
 
     <select id="selectAll" resultType="com.example.entity.Traverse">
-        select traverse.*, hospital.hospital_name as hospitalName, doctor.name as doctorName, user.name as userName, ward.name as wardName
+        select traverse.*, hospital.hospital_name as hospitalName, doctor.name as doctorName, user.name as userName, bed.bed_name as bedName
         from traverse
         left join hospital on hospital.id = traverse.hospital_id
         left join doctor on doctor.id = traverse.doctor_id
         left join user on user.id = traverse.user_id
-        left join ward on ward.id = traverse.ward_id
+        left join bed on bed.id = traverse.bed_id
         <where>
             <if test="id != null">and traverse.id = #{id}</if>
             <if test="userId != null">and traverse.user_id = #{userId}</if>
             <if test="doctorId!= null">and doctor_id = #{doctorId}</if>
             <if test="hospitalId!= null">and traverse.hospital_id = #{hospitalId}</if>
-            <if test="wardId != null"> and traverse.ward_id = #{wardId}</if>
+            <if test="bedId != null"> and traverse.bed_id = #{bed}</if>
             <if test="drug!= null">and drug like concat('%', #{drug}, '%')</if>
             <if test="userName != null"> and user.name like concat('%', #{userName}, '%')</if>
         </where>

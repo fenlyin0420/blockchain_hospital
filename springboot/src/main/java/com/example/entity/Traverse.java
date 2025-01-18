@@ -31,8 +31,8 @@ public class Traverse {
     private String inHospital;
     @Sign
     private String careStatus;
-    /** 病房id */
-    private Integer wardId;
+    /** 病床id */
+    private Integer bedId;
     /** 时间戳 */
     private String timestamp;
     /** 签名数据 */
@@ -53,7 +53,8 @@ public class Traverse {
     private String userName;
     private String doctorName; 
     private String hospitalName; 
-    private String wardName; 
+    private String bedName;
+    private String wardName;
 
     public String signData(){
         StringBuilder result = new StringBuilder();

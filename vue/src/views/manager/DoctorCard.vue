@@ -16,23 +16,13 @@
       <!-- 选择科室 -->
       <label for="departmentSelect">科室:</label>
       <el-select id="departmentSelect" placeholder="请选择科室" v-model="departmentId" @change="query()">
-        <el-option
-          v-for="item in departmentList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        ></el-option>
+        <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
 
       <!-- 选择日期 -->
       <label for="selectedDate">日期:</label>
       <el-select id="selectedDate" placeholder="请选择日期" v-model="selectedDate" @change="query()">
-        <el-option
-          v-for="item in timestamp"
-          :key="item.id"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
+        <el-option v-for="item in timestamp" :key="item.id" :label="item.label" :value="item.value"></el-option>
       </el-select>
 
     </div>
@@ -42,11 +32,7 @@
       <el-row :gutter="24">
         <el-col :span="8" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
-            <img
-              :src="item.avatar"
-              alt=""
-              style="width: 50px; height: 50px; border-radius: 50%"
-            />
+            <img :src="item.avatar" alt="" style="width: 50px; height: 50px; border-radius: 50%" />
             <!-- <div style="font-weight: 550; margin-top: 10px">
               医院
               <span style="color: #383535; margin-left: 5px; font-weight: 500">{{
@@ -55,12 +41,10 @@
             </div> -->
             <div style="font-weight: 550; margin-top: 10px">
               {{ item.name }}
-              <span style="color: #383535; margin-left: 5px; font-weight: 500">{{
-                item.departmentName
-              }}</span>
+              <span style="color: #383535; margin-left: 5px; font-weight: 500">
+                {{ item.departmentName }}</span>
             </div>
-            <div
-              style="
+            <div style="
                 margin-top: 20px;
                 color: #353523;
                 padding: 0 10px;
@@ -70,24 +54,16 @@
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 4;
-              "
-            >
+              ">
               简介：{{ item.description }}
             </div>
             <div style="margin-top: 15px">
-              挂号费：<span style="color: red; font-weight: 550; margin-right: 20px"
-                >￥{{ item.price }}</span
-              >
+              挂号费：<span style="color: red; font-weight: 550; margin-right: 20px">￥{{ item.price }}</span>
               剩余：{{ item.num }}
             </div>
             <!-- 挂号按钮 -->
             <div style="margin-top: 15px">
-              <el-button
-                type="primary"
-                size="mini"
-                :disabled="disabled"
-                @click="showDialog(item)"
-                >挂号</el-button>
+              <el-button type="primary" size="mini" :disabled="disabled" @click="showDialog(item)">挂号</el-button>
             </div>
 
             <el-dialog title="确认订单" :visible.sync="dialogVisible" width="62%">
@@ -104,15 +80,8 @@
 
       <!-- 选择分页区 -->
       <div class="pagination">
-        <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[5, 10, 20]"
-          :page-size="pageSize"
-          layout="total, prev, pager, next"
-          :total="total"
-        >
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>
@@ -369,13 +338,13 @@ export default {
 }
 
 ::v-deep .el-dialog {
-    position: relative;
-    margin: 0px auto 50px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
-    box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
-    box-sizing: border-box;
-    width: 40%;
+  position: relative;
+  margin: 0px auto 50px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
+  box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
+  box-sizing: border-box;
+  width: 40%;
 }
 </style>

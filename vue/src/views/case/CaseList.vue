@@ -44,6 +44,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: null,
+      id: null, //病历Id，用于查询
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
     }
   },
@@ -59,11 +60,11 @@ export default {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
-          userId: this.user.role === 'USER' ? this.user.id : null
+          userId: this.user.role === 'USER' ? this.user.id : null,
+          id:this.id, //病历Id，用于查询
         }
       }).then(res => {
         this.tableData = res.data?.list
-        console.log("tabel", this.tableData)
         this.total = res.data?.total
       })
     },
@@ -72,7 +73,7 @@ export default {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const day = date.getDate().toString().padStart(2, '0');
-      // 根据您的需要，这里可以是其他格式，例如 YYYY-MM-DD 等
+      // 根据需要，这里可以是其他格式，例如 YYYY-MM-DD 等
       return `${year}-${month}-${day}`;
     },
     reset() {
