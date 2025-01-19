@@ -85,7 +85,7 @@ export default {
       previewImageUrl: '', // 预览图片URL  
       previewImageIndex: -1, // 预览图片索引 
       /** 区块链存储地址 */
-      blockHash: 'NULL', 
+      transactionHash: 'NULL', 
       QR: ''
     };
   },
@@ -146,8 +146,8 @@ export default {
       }
     }, 
     upChain() {
-      if (true){
-        this.blockHash = 'BHkqLP8LiF+G2K1qRJm18f71xQJLqtL9BA0qEt9PBOS4JIZCBCPBLSrODGShog3BoEgfWs62bP'
+      if (false){
+        this.transactionHash = 'BHkqLP8LiF+G2K1qRJm18f71xQJLqtL9BA0qEt9PBOS4JIZCBCPBLSrODGShog3BoEgfWs62bP'
         this.$request.get('/files/generateQR', {
           params: {
             seed: this.blockHash
@@ -169,18 +169,13 @@ export default {
             baseURL: 'http://localhost:8088', // 区块链管理平台的 baseURL
             timeout: 50000 
           });
-      Request.post('/caseRecordSystem/addCase', traverse).then(res => {
+      Request.post('/storeMedicalRecord', traverse).then(res => {
         if (res.code === '200'){
-          console.log(res.data)
-          this.blockHash = res.data.data.transactionReceipt.blockHash
+          this.transactionHash = res.data.transactionReceipt.transactionHash
           this.QR = 'http://localhost:8090/files/QRtest.png'
         } else {
           this.$message.error("上传区块链失败 :(")
           console.log(res)
-          // Promise失败，但是可以接收到数据
-          // 等待研究。。。
-          this.blockHash = res.data.data.transactionReceipt.blockHash
-          this.QR = 'http://localhost:8090/files/QRtest.png'
         }
       })
     },

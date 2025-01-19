@@ -13,7 +13,10 @@ import cn.hutool.db.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
+
+import java.sql.Ref;
 import java.util.List;
+
 
 
 
@@ -118,11 +121,23 @@ public class TraverseController {
         return Result.success();
     }
 
+    /**
+     * 获取所有转诊后的病历
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/selectPageReferralTraverse")
     public Result selectPageReferralTraverse(@RequestParam(defaultValue = "1") Integer pageNum,
                                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<ReferralTraverse> page = traverseService.selectPageReferralTraverse(pageNum, pageSize);
         return Result.success(page);
+    }
+
+    @PutMapping("/insertReferralTraverse")
+    public Result insertReferralTraverse(ReferralTraverse entity) {
+        traverseService.insertReferralTraverse(entity); 
+        return Result.success("插入数据成功");
     }
     
 }

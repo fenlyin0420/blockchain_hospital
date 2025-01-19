@@ -96,4 +96,8 @@ public class TraverseService {
         List<ReferralTraverse> list = traverseMapper.selectAlReferralTraverse();
         return PageInfo.of(list);
     }
+
+    public void insertReferralTraverse(ReferralTraverse entity) {
+        traverseMapper.insertReferralTraverse(entity);
+    }
 }

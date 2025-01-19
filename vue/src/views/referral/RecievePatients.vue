@@ -12,15 +12,17 @@
     <div class="table">
       <el-table :data="tableData" stripe>
         <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'" align="center"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center"show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center"
+          show-overflow-tooltip></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"
+          show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室" align="center"></el-table-column>
         <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
         <el-table-column prop="status" label="挂号状态" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="warning" style="color: blue;" size="mini" v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
-              @click=call(scope.row)>接诊</el-button>
+            <el-button plain type="warning" style="color: blue;" size="mini" @click=call(scope.row)
+              :disabled="user.role !== 'DOCTOR'">接诊</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -114,12 +116,14 @@ export default {
       }).then(res => {
         this.tableData = res.data?.list
         this.total = res.data?.total
-        console.log(this.tableData)
       })
     },
     reset() {
       this.status = null
       this.load(1)
+    },
+    disable() {
+      return !this.user.role === 'DOCTOR';
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
@@ -128,6 +132,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
