@@ -31,8 +31,8 @@ public class Traverse {
     private String inHospital;
     @Sign
     private String careStatus;
-    /** 病房id */
-    private Integer wardId;
+    /** 病床id */
+    private Integer bedId;
     /** 时间戳 */
     private String timestamp;
     /** 签名数据 */
@@ -53,7 +53,8 @@ public class Traverse {
     private String userName;
     private String doctorName; 
     private String hospitalName; 
-    private String wardName; 
+    private String bedName;
+    private String wardName;
 
     public String signData(){
         StringBuilder result = new StringBuilder();
@@ -64,8 +65,10 @@ public class Traverse {
             if (field.isAnnotationPresent(Sign.class)) {
                 field.setAccessible(true);
                 try {
+                    // 检查 value 是否为 null
                     Object value = field.get(this);
-                    concatenatedParts.add(field.getName() + ":" + value.toString());
+                    String valueStr = (value != null) ? value.toString() : "";
+                    concatenatedParts.add(field.getName() + ":" + valueStr);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

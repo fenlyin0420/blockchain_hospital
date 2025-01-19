@@ -2,7 +2,7 @@
   <div>
     <div class="search">
       <!-- 选择病房-->
-      <el-select v-model="week" style="width: 300px" placeholder="请选择病房号">
+      <el-select v-model="wardName" style="width: 300px" placeholder="请选择病房号">
         <el-option label="重症监护室" value="重症监护室"></el-option>
         <el-option label="A号房" value="A号房"></el-option>
         <el-option label="B号房" value="B号房"></el-option>
@@ -18,9 +18,13 @@
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
         <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-        <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
+        <el-table-column label="病床号" align="center">
+          <template v-slot="scope">
+            {{ scope.row.wardName }}-{{ scope.row.bedName }}
+          </template>
+        </el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="advice" label="病历详细" show-overflow-tooltip align="center"></el-table-column>
       </el-table>
     </div>
 
@@ -36,6 +40,7 @@ export default {
     return {
       input: '',
       tableData: [],
+      wardName: null,  //用于查询
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
     }
   },
@@ -53,7 +58,10 @@ export default {
         }
       })
     },
+    reset() {
 
+    },
+    handleSelectionChange() { },
   }
 }
 </script>

@@ -18,9 +18,13 @@
     <div class="table" style="margin-top: 15px">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-        <el-table-column prop="wardName" label="病房号" align="center"></el-table-column>
+        <el-table-column label="病床号" align="center">
+          <template v-slot="scope">
+            {{ scope.row.wardName }}-{{ scope.row.bedName }}
+          </template>
+        </el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="advice" label="医嘱" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="advice" label="病情详细" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
@@ -51,7 +55,7 @@ export default {
     this.load(); //查询病例
   },
   methods: {
-    load(){
+    load() {
       let id = this.user.hospitalId
       this.$request.get('/DailyCare/SearchByHId/' + id).then(res => {
         if (res.code === '200') {
@@ -61,7 +65,7 @@ export default {
         }
       })
     },
-    submit(row){
+    submit(row) {
       let caseData = JSON.parse(JSON.stringify(row));
       caseData.careStatus = '已护理'
       console.log(caseData);
@@ -72,16 +76,14 @@ export default {
         }
       })
     },
-    reset(){
+    reset() {
 
     },
-    handleSelectionChange(){},
+    handleSelectionChange() { },
 
   }
 }
 </script>
 
 
-<style scoped>
-
-</style>
+<style scoped></style>

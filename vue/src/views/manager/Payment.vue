@@ -59,7 +59,18 @@ export default {
   created() {
   },
   methods: {
+    emitCondition() {
+      this.$emit('condition-changed', this.condition);
+    }
   },
+  watch: {
+    condition: {
+      handler() {
+        this.emitCondition();
+      },
+      immediate: true
+    }
+  }
 }
 </script>
 
