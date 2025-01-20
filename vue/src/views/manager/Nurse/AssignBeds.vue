@@ -226,11 +226,11 @@ export default {
     // 根据wardName返回不同的背景颜色
     switch (wardName) {
       case '重症监护室':
-        return '#FFD0CC';
+        return '#ffe9e5';
       case '病房A':
-        return '#FFFACB';
+        return '#fffee6';
       case '病房B':
-        return '#D2FFD4';
+        return '#e6ffe9';
       case '病房C':
         return '#f0ecf8';
       default:
