@@ -15,64 +15,140 @@
       <el-button type="primary" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="success" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
-    <div class="table" style="margin-top: 15px">
-      <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-        <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-        <el-table-column label="病床号" align="center">
-          <template v-slot="scope">
-            {{ scope.row.wardName }}-{{ scope.row.bedName }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="advice" label="病情详细" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template v-slot="scope">
-            <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"
-              @click=submit(scope.row)>护理</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
 
+    <div class="tables-container" style="display: flex; justify-content: space-between; width: 100%;">
+      <div class="table" style="width: 70%; margin-right: 10px;">
+        <el-row :gutter="24">
+          <el-col :span="8" v-for="item in BedData" :key="item.id">
+            <div :style="{ textAlign: 'center', backgroundColor: getBackgroundColor(item.wardName) }" class="card">
+              <div class="value">{{ item.wardName }}</div>
+              <div class="value">{{ item.bedName }}</div>
+              <div class="value">{{ item.status }}</div>
+              <!-- <div v-for="item2 in tableData" :key="item2.id">
+                <div class="value" v-if="item.status === item2.userName">
+                  {{ item2.advice }}
+                </div>
+              </div>
+              <div class="value" v-if="item.status === '空'">
+                {{ "当日医嘱" }}
+              </div> -->
+              <div style="margin-top: 15px">
+                <el-button type="danger" size="mini" :disabled="disabled(item.status)"
+                  @click="submit(item.status)">护理</el-button>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+        <div class="pagination">
+          <el-pagination background @current-change="handleCurrentChangeBed" :current-page="pageNumBed"
+            :page-sizes="[5, 10, 20]" :page-size="pageSizeBed" layout="total, prev, pager, next" :total="totalBed">
+          </el-pagination>
+        </div>
+      </div>
+
+      <div class="table" style="width: 30%;">
+        <div class="table" style="margin-top: 15px">
+          <el-table :data="tableData" strip @selection-change="handleSelectionChange">
+            <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+            <!-- <el-table-column label="病床号" align="center">
+              <template v-slot="scope">
+                {{ scope.row.wardName }}-{{ scope.row.bedName }}
+              </template>
+            </el-table-column> -->
+            <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
+            <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
+            <!-- <el-table-column label="操作" width="180" align="center">
+              <template v-slot="scope">
+                <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"
+                  @click=submit(scope.row)>护理</el-button>
+              </template>
+            </el-table-column> -->
+          </el-table>
+          <div class="pagination">
+            <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+              :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+            </el-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import request from "@/utils/request";
 
 export default {
   name: "DailyCare",
   data() {
     return {
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
+      pageNumBed: 1,
+      pageSizeBed: 9,
+      totalBed: 0,
       wardId: null,
       input: '',
       tableData: [],
+      BedData:[],
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
     }
   },
   created() {
-    this.load(); //查询病例
+    this.load(1); //查询病例
+    this.loadBed(1);//查询床位
   },
   methods: {
-    load() {
-      let id = this.user.hospitalId
-      this.$request.get('/DailyCare/SearchByHId/' + id).then(res => {
-        if (res.code === '200') {
-          this.tableData = res.data
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
+    load(pageNum) {
+      if (pageNum) this.pageNum = pageNum;
+      // 获取系统当前日期（格式化为 YYYY-MM-DD）
+      const currentDate = new Date().toISOString().slice(0, 10);
+      this.$request.get('/DailyCare/selectPage',
+        {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            hospitalId: this.user.hospitalId
+          }
+        },).then(res => {
+          if (res.code === '200') {
+            this.tableData = res.data?.list.filter(item => {
+              return item.treatmentDate === currentDate;
+            });
+            this.total = res.data?.total;
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
     },
-    submit(row) {
-      let caseData = JSON.parse(JSON.stringify(row));
-      caseData.careStatus = '已护理'
-      console.log(caseData);
+    loadBed(pageNumBed){
+      if (pageNumBed) this.pageNumBed = pageNumBed;
+      this.$request.get('/AssignBeds/selectBedPage', {
+        params: {
+          pageNum: this.pageNumBed,
+          pageSize: this.pageSizeBed,
+          wardName: this.wardName,
+        },
+      }).then(res => {
+        let Data = res.data?.list;
+        this.BedData = Data.map(item => {
+          if (item.status === '') {
+            item.status = item.status === '' ? '空' : item.status;
+          }
+          return item;
+        });
+        this.totalBed = res.data?.total;
+      });
+    },
+    submit(status) {
+      let Data = this.tableData.filter(item =>item.userName === status) //找出床位对应的患者
+      let caseData = Data[0];
+      caseData.careStatus = '已护理';
       this.$request.put('/DailyCare/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('护理完毕')
-          this.load();
+          this.load(1);
         }
       })
     },
@@ -80,10 +156,64 @@ export default {
 
     },
     handleSelectionChange() { },
-
+    handleCurrentChange(pageNum) {
+      this.load(pageNum)
+    },
+    handleCurrentChangeBed(pageNumBed) {
+      this.loadBed(pageNumBed)
+    },
+    disabled(status){  //是否禁用按钮
+      if(status==='空'){
+        return true;
+      }
+      // 将 tableData 中的 userName 提取到一个 Map 中
+      const userNames = this.tableData.map(item => item.userName);
+      if(userNames.length === 0 || !userNames.includes(status)){
+        return true;
+      }
+      // 遍历 tableData 查找匹配的 userName
+      for (const item of this.tableData) {
+        if (item.userName === status) {
+          if(item.careStatus === '已护理'){
+            return true;
+          }
+        }
+      }
+      return false;
+    }, 
+    getBackgroundColor(wardName) {
+      // 根据wardName返回不同的背景颜色
+      switch (wardName) {
+        case '重症监护室':
+          return '#ffe9e5';
+        case '病房A':
+          return '#fffee6';
+        case '病房B':
+          return '#e6ffe9';
+        case '病房C':
+          return '#f0ecf8';
+        default:
+          return '#ffffff';
+      }
+    }
   }
 }
 </script>
 
 
-<style scoped></style>
+<style scoped>
+.tables-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+::v-deep .card {
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.value {
+  margin-bottom: 2px;
+  font-size: 16px;
+}
+</style>

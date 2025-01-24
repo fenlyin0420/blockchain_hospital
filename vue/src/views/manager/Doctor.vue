@@ -25,10 +25,10 @@
         <el-table-column prop="description" label="医生介绍" show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室"></el-table-column>
         <el-table-column prop="price" label="挂号费"></el-table-column>
-        <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
+        <!-- <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column> -->
+        <!-- <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column> -->
         <!-- <el-table-column prop="role" label="角色"></el-table-column> -->
-        <el-table-column prop="time" label="入职时间"></el-table-column>
+        <!-- <el-table-column prop="time" label="入职时间"></el-table-column> -->
         <el-table-column prop="position" label="职位"></el-table-column>
         <!-- <el-table-column prop="hospitalName" label="医院"></el-table-column> -->
         <el-table-column label="操作" align="center" width="180">

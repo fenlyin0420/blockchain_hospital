@@ -153,7 +153,6 @@ export default {
     handleAssign(row) {   // 新增数据（bed_id == null 的新增一个bed_id）
       this.form = JSON.parse(JSON.stringify(row)); 
       this.form.inHospital = '已住院';
-      this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
     save() { // 分配病房

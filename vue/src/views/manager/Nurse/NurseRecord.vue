@@ -26,8 +26,12 @@
         <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="advice" label="病历详细" show-overflow-tooltip align="center"></el-table-column>
       </el-table>
+      <div class="pagination">
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+        </el-pagination>
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -38,6 +42,9 @@ export default {
   name: "NurseRecord",
   data() {
     return {
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
       input: '',
       tableData: [],
       wardName: null,  //用于查询
@@ -48,15 +55,26 @@ export default {
     this.load(); //查询病例
   },
   methods: {
-    load(){
-      let id = this.user.hospitalId;
-      request.get("/DailyCare/SearchByHId/"+ id).then(res => {
-        if(res.code === '200'){
-          this.tableData = res.data;
-        }else{
-          this.$message.error(res.msg);
-        }
-      })
+    load(pageNum) {
+      if (pageNum) this.pageNum = pageNum;
+      this.$request.get('/DailyCare/selectPage',
+        {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            hospitalId: this.user.hospitalId
+          }
+        },).then(res => {
+          if (res.code === '200') {
+            this.tableData = res.data?.list;
+            this.total = res.data?.total;
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+    },
+    handleCurrentChange(pageNum) {
+      this.load(pageNum)
     },
     reset() {
 
@@ -67,6 +85,4 @@ export default {
 </script>
 
 
-<style scoped>
-
-</style>
+<style scoped></style>

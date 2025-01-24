@@ -20,6 +20,7 @@
             <if test="signPubKey != null">sign_pub_key,</if>
             <if test="signKey != null">sign_key,</if>
             <if test="img != null">img,</if>
+            <if test="careStatus != null">care_status,</if>
             <if test="isValid != null">is_valid,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -37,6 +38,7 @@
             <if test="signPubKey != null">#{signPubKey},</if>
             <if test="signKey != null">#{signKey},</if>
             <if test="img != null">#{img},</if>
+            <if test="careStatus != null">#{careStatus},</if>
             <if test="isValid != null">#{isValid},</if>
         </trim>
     </insert>
