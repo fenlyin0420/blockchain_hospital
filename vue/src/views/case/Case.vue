@@ -345,7 +345,9 @@ export default {
           // 如果不需要住院，则跳转到加密界面
           // 进行加密、签名后，诊疗结束
           if (this.radio === '否')
-          this.$router.push({ name: "CaseEncrypt", query: newTraverse })
+            this.$router.push({ name: "CaseEncrypt", query: newTraverse })
+          else
+            this.$message.success("诊疗结束")
         } else {
           this.$message.error(res.msg)
         }

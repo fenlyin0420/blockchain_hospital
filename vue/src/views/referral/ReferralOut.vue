@@ -16,6 +16,7 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
+        <el-table-column prop="userName" label="患者姓名"></el-table-column>
         <el-table-column
           prop="outDoctorName"
           label="转出医生"

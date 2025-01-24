@@ -80,10 +80,13 @@
         ></el-table-column>
       </el-table>
 
-      <el-radio v-model="opt" label="溯源指定病历" @change="handleRadioChange"></el-radio>
-      <el-radio v-model="opt" label="溯源所有病历" @change="handleRadioChange"></el-radio>
-      <el-input :placeholder="placeholder" v-model="idCard"></el-input>
-      <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
+      <div class="pullTraverse">
+        <el-radio v-model="opt" label="溯源所有病历" @change="handleRadioChange"></el-radio>
+        <el-radio v-model="opt" label="溯源指定病历" @change="handleRadioChange"></el-radio>
+        <el-input id="input" :placeholder="placeholder" v-model="idCard"></el-input>
+        <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
+      </div>
+      
     </el-dialog>
   </div>
 </template>
@@ -113,8 +116,8 @@ export default {
       dialogTitle: "",
       pubs: [],
       blockInfo: [{ QR: "", blockHash: "NULL" }],
-      opt: "溯源指定病历",
-      placeholder: "请输入转诊hash",
+      opt: "溯源所有病历",
+      placeholder: "请输入身份证号",
       ReferralRecord: [],
       idCard: "",
     };
@@ -450,5 +453,13 @@ export default {
   margin-top: 5px;
   width: 30%;
   margin-left: 70%;
+}
+
+.pullTraverse, .pullTraverse * {
+  margin: 10px;
+}
+
+.pullTraverse #input {
+  width: fit-content
 }
 </style>
