@@ -73,6 +73,12 @@ public class RecordController {
         return Result.success(list);
     }
 
+    @GetMapping("/selectAllUserName")
+    public Result selectAllUserName() {
+        List<Record> list = recordService.selectAllUserName();
+        return Result.success(list);
+    }
+
     /**
      * 分页查询
      */

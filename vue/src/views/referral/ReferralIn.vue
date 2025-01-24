@@ -3,257 +3,283 @@
     <div class="search">
       <div class="search1">
         <label for="search">搜索:</label>
-        <el-input id="search" placeholder="请输入关键词" style="width: 200px" v-model="keywords"></el-input>
+        <el-input
+          id="search"
+          placeholder="请输入关键词"
+          style="width: 200px"
+          v-model="keywords"
+        ></el-input>
         <el-button type="info" plain @click="load(1)">查询</el-button>
         <el-button type="warning" plain @click="reset">重置</el-button>
       </div>
 
       <div class="update">
-        <label for="pull">获取病历:</label>
-        <el-input id="pull" placeholder="输入病历地址或患者姓名" style="width: 200px" v-model="caseAddr"></el-input>
-        <el-button type="primary" plain @click="pull">获取病历</el-button>
+        <label for="pull">转诊信息:</label>
+        <el-input
+          id="pull"
+          placeholder="输入转诊信息"
+          style="width: 200px"
+          v-model="referralInfo"
+        ></el-input>
+        <el-button type="primary" plain @click="pullReferralInfo">获取</el-button>
+      </div>
+      
+      <div class="accept">
+        <el-button type="success" plain @click="accept">同意转入</el-button>
       </div>
     </div>
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="hospitalName" label="转出医院" width="200px" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="转出医生" width="100px"></el-table-column>
-        <el-table-column prop="treatmentDate" label="就诊时间" width="100px"></el-table-column>
-        <el-table-column prop="referralReason" label="转诊原因"></el-table-column>
-        <el-table-column prop="singResult" label="验签结果" width="100px"></el-table-column>
-        <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN'">
-          <template>
-            <el-button plain type="danger" size="mini">同意</el-button>
-            <el-button plain type="danger" size="mini">拒绝</el-button>
+        <el-table-column prop="userName" label="姓名"  width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="treatmentDate" label="就诊日期" width="200" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="hospitalName" label="医院名称"  width="100" align="center"></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名"  width="100" align="center"></el-table-column>
+        <el-table-column prop="diagnosis" label="诊断结果" align="center"></el-table-column>
+        <el-table-column label="详情"  align="center">
+          <template v-slot="scope">
+            <el-button plain type="" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination">
-        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
-          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[5, 10, 20]"
+            :page-size="pageSize"
+            layout="total, prev, pager, next"
+            :total="total">
         </el-pagination>
       </div>
     </div>
 
-    <el-dialog :visible="showDialog" top="calc(100% / 4)" :title="dialogTitle" center fullscreen @close="handleClose">
-      <div class="progress" v-if="showProgress">
-        <el-progress :percentage="progressPercentage" class="progress-demo"></el-progress>
-        <div style="font-size: 10px; left:0">正在接收: {{ recievedData }}</div>
-      </div>
+    <el-dialog
+      :visible="showDialog"
+      top="calc(100% / 4)"
+      title="溯源病历"
+      center
+      fullscreen
+      @close="handleClose"
+    >
+      <el-table :data="ReferralRecord" stripe>
+        <el-table-column prop="userName" label="患者姓名"></el-table-column>
+        <el-table-column
+          prop="outHospitalName"
+          label="转出医院"
+          width="80px"
+        ></el-table-column>
+        <el-table-column prop="outTime" label="转出时间"></el-table-column>
+        <el-table-column prop="reason" label="转诊原因"></el-table-column>
+        <el-table-column
+          prop="inHospitalName"
+          label="转入医院"
+          show-overflow-tooltip
+        ></el-table-column>
+      </el-table>
 
-      <div class="verifySign" v-if="showVerifySign">
-        <el-row :gutter="24">
-          <el-col :span="8">
-            <span style="display: inline-block; width: 200px;font-size: 16px;">环签名数据</span>
-            <div class="grid-content bg-purple">
-              <el-input type="textarea" :rows="2" readonly v-model="signData">
-              </el-input>
-            </div>
-          </el-col>
-
-          <!-- 签名信息 -->
-          <el-col :span="8">
-            <span style="display: inline-block; width: 200px; font-size: 16px;">环签名信息</span>
-            <div class="grid-content bg-purple-light">
-              <el-input type="textarea" :rows="2" readonly placeholder="请输入内容" v-model="signKey">
-              </el-input>
-            </div>
-          </el-col>
-
-          <!-- 验签结果 -->
-          <el-col :span="8">
-            <sapn style="display: inline-block; width: 200px; font-size: 16px;">验签结果</sapn>
-            <div>
-              <el-input type="textarea" :rows="2" readonly placeholder="请输入内容" v-model="signResult">
-              </el-input>
-            </div>
-            <el-button class="verifyBtn" plain type="primary" @click="verifySign()">验签</el-button>
-          </el-col>
-        </el-row>
-        <div>
-          <div class="header" style="margin: 10px 0">
-            <h2>签名数据区块链地址</h2>
-          </div>
-
-          <img :src="blockInfo[0].QR" width="150px" height="150px" style="display: inline-block;">
-          <p
-            style="color: blue; padding: 20px; border-radius: 5px; border: 2px solid rgb(235, 238, 245); font-size: 20px; display:inline-block; margin-left: 50px; position:relative;bottom:55px">
-            {{ blockInfo[0].blockHash }}</p>
-
-          <div class="header" style="margin: 10px 0">
-            <h2>环公钥组成信息</h2>
-          </div>
-
-          <el-table :data="pubs" border style="width: 100%;">
-            <el-table-column prop="name" align="center" label="姓名" width="180">
-            </el-table-column>
-            <el-table-column prop="key" align="center" label="公钥">
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
-
+      <el-radio v-model="opt" label="溯源指定病历" @change="handleRadioChange"></el-radio>
+      <el-radio v-model="opt" label="溯源所有病历" @change="handleRadioChange"></el-radio>
+      <el-input :placeholder="placeholder" v-model="idCard"></el-input>
+      <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ReferralRecord",
   data() {
     return {
-      tableData: [],  // 所有的数据
-      pageNum: 1,   // 当前的页码
-      pageSize: 10,  // 每页显示的个数
+      tableData: [], // 所有的数据
+      pageNum: 1, // 当前的页码
+      pageSize: 10, // 每页显示的个数
       total: 0,
-      keywords: null,
-      caseAddr: null,
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      keywords: '',
+      referralInfo: '',
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       showDialog: false,
       showProgress: false,
       showVerifySign: false,
       progressPercentage: 0,
-      recievedData: '',
-      signData: '1',
-      signKey: '2',
-      signResult: '3',
-      dialogTitle: '',
+      recievedData: "",
+      signData: "1",
+      signKey: "2",
+      signResult: "3",
+      dialogTitle: "",
       pubs: [],
-      blockInfo: [{ QR: '', blockHash: 'NULL' }]
-
-    }
+      blockInfo: [{ QR: "", blockHash: "NULL" }],
+      opt: "溯源指定病历",
+      placeholder: "请输入转诊hash",
+      ReferralRecord: [],
+      idCard: "",
+    };
   },
   created() {
     // this.load(1)
+    const storedData = localStorage.getItem('tableData');
+    if (storedData) {
+        this.tableData = JSON.parse(storedData);
+    }
+    const storedData2 = localStorage.getItem('ReferralRecord');
+    if (storedData2) {
+        this.ReferralRecord = JSON.parse(storedData2);
+    }
   },
   methods: {
     /**
-     * 同意转出 
+     * 同意转出
      * @param row 转诊记录
      */
     update(row) {
       let form = {
         id: row.id,
-      }
-      this.$request.put('/referral/agreenIn', form).then(res => {
-        if (res.code === '200') {  // 表示成功保存
-          this.load(1)
-          this.record(row)
+      };
+      this.$request.put("/referral/agreenIn", form).then((res) => {
+        if (res.code === "200") {
+          // 表示成功保存
+          this.load(1);
+          this.record(row);
         } else {
-          this.$message.error(res.msg)  // 弹出错误的信息
+          this.$message.error(res.msg); // 弹出错误的信息
         }
-      })
+      });
     },
     refuse(row) {
       let form = {
         id: row.id,
-      }
-      this.$request.put('/referral/refuseIn', form).then(res => {
-        if (res.code === '200') {  // 表示成功保存
-          this.$message.success('拒绝接收')
-          this.load(1)
+      };
+      this.$request.put("/referral/refuseIn", form).then((res) => {
+        if (res.code === "200") {
+          // 表示成功保存
+          this.$message.success("拒绝接收");
+          this.load(1);
           // this.record(row)
         } else {
-          this.$message.error(res.msg)  // 弹出错误的信息
+          this.$message.error(res.msg); // 弹出错误的信息
         }
-      })
+      });
     },
     load(pageNum) {
-      if (pageNum) this.pageNum = pageNum
-      this.$request.get('/traverse/selectPageReferralTraverse', {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-        }
-      }).then(res => {
-        this.tableData = res.data?.list
-        this.total = res.data?.total
-      })
+      if (pageNum) this.pageNum = pageNum;
+      this.$request
+        .get("/traverse/selectPageReferralTraverse", {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+          },
+        })
+        .then((res) => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
     },
     reset() {
-      this.status = null
-      this.load(1)
+      this.status = null;
+      this.load(1);
+    },
+    /**
+     * 获取病历
+     */
+    pullTraverse() {
+      this.$message(this.opt)
+      const Request = axios.create({
+        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
+        timeout: 50000,
+      });
+
+      if (this.opt === "溯源指定病历") {
+        ;
+      } else {
+        Request.post("/getMedicalRecordsByIdCard", {_idCard: this.idCard}).then((res) => {
+          if (res.data.code === "200"){
+            // 解析数据
+            this.tableData = this.parseTraverse(res.data.data.returnObject)
+            localStorage.setItem('tableData', JSON.stringify(this.tableData));
+          }
+        });
+      }
     },
     /**
      * 根据给定地址，从区块链获取对应病历
      */
-    pull() {
-      var traverse = {
-        "id": 72,
-        "userId": 2,
-        "doctorId": 3,
-        "hospitalId": 1,
-        "advice": "BHkqLP8LiF+G2K1qRJm18f71xQJLqtL9BA0qEt9PBOS4JIZCBCPBLSrODGShog3BoEgfWs62bPaRuBQNGDuRsoBgypYcA0YPjvuHgGmt6/87oIJdZnHZTJR+SeRTRxm8n7lKp6Y19dtUza1Ob9qXlfZ9ryKXRT/r+BLWQBHsKw==",
-        "diagnosis": "流感",
-        "drug": "BB0R3TCiAUjv/eJlFNry4mUAAbqRXRToG8uvG8ZkAJsw33WlgDBwENZfYllKWnJswC0Qd4YmSCFgTToJFswgiiTaC84duFmEayLUiVnKpQOKVuvH1DCXssgTZFyEAtvT+ej6lRi5+qp+EnIRcaEIpXk3tgioPp0hyRQUA7GwMbBWaDo=",
-        "inHospital": "未住院",
-        "careStatus": "是",
-        "wardId": null,
-        "timestamp": "1733642609746",
-        "signData": "BJtLXLcWriHeVBDStq7hc0TwDX4vwwFwmumCXMl9/k2AUUjiL84OxILbJS9W9p6IBj4qCv5es7C2YwD8yURQ5ci1FyQpD3JC5tBkUTAfzY1Gd6dpo6Oxflpk8q8aQjdledXCxHLX8w==+2024-12-08 15:23:39",
-        "signResult": null,
-        "signPubKey": "赵千里:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABI/IhcE/TVwfnQ9kqRWP3BGHKXCWlPuTsTeXVK/aqYFJBZqAhEzXc2+hup4okD+j052rF+e2Q6rfVyF0CT+/KjQ=, 钱有有:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABAMV1h13WGHClqLdqGoXcdfg1Cx4FsYsSlwdiDiNwr3UqZCfcPSKweFrAuwhPen0e6lQS+he13wqRt3sJbhrtgE=, 王有为:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABBXcrcTGgtgYZq1bqlbngU14YJPcIlRlJjHvqH4NW7aG3TddLRRE0mhd+FjImm37Hp57rnT89eL2j6pH3kA7Qx8=, 张小明:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABE1OLem/WThDIdkKdpO6yM0kuvP7gyf0X0rMzuE3RidQSR+jAwtmVggDfrDqrCaZaPWlvPcm8eXZNG3jNikxcMs=, 李红:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABIze51HsQdV/YVjSmgL9bR1J1KmAHlS0SR4zDliKFHB3W05MznjINFdgnecuZSTWyEbYj2qBIqLunvk3U4qMyR4=, 王强:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABJAbv1/XcNYzi/uRT16Zbf+1u034/x5y2W6HPePCAMNQYJznaIQ7LeSSWvm4mO8kiBr4vrYEdavrlAaSX8BifBw=, 赵小青:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABMU4S3IPkXfFS2unwmqBdKy3tbp/Agg9HeST+fP52b82j1kHnnl52uE23nodHCNWLpnFW+9dZMLUTLdSLnivKGk=, 吴小红:MIIBMzCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBA0IABGmZq0aCc9xHKCfCBHS9d5Wf81ZHvjSxEMFfk1tQ89/4h/Gjlw2FoJv3AyRk4urGJn2nNNn0f8A0MiHLazLkIYM=",
-        "signKey": "9037056148458658236958158212028595650540348742421821496829966020576577009449,95262391589953450083630478442600654780320553129704624060831202070034007492955,50703414404018240893972386549512850333514189896011496182458797451479112062743,23967270734965266663895629144229661944026949663383184060080959218903531033164,53821173226677777191000205116328609513041560282839592391950898237045084772556,31981015472273294261275145364829907494557703845912335369365084507580167813891,30093450795674958059574920863001788035012408362168308320214209727861019315989,43160427299646997721692734668342306996081318619067514400827129926836824506832,40734196741075247204517086490928115620839007057762095472003980864795026748201",
-        "treatmentDate": "2024-12-08",
-        "img": "",
-        "isValid": "是",
-        "userName": "李四",
-        "doctorName": "钱有有",
-        "hospitalName": "xx大学第一附属医院",
-        "wardName": null
-      }
-      if (true) {
-        this.showDialog = true
-        this.dialogTitle = "正在获取病历..."
-        // 1. 请求获取病历数据，同时启动进度条
-        this.load(1)
-        this.startProgress(traverse)
-
-        // 2. 验签
-
-
-
-
-      }
-      this.showDialog = true
-      this.showProgress = true
+    pullReferralInfo() {
+      // this.showDialog = true;
+      // this.showProgress = true;
       const Request = axios.create({
-        baseURL: 'http://localhost:8088', // 区块链管理平台的 baseURL
-        timeout: 50000
+        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
+        timeout: 50000,
       });
 
-      Request.get('', {
-        params: {
-          Addr: this.caseAddr,
+      // 1. 根据转诊hash获取转诊信息,并存储转诊信息
+      Request.post("/getReferralInfoByTransactionHash", {
+        _transactionHash: this.referralInfo,
+      }).then((res) => {
+        if (res.data.code === "200"){
+          // 解析数据，打开浮窗，准备拉取病历
+          this.ReferralRecord[0] = this.parseReferralRecord(res.data.data.returnObject)
+          localStorage.setItem('ReferralRecord', JSON.stringify(this.ReferralRecord));
+          this.showDialog = true
         }
-      }).then(res => {
-        if (res.code === '200') {
-          this.$request.put("/traverse/insertReferralTraverse", res.data.referralTraverse).then(res1 => {
-            if (res1.code === '200') {
-              this.$message.success('更新数据成功')
-            } else {
-              this.$message.error("更新数据失败")
-            }
-          })
-          // this.tableData = res.data.returenObject[0].split("\n")
-          // TODO: 获取病历成功后，需要解析数据并赋值到对应的表单中
-          this.showProgress = false
-          this.showVerifySign = true
+      });
+    },
+    /**
+     * 同意转诊，存储转诊信息
+     */
+    accept(){
+      let body = this.ReferralRecord[0]
+      body.result = "已转入" // 设置转诊结果
+      body.inTime = new Date().toISOString().split('T')[0]
+      this.$request.post("/referral/add", body).then((res) => {
+        if(res.code === '200') {
+          localStorage.removeItem('ReferralRecord');
+          localStorage.removeItem('tableData');
+          this.ReferralRecord = []
+          this.tableData = []
+          this.$message.success("转入成功");
+        }
+      });
+    },
+    async goToCaseDetails(row) {
+      const Request = axios.create({
+        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
+        timeout: 50000,
+      });
+      // 获取环公钥
+      await Request.post("/getPublicKeyByTransactionHash", {
+        "_transactionHash": "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad"
+      }).then((res) => {
+        if (res.data.code === '200') {
+          row.signPubKey = res.data.data.returnObject[0]
         } else {
-          this.showDialog = false
-          this.$message.error("获取病历失败")
+          this.$message.error("获取环公钥失败")
         }
-      })
-    },
-    verifySign() {
+      });
+      // 获取签名数据
+      await this.$request.post("/traverse/getSignData", row).then((res) => {
+        if (res.code === '200'){
+          row.signData = res.data
+        } else {
+          this.$message.error("获取签名数据失败")
+        }
+      });
 
+      row.signResult = ""
+      console.log(row)
+      this.$router.push({
+        name: 'CaseDetail',
+        query: row
+      });
     },
+
     startProgress(traverse) {
-      var index = 0
-      const keys = Object.keys(traverse)
-      this.progressPercentage = 0
+      var index = 0;
+      const keys = Object.keys(traverse);
+      this.progressPercentage = 0;
       let interval = setInterval(() => {
         if (this.progressPercentage >= 100) {
           clearInterval(interval);
@@ -261,8 +287,8 @@ export default {
           this.progressPercentage += 10;
         }
         if (index <= keys.length) {
-          this.sendData = keys[index] + ' : ' + traverse[keys[index]]
-          index++
+          this.sendData = keys[index] + " : " + traverse[keys[index]];
+          index++;
         }
       }, 1000);
 
@@ -270,22 +296,132 @@ export default {
       setTimeout(() => {
         clearInterval(interval);
         this.showProgress = false;
-        this.showVerifySign = true
-        this.dialogTitle = "环签名验证"
+        this.showVerifySign = true;
+        this.dialogTitle = "环签名验证";
         this.$message({
-          message: '发送成功',
-          type: 'success',
+          message: "发送成功",
+          type: "success",
         });
       }, 1100); // 假设操作需要5秒
     },
     handleCurrentChange(pageNum) {
-      this.load(pageNum)
+      this.load(pageNum);
+    },
+    handleRadioChange(label){
+      if (label === "溯源指定病历") 
+        this.placeholder = "请输入转诊hash"
+      else
+        this.placeholder = "请输入身份证号"
     },
     handleClose() {
-      this.showDialog = false
+      this.showDialog = false;
     },
-  }
-}
+    parseReferralRecord(dataList ) {
+      const parsedObject = {};
+      // 去除多余换行符并按换行符分割字符串
+      const lines = dataList[0].trim().split('\n');
+      for (const line of lines) {
+          // 按冒号分割键值对
+          const [key, value] = line.split(': ');
+          if (key && value) {
+              parsedObject[key] = value;
+          }
+      }
+      return this.convertToEnglishObject(parsedObject);
+    },
+
+    /**
+     * 解析为病历列表 
+     * @param dataList 病历列表
+     */
+    parseTraverse(dataList) {
+      return dataList.flatMap(item => {
+          return item.split('\n\n\n')
+            .filter(entry => entry.trim()!== '')
+            .map(entry => {
+                  const lines = entry.split('\n').filter(line => line.trim()!== '');
+                  const obj = {};
+                  lines.forEach(line => {
+                      const colonIndex = line.indexOf(':');
+                      if (colonIndex!== -1) {
+                          const key = line.slice(0, colonIndex).trim();
+                          const value = line.slice(colonIndex + 1).trim();
+                          obj[key] = value;
+                      }
+                  });
+                  return this.convertToEnglishObject(obj);
+              });
+      });
+    },
+    convertToEnglishObject(chineseObj) {
+      return Object.entries(chineseObj).reduce((acc, [key, value]) => {
+        switch (key) {
+          case "病例编号":
+            acc.caseNumber = value;
+            break;
+          case "患者姓名":
+            acc.userName = value;
+            break;
+          case "身份证号":
+            acc.idCard = value;
+            break;
+          case "医生姓名":
+            acc.doctorName = value;
+            break;
+          case "aa":
+            acc.hospitalName = value;
+            break;
+          case "医嘱":
+            acc.advice = value;
+            break;
+          case "诊断结果":
+            acc.diagnosis = value;
+            break;
+          case "药物":
+            acc.drug = value;
+            break;
+          case "是否住院":
+            acc.inHospital = value;
+            break;
+          case "时间戳":
+            acc.timestamp = value;
+            break;
+          case "签名结果":
+            acc.signKey = value;
+            break;
+          case "治疗日期":
+            acc.treatmentDate = value;
+            break;
+          case "药物医嘱-治理医嘱":
+            acc.drug = value.split("-")[0];
+            acc.advice = value.split("-")[1];
+            break;
+          case "医院-医生":
+            acc.hospitalName = value.split("-")[0];
+            acc.doctorName = value.split("-")[1];
+            break;
+          case "医疗影像":
+            acc.img = value;
+            break;
+          // referralInfo convert
+          case "转出医院":
+            acc.outHospitalName = value;
+            break;
+          case "转入医院":
+            acc.inHospitalName = value;
+            break;
+          case "转出时间":
+            acc.outTime = value;
+            break;
+          case "转诊原因":
+            acc.reason = value;
+            break;
+        }
+        return acc;
+      }, {});
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -298,7 +434,7 @@ export default {
   margin-right: 5px;
 }
 
-.search>.update {
+.search > .update {
   margin-left: 100px;
 }
 

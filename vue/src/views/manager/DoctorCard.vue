@@ -2,16 +2,6 @@
   <div>
     <!-- 搜索区 -->
     <div class="search">
-      <!-- 选择医院 -->
-      <!-- <label for="hospital">医院:</label>
-      <el-select id="hospital" placeholder="请选择医院" v-model="hospitalId" @change="query()">
-        <el-option
-          v-for="item in hospitalList"
-          :key="item.id"
-          :label="item.hospitalName"
-          :value="item.id"
-        ></el-option>
-      </el-select> -->
 
       <!-- 选择科室 -->
       <label for="departmentSelect">科室:</label>
@@ -33,12 +23,7 @@
         <el-col :span="8" v-for="item in tableData" :key="item.id" style="margin-bottom: 20px">
           <div style="text-align: center; background-color: #ecf8fd" class="card">
             <img :src="item.avatar" alt="" style="width: 50px; height: 50px; border-radius: 50%" />
-            <!-- <div style="font-weight: 550; margin-top: 10px">
-              医院
-              <span style="color: #383535; margin-left: 5px; font-weight: 500">{{
-                item.hospitalName
-              }}</span>
-            </div> -->
+
             <div style="font-weight: 550; margin-top: 10px">
               {{ item.name }}
               <span style="color: #383535; margin-left: 5px; font-weight: 500">

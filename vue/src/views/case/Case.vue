@@ -163,6 +163,7 @@ export default {
         await Promise.all([this.loadByUser()]);
         // 从URL查询参数中解析caseInfo  
         this.caseInfo = this.$route.query;
+        console.log("caseInfo", caseInfo)
       } catch (error) {
       }
     },
@@ -323,6 +324,7 @@ export default {
     ok() {
       let newTraverse = {}
       newTraverse.userId = this.caseInfo.userId
+      newTraverse.idCard = this.caseInfo.idCard
       newTraverse.timestamp = new Date().getTime()
       newTraverse.treatmentDate = this.caseInfo.time
       newTraverse.doctorId = this.user.id

@@ -46,8 +46,8 @@ public class ReferralRecordService {
     }
 
 
-    public void updateById(ReferralRecord referralRecord) {
-        referralRecordMapper.updateById(referralRecord);
+    public void update(ReferralRecord referralRecord) {
+        referralRecordMapper.update(referralRecord);
     }
 
     public void deleteById(Integer id) {
@@ -65,44 +65,8 @@ public class ReferralRecordService {
      * @param referralRecord
      */
     public void add(ReferralRecord referralRecord) {
-        referralRecord.setResult(ReferralEnum.WAIT_OUT_ADMIN.toString());
+        // referralRecord.setResult(ReferralEnum.WAIT_OUT_ADMIN.toString());
         referralRecordMapper.add(referralRecord);
-    }
-
-    /**
-     * 将申请发送到另一家医院
-     * @param referralRecord
-     * @return
-     */
-    public Result send(ReferralRecord referralRecord, String url) {
-        // 设置转诊状态
-        referralRecord.setOutTime(DateUtil.now());
-        referralRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
-        referralRecordMapper.updateById(referralRecord);
-
-        referralRecord = referralRecordMapper.selectById(referralRecord.getId());
-
-        RestTemplate restTemplate = new RestTemplate();
-        // 设置请求头
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<ReferralRecord> body = new HttpEntity<>(referralRecord, headers);
-        ResponseEntity<Result> res = restTemplate.postForEntity(url, body, Result.class);
-
-        // 处理响应
-        // if (res.getStatusCode().is2xxSuccessful()) {
-        //     Result response = res.getBody();
-        //     if (response.isSuccess()) {
-        //         System.out.println("用户注册成功：" + response.getMessage());
-        //     } else {
-        //         System.out.println("用户注册失败：" + response.getMessage());
-        //     }
-        // } else {
-        //     System.out.println("请求失败，状态码：" + responseEntity.getStatusCodeValue());
-        // }
-
-        Result response = res.getBody();
-        return response;
     }
 
     /**

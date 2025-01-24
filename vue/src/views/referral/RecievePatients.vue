@@ -11,14 +11,11 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'" align="center"></el-table-column>
-        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center"
+        <el-table-column prop="userName" label="患者姓名"  align="center"
           show-overflow-tooltip></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"
-          show-overflow-tooltip></el-table-column>
-        <el-table-column prop="departmentName" label="科室" align="center"></el-table-column>
-        <el-table-column prop="time" label="就诊时间" align="center"></el-table-column>
-        <el-table-column prop="status" label="挂号状态" align="center"></el-table-column>
+        <el-table-column prop="outHospitalName" label="转出医院" align="center"></el-table-column>
+        <el-table-column prop="outTime" label="转出时间" align="center"></el-table-column>
+        <el-table-column prop="reason" label="转诊原因" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-button plain type="warning" style="color: blue;" size="mini" @click=call(scope.row)
@@ -59,36 +56,24 @@ export default {
   methods: {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
-      caseData.status = '已叫号'
-      console.log(caseData);
-      this.$request.put('/reserve/update', caseData).then(res => {
+      caseData.result = '已接诊'
+      console.log(caseData)
+      // 确保caseData 数据完整，否则将污染整个数据库！！ :(
+      this.$request.put('/referral/update', caseData).then(res => {
         if (res.code === '200') {
-          this.$message.success('叫号成功')
+          this.$message.success('接诊成功')
           let caseinfo = {
-            userId: caseData?.userId,
             userName: caseData?.userName,
-            doctorName: caseData?.doctorName,
-            hospitalName: caseData?.hospitalName,
-            departmentName: caseData?.departmentName,
-            time: caseData?.time,
+            doctorName: this.user.name,
+            hospitalName: this.user.hospitalName,
+            departmentName: this.user.departmentName,
+            time: new Date().toISOString().split('T')[0],
           };
           this.load(1)
-          // 往就诊记录里同步一条数据
-          this.record(row)
-          this.$router.push(`case?data=${encodeURIComponent(JSON.stringify(caseinfo))}`)
-        }
-      })
-    },
-    record(row) {
-      let data = {
-        userId: row.userId,
-        doctorId: row.doctorId,
-        hospitalId: this.user.hospitalId
-      }
-      this.$request.post('/record/add', data).then(res => {
-        if (res.code === '200') {
-        } else {
-          this.$message.error(res.msg)
+          this.$router.push({
+            name: 'Case',
+            query: caseinfo
+          })
         }
       })
     },
@@ -107,11 +92,11 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/reserve/selectPage', {
+      this.$request.get('/referral/selectPage', {
         params: {
+          result: "已转入",
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          status: this.status,
         }
       }).then(res => {
         this.tableData = res.data?.list

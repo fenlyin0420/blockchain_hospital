@@ -4,168 +4,194 @@
       <!-- 左侧表单 -->
       <div class="left-form">
         <div class="label">转诊患者</div>
-        <el-select v-model="caseInfo" placeholder="请选择患者" style="width:80%; margin-bottom: 20px;">
+        <el-select
+          v-model="caseInfo.userName"
+          placeholder="请选择患者"
+          style="width: 80%; margin-bottom: 20px"
+        >
           <div v-for="item in tableData">
-            <el-option :label="item.userName" :value="item"></el-option>
+            <el-option :label="item.userName" :value="item.userName"></el-option>
           </div>
         </el-select>
 
         <div class="label">转出时间</div>
-        <el-input v-model="caseInfo.referralDate" :readonly="true" clearable style="width:80%;"></el-input>
-        <!-- <el-input placeholder="转出医生" v-model="caseInfo.doctorName" :readonly="true" clearable
-          style="width:80%;"></el-input> -->
+        <el-input
+          v-model="outTime"
+          :readonly="true"
+          clearable
+          style="width: 80%"
+        ></el-input>
 
         <div class="label">沟通记录表</div>
-        <el-input type="textarea" placeholder="患者承诺" v-model="promise" style="width:80%;"></el-input>
+        <el-input
+          type="textarea"
+          placeholder="患者承诺"
+          v-model="promise"
+          style="width: 80%"
+        ></el-input>
 
         <div class="label">转诊理由</div>
-        <el-autocomplete type="textarea" v-model="transferReason" :fetch-suggestions="transferReasonComplete" clearable
-          placeholder="请输入转诊理由" @select="handleSelect" style="width: 80%;display:block" />
+        <el-autocomplete
+          type="textarea"
+          v-model="transferReason"
+          :fetch-suggestions="transferReasonComplete"
+          clearable
+          placeholder="请输入转诊理由"
+          @select="handleSelect"
+          style="width: 80%; display: block"
+        />
 
-        <el-button type="primary" style="margin-top: 10px; position:absolute; right: 45%;"
-          @click="confirmTransfer">授权提交</el-button>
+        <el-button
+          type="primary"
+          style="margin-top: 10px; position: absolute; right: 45%"
+          @click="confirmTransfer"
+          >授权提交</el-button
+        >
       </div>
 
       <!-- 右侧表单 -->
       <div class="right-form">
-        <el-form label-width="0px" style="margin-top: 20px;">
+        <el-form label-width="0px" style="margin-top: 20px">
           <div class="label">转入信息</div>
-          <el-select v-model="transferInHospital" placeholder="请选择医院" @change="loadByDoctor()"
-            style="width: 90%;margin-bottom: 20px">
+          <el-select
+            v-model="transferInHospital"
+            placeholder="请选择医院"
+            @change="loadByDoctor()"
+            style="width: 90%; margin-bottom: 20px"
+          >
             <div v-for="item in infByHospital">
-              <el-option :label="item.hospitalName" :value="item.id"></el-option>
+              <el-option
+                :label="item.hospitalName"
+                :value="item.hospitalName"
+              ></el-option>
             </div>
           </el-select>
-
-          <!-- <div class="label">患者签字</div>
-          <el-form-item>
-            <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
-              style="width:90%;"></el-input>
-          </el-form-item> -->
 
           <div class="label">患者签字</div>
           <el-form-item>
             <!-- 用 canvas 实现签字 -->
-            <canvas ref="signatureCanvas" width="400" height="200"
-              style="border: 1px solid #ccc; background-color: #f9f9f9;" @mousedown="startDrawing"
-              @mousemove="drawSignature" @mouseup="endDrawing" @mouseleave="endDrawing"></canvas>
+            <canvas
+              ref="signatureCanvas"
+              width="400"
+              height="200"
+              style="border: 1px solid #ccc; background-color: #f9f9f9"
+              @mousedown="startDrawing"
+              @mousemove="drawSignature"
+              @mouseup="endDrawing"
+              @mouseleave="endDrawing"
+            ></canvas>
           </el-form-item>
-
-          <!-- <el-form-item>
-            <el-input type="textarea" placeholder="患者签字" v-model="signature" clearable :rows="4"
-              style="width:90%;"></el-input>
-          </el-form-item> -->
-
           <el-button @click="clearSignature">清空签字</el-button>
         </el-form>
       </div>
     </div>
+
+
   </el-card>
 </template>
 
 <script>
-export default {
+import axois from "axios";
+
+export default{
   name: "ReferralApplication",
   data() {
     return {
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       name: "",
-      transferOutHospital: '',
-      transferOutDoctor: '',
+      transferOutHospital: "",
+      transferOutDoctor: "",
       transferOutTime: null,
-      transferInHospital: '',
-      transferInDoctor: '',
+      transferInHospital: "",
+      transferInDoctor: "",
       transferInTime: null,
-      transferReason: '',
+      transferReason: "",
       restaurants: [],
-      caseInfo: { "referralDate": "2023-05-01" },
+      caseInfo: { userName: "" },
+      outTime: "",
       tableData: [],
-      infByHospital: [],
+      infByHospital: [{ hospitalName: "xx大学第二附属医院" }],
       infByDoctor: [],
       information: {},
       promise: "要求自动转院，自愿承担转院风险，后果自负。",
-      transferReason: '',
-      signature: '',
+      transferReason: "",
+      signature: "",
       suggestions: [
         { value: "由于我院当前技术水平、设备条件，不能确诊或治疗条件有限的患者。" },
         { value: "患者病情稳定。" },
-        { value: "患者及家属要求转诊转院者。" }
+        { value: "患者及家属要求转诊转院者。" },
       ],
-      signature: '',
+      signature: "",
       isDrawing: false,
-      canvasContext: null
-    }
+      canvasContext: null,
+
+    };
   },
   created() {
-    this.loadByUser()
-    this.loadByHospital()
+    this.loadUsers();
   },
   mounted() {
     // 获取 canvas 的上下文
-    this.canvasContext = this.$refs.signatureCanvas.getContext('2d');
+    this.canvasContext = this.$refs.signatureCanvas.getContext("2d");
     this.canvasContext.lineWidth = 2;
-    this.canvasContext.lineCap = 'round';
-    this.canvasContext.strokeStyle = '#000'; // 签字颜色
+    this.canvasContext.lineCap = "round";
+    this.canvasContext.strokeStyle = "#000"; // 签字颜色
+    let tempDate = new Date();
+    this.outTime = tempDate.toISOString().split("T")[0];
   },
   methods: {
-    loadByUser() {
-      this.$request.get('/record/selectAll', { // 只能再就诊记录中选择要转诊的患者
-        params: {
-          doctorId: this.user.id
-        }
-      }).then(res => {
-        this.tableData = res.data
-        console.log(this.tableData)
-      })
+    loadUsers() {
+      this.$request
+        .get("/record/selectAllUserName")
+        .then((res) => {
+          this.tableData = res.data;
+        });
     },
-    loadByDoctor() {
-      let id = this.transferInHospital
-      this.$request.get('/doctor/selectByH/' + id).then(res => {
-        if (res.code === '200') {
-          this.infByDoctor = res.data
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
+
     loadByHospital() {
-      this.$request.get('/hospital/selectAll').then(res => {
-        this.infByHospital = res.data
-      })
+      this.$request.get("/hospital/selectAll").then((res) => {
+        this.infByHospital = res.data;
+      });
     },
     /**
      * 转诊申请
      */
     confirmTransfer() {
-      this.information.userId = this.caseInfo.userId
-      this.information.outHospitalId = this.caseInfo.hospitalId
-      this.information.outDoctorId = this.caseInfo.doctorId
-      this.information.inHospitalId = this.transferInHospital
-      this.information.why = this.transferReason
-      let data = JSON.parse(JSON.stringify(this.information))
-      this.$request.post('/referral/add', data).then(res => {
-        if (res.code === '200') {
+      this.information.userName = this.caseInfo.userName;
+      this.information.outDoctorName = this.user.name
+      this.information.outHospitalName = "xx大学第一附属医院";
+      this.information.inHospitalName = this.transferInHospital;
+      this.information.reason = this.transferReason;
+      this.information.outTime = this.outTime;
+      this.information.result = "待审批";
+      console.log(this.information);
+      let data = JSON.parse(JSON.stringify(this.information));
+      this.$request.post("/referral/add", data).then((res) => {
+        if (res.code === "200") {
+          this.$message.success("申请成功");
           // 自动跳转
-          const countdownSeconds = 3;
-          let countdown = countdownSeconds;
-          const countdownInterval = setInterval(() => {
-            if (countdown > 0) {
-              this.$message.info(`申请成功，${countdown}秒后将跳转页面...`);
-              countdown--;
-            } else {
-              clearInterval(countdownInterval);
-              this.$router.push('/referralRecord');
-            }
-          }, 1000);
+          // const countdownSeconds = 3;
+          // let countdown = countdownSeconds;
+          // const countdownInterval = setInterval(() => {
+          //   if (countdown > 0) {
+          //     this.$message.info(`申请成功，${countdown}秒后将跳转页面...`);
+          //     countdown--;
+          //   } else {
+          //     clearInterval(countdownInterval);
+          //     this.$router.push('/referralRecord');
+          //   }
+          // }, 1000);
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
 
     //转院理由联想
     transferReasonComplete(queryString, cb) {
-      let results = this.suggestions.filter(item => item.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+      let results = this.suggestions.filter(
+        (item) => item.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+      );
       cb(results);
     },
     handleSelect(item) {
@@ -191,11 +217,17 @@ export default {
       }
     },
     clearSignature() {
-      this.canvasContext.clearRect(0, 0, this.$refs.signatureCanvas.width, this.$refs.signatureCanvas.height); // 清除 canvas 内容
-      this.signature = ''; // 清空输入框内容
-    }
-  }
-}
+      this.canvasContext.clearRect(
+        0,
+        0,
+        this.$refs.signatureCanvas.width,
+        this.$refs.signatureCanvas.height
+      ); // 清除 canvas 内容
+      this.signature = ""; // 清空输入框内容
+    },
+
+  },
+};
 </script>
 
 <style scoped>

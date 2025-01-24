@@ -29,7 +29,6 @@ public class Traverse {
     private String drug;
     @Sign
     private String inHospital;
-    @Sign
     private String careStatus;
     /** 病床id */
     private Integer bedId;

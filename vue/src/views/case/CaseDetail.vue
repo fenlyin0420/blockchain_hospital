@@ -26,7 +26,7 @@
         <el-form label-width="100px">
           <el-form-item label="患者姓名" class="custom-layout">
             <div class="content-wrapper">
-              <span class="name">{{ receivedData.userName }}</span>
+              <span class="name" style="color: blue;">{{ receivedData.userName }}</span>
               <el-button type="primary" class="decrypt-button" @click="decryptAdviceAndDrug">解密</el-button>
             </div>
           </el-form-item>
@@ -112,7 +112,7 @@
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
               <!-- 验签按钮 -->
-                <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER'">验签</el-button>
+                <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER' || user.role === 'ADMIN'">验签</el-button>
                 <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
               </div>
             </el-col>
@@ -146,10 +146,10 @@
 export default {
   data() {
     return {
-      receivedData: [],
+      receivedData: {},
       params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      pubs: {},
+      pubs: [],
       fits: 'fill',
       dialogVisible: false, // 对话框可见性  
       previewImageUrl: '', // 预览图片URL  
@@ -157,18 +157,18 @@ export default {
     };
   },
   created() {
-    this.receivedData = this.$route.query
+    this.receivedData = this.$route?.query
     this.load()
   },
   computed: {
     drug() {
       const medicationString = this.receivedData.drug;
       // 拆分字符串为每一行
-      let lines = medicationString.split('\n');
+      let lines = medicationString?.split('\n');
       if (lines.length != 1) lines = lines.slice(0, -1);
       // 将每一行拆分为药物信息对象
       return lines.map(line => {
-        const parts = line.split(' ');
+        const parts = line?.split(' ');
         return {
           name: parts[0],
           dose: parts[1] ? parts[1] : parts[0],
@@ -198,10 +198,10 @@ export default {
         this.$router.push("/caseList")
       }
 
-      if (this.receivedData.signPubKey !== null || this.receivedData.signPubKey !== "") {
-        const s = this.receivedData.signPubKey.split(",")
+      if (this.receivedData.signPubKey != null || this.receivedData.signPubKey != "") {
+        const s = this.receivedData.signPubKey?.split(",")
         const ss = s.map(line => {
-          const parts = line.split(':');
+          const parts = line?.split(':');
           return {
             name: parts[0],
             key: parts[1],
@@ -236,7 +236,6 @@ export default {
       }
       this.$request.post('keys/imgDecrypt', imgUrl).then(res => {
         if (res.code === '200'){
-          console.log(res.data)
           this.receivedData.img = `data:image/png;base64,${res.data}`;  
         } else {
           this.$message.error(res.msg)
@@ -244,14 +243,26 @@ export default {
       })
     },
     verifySign() {
-      this.params.id = this.receivedData.id
-      this.$request.post('/keys/verifySign', this.params).then(res => {
-        if (res.code === '200') {
-          this.receivedData.signResult = res.data.message
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
+      if (this.receivedData.id) {
+        this.params.id = this.receivedData.id
+        this.$request.post('/keys/verifySign', this.params).then(res => {
+          if (res.code === '200') {
+            this.receivedData.signResult = res.data.message
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      } else {
+        console.log(this.receivedData)
+        this.$request.post('/keys/verifySignByData', this.receivedData).then(res => {
+          if (res.code === '200') {
+            this.receivedData.signResult = res.data.message
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
+      
     }
   }
 };
@@ -288,5 +299,9 @@ export default {
   /* 若图片数量超出容器宽度，则自动换行 */
   gap: 10px;
   /* 图片间的间距，可根据需求调整 */
+}
+
+::v-deep .el-textarea__inner {
+  color: blue;
 }
 </style>

@@ -7,7 +7,6 @@ import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.ReferralRecord;
-import com.example.entity.Traverse;
 import com.example.service.AdminService;
 import com.example.service.DoctorService;
 import com.example.service.NurseService;
@@ -113,17 +112,4 @@ public class WebController {
         referalRecordService.recieveReferralRecord(referralRecord);
         return Result.success("接收成功");
     }
-
-    @PatchMapping("/com/updateReferralRecord")
-    public Result updateReferralRecord(@RequestBody ReferralRecord referralRecord) {
-        referalRecordService.updateById(referralRecord);
-        return Result.success("更新成功");
-    }
-
-    @PostMapping("/com/recieveTraverse")
-    public Result recieveTraverse(@RequestBody Traverse traverse) {
-        
-        return Result.success("病历接收成功");
-    }
-    
 }
