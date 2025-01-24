@@ -12,4 +12,6 @@ public interface CareMapper {
     int updateById(Traverse traverse);
 
     List<Traverse> selectPage(Traverse traverse);
+
+    List<Traverse> selectPageRecord(Traverse traverse);
 }

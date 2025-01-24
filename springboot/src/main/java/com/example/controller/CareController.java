@@ -30,6 +30,14 @@ public class CareController {
         return Result.success(page);
     }
 
+    @GetMapping("/selectPageRecord")
+    public Result selectPageRecord(Traverse traverse,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Traverse> page = careService.selectPageRecord(traverse,pageNum,pageSize);
+        return Result.success(page);
+    }
+
     @PutMapping("/update")
     public Result update(@RequestBody Traverse traverse){
         careService.updateById(traverse);
