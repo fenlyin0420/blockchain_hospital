@@ -22,8 +22,8 @@
         <el-form-item label="电话" prop="phone">
           <el-input v-model="user.phone" placeholder="电话"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="user.email" placeholder="邮箱"></el-input>
+        <el-form-item label="身份证" prop="idCard">
+          <el-input v-model="user.idCard" placeholder="身份证"></el-input>
         </el-form-item>
         <el-form-item label="余额" prop="account">
           <el-input v-model="user.account" disabled></el-input>
@@ -77,6 +77,7 @@ export default {
     update() {
       // 保存当前的用户信息到数据库
       this.$request.put('/user/update', this.user).then(res => {
+        console.log(this.user)
         if (res.code === '200') {
           this.fromVisible = false
           // 成功更新

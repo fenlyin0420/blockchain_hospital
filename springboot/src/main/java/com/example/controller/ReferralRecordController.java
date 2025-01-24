@@ -37,7 +37,12 @@ public class ReferralRecordController {
         PageInfo<ReferralRecord> page = referralRecordService.selectPage(referralRecord, pageNum, pageSize);
         return Result.success(page);
     }
-
+    @GetMapping("/selectWaitingOut")
+    public Result selectWaitingOut(ReferralRecord referralRecord) {
+        referralRecord.setResult("待审批");
+        List<ReferralRecord> list = referralRecordService.selectAll(referralRecord);
+        return Result.success(list);
+    }
 
     @GetMapping("/selectById{id}")
     public Result selectById(@PathVariable Integer id) {
@@ -45,24 +50,13 @@ public class ReferralRecordController {
         return Result.success(referralRecord);
     }
 
-    // 该接口即将被废弃！！！！！！ 不要使用！！！！！！
     @PutMapping("/update")
-    public Result updateById(@RequestBody ReferralRecord referralRecord) {
-        referralRecordService.updateById(referralRecord);
+    public Result update(@RequestBody ReferralRecord referralRecord) {
+        referralRecordService.update(referralRecord);
         return Result.success();
     }
 
-    /**
-     * 拒绝转出
-     * @param referralRecord
-     * @return
-     */
-    @PatchMapping("/refuseOut")
-    public Result refuseReferralOut(@RequestBody ReferralRecord referralRecord) {
-        referralRecord.setResult(ReferralEnum.REFUSED_BY_OUT_ADMIN.toString()); 
-        referralRecordService.updateById(referralRecord);
-        return Result.success("已拒绝");
-    }
+
 
     /**
      * 拒绝转入
@@ -73,17 +67,6 @@ public class ReferralRecordController {
     public Result refuseReferralIn(@RequestBody ReferralRecord referralRecord) {
         referralRecord.setResult(ReferralEnum.REFUSED_BY_IN_ADMIN.toString()); 
         return Result.success("已拒绝");
-    }
-
-    /**
-     * 同意转出，同时发送转诊记录到对方医院
-     * @param referralRecord
-     * @return
-     */
-    @PutMapping("/agreenOut")
-    public Result agreenReferralOut(@RequestBody ReferralRecord referralRecord) {
-        referralRecordService.send(referralRecord, "http://localhost:8091/referal/b/com"); 
-        return Result.success("同意转入");
     }
 
     /**

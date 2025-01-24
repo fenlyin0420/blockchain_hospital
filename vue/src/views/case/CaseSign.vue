@@ -89,15 +89,6 @@
     
       <img :src="blockInfo[0].QR" width="150px" height="150px" style="display: inline-block;">
       <p style="color: blue; padding: 20px; border-radius: 5px; border: 2px solid rgb(235, 238, 245); font-size: 20px; display:inline-block; margin-left: 50px; position:relative;bottom:55px"> {{ blockInfo[0].blockHash }}</p>
-    <!-- <el-table :data="blockInfo" border style="width: 100%;" >
-      <el-table-column prop="QR" align="center" label=" 二维码" width="180">
-        <template slot-scope="scope">
-          <img :src="scope.row.QR" width="150px" height="150px">
-        </template>
-      </el-table-column>
-      <el-table-column prop="blockHash" align="center" label="区块链存储地址">
-      </el-table-column>
-    </el-table> -->
 
     <div class="header" style="margin: 10px 0">
       <h2>环公钥组成信息</h2>
@@ -151,52 +142,30 @@ export default {
     load() {
 
     },
-    upChain() {
-      if (true){
-        this.blockInfo[0].blockHash = 'BPcYz3sejN3rkSAmVLQWxhx6Hr/Tf4Q37YR+raOPeTb9e/DzVOHkSAmVLQWxhxR+raOPeTb9e/D'
-        this.$request.get('/files/generateQR', {
-          params: {
-            seed: this.blockInfo[0].blockHash
-          }
-        }).then(res => {
-          if (res.code === '200'){
-            this.blockInfo[0].QR = res.data
-          }
-        })
-        return 
-      }
-      // 1. 获取签名数据的区块链地址
-
-      // 2. 根据地址生成二维码，得到二维码的url
-    },
     /**
-     * 签名
+     * 签名。 假的，
+     * 屎山，实在写不下去了，爱咋咋样吧。
      */
     sign() {
-      // 病历 id
-      this.params.id = this.receivedData.id
-      this.$request.post('/keys/sign', this.params).then(res => {
-        if (res.code === '200') {
-          this.signData = res.data.signData
-          this.signKey = res.data.signKey
-          this.signPubKey = res.data.signPubKey
-          this.upChain()
-          // 自动跳转
-          // const countdownSeconds = 3;
-          // let countdown = countdownSeconds;
-          // const countdownInterval = setInterval(() => {
-          //   if (countdown > 0) {
-          //     this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
-          //     countdown--;
-          //   } else {
-          //     clearInterval(countdownInterval);
-          //     this.$router.push('/doctorReserve');
-          //   }
-          // }, 1000);
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
+      console.log(this.receivedData)
+      this.signData = this.receivedData.signData
+      this.signKey = this.receivedData.signKey
+      this.signPubKey = this.receivedData.signPubKey
+      this.blockInfo[0].QR = this.receivedData.QR
+      this.blockInfo[0].blockHash = this.receivedData.transactionHash
+
+      // 自动跳转
+      // const countdownSeconds = 3;
+      // let countdown = countdownSeconds;
+      // const countdownInterval = setInterval(() => {
+      //   if (countdown > 0) {
+      //     this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
+      //     countdown--;
+      //   } else {
+      //     clearInterval(countdownInterval);
+      //     this.$router.push('/doctorReserve');
+      //   }
+      // }, 1000);
     },
 
   }

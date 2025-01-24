@@ -73,6 +73,9 @@ public class RecordService {
         return recordMapper.selectAll(record);
     }
 
+    public List<Record> selectAllUserName() {
+        return recordMapper.selectAllUserName();
+    }
     /**
      * 分页查询
      */

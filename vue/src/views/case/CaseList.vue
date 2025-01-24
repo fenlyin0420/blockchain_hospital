@@ -84,6 +84,7 @@ export default {
       this.load(pageNum)
     },
     goToCaseDetails(row) {
+      console.log(row)
       this.$router.push({
         name: 'CaseDetail',
         query: row
