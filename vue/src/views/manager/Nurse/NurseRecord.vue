@@ -52,12 +52,12 @@ export default {
     }
   },
   created() {
-    this.load(); //查询病例
+    this.load(1); //查询病例
   },
   methods: {
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum;
-      this.$request.get('/DailyCare/selectPage',
+      this.$request.get('/DailyCare/selectPageRecord',
         {
           params: {
             pageNum: this.pageNum,

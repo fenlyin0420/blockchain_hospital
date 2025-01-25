@@ -27,4 +27,10 @@ public class CareService {
         List<Traverse> list = careMapper.selectPage(traverse);
         return PageInfo.of(list);
     }
+
+    public PageInfo<Traverse> selectPageRecord(Traverse traverse, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Traverse> list = careMapper.selectPageRecord(traverse);
+        return PageInfo.of(list);
+    }
 }

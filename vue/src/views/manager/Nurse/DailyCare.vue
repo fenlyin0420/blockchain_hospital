@@ -57,7 +57,7 @@
             </el-table-column> -->
             <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
             <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column>
+            <!-- <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column> -->
             <!-- <el-table-column label="操作" width="180" align="center">
               <template v-slot="scope">
                 <el-button plain type="danger" size="mini" v-if="scope.row.careStatus === '未护理'"
@@ -185,13 +185,13 @@ export default {
       // 根据wardName返回不同的背景颜色
       switch (wardName) {
         case '重症监护室':
-          return '#ffe9e5';
+          return '#fff5f4';
         case '病房A':
-          return '#fffee6';
+          return '#fffff4';
         case '病房B':
-          return '#e6ffe9';
+          return '#f1fff3';
         case '病房C':
-          return '#f0ecf8';
+          return '#fef4ff';
         default:
           return '#ffffff';
       }
