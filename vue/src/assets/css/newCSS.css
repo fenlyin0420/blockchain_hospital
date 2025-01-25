@@ -202,10 +202,6 @@
     background-color: #f5f0f0 !important;
 }
 
-.el-menu-item:not(.is-active):hover {
-    /*background-color: #0376bf !important;*/
-    /*color: #fff;*/
-}
 
 .el-menu-item:hover {
     background-color: #f5f0f0 !important;
@@ -233,7 +229,12 @@ th.el-table__cell {
     color: blue;
     font-family: "黑体", sans-serif;
 }
-
+.el-input__inner {
+    color: blue !important;
+}
+.el-textarea__inner {
+    color: blue !important;
+}
 .case-container {
     overflow: scroll;
 }
