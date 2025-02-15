@@ -23,7 +23,7 @@
         ></el-input>
         <el-button type="primary" plain @click="pullReferralInfo">获取</el-button>
       </div>
-      
+
       <div class="accept">
         <el-button type="success" plain @click="accept">同意转入</el-button>
       </div>
@@ -45,13 +45,14 @@
 
       <div class="pagination">
         <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="pageSize"
-            layout="total, prev, pager, next"
-            :total="total">
+          background
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[5, 10, 20]"
+          :page-size="pageSize"
+          layout="total, prev, pager, next"
+          :total="total"
+        >
         </el-pagination>
       </div>
     </div>
@@ -64,38 +65,78 @@
       fullscreen
       @close="handleClose"
     >
-      <el-table :data="ReferralRecord" stripe>
-        <el-table-column prop="userName" label="患者姓名"></el-table-column>
-        <el-table-column
-          prop="outHospitalName"
-          label="转出医院"
-          width="80px"
-        ></el-table-column>
-        <el-table-column prop="outTime" label="转出时间"></el-table-column>
-        <el-table-column prop="reason" label="转诊原因"></el-table-column>
-        <el-table-column
-          prop="inHospitalName"
-          label="转入医院"
-          show-overflow-tooltip
-        ></el-table-column>
-      </el-table>
+      <el-row :gutter="24">
+        <el-col :span="8">
+          <el-form :model="form" label-width="120px">
 
-      <div class="pullTraverse">
-        <el-radio v-model="opt" label="溯源所有病历" @change="handleRadioChange"></el-radio>
-        <el-radio v-model="opt" label="溯源指定病历" @change="handleRadioChange"></el-radio>
-        <el-input id="input" :placeholder="placeholder" v-model="idCard"></el-input>
-        <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
-      </div>
-      
+            <el-form-item label="患者姓名">
+              <el-input v-model="form.userName" placeholder="请输入患者姓名"></el-input>
+            </el-form-item>
+
+            <el-form-item label="转出医院">
+              <el-input
+                v-model="form.outHospitalName"
+              ></el-input>
+            </el-form-item>
+
+
+            <el-form-item label="转出时间">
+              <el-date-picker
+                v-model="form.outTime"
+                type="datetime"
+              ></el-date-picker>
+            </el-form-item>
+
+
+            <el-form-item label="转诊原因">
+              <el-input
+                v-model="form.reason"
+                type="textarea"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="转入医院">
+              <el-input
+                v-model="form.inHospitalName"
+
+              ></el-input>
+            </el-form-item>
+          </el-form>
+
+          <div class="pullTraverse">
+            <el-radio
+              v-model="opt"
+              label="溯源所有病历"
+              @change="handleRadioChange"
+            ></el-radio>
+            <el-radio
+              v-model="opt"
+              label="溯源指定病历"
+              @change="handleRadioChange"
+            ></el-radio>
+            <el-input id="input" :placeholder="placeholder" v-model="idCard"></el-input>
+            <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
+          </div>
+        </el-col>
+
+        <el-col :span="16">
+          <h2 style="text-align: center">交易回执</h2>
+          <CodeBlock :code="code" language="json" />
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import CodeBlock from "../component/CodeBlock.vue";
 
 export default {
   name: "ReferralRecord",
+  components: {
+    CodeBlock,
+  },
   data() {
     return {
       tableData: [], // 所有的数据
@@ -120,17 +161,44 @@ export default {
       placeholder: "请输入身份证号",
       ReferralRecord: [],
       idCard: "",
+      form: {
+        userName: '',
+        outHospitalName: '',
+        outTime: '',
+        reason: '',
+        inHospitalName: '',
+      },
+      code: `{
+  "transactionHash": "0x0bf00b1ae8d171277e9054d691ffaaeb1f141c0bca19ab5447793b2694592a01",
+  "transactionIndex": "0x0",
+  "root": "0x169fe4353d9821d902a634895bd34a7b9562d8c62bb1c3bdd5801d85952541f4",
+  "blockNumber": "0x6a",
+  "blockHash": "0x3a54ceb2c8fceecaa5420b9bd980f8b6d4ef7d4c363549e25dbe7941b218b12e",
+  "from": "0x37080385a27a3e0559f6b2bdfb5aac9c51fe2951",
+  "to": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
+  "gasUsed": "0x5614f",
+  "contractAddress": "0x0000000000000000000000000000000000000000",
+  "logs": [
+    {
+      "address": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
+      "topics": [
+        "0xe98fb921ff38c7a05bb2f482f520be86158bc38c12f4901e3c67b5dc108f2496"
+      ]
+    }
+  ]
+}
+`,
     };
   },
   created() {
     // this.load(1)
-    const storedData = localStorage.getItem('tableData');
+    const storedData = localStorage.getItem("tableData");
     if (storedData) {
-        this.tableData = JSON.parse(storedData);
+      this.tableData = JSON.parse(storedData);
     }
-    const storedData2 = localStorage.getItem('ReferralRecord');
+    const storedData2 = localStorage.getItem("ReferralRecord");
     if (storedData2) {
-        this.ReferralRecord = JSON.parse(storedData2);
+      this.ReferralRecord = JSON.parse(storedData2);
     }
   },
   methods: {
@@ -189,22 +257,23 @@ export default {
      * 获取病历
      */
     pullTraverse() {
-      this.$message(this.opt)
+      this.$message(this.opt);
       const Request = axios.create({
         baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
         timeout: 50000,
       });
 
       if (this.opt === "溯源指定病历") {
-        ;
       } else {
-        Request.post("/getMedicalRecordsByIdCard", {_idCard: this.idCard}).then((res) => {
-          if (res.data.code === "200"){
-            // 解析数据
-            this.tableData = this.parseTraverse(res.data.data.returnObject)
-            localStorage.setItem('tableData', JSON.stringify(this.tableData));
+        Request.post("/getMedicalRecordsByIdCard", { _idCard: this.idCard }).then(
+          (res) => {
+            if (res.data.code === "200") {
+              // 解析数据
+              this.tableData = this.parseTraverse(res.data.data.returnObject);
+              localStorage.setItem("tableData", JSON.stringify(this.tableData));
+            }
           }
-        });
+        );
       }
     },
     /**
@@ -222,27 +291,27 @@ export default {
       Request.post("/getReferralInfoByTransactionHash", {
         _transactionHash: this.referralInfo,
       }).then((res) => {
-        if (res.data.code === "200"){
+        if (res.data.code === "200") {
           // 解析数据，打开浮窗，准备拉取病历
-          this.ReferralRecord[0] = this.parseReferralRecord(res.data.data.returnObject)
-          localStorage.setItem('ReferralRecord', JSON.stringify(this.ReferralRecord));
-          this.showDialog = true
+          this.form = this.parseReferralRecord(res.data.data.returnObject);
+          localStorage.setItem("ReferralRecord", JSON.stringify(this.ReferralRecord));
+          this.showDialog = true;
         }
       });
     },
     /**
      * 同意转诊，存储转诊信息
      */
-    accept(){
-      let body = this.ReferralRecord[0]
-      body.result = "已转入" // 设置转诊结果
-      body.inTime = new Date().toISOString().split('T')[0]
+    accept() {
+      let body = this.ReferralRecord[0];
+      body.result = "已转入"; // 设置转诊结果
+      body.inTime = new Date().toISOString().split("T")[0];
       this.$request.post("/referral/add", body).then((res) => {
-        if(res.code === '200') {
-          localStorage.removeItem('ReferralRecord');
-          localStorage.removeItem('tableData');
-          this.ReferralRecord = []
-          this.tableData = []
+        if (res.code === "200") {
+          localStorage.removeItem("ReferralRecord");
+          localStorage.removeItem("tableData");
+          this.ReferralRecord = [];
+          this.tableData = [];
           this.$message.success("转入成功");
         }
       });
@@ -254,28 +323,29 @@ export default {
       });
       // 获取环公钥
       await Request.post("/getPublicKeyByTransactionHash", {
-        "_transactionHash": "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad"
+        _transactionHash:
+          "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad",
       }).then((res) => {
-        if (res.data.code === '200') {
-          row.signPubKey = res.data.data.returnObject[0]
+        if (res.data.code === "200") {
+          row.signPubKey = res.data.data.returnObject[0];
         } else {
-          this.$message.error("获取环公钥失败")
+          this.$message.error("获取环公钥失败");
         }
       });
       // 获取签名数据
       await this.$request.post("/traverse/getSignData", row).then((res) => {
-        if (res.code === '200'){
-          row.signData = res.data
+        if (res.code === "200") {
+          row.signData = res.data;
         } else {
-          this.$message.error("获取签名数据失败")
+          this.$message.error("获取签名数据失败");
         }
       });
 
-      row.signResult = ""
-      console.log(row)
+      row.signResult = "";
+      console.log(row);
       this.$router.push({
-        name: 'CaseDetail',
-        query: row
+        name: "CaseDetail",
+        query: row,
       });
     },
 
@@ -310,50 +380,49 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum);
     },
-    handleRadioChange(label){
-      if (label === "溯源指定病历") 
-        this.placeholder = "请输入转诊hash"
-      else
-        this.placeholder = "请输入身份证号"
+    handleRadioChange(label) {
+      if (label === "溯源指定病历") this.placeholder = "请输入转诊hash";
+      else this.placeholder = "请输入身份证号";
     },
     handleClose() {
       this.showDialog = false;
     },
-    parseReferralRecord(dataList ) {
+    parseReferralRecord(dataList) {
       const parsedObject = {};
       // 去除多余换行符并按换行符分割字符串
-      const lines = dataList[0].trim().split('\n');
+      const lines = dataList[0].trim().split("\n");
       for (const line of lines) {
-          // 按冒号分割键值对
-          const [key, value] = line.split(': ');
-          if (key && value) {
-              parsedObject[key] = value;
-          }
+        // 按冒号分割键值对
+        const [key, value] = line.split(": ");
+        if (key && value) {
+          parsedObject[key] = value;
+        }
       }
       return this.convertToEnglishObject(parsedObject);
     },
 
     /**
-     * 解析为病历列表 
+     * 解析为病历列表
      * @param dataList 病历列表
      */
     parseTraverse(dataList) {
-      return dataList.flatMap(item => {
-          return item.split('\n\n\n')
-            .filter(entry => entry.trim()!== '')
-            .map(entry => {
-                  const lines = entry.split('\n').filter(line => line.trim()!== '');
-                  const obj = {};
-                  lines.forEach(line => {
-                      const colonIndex = line.indexOf(':');
-                      if (colonIndex!== -1) {
-                          const key = line.slice(0, colonIndex).trim();
-                          const value = line.slice(colonIndex + 1).trim();
-                          obj[key] = value;
-                      }
-                  });
-                  return this.convertToEnglishObject(obj);
-              });
+      return dataList.flatMap((item) => {
+        return item
+          .split("\n\n\n")
+          .filter((entry) => entry.trim() !== "")
+          .map((entry) => {
+            const lines = entry.split("\n").filter((line) => line.trim() !== "");
+            const obj = {};
+            lines.forEach((line) => {
+              const colonIndex = line.indexOf(":");
+              if (colonIndex !== -1) {
+                const key = line.slice(0, colonIndex).trim();
+                const value = line.slice(colonIndex + 1).trim();
+                obj[key] = value;
+              }
+            });
+            return this.convertToEnglishObject(obj);
+          });
       });
     },
     convertToEnglishObject(chineseObj) {
@@ -445,9 +514,6 @@ export default {
   color: blue;
 }
 
-::v-deep .el-textarea__inner {
-  color: blue;
-}
 
 .verifyBtn {
   margin-top: 5px;
@@ -455,11 +521,14 @@ export default {
   margin-left: 70%;
 }
 
-.pullTraverse, .pullTraverse * {
+.pullTraverse,
+.pullTraverse * {
   margin: 10px;
 }
 
 .pullTraverse #input {
-  width: fit-content
+  width: fit-content;
 }
+
+
 </style>

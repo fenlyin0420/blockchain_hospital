@@ -74,29 +74,41 @@
 
     <el-dialog
       :visible="showDialog"
-      top="calc(100% / 6)"
+      top="5%"
       width="50%"
       title="您的转诊信息"
       center
       @close="handleClose"
     >
-      <div style="display: flex; justify-content: center; align-items: center">
-        <el-image :src="QR" fit="contain" style="width: 250px; height: 250px" />
-      </div>
 
-      <div style="display: flex; justify-content: center; align-items: center">
-        <p style="color: blue; font-size: 16px">{{ blockAddr }}</p>
-      </div>
+
+      <el-row>
+        <div style="display: flex;">
+          <el-image :src="QR" fit="contain" style="width: 200px; height: 200px; " />
+          <p style="color: blue; font-size: 16px; margin:auto 10px; ">{{ blockAddr }}</p>
+        </div>
+
+
+      </el-row>
+
+      <el-row>
+        <h2 style="text-align: center">交易回执</h2>
+        <CodeBlock :code="code" language="json" />
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import axois from "axios";
-
+import CodeBlock from "../component/CodeBlock.vue";
 export default {
   name: "ReferralRecord",
+  components: {
+    CodeBlock,
+  },
   data() {
+
     return {
       tableData: [], // 所有的数据
       pageNum: 1, // 当前的页码
@@ -111,6 +123,26 @@ export default {
       QR: "",
       blockAddr: "",
       showDialog: false,
+      code: `{
+  "transactionHash": "0x0bf00b1ae8d171277e9054d691ffaaeb1f141c0bca19ab5447793b2694592a01",
+  "transactionIndex": "0x0",
+  "root": "0x169fe4353d9821d902a634895bd34a7b9562d8c62bb1c3bdd5801d85952541f4",
+  "blockNumber": "0x6a",
+  "blockHash": "0x3a54ceb2c8fceecaa5420b9bd980f8b6d4ef7d4c363549e25dbe7941b218b12e",
+  "from": "0x37080385a27a3e0559f6b2bdfb5aac9c51fe2951",
+  "to": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
+  "gasUsed": "0x5614f",
+  "contractAddress": "0x0000000000000000000000000000000000000000",
+  "logs": [
+    {
+      "address": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
+      "topics": [
+        "0xe98fb921ff38c7a05bb2f482f520be86158bc38c12f4901e3c67b5dc108f2496"
+      ]
+    }
+  ]
+}`
+      
     };
   },
   created() {

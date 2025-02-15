@@ -24,52 +24,33 @@ public class LogAspect {
 
     @Around("@annotation(autoLog)")
     public Object doAround(ProceedingJoinPoint joinPoint, AutoLog autoLog) throws Throwable {
-
         // 操作内容，我们在注解里已经定义了value()，然后再需要切入的接口上面去写上对应的操作内容即可
         String content = autoLog.value();
         // 操作时间（当前时间）
         String time = DateUtil.now();
-        // 操作人
-        String name = "";
-        Account user = TokenUtils.getCurrentUser();
-        if (ObjectUtil.isNotNull(user)) {
-            name = user.getName();
-        }
-
-        //角色
-        String role = "";
-
         // 操作人IP
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String ip = request.getRemoteAddr();
 
-        // 执行具体的接口
+        // 操作人及其角色（直接从 Token 中获取）
+        String name = "";
+        String role = "";
+        Account user = TokenUtils.getCurrentUser();
+        if (ObjectUtil.isNotNull(user)) {
+            name = user.getName();
+            role = user.getRole();  // 假设 Account 类有 getRole() 方法
+        }
+
+        // 执行接口并获取结果
         Result result = (Result) joinPoint.proceed();
 
-        Object data =result.getData();
-        if (data instanceof Admin admin) {
-            name = admin.getName();
-            role = admin.getRole();
-        }
-        else if (data instanceof Doctor doctor) {
-            name = doctor.getName();
-            role = doctor.getRole();
-        }
-        else if (data instanceof Nurse nurse) {
-            name = nurse.getName();
-            role = nurse.getRole();
-        }
-        else if (data instanceof User user1) {
-            name = user1.getName();
-            role = user1.getRole();
-        }
+        // 删除从 Result.data 中提取角色的逻辑（不再需要）
 
-
-        // 再去往日志表里写一条日志记录
+        // 记录日志
         Log log = new Log(null, content, name, time, role, ip);
         logService.add(log);
 
-        // 你可以走了，去返回前台报到吧~
         return result;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.entity.Department;
 import com.example.service.DepartmentService;
@@ -22,6 +23,7 @@ public class DepartmentController {
     /**
      * 新增
      */
+    @AutoLog("增加科室")
     @PostMapping("/add")
     public Result add(@RequestBody Department department) {
         departmentService.add(department);
@@ -31,6 +33,7 @@ public class DepartmentController {
     /**
      * 删除
      */
+    @AutoLog("删除科室")
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
         departmentService.deleteById(id);
@@ -40,6 +43,7 @@ public class DepartmentController {
     /**
      * 批量删除
      */
+    @AutoLog("删除科室")
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         departmentService.deleteBatch(ids);
@@ -49,6 +53,7 @@ public class DepartmentController {
     /**
      * 修改
      */
+    @AutoLog("修改科室")
     @PutMapping("/update")
     public Result updateById(@RequestBody Department department) {
         departmentService.updateById(department);
