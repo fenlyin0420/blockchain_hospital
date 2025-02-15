@@ -5,7 +5,7 @@
       <el-input placeholder="请输入操作人姓名" style="width: 200px" v-model="name"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
-      <el-button type="success" plain @click="goToScreen">查看医院数据</el-button>
+      <el-button type="success" plain @click="goToScreen">查看医院数据大屏</el-button>
     </div>
 
     <div class="table" style="margin-top: 15px">
