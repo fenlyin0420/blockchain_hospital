@@ -10,4 +10,8 @@ public interface CareMapper {
     List<Traverse> SearchByHId(Integer id);
 
     int updateById(Traverse traverse);
+
+    List<Traverse> selectPage(Traverse traverse);
+
+    List<Traverse> selectPageRecord(Traverse traverse);
 }

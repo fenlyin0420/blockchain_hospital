@@ -142,6 +142,35 @@ public class KeyService {
         traverseMapper.updateById(traverse);
         return ringSign;
     }
+    public RingSign verifySignByData(Traverse traverse) {
+        List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
+        List<String> publicKeys = new ArrayList<>();
+        for (Doctor doctor : doctors) {
+            publicKeys.add(doctor.getPublicKey());
+        }
+        List<BCECPublicKey> list = new ArrayList<>();
+        for (String pubKey : publicKeys) {
+            try {
+                list.add(MySM2Util.str2pub(pubKey));
+            } catch (Exception e) {
+                throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+            }
+        }
+        boolean result = BestRingSignUtil.verifySign(traverse.signData(), list, traverse.getSignKey());
+
+        RingSign ringSign = new RingSign();
+        ringSign.setSignData(traverse.getSignData());
+        ringSign.setSignKey(traverse.getSignKey());
+        if (result) {
+            traverse.setSignResult("成功");
+            ringSign.setMessage("成功");
+        } else {
+            traverse.setSignResult("失败");
+            ringSign.setMessage("失败");
+        }
+        traverseMapper.updateById(traverse);
+        return ringSign;
+    }
 
     /**
      * 获取病历公钥环

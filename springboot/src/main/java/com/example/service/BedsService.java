@@ -33,7 +33,6 @@ public class BedsService {
     }
 
     public List<Bed> selectBedAll(Bed bed) {
-
         return bedsMapper.selectBedAll(bed);
     }
 

@@ -4,6 +4,7 @@ package com.example.controller;
 import com.example.common.Result;
 import com.example.entity.Traverse;
 import com.example.service.CareService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -17,9 +18,24 @@ public class CareController {
 
     @GetMapping("/SearchByHId/{id}")
     public Result SearchByHId(@PathVariable Integer id) {
-        System.out.println("Received ID: " + id);
-        List<Traverse> l = careService.SearchByHId(id);
-        return Result.success(l);
+        List<Traverse> list = careService.SearchByHId(id);
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectPage")
+    public Result selectPage(Traverse traverse,
+                              @RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Traverse> page = careService.selectPage(traverse,pageNum,pageSize);
+        return Result.success(page);
+    }
+
+    @GetMapping("/selectPageRecord")
+    public Result selectPageRecord(Traverse traverse,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Traverse> page = careService.selectPageRecord(traverse,pageNum,pageSize);
+        return Result.success(page);
     }
 
     @PutMapping("/update")

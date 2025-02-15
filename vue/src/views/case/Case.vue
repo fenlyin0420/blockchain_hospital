@@ -163,6 +163,7 @@ export default {
         await Promise.all([this.loadByUser()]);
         // 从URL查询参数中解析caseInfo  
         this.caseInfo = this.$route.query;
+        console.log("caseInfo", caseInfo)
       } catch (error) {
       }
     },
@@ -323,6 +324,7 @@ export default {
     ok() {
       let newTraverse = {}
       newTraverse.userId = this.caseInfo.userId
+      newTraverse.idCard = this.caseInfo.idCard
       newTraverse.timestamp = new Date().getTime()
       newTraverse.treatmentDate = this.caseInfo.time
       newTraverse.doctorId = this.user.id
@@ -333,6 +335,13 @@ export default {
       newTraverse.drug = this.medicine
       newTraverse.inHospital = this.radio
       newTraverse.img = this.imgURL.img
+
+      const fromPage = this.$route.query.fromPage;  //从住院业务跳转就设置该状态
+      if (fromPage === 'Hospitalization') {
+        newTraverse.careStatus = '未护理';
+      } else {
+        newTraverse.careStatus = '';
+      }
       // 确认病历，上传到数据库
       this.$request.post('/traverse/add', newTraverse).then(res => {
         if (res.code === '200') {
@@ -343,7 +352,9 @@ export default {
           // 如果不需要住院，则跳转到加密界面
           // 进行加密、签名后，诊疗结束
           if (this.radio === '否')
-          this.$router.push({ name: "CaseEncrypt", query: newTraverse })
+            this.$router.push({ name: "CaseEncrypt", query: newTraverse })
+          else
+            this.$message.success("诊疗结束")
         } else {
           this.$message.error(res.msg)
         }

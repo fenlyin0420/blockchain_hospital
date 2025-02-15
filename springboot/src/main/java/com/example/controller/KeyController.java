@@ -4,6 +4,7 @@ import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Params;
+import com.example.entity.ReferralTraverse;
 import com.example.entity.RingSign;
 import com.example.entity.Traverse;
 import com.example.exception.CustomException;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import java.io.IOException;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/keys")
@@ -68,12 +67,24 @@ public class KeyController {
         return Result.success(ringSign);
     }
 
-    // 进行验签
+    /**
+     * 进行签名验证
+     * 根据id找到对应病历，在对其进行验签
+     * @param params.id 病历id
+     * @return
+     */
     @PostMapping("/verifySign")
     public Result verifySign(@RequestBody Params params) {
         RingSign ringSign = keyService.verifySign(params);
         return Result.success(ringSign);
     }
+
+    @PostMapping("/verifySignByData")
+    public Result verifySignByData(@RequestBody Traverse traverse) {
+        RingSign ringSign = keyService.verifySignByData(traverse);
+        return Result.success(ringSign);
+    }
+    
 
     // 进行加密
     @PatchMapping("encrypt")

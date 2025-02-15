@@ -14,7 +14,7 @@ public interface ReferralRecordMapper {
 
     ReferralRecord selectById(Integer id);
 
-    void updateById(ReferralRecord referralRecord);
+    void update(ReferralRecord referralRecord);
 
     void deleteById(Integer id);
 

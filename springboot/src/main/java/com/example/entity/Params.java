@@ -43,9 +43,19 @@ public class Params {
     private String actName;
     private String signData;
     private String signKey;
-    private String vote;
-    private String signNum;
+    private String signPubKey;
     private String activityIntroduction;
     private String advice;
     private String drug;
+    private String idCard;
+    private String treatmentDate;
+    private String userName;
+    private String doctorName;
+    private String hospitalName;
+    private String img;
+    private String diagnosis;
+    private String inHospital;
+    private String careStatus;
+    private String referralReason;
+    private String signResult;
 }

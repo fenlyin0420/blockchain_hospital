@@ -16,13 +16,12 @@ public class ReferralRecord {
     private Integer inDoctorId;
     private String outTime;
     private String inTime;
-    private String why;
+    private String reason;
     private String result;
-
-    // 非数据库字段
-    private String userName;
     private String outHospitalName;
     private String inHospitalName;
+    private String userName;
+    // 非数据库字段
     private String outDoctorName;
     private String inDoctorName;
 }

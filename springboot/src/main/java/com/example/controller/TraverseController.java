@@ -13,7 +13,13 @@ import cn.hutool.db.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
+
+import java.sql.Ref;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 
@@ -86,12 +92,6 @@ public class TraverseController {
     public Result add(@RequestBody Traverse traverse) {
         Integer id;
         try {
-            if(traverse.getInHospital().equals("是")){
-                traverse.setInHospital(InhospitalEnum.Inhospital_YES.status);
-            }
-            if(traverse.getInHospital().equals("否")){
-                traverse.setInHospital(InhospitalEnum.Inhospital_NO.status);
-            }
             id = traverseService.add(traverse);
         } catch(NullPointerException e) {
             return Result.error("病历信息不全（是否住院？）");
@@ -118,11 +118,30 @@ public class TraverseController {
         return Result.success();
     }
 
+    /**
+     * 获取所有转诊后的病历
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/selectPageReferralTraverse")
     public Result selectPageReferralTraverse(@RequestParam(defaultValue = "1") Integer pageNum,
                                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<ReferralTraverse> page = traverseService.selectPageReferralTraverse(pageNum, pageSize);
         return Result.success(page);
     }
+
+    @PostMapping("/insertReferralTraverse")
+    public Result insertReferralTraverse(@RequestBody ReferralTraverse entity) {
+        System.err.println(entity);
+        traverseService.insertReferralTraverse(entity); 
+        return Result.success("插入数据成功");
+    }
+
+    @PostMapping("/getSignData")
+    public Result getSignData(@RequestBody Traverse traverse) {
+        return Result.success(traverse.signData());
+    }
+    
     
 }

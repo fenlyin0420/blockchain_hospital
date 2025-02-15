@@ -25,6 +25,11 @@
         order by id desc
     </select>
 
+    <select id="selectAllUserName" resultType="com.example.entity.Record">
+        select distinct user.name as userName from record
+        left join user on record.user_id = user.id
+    </select>
+
     <select id="selectById" resultType="com.example.entity.Record">
         select
         <include refid="Base_Column_List" />

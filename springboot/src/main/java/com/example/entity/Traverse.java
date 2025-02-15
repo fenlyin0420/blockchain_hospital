@@ -29,7 +29,6 @@ public class Traverse {
     private String drug;
     @Sign
     private String inHospital;
-    @Sign
     private String careStatus;
     /** 病床id */
     private Integer bedId;
@@ -65,8 +64,10 @@ public class Traverse {
             if (field.isAnnotationPresent(Sign.class)) {
                 field.setAccessible(true);
                 try {
+                    // 检查 value 是否为 null
                     Object value = field.get(this);
-                    concatenatedParts.add(field.getName() + ":" + value.toString());
+                    String valueStr = (value != null) ? value.toString() : "";
+                    concatenatedParts.add(field.getName() + ":" + valueStr);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

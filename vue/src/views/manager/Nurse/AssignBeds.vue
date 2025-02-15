@@ -153,7 +153,6 @@ export default {
     handleAssign(row) {   // 新增数据（bed_id == null 的新增一个bed_id）
       this.form = JSON.parse(JSON.stringify(row)); 
       this.form.inHospital = '已住院';
-      this.form.careStatus = '未护理';
       this.fromVisible = true;   // 打开弹窗
     },
     save() { // 分配病房
@@ -226,13 +225,13 @@ export default {
     // 根据wardName返回不同的背景颜色
     switch (wardName) {
       case '重症监护室':
-        return '#FFD0CC';
+        return '#fff5f4';
       case '病房A':
-        return '#FFFACB';
+        return '#fffff4';
       case '病房B':
-        return '#D2FFD4';
+        return '#f1fff3';
       case '病房C':
-        return '#f0ecf8';
+        return '#fef4ff';
       default:
         return '#ffffff'; 
     }

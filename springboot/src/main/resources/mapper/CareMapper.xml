@@ -11,7 +11,6 @@
         where id = #{id}
     </update>
 
-
     <select id="SearchByHId" resultType="com.example.entity.Traverse">
         select traverse.*, 
         doctor.name as doctorName,
@@ -24,9 +23,42 @@
         left join user on traverse.user_id = user.id
         left join ward on bed.ward_id = ward.id
         <where>
-            <if test="inHospital != null">and in_hospital = '已住院'</if>
+            <if test="careStatus != null">and care_status in ('未护理','已护理')</if>
             <if test="hospitalId != null">and traverse.hospital_id = #{hospitalId}</if>
         </where>
     </select>
 
+    <select id="selectPage" resultType="com.example.entity.Traverse">
+        select traverse.*,
+        doctor.name as doctorName,
+        bed.bed_name as bedName,
+        ward.name as wardName,
+        user.name   as userName
+        from traverse
+        left join bed on traverse.bed_id = bed.id
+        left join doctor on traverse.doctor_id = doctor.id
+        left join user on traverse.user_id = user.id
+        left join ward on bed.ward_id = ward.id
+        <where>
+            <if test="careStatus == null">and care_status in ('未护理','已护理')</if>
+            <if test="hospitalId != null">and traverse.hospital_id = #{hospitalId}</if>
+        </where>
+    </select>
+
+    <select id="selectPageRecord" resultType="com.example.entity.Traverse">
+        select traverse.*,
+        doctor.name as doctorName,
+        bed.bed_name as bedName,
+        ward.name as wardName,
+        user.name   as userName
+        from traverse
+        left join bed on traverse.bed_id = bed.id
+        left join doctor on traverse.doctor_id = doctor.id
+        left join user on traverse.user_id = user.id
+        left join ward on bed.ward_id = ward.id
+        <where>
+            <if test="inHospital == null">and in_hospital = '已住院'</if>
+            <if test="hospitalId != null">and traverse.hospital_id = #{hospitalId}</if>
+        </where>
+    </select>
 </mapper>

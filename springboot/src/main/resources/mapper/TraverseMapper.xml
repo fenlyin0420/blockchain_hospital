@@ -20,6 +20,7 @@
             <if test="signPubKey != null">sign_pub_key,</if>
             <if test="signKey != null">sign_key,</if>
             <if test="img != null">img,</if>
+            <if test="careStatus != null">care_status,</if>
             <if test="isValid != null">is_valid,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -37,6 +38,7 @@
             <if test="signPubKey != null">#{signPubKey},</if>
             <if test="signKey != null">#{signKey},</if>
             <if test="img != null">#{img},</if>
+            <if test="careStatus != null">#{careStatus},</if>
             <if test="isValid != null">#{isValid},</if>
         </trim>
     </insert>
@@ -121,4 +123,42 @@
     <select id="selectAlReferralTraverse" resultType="com.example.entity.ReferralTraverse">
         select * from referral_traverse
     </select>
+
+<insert id="insertReferralTraverse" parameterType="com.example.entity.ReferralTraverse" useGeneratedKeys="true">
+    insert into referral_traverse
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="idCard!= null">id_card,</if>
+        <if test="timestamp!= null">timestamp,</if>
+        <if test="treatmentDate!= null">treatment_date,</if>
+        <if test="userName!= null">user_name,</if>
+        <if test="doctorName!= null">doctor_name,</if>
+        <if test="hospitalName!= null">hospital_name,</if>
+        <if test="img!= null">img,</if>
+        <if test="diagnosis!= null">diagnosis,</if>
+        <if test="advice!= null">advice,</if>
+        <if test="drug!= null">drug,</if>
+        <if test="inHospital!= null">in_hospital,</if>
+        <if test="careStatus!= null">care_status,</if>
+        <if test="referralReason!= null">referral_reason,</if>
+        <if test="signKey!= null">sign_key,</if>
+        <if test="signResult!= null">sign_result,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="idCard!= null">#{idCard},</if>
+        <if test="timestamp!= null">#{timestamp},</if>
+        <if test="treatmentDate!= null">#{treatmentDate},</if>
+        <if test="userName!= null">#{userName},</if>
+        <if test="doctorName!= null">#{doctorName},</if>
+        <if test="hospitalName!= null">#{hospitalName},</if>
+        <if test="img!= null">#{img},</if>
+        <if test="diagnosis!= null">#{diagnosis},</if>
+        <if test="advice!= null">#{advice},</if>
+        <if test="drug!= null">#{drug},</if>
+        <if test="inHospital!= null">#{inHospital},</if>
+        <if test="careStatus!= null">#{careStatus},</if>
+        <if test="referralReason!= null">#{referralReason},</if>
+        <if test="signKey!= null">#{signKey},</if>
+        <if test="signResult!= null">#{signResult},</if>
+    </trim>
+</insert>
 </mapper>

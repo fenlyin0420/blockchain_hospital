@@ -11,26 +11,26 @@
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
-        <el-table-column label="头像">
+        <!-- <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column> -->
+        <!-- <el-table-column label="头像">
           <template v-slot="scope">
             <div style="display: flex; align-items: center">
               <el-image style="width: 40px; height: 40px; border-radius: 50%" v-if="scope.row.avatar"
                         :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]"></el-image>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="username" label="账号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="description" label="医生介绍" show-overflow-tooltip></el-table-column>
         <el-table-column prop="departmentName" label="科室"></el-table-column>
         <el-table-column prop="price" label="挂号费"></el-table-column>
-        <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="role" label="角色"></el-table-column>
-        <el-table-column prop="time" label="入职时间"></el-table-column>
+        <!-- <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column> -->
+        <!-- <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column> -->
+        <!-- <el-table-column prop="role" label="角色"></el-table-column> -->
+        <!-- <el-table-column prop="time" label="入职时间"></el-table-column> -->
         <el-table-column prop="position" label="职位"></el-table-column>
-        <el-table-column prop="hospitalName" label="医院"></el-table-column>
+        <!-- <el-table-column prop="hospitalName" label="医院"></el-table-column> -->
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>

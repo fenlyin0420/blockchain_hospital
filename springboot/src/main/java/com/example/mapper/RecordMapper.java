@@ -34,4 +34,6 @@ public interface RecordMapper {
     */
     List<Record> selectAll(Record record);
 
+    List<Record> selectAllUserName();
+
 }

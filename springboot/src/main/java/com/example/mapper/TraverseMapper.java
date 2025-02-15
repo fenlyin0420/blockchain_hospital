@@ -27,4 +27,6 @@ public interface TraverseMapper {
     Integer selectLastInsertId();
 
     List<ReferralTraverse> selectAlReferralTraverse();
+
+    void insertReferralTraverse(ReferralTraverse entity);
 }

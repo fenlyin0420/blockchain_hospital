@@ -93,6 +93,9 @@
             <if test="privateKey != null">
                 private_key = #{privateKey},
             </if>
+            <if test="idCard  != null">
+                id_card = #{idCard},
+            </if>
         </set>
         where id = #{id}
     </update>

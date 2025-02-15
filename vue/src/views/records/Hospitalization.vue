@@ -84,6 +84,7 @@ export default {
             hospitalName: caseData?.hospitalName,
             departmentName: caseData?.departmentName,
             time: this.currentDate,
+            fromPage: "Hospitalization",
           }
             this.$router.push({name: "Case", query: caseInfo})
             this.$message.success('住院开药')
