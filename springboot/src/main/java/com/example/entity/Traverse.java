@@ -23,6 +23,8 @@ public class Traverse {
     private Integer hospitalId;
     @Sign
     private String advice;
+    /** 未加密医嘱 */
+    private String unencryptedAdvice;
     @Sign
     private String diagnosis;
     @Sign
