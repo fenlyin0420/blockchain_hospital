@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.common.AutoLog;
 import com.example.common.Result;
 import com.example.entity.Traverse;
 import com.example.service.CareService;
@@ -39,6 +40,7 @@ public class CareController {
     }
 
     @PutMapping("/update")
+    @AutoLog("护理了一个病人")
     public Result update(@RequestBody Traverse traverse){
         careService.updateById(traverse);
         return Result.success();

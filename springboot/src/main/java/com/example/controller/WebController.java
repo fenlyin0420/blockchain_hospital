@@ -34,7 +34,7 @@ public class WebController {
     @Resource
     private NurseService nurseService;
     @Resource
-    private ReferralRecordService referalRecordService;
+    private ReferralRecordService referralRecordService;
 
     @GetMapping("/")
     public Result hello() {
@@ -109,7 +109,7 @@ public class WebController {
      */
     @PostMapping("/com/recieveReferralRecord")
     public Result recieveReferralRecord(@RequestBody ReferralRecord referralRecord) {
-        referalRecordService.recieveReferralRecord(referralRecord);
+        referralRecordService.recieveReferralRecord(referralRecord);
         return Result.success("接收成功");
     }
 }
