@@ -34,7 +34,7 @@
               </div> -->
               <div style="margin-top: 15px">
                 <el-button type="danger" size="mini" :disabled="disabled(item.status)"
-                  @click="submit(item.status)">护理</el-button>
+                  @click="submit(item.status)">护理完毕</el-button>
               </div>
             </div>
           </el-col>
@@ -56,7 +56,7 @@
               </template>
             </el-table-column> -->
             <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
-            <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="unencryptedAdvice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
             <!-- <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column> -->
             <!-- <el-table-column label="操作" width="180" align="center">
               <template v-slot="scope">
@@ -117,6 +117,7 @@ export default {
               return item.treatmentDate === currentDate;
             });
             this.total = res.data?.total;
+            console.log("yizhu",this.tableData)
           } else {
             this.$message.error(res.msg)
           }
