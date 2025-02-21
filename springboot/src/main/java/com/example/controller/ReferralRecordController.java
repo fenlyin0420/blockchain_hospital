@@ -44,6 +44,15 @@ public class ReferralRecordController {
         return Result.success(list);
     }
 
+    @GetMapping("/selectSuccess")
+    public Result selectSuccess(ReferralRecord referralRecord,
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+
+        PageInfo<ReferralRecord> page = referralRecordService.selectSuccess(referralRecord, pageNum, pageSize);
+        return Result.success(page);
+    }
+
     @GetMapping("/selectById{id}")
     public Result selectById(@PathVariable Integer id) {
         ReferralRecord referralRecord = referralRecordService.selectById(id);

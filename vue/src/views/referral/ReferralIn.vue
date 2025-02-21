@@ -32,8 +32,8 @@
     <div class="table">
       <el-table :data="tableData" stripe>
         <el-table-column prop="userName" label="姓名"  width="100" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="treatmentDate" label="就诊日期" width="200" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hospitalName" label="医院名称"  width="100" align="center"></el-table-column>
+        <el-table-column prop="treatmentDate" label="就诊日期" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="hospitalName" label="医院名称"  width="200" align="center"></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名"  width="100" align="center"></el-table-column>
         <el-table-column prop="diagnosis" label="诊断结果" align="center"></el-table-column>
         <el-table-column label="详情"  align="center">
@@ -294,6 +294,7 @@ export default {
         if (res.data.code === "200") {
           // 解析数据，打开浮窗，准备拉取病历
           this.form = this.parseReferralRecord(res.data.data.returnObject);
+          this.ReferralRecord = this.form
           localStorage.setItem("ReferralRecord", JSON.stringify(this.ReferralRecord));
           this.showDialog = true;
         }
@@ -303,7 +304,7 @@ export default {
      * 同意转诊，存储转诊信息
      */
     accept() {
-      let body = this.ReferralRecord[0];
+      let body = this.ReferralRecord;
       body.result = "已转入"; // 设置转诊结果
       body.inTime = new Date().toISOString().split("T")[0];
       this.$request.post("/referral/add", body).then((res) => {

@@ -11,16 +11,17 @@
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="userName" label="患者姓名"  align="center"
-          show-overflow-tooltip></el-table-column>
-        <el-table-column prop="outHospitalName" label="转出医院" align="center"></el-table-column>
-        <el-table-column prop="outTime" label="转出时间" align="center"></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="outHospitalName" label="转出医院" width="200" align="center"></el-table-column>
+        <el-table-column prop="outTime" label="转出时间" width="100" align="center"></el-table-column>
         <el-table-column prop="reason" label="转诊原因" align="center"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template v-slot="scope">
+            <el-button plain type="primary" style="color: blue;" size="mini" @click=call(scope.row)
+              :disabled="user.role !== 'DOCTOR'">病历溯源</el-button>
             <el-button plain type="warning" style="color: blue;" size="mini" @click=call(scope.row)
               :disabled="user.role !== 'DOCTOR'">接诊</el-button>
-          </template>
+            </template>
         </el-table-column>
       </el-table>
 
