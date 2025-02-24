@@ -75,20 +75,16 @@
     <el-dialog
       :visible="showDialog"
       top="5%"
-      width="50%"
-      title="您的转诊信息"
+      width="60%"
+      :title="dialog_title"
       center
       @close="handleClose"
     >
-
-
       <el-row>
-        <div style="display: flex;">
-          <el-image :src="QR" fit="contain" style="width: 200px; height: 200px; " />
-          <p style="color: blue; font-size: 16px; margin:auto 10px; ">{{ blockAddr }}</p>
+        <div style="display: flex;justify-content: center; align-items: center; flex-direction: column;">
+          <el-image :src="QR" fit="contain" style="width: 200px; height: 200px;"/>
+          <p style="color: blue; font-size: 16px;text-align: center;">{{ blockAddr }}</p>
         </div>
-
-
       </el-row>
 
       <el-row>
@@ -122,27 +118,9 @@ export default {
       sendData: "",
       QR: "",
       blockAddr: "",
+      dialog_title: "???",
       showDialog: false,
-      code: `{
-  "transactionHash": "0x0bf00b1ae8d171277e9054d691ffaaeb1f141c0bca19ab5447793b2694592a01",
-  "transactionIndex": "0x0",
-  "root": "0x169fe4353d9821d902a634895bd34a7b9562d8c62bb1c3bdd5801d85952541f4",
-  "blockNumber": "0x6a",
-  "blockHash": "0x3a54ceb2c8fceecaa5420b9bd980f8b6d4ef7d4c363549e25dbe7941b218b12e",
-  "from": "0x37080385a27a3e0559f6b2bdfb5aac9c51fe2951",
-  "to": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
-  "gasUsed": "0x5614f",
-  "contractAddress": "0x0000000000000000000000000000000000000000",
-  "logs": [
-    {
-      "address": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
-      "topics": [
-        "0xe98fb921ff38c7a05bb2f482f520be86158bc38c12f4901e3c67b5dc108f2496"
-      ]
-    }
-  ]
-}`
-      
+      code: "",
     };
   },
   created() {
@@ -157,6 +135,7 @@ export default {
      * @param row 转诊记录
      */
     update(row) {
+      this.dialog_title = row.userName + "的转诊信息"; 
       const referralInfo = {
         _userName: row.userName,
         _outHospitalName: row.outHospitalName,
@@ -183,6 +162,7 @@ export default {
               // 得到本次转诊信息的hash值, 获取二维码
               this.showDialog = true;
               this.blockAddr = res.data.data.transactionReceipt.output
+              this.init_code(res.data.data)
               this.$request
                 .get("/files/generateQR", {
                   params: {
@@ -239,6 +219,39 @@ export default {
     reset() {
       this.status = null;
       this.load(1);
+    },
+    init_code(obj) {
+      const { returnCode, returnMessage, transactionReceipt : {
+        transactionHash,
+        transactionIndex,
+        root,
+        blockNumber,
+        blockHash,
+        from,
+        to,
+        gasUsed,
+        contractAddress,
+        logs
+      }} = obj;
+      const transactionReceipt = {
+        transactionHash,
+        transactionIndex,
+        blockHash: obj.transactionReceipt.output,
+        root,
+        blockNumber,
+        from,
+        to,
+        gasUsed,
+        contractAddress,
+        logs
+      };
+
+      const res = {
+        returnCode,
+        returnMessage,
+        transactionReceipt
+      }
+      this.code = JSON.stringify(res);
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum);

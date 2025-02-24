@@ -15,6 +15,7 @@
         <el-table-column prop="outTime" label="转出时间" width="120px"></el-table-column>
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="inTime" label="转入时间" width="120px"></el-table-column>
+        <!-- <el-table-column prop="inTime" label="转入时间" width="120px" :formatter="formatterInTime"></el-table-column> -->
       </el-table>
 
       <div class="pagination">
@@ -168,11 +169,10 @@ export default {
     load(pageNum) {
       console.log(this.user)
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/referral/selectPage', {
+      this.$request.get('/referral/selectSuccess', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          doc_id: this.user.id,
         }
       }).then(res => {
         this.tableData = res.data?.list
@@ -186,6 +186,9 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
+    formatterInTime(row, column, cellValue) {
+      return cellValue || "等待转入";
+    }
   }
 }
 </script>

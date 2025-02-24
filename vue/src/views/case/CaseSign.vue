@@ -9,7 +9,7 @@
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
-                <span style="display: inline-block; width: 200px;font-size: 16px;">环签名数据</span>
+                <span style="display: inline-block; width: 200px;font-size: 16px;">加密病历</span>
               </div>
             </el-col>
             <el-col :span="14">
@@ -36,7 +36,7 @@
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
-                <span style="display: inline-block; width: 200px; font-size: 16px;">环签名信息</span>
+                <span style="display: inline-block; width: 200px; font-size: 16px;">签名病历</span>
               </div>
             </el-col>
 

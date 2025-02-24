@@ -34,6 +34,11 @@ public class ReferralRecordService {
         return PageInfo.of(list);
     }
 
+    public PageInfo<ReferralRecord> selectSuccess(ReferralRecord referralRecord, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ReferralRecord> list = referralRecordMapper.selectSuccess(referralRecord);
+        return PageInfo.of(list);
+    }
 
     public List<ReferralRecord> selectAll(ReferralRecord referralRecord) {
         return referralRecordMapper.selectAll(referralRecord);

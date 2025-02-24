@@ -12,6 +12,8 @@ public interface ReferralRecordMapper {
 
     List<ReferralRecord> selectAll(ReferralRecord referralRecord);
 
+    List<ReferralRecord> selectSuccess(ReferralRecord referralRecord);
+
     ReferralRecord selectById(Integer id);
 
     void update(ReferralRecord referralRecord);

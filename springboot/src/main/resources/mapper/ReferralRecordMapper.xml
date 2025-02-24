@@ -74,6 +74,18 @@
         order by id desc
     </select>
 
+    <select id="selectSuccess" resultType="com.example.entity.ReferralRecord">
+        select referal_record.*
+        from referal_record
+        <where>
+            result = "已接诊" or result = "已转入"
+            <if test="outDoctorName != null">
+                and out_doctor_name = ${outDoctorName}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
     <select id="selectById" resultType="com.example.entity.ReferralRecord">
         select referal_record.*,
         inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName

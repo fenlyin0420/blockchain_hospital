@@ -174,10 +174,11 @@ export default {
       // 将每一行拆分为药物信息对象
       return lines.map((line) => {
         const parts = line.split(" ");
+        const l = parts[0].length
         return {
-          name: parts[0],
-          dose: parts[1] ? parts[1] : parts[0],
-          frequency: parts[2] ? parts[2] : parts[0],
+          name: parts[1] ? parts[0] : parts[0].slice(0, l/3),
+          dose: parts[1] ? parts[1] : parts[0].slice(l/3, 2*l/3),
+          frequency: parts[2] ? parts[2] : parts[0].slice(2*l/3, l)
         };
       });
     },
@@ -274,21 +275,18 @@ export default {
      * 加密病历文字字段
      */
     encrypt() {
-      console.log("reci", this.receivedData)
       this.$request
         .patch("keys/encrypt", {
           id: this.receivedData.id,
           userId: this.receivedData.userId,
           advice: this.receivedData.advice,
           drug: this.receivedData.drug,
-          userName: this.receivedData.userName,
         })
         .then((res) => {
           if (res.code === "200") {
             // 更新数据为加密后的内容
             this.receivedData.advice = res.data.advice;
             this.receivedData.drug = res.data.drug;
-            this.receivedData.userName = res.data.userName;
             this.upChain();
           }
         });
