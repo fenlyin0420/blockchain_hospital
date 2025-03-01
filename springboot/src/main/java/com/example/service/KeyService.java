@@ -291,6 +291,26 @@ public class KeyService {
     }
 
     /**
+     * 使用二维码提供的私钥解密病历
+     * @param traverse 病历
+     * @param file 私钥二维码
+     * @return 明文病历
+     */
+    public Traverse decryptByQR(Traverse traverse, MultipartFile file) {
+        try {
+            String privateKey = ImgUtil.parseQR(file);
+            String advicePlainText = MySM2Util.decrypt(privateKey, traverse.getAdvice());
+            String drugPlainText = MySM2Util.decrypt(privateKey, traverse.getDrug());
+            traverse.setAdvice(advicePlainText);
+            traverse.setDrug(drugPlainText);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException(e.getMessage());
+        }
+        return traverse;
+    }
+
+    /**
      * 图像解密函数
      * 
      * @param imgURL 加密图像在服务器的url

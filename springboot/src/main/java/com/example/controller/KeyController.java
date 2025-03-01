@@ -14,6 +14,7 @@ import com.example.service.KeyService;
 import com.example.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import java.io.IOException;
 import jakarta.annotation.Resource;
@@ -109,6 +110,17 @@ public class KeyController {
         }
         return Result.success(traverse);
     }
+
+    @PostMapping("/decryptByQR")
+    public Result decryptByQR(@RequestBody Traverse traverse, @RequestParam("file") MultipartFile file) {
+        try {
+            traverse = keyService.decrypt(traverse);
+        } catch (CustomException e) {
+            System.out.println(e.getMsg());
+            return Result.error(e.getMsg());
+        }
+        return Result.success(traverse);
+    } 
 
     /**
      * 图像解密接口
