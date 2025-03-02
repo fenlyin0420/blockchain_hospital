@@ -57,11 +57,11 @@ public class TraverseController {
     }
 
     // 暂时不提供该接口哦，使用患者id查询
-    // @GetMapping("/selectByName")
-    // public Result selectById(String name) {
-    //     Traverse traverse = traverseService.selectByName(name);
-    //     return Result.success(traverse);
-    // }
+//     @GetMapping("/selectByName")
+//     public Result selectById(String name) {
+//         Traverse traverse = traverseService.selectByName(name);
+//         return Result.success(traverse);
+//     }
 
     @GetMapping("/selectByDoctorId")
     public Result selectByDoctorId(Integer id) {

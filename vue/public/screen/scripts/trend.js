@@ -452,8 +452,6 @@ $(function(){
                  console.log(params)
                  if(params.name == "女性"){
                    return "女性"+":"+(params.percent + '%')
-                 }else{
-                   return "男性"+":"+(params.percent + '%')
                  }
                },
            },
@@ -478,7 +476,7 @@ $(function(){
                 center : ['50%', '50%'],
                 radius : [55, 95],
                 x: '0%', // for funnel
-                itemStyle : labelFromatter,
+                // itemStyle : labelFromatter,
                 data : [
                     {name:'男性', value:158},
                     {name:'女性', value:142},

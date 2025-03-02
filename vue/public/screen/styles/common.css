@@ -224,8 +224,8 @@ a:hover{
 .con{
     width: 100%;
     background-color: #081832;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 0px;
 }
 .con1{
     width: 100%;
@@ -272,10 +272,10 @@ a:hover{
     outline: none;
 }
 .con_div{
-    height: 110px;
-    width: 98%;
+    height: 100px;
+    width: 99%;
     margin-left: 1%;
-    margin-bottom: 25px;
+    margin-bottom: 0px;
 }
 .con_div_text{
     height: 100%;
@@ -322,7 +322,7 @@ a:hover{
     color: #ff4e4e !important;
 }
 .div_any{
-    width: 98%;
+    width: 99%;
     margin-left: 1%;
     margin-bottom: 25px;
     height: 610px;
@@ -435,7 +435,7 @@ a:hover{
      height:auto !important;
      margin-top: 0!important;
      position: relative;
-
+     overflow: auto; /* 内容溢出时显示滚动条 */
 
  }
 .table_p01 table td{

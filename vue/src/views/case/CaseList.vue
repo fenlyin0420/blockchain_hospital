@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入病历ID" style="width: 200px" v-model="id"></el-input>
+      <el-input placeholder="请输入患者姓名" style="width: 200px" v-model="userName"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -12,6 +12,7 @@
         <el-table-column prop="userName" label="姓名" v-if="user.role === 'DOCTOR'" width="100" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="100" align="center"></el-table-column>
         <el-table-column prop="diagnosis" label="诊断结果" align="center"></el-table-column>
+        <el-table-column prop="drug" label="药品信息" align="center" width="200"></el-table-column>
         <el-table-column label="详情"  align="center">
           <template v-slot="scope">
             <el-button plain type="primary" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
@@ -44,7 +45,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: null,
-      id: null, //病历Id，用于查询
+      userName:null, //患者姓名，用于查询
+      id: null, //病历Id，用于查询（暂不使用）
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
     }
   },
@@ -61,11 +63,13 @@ export default {
           pageSize: this.pageSize,
           doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
           userId: this.user.role === 'USER' ? this.user.id : null,
-          id:this.id, //病历Id，用于查询
+          userName: this.userName, //患者姓名，用于查询
+          id:this.id, //病历Id，用于查询（暂不使用）
         }
       }).then(res => {
         this.tableData = res.data?.list
         this.total = res.data?.total
+        console.log("888",this.tableData)
       })
     },
     // 辅助函数，用于将Date对象格式化为您需要的字符串格式
@@ -77,6 +81,7 @@ export default {
       return `${year}-${month}-${day}`;
     },
     reset() {
+      this.userName =null
       this.id = null
       this.load(1)
     },
