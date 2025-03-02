@@ -224,6 +224,62 @@ function init(){
      }, ]
   })
 
+    // var histogramChart2 = echarts.init(document.getElementById('histogramChart2'));
+    // histogramChart2.setOption({
+    //
+    //     color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
+    //
+    //     legend: {
+    //         y : '260',
+    //         x : 'center',
+    //         textStyle : {
+    //             color : '#ffffff',
+    //
+    //         },
+    //         data : ['内科','外科','儿科','妇科',],
+    //     },
+    //     tooltip : {
+    //         trigger: 'item',
+    //         formatter: "{a}<br/>{b}<br/>{c} ({d}%)"
+    //     },
+    //     calculable : false,
+    //     series : [
+    //         {
+    //             name:'采集数据量',
+    //             type:'pie',
+    //             radius : ['40%', '70%'],
+    //             center : ['50%', '45%'],
+    //             itemStyle : {
+    //                 normal : {
+    //                     label : {
+    //                         show : false
+    //                     },
+    //                     labelLine : {
+    //                         show : false
+    //                     }
+    //                 },
+    //                 emphasis : {
+    //                     label : {
+    //                         show : true,
+    //                         position : 'center',
+    //                         textStyle : {
+    //                             fontSize : '20',
+    //                             fontWeight : 'bold'
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             data:[
+    //                 {value:2200, name:'内科'},
+    //                 {value:2400, name:'外科'},
+    //                 {value:2600, name:'儿科'},
+    //                 {value:2800, name:'妇科'}
+    //
+    //             ]
+    //         }
+    //     ]
+    // });
+
     //手术工作量
     var pieChart1 = echarts.init(document.getElementById('pieChart1'));
     pieChart1.setOption({
@@ -244,10 +300,10 @@ function init(){
               max: 40,
               sort : 'ascending',
               data:[
-                  {value:10, name:'内科'},
+                  {value:10, name:'妇科'},
                   {value:5, name:'外科'},
                   {value:15, name:'儿科'},
-                  {value:25, name:'妇科'},
+                  {value:25, name:'内科'},
               ]
           }
       ]
@@ -325,7 +381,7 @@ function init(){
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[10, 12, 21, 54, 260, 830, 710]
+              data:[1320, 1132, 601, 502, 320, 90, 20]
           },
           {
               name:'外科',
@@ -339,14 +395,14 @@ function init(){
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[1320, 1132, 601, 234, 120, 90, 20]
+              data:[12, 16, 21, 54, 260, 830, 710]
           },
           {
               name:'妇科',
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[320, 132, 61, 34, 20, 9, 2]
+              data:[320, 132, 200, 134, 120, 59, 42]
           }
       ]
 
@@ -424,21 +480,21 @@ function init(){
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[120, 122, 221, 524, 460, 530, 610]
+              data:[130, 682, 534, 691, 490, 130, 110]
           },
           {
               name:'外科',
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[130, 682, 534, 691, 490, 130, 110]
+              data:[320, 132, 161, 134, 112, 190, 120]
           },
           {
               name:'儿科',
               type:'line',
               smooth:true,
               itemStyle: {normal: {areaStyle: {type: 'default'}}},
-              data:[320, 132, 161, 134, 112, 190, 120]
+              data:[120, 122, 221, 230, 290, 490, 580]
           },
           {
               name:'妇科',
