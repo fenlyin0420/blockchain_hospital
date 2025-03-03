@@ -36,6 +36,7 @@
             <el-dropdown-item @click.native="goToPerson">个人信息</el-dropdown-item>
             <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/home')">回到首页</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
