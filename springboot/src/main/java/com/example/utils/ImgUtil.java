@@ -5,12 +5,17 @@ import javax.imageio.ImageIO;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.Result;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -161,26 +166,60 @@ public class ImgUtil {
             return null;
         }
     }
-
-public static String generateQR(String seed, String baseFilePath, String ip, String port) {
-    QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    Map<EncodeHintType, Object> hints = new HashMap<>();
-    hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-    // 设置错误校正级别为 Q（25%）
-    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
-    // 设置边距为 0
-    hints.put(EncodeHintType.MARGIN, 0);
-    String fileName = System.currentTimeMillis() + "-blockAddrQR.png";
-    String fullFilePath = baseFilePath + fileName;
-    try {
-        // 增加二维码的尺寸为 800x800
-        BitMatrix bitMatrix = qrCodeWriter.encode(seed, BarcodeFormat.QR_CODE, 800, 800, hints);
-        File file = new File(fullFilePath);
-        MatrixToImageWriter.writeToPath(bitMatrix, "png", file.toPath());
-        return "http://" + ip + ":" + port + "/files/" + fileName;
-    } catch (WriterException | IOException e) {
-        e.printStackTrace();
-        return null;
+    
+    /**
+     * 生成二维码，数据是 seed
+     * @param seed
+     * @param baseFilePath
+     * @param ip
+     * @param port
+     * @return 二维码的 url
+     */
+    public static String generateQR(String seed, String baseFilePath, String ip, String port) {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        Map<EncodeHintType, Object> hints = new HashMap<>();
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        // 设置错误校正级别为 Q（25%）
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
+        // 设置边距为 0
+        hints.put(EncodeHintType.MARGIN, 0);
+        String fileName = System.currentTimeMillis() + "-blockAddrQR.png";
+        String fullFilePath = baseFilePath + fileName;
+        try {
+            // 增加二维码的尺寸为 800x800
+            BitMatrix bitMatrix = qrCodeWriter.encode(seed, BarcodeFormat.QR_CODE, 800, 800, hints);
+            File file = new File(fullFilePath);
+            MatrixToImageWriter.writeToPath(bitMatrix, "png", file.toPath());
+            return "http://" + ip + ":" + port + "/files/" + fileName;
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-}
+
+    /**
+     * 解析二维码
+     * @param file
+     * @return 二维码的内容
+     */
+    public static String parseQR(MultipartFile file) {
+        try {
+            // 将上传的文件转换为 BufferedImage
+            BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
+
+            // 使用 ZXing 解析二维码
+            BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
+
+            // 创建二维码解析器
+            MultiFormatReader reader = new MultiFormatReader();
+            Result result = reader.decode(binaryBitmap);
+
+            // 返回二维码内容
+            return result.getText();
+        } catch (Exception e) {
+            // 处理异常情况，例如文件不是二维码或解析失败
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

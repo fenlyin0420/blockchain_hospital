@@ -129,8 +129,16 @@ public class FileController {
         return resMap;
     }
 
+    /**
+     * 生成二维码,数据为 seed
+     * @param seed 二维码包含的数据
+     * @return
+     */
     @GetMapping("/generateQR")
     public Result generateQR(String seed) {
+        if (seed == null || seed.equals("")) {
+            return Result.error("二维码数据为空");
+        }
         String url = ImgUtil.generateQR(seed, filePath, ip, port);
         if (url == null) {
             return Result.error("二维码生成失败");
