@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.common.enums.InHospitalEnum;
 import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.exception.CustomException;
@@ -70,6 +71,11 @@ public class TraverseService {
      * @return 病历id
      */
     public Integer add(Traverse traverse) throws ClassCastException{
+        if(traverse.getInHospital().equals("是")){
+            traverse.setInHospital(InHospitalEnum.InHospital_YES.status);
+        }else {
+            traverse.setInHospital(InHospitalEnum.InHospital_NO.status);
+        }
         Integer success = traverseMapper.add(traverse);
         if(success == 0)
             throw new CustomException("插入病历失败");

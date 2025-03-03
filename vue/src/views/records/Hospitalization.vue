@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="search">
-            <el-input placeholder="请输入病历ID" style="width: 200px" v-model="id"></el-input>
+            <el-input placeholder="请输入患者姓名" style="width: 200px" v-model="userName"></el-input>
             <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
             <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
         </div>
@@ -48,7 +48,8 @@ export default {
             pageNum: 1,
             pageSize: 10,
             total: 0,
-            id: null,
+            userName:null, //患者姓名，用于查询
+            id: null, //病历Id，用于查询（暂不使用）
             formVisible: false,
             form: {
                 number: '',
@@ -97,16 +98,17 @@ export default {
                     pageSize: this.pageSize,
                     doctorId: this.user.role === 'DOCTOR' ? this.user.id : null,
                     userId: this.user.role === 'USER' ? this.user.id : null,
-                    id:this.id, //病历Id，用于查询
+                    inHospital: "已住院",
+                    userName: this.userName, //患者姓名，用于查询
+                    id:this.id, //病历Id，用于查询（暂不使用）
                 }
             }).then(res => {
-                this.tableData = res.data?.list
-                this.tableData = this.tableData.filter(item => item.inHospital === "已住院"); 
-                this.total = res.data?.total
+                this.tableData = res.data?.list;
+                this.total = res.data?.total;
             })
         },
         reset() {
-            this.id = null
+            this.userName = null
             this.load(1)
         },
         handleCurrentChange(pageNum) {
