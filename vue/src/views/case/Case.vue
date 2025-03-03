@@ -2,21 +2,43 @@
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <el-col :span="12">
-        <!-- <el-form inline label-width="80px">
-          <el-form-item class="field-container"> -->
-            <el-row class="info-row" :gutter="24">
-              <el-col :span="9">
-                <span class="field-label2">姓名:</span>
-                <span class="field-value2">{{ caseInfo.userName }}</span>
-              </el-col>
-              <el-col :span="15">
-                <span class="field-label2">诊疗日期:</span>
-                <span class="field-value2">{{ caseInfo.time }}</span>
-              </el-col>
-            </el-row>
-          <!-- </el-form-item>
-        </el-form> -->
-        <!-- <hr class="divider" /> -->
+        <el-row class="info-row" :gutter="24">
+          <el-col :span="6">
+            <span class="field-label2">姓名:</span>
+            <span class="field-value2">{{ caseInfo.userName }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">性别:</span>
+            <span class="field-value2">{{ caseInfo.userName }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">年龄:</span>
+            <span class="field-value2">{{ caseInfo.userName }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">职业:</span>
+            <span class="field-value2">{{ caseInfo.userName }}</span>
+          </el-col>
+          <el-col :span="10">
+            <span class="field-label2">入院/就诊时间:</span>
+            <span class="field-value2">{{ caseInfo.time }}</span>
+          </el-col>
+          <el-col :span="14">
+            <span class="field-label2">记录时间:</span>
+            <span class="field-value2">{{ caseInfo.time }}</span>
+          </el-col>
+          <el-col :span="8">
+            <span class="field-label2">联系方式:</span>
+            <span class="field-value2">{{ caseInfo.time }}</span>
+          </el-col>
+          <el-col :span="15">
+            <span class="field-label2">病情陈述者:</span>
+            <span class="field-value2">{{ caseInfo.time }}</span>
+          </el-col>
+        </el-row>
+
+        
+
         <el-form inline label-width="80px" class="custom-form-inline">
           <el-form-item>
             <div class="field-container">
@@ -29,11 +51,6 @@
               <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
                 class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
             </div>
-            <!-- <div class="info-field">
-              <span class="field-label"> 是否需要住院 : </span>
-              <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
-              <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
-            </div> -->
           </el-form-item>
         </el-form>
         <!-- <hr class="divider" /> -->
@@ -78,7 +95,7 @@
                 :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
                 :before-upload="beforeUpload" :class="{ disabled: uploadDisabled }" class="custom-upload" multiple
                 :limit="3">
-                <i slot="default" class="el-icon-plus"></i>
+                <i slot="default" class="el-icon-plus "></i>
                 <div slot="file" slot-scope="{file}">
                   <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
                   <span class="el-upload-list__item-actions">
@@ -99,9 +116,7 @@
           </el-form-item>
 
           <br><br><br><br><br><br><br><br>
-          <!-- <br> -->
-          <!-- <br><br><br><br><br> -->
-          <!-- <br><br><br><br><br> 空白占位，不要删 -->
+
 
           <el-button type="primary" @click="ok" class="confirm-button1">诊疗结束</el-button>
           <div class="info-field">
@@ -488,27 +503,14 @@ export default {
 } */
 
 .upload-container {
-  width: 145px;
-  height: 145px;
+  width: 50px;
+  height: 50px;
   position: relative;
   /* 用于定位图片 */
 }
 
-::v-deep .el-upload--picture-card {
-  transform: scale(2);
-  /*放大上传框*/
-  transform-origin: top left;
-  margin: 15px;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  /* 绝对定位，使图片可以覆盖整个容器 */
-  top: 0;
-  left: 0;
-}
-
 ::v-deep .el-upload-list--picture-card .el-upload-list__item {
-  transform: scale(2);
+  transform: scale(1);
   /*放大图像框*/
   transform-origin: top left;
   margin: 15px;
