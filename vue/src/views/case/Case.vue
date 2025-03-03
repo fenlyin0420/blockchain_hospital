@@ -1,7 +1,9 @@
 <template>
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
-      <el-col :span="12">
+      <!-- LEFT SIDE -->
+      <el-col :span="16">
+        <!-- HEAD -->
         <el-row class="info-row" :gutter="24">
           <el-col :span="6">
             <span class="field-label2">姓名:</span>
@@ -19,77 +21,82 @@
             <span class="field-label2">职业:</span>
             <span class="field-value2">{{ caseInfo.userName }}</span>
           </el-col>
-          <el-col :span="10">
+
+          <el-col :span="12">
             <span class="field-label2">入院/就诊时间:</span>
             <span class="field-value2">{{ caseInfo.time }}</span>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="12">
             <span class="field-label2">记录时间:</span>
             <span class="field-value2">{{ caseInfo.time }}</span>
           </el-col>
-          <el-col :span="8">
+
+          <el-col :span="12">
             <span class="field-label2">联系方式:</span>
             <span class="field-value2">{{ caseInfo.time }}</span>
           </el-col>
-          <el-col :span="15">
+          <el-col :span="12">
             <span class="field-label2">病情陈述者:</span>
             <span class="field-value2">{{ caseInfo.time }}</span>
           </el-col>
         </el-row>
-
         
-
-        <el-form inline label-width="80px" class="custom-form-inline">
+        <!-- CASE DESCRIPTION -->
+        <el-form>
+          <div class="field-label">主诉（Chief Complaint, CC）</div>
           <el-form-item>
-            <div class="field-container">
-              <span class="field-label">病情详细:</span>
-              <el-autocomplete type="textarea" v-model="advice" clearable :rows="1" resize="vertical"
-                class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
-            </div>
-            <div class="field-container">
-              <span class="field-label">诊断结果:</span>
-              <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
-                class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
-            </div>
+            <el-autocomplete type="textarea" v-model="advice" clearable :rows="2" resize="vertical"
+              class="info-textarea CC" :fetch-suggestions="querySearchAdvice"
+              placeholder="患者就诊的主要症状或体征 + 持续时间。"></el-autocomplete>
           </el-form-item>
-        </el-form>
-        <!-- <hr class="divider" /> -->
-        <el-form inline label-width="80px" class="custom-form-inline">
-          <el-form-item>
-            <div class="info-field">
-              <!-- <span class="field-label">药品信息:</span> -->
-              <span class="field-label">选择药品:</span>
-              <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
-                <div>
-                  <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName"
-                    :key="item.id"></el-option>
-                </div>
-              </el-select>
 
-            </div>
-            <div class="info-field">
-              <span class="field-label">药品数量:</span>
-              <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
-                class="quantity-input"></el-input-number>
-            </div>
-            <div class="info-field">
-              <span class="field-label">每日次数:</span>
-              <el-autocomplete class="frequency-input" v-model="medicineFrequency" :fetch-suggestions="querySearch"
-                placeholder="一日几次" @select="handleSelectFrequency"></el-autocomplete>
-              <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
-            </div>
-            <div>
-              <el-input type="textarea" v-model="medicine" clearable :rows="2" resize="vertical"
-                class="medicine-textarea"></el-input>
-            </div>
+          <div class="field-label">初步诊断（Primary Diagnosis）</div>
+          <el-form-item label="1.主要诊断：">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="根据病史、查体及检查结果。"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="2.次要诊断：">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="合并症或其他疾病。"></el-autocomplete>
+          </el-form-item>
+
+          <div class="field-label">诊疗计划（Treatment Plan）</div>
+          <el-form-item label="1.进一步检查:">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="明确需完善的实验室或影像学检查。"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="2.药物治疗：">
+            <el-autocomplete type="textarea" v-model="medicine" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="药物名称、剂量、用法、疗程。"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="3.非药物治疗：">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="手术、康复训练、生活方式干预等。"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="4.护理/监测:">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="如监测生命体征、记录出入量等。"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="5.饮食建议：">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder="如低盐、流质饮食等。"></el-autocomplete>
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="12">
+
+      <!-- RIGHT SIDE -->
+      <el-col :span="8">
         <el-form label-width="20px">
-          <el-form-item>
+          <div>
             <!-- 这里放图 -->
-            <span class="field-label">医疗影像:</span>
+            <span class="field-label">辅助检查（Auxiliary Examination）</span>
             <div class="upload-container">
               <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
                 :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
@@ -113,21 +120,43 @@
             <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
-          </el-form-item>
-
+          </div>
           <br><br><br><br><br><br><br><br>
+        </el-form>
 
+        <!-- MEDICINE -->
+        <el-form inline label-width="80px" class="custom-form-inline">
+          <el-form-item>
+            <div class="info-field">
+              <span class="field-label">选择药品:</span>
+              <el-select v-model="selectedMedicine" placeholder="请选择药品" class="medicine-select">
+                <div>
+                  <el-option v-for="item in drugList" :label="item.drugName" :value="item.drugName"
+                    :key="item.id"></el-option>
+                </div>
+              </el-select>
 
-          <el-button type="primary" @click="ok" class="confirm-button1">诊疗结束</el-button>
+            </div>
+            <div class="info-field">
+              <span class="field-label">药品数量:</span>
+              <el-input-number v-model="medicineQuantity" :min="1" :max="100" :step="1" placeholder="数量"
+                class="quantity-input"></el-input-number>
+            </div>
+            <div class="info-field">
+              <span class="field-label">每日次数:</span>
+              <el-autocomplete class="frequency-input" v-model="medicineFrequency" :fetch-suggestions="querySearch"
+                placeholder="一日几次" @select="handleSelectFrequency"></el-autocomplete>
+              <el-button type="primary" @click="confirmMedicine" class="confirm-button">确定</el-button>
+            </div>
+          </el-form-item>
+        </el-form>
+
           <div class="info-field">
-            <br>
             <span class="field-label"> 是否需要住院 : </span>
             <el-radio v-model="radio" label="是" @change="handleRadioChange()">是</el-radio>
             <el-radio v-model="radio" label="否" @change="handleRadioChange()">否</el-radio>
-
+            <el-button type="primary" @click="ok" class="confirm-button1">诊疗结束</el-button>
           </div>
-
-        </el-form>
       </el-col>
     </el-row>
   </el-card>
@@ -386,17 +415,17 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .el-card__body {
+  padding-top: 0px;
+}
+::v-deep .el-row {
+  margin: 0px;
+}
 .custom-col {
   margin-left: 0px;
   /* 减小左侧间距 */
   margin-right: 0px;
   /* 减小右侧间距 */
-}
-
-.case-container {
-  padding: 0px;
-  height: 100%;
-  overflow: hidden;
 }
 
 .case-header {
@@ -417,7 +446,6 @@ export default {
   font-family: "SimHei", "黑体", sans-serif;
   font-size: 16px;
   margin-right: 10px;
-  width: 80px;
   font-weight: bold;
 }
 .field-label2 {
@@ -437,9 +465,20 @@ export default {
   margin-right: 0px;
 }
 .info-textarea {
-  margin-bottom: 26px;
-  width: 220px;
-  height: 20px
+  width: 100%;
+}
+
+::v-deep .el-textarea__inner{
+  border: none; 
+  border-bottom: 1px solid #dcdfe6; 
+  border-radius: 0; 
+  outline: none; 
+  box-shadow: none !important; 
+  background-color: transparent;
+  resize: none !important;
+}
+::v-deep .el-textarea__inner::-webkit-scrollbar {
+  display: none;
 }
 
 .medicine-select {
@@ -488,6 +527,21 @@ export default {
   border: 1px solid #dcdcdc;
   margin-bottom: 20px;
 }
+.el-form-item {
+  margin-bottom: 3px;
+  display: flex;
+}
+
+::v-deep .el-form-item .el-form-item__content {
+  flex: 1;
+}
+
+
+::v-deep .el-form-item__label {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
 
 .custom-form-inline .el-form-item {
   margin-right: 0;
@@ -496,11 +550,6 @@ export default {
   /* 移除默认的底边距 */
 }
 
-/* .field-container {
-  display: flex;
-  align-items: flex-start;
-  /* 根据需要调整垂直对齐方式 
-} */
 
 .upload-container {
   width: 50px;
@@ -527,10 +576,5 @@ export default {
 ::v-deep .disabled .el-upload--picture-card {
   display: none !important;
   /*上传图片后，隐藏下一个上传框 */
-}
-
-::v-deep .el-textarea__inner {
-  color: blue;
-  font-size: 16px;
 }
 </style>
