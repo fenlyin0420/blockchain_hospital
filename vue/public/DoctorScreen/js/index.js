@@ -202,6 +202,180 @@
     myechart.setOption(option);
 })();
 
+(function () {
+    // 使用原来饼图的容器，保持不变
+    var myechart = echarts.init($('.pie')[0]);
+    var option = {
+        // 配置颜色（可按需要调整）
+        color: ['#00c2ff', '#f9cf67', '#e92b77'],
+        // 图例配置
+        legend: {
+            show: true,
+            bottom: 0,
+            center: 0,
+            itemWidth: 14,
+            itemHeight: 14,
+            itemGap: 21,
+            textStyle: {
+                fontSize: 12,
+                color: '#ade3ff'
+            },
+            data: ['临床能力', '科研水平', '服务质量']
+        },
+        // 雷达图坐标系配置
+        radar: [{
+            indicator: [
+                { text: 'DRG达标率', max: 100 },
+                { text: 'CMI指数', max: 100 },
+                { text: '四级手术占比', max: 100 },
+                { text: '论文影响因子', max: 100 },
+                { text: '患者满意度', max: 100 }
+            ],
+            textStyle: { color: 'red' },
+            center: ['50%', '50%'],
+            radius: 60,
+            startAngle: 90,
+            splitNumber: 3,
+            orient: 'horizontal',
+            name: {
+                formatter: '{value}',
+                textStyle: {
+                    fontSize: 12,
+                    color: '#5b81cb'
+                }
+            },
+            splitArea: {
+                show: true,
+                areaStyle: {
+                    color: ['#141c42', '#141c42']
+                }
+            },
+            axisLine: {
+                lineStyle: { color: '#153269' }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#113865',
+                    width: 1
+                }
+            }
+        }],
+        // 将原来的饼图 series 改为雷达图数据配置
+        series: [{
+            // 保持系列名称不变，如“pie”
+            name: 'pie',
+            type: 'radar',
+            itemStyle: {
+                emphasis: {
+                    lineStyle: { width: 4 }
+                }
+            },
+            data: [
+                {
+                    name: '临床能力',
+                    value: [95, 85, 92, 90, 92],
+                    areaStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: '#00c2ff' },
+                                    { offset: 0.5, color: 'rgba(0,0,0,0)' },
+                                    { offset: 1, color: '#00c2ff' }
+                                ],
+                                globalCoord: false
+                            },
+                            opacity: 1
+                        }
+                    },
+                    symbolSize: 2.5,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            distance: 2,
+                            color: '#6692e2',
+                            fontSize: 14,
+                            formatter: function(params) {
+                                return params.value;
+                            }
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderColor: '#00c2ff',
+                            borderWidth: 2.5
+                        }
+                    }
+                },
+                {
+                    name: '科研水平',
+                    value: [87, 86, 85, 75, 80],
+                    symbolSize: 2.5,
+                    itemStyle: {
+                        normal: {
+                            borderColor: '#f9cf67',
+                            borderWidth: 2.5
+                        }
+                    },
+                    areaStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: '#f9cf67' },
+                                    { offset: 0.5, color: 'rgba(0,0,0,0)' },
+                                    { offset: 1, color: '#f9cf67' }
+                                ],
+                                globalCoord: false
+                            },
+                            opacity: 1
+                        }
+                    }
+                },
+                {
+                    name: '服务质量',
+                    value: [80, 70, 85, 75, 70],
+                    symbolSize: 2.5,
+                    itemStyle: {
+                        normal: {
+                            borderColor: '#e92b77',
+                            borderWidth: 2.5
+                        }
+                    },
+                    areaStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: '#e92b77' },
+                                    { offset: 0.5, color: 'rgba(0,0,0,0)' },
+                                    { offset: 1, color: '#e92b77' }
+                                ],
+                                globalCoord: false
+                            },
+                            opacity: 1
+                        }
+                    }
+                }
+            ]
+        }]
+    };
+    myechart.setOption(option);
+})();
+
 //订单
 (function () {
     var data = {
@@ -386,6 +560,7 @@
     var myechart = echarts.init($('.gauge')[0]);
     myechart.setOption(option);
 })();
+
 (function () {
     var data = [
         { name: '可爱多', num: '9,086' },
