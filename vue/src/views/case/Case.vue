@@ -1,7 +1,9 @@
 <template>
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
-      <el-col :span="12">
+      <!-- LEFT SIDE -->
+      <el-col :span="14">
+        <!-- HEAD -->
         <el-row class="info-row" :gutter="24">
           <el-col :span="6">
             <span class="field-label2">姓名:</span>
@@ -37,23 +39,31 @@
           </el-col>
         </el-row>
 
-        
 
-        <el-form inline label-width="80px" class="custom-form-inline">
-          <el-form-item>
-            <div class="field-container">
-              <span class="field-label">病情详细:</span>
-              <el-autocomplete type="textarea" v-model="advice" clearable :rows="1" resize="vertical"
-                class="info-textarea" :fetch-suggestions="querySearchAdvice"></el-autocomplete>
-            </div>
-            <div class="field-container">
-              <span class="field-label">诊断结果:</span>
-              <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
-                class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
-            </div>
+        <div class="field-container">
+          <div class="field-label">主诉（Chief Complaint, CC）</div>
+          <el-autocomplete type="textarea" v-model="advice" clearable :rows="1" resize="vertical"
+            class="info-textarea" :fetch-suggestions="querySearchAdvice"
+            placeholder="患者就诊的主要症状或体征 + 持续时间。"></el-autocomplete>
+        </div>
+        
+        <el-form>
+          <div class="field-label">初步诊断（Primary Diagnosis）</div>
+          <el-form-item class="field-container" label="1. 主要诊断：">
+            <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+              class="info-textarea" :fetch-suggestions="querySearchDiagnosis"
+              placeholder=""></el-autocomplete>
           </el-form-item>
         </el-form>
-        <!-- <hr class="divider" /> -->
+
+
+
+        <div class="field-container">
+          <div class="field-label">诊疗计划（Treatment Plan）</div>
+          <el-autocomplete type="textarea" v-model="diagnosis" clearable :rows="1" resize="vertical"
+            class="info-textarea" :fetch-suggestions="querySearchDiagnosis"></el-autocomplete>
+        </div>
+
         <el-form inline label-width="80px" class="custom-form-inline">
           <el-form-item>
             <div class="info-field">
@@ -85,7 +95,9 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="12">
+
+      <!-- RIGHT SIDE -->
+      <el-col :span="10">
         <el-form label-width="20px">
           <el-form-item>
             <!-- 这里放图 -->
@@ -417,7 +429,6 @@ export default {
   font-family: "SimHei", "黑体", sans-serif;
   font-size: 16px;
   margin-right: 10px;
-  width: 80px;
   font-weight: bold;
 }
 .field-label2 {
@@ -437,9 +448,17 @@ export default {
   margin-right: 0px;
 }
 .info-textarea {
-  margin-bottom: 26px;
-  width: 220px;
-  height: 20px
+  /* margin: 0 0 26px 20px; */
+  width: 80%;
+}
+
+.el-textarea__inner{
+  border: none; /* 移除默认边框 */
+  border-bottom: 2px solid #409eff; /* 添加底部边框 */
+  border-radius: 0; /* 去掉圆角 */
+  outline: none; /* 移除点击时的外边框 */
+  box-shadow: none !important; /* 取消默认聚焦阴影 */
+  background-color: transparent; /* 透明背景 */
 }
 
 .medicine-select {
@@ -496,11 +515,6 @@ export default {
   /* 移除默认的底边距 */
 }
 
-/* .field-container {
-  display: flex;
-  align-items: flex-start;
-  /* 根据需要调整垂直对齐方式 
-} */
 
 .upload-container {
   width: 50px;
@@ -527,10 +541,5 @@ export default {
 ::v-deep .disabled .el-upload--picture-card {
   display: none !important;
   /*上传图片后，隐藏下一个上传框 */
-}
-
-::v-deep .el-textarea__inner {
-  color: blue;
-  font-size: 16px;
 }
 </style>
