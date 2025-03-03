@@ -11,6 +11,7 @@
       <el-button type="warning" plain style="margin-left: 10px" @click="reset"
         >重置</el-button
       >
+      <el-button type="success" plain @click="goToScreen">查看门诊数据大屏</el-button>
     </div>
 
     <div class="table">
@@ -202,6 +203,9 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum);
     },
+    goToScreen() { //门诊大屏
+    window.location.href = '/DoctorScreen/index.html';
+  },
   },
 };
 </script>

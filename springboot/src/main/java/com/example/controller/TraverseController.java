@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.common.AutoLog;
-import com.example.common.enums.InhospitalEnum;
 import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.service.TraverseService;
@@ -9,12 +8,10 @@ import com.example.common.Result;
 
 import com.github.pagehelper.PageInfo;
 
-import cn.hutool.db.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
 
-import java.sql.Ref;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
