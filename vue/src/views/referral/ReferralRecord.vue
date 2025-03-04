@@ -15,9 +15,7 @@
         <el-table-column prop="outTime" label="转出时间" width="120px"></el-table-column>
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="inTime" label="转入时间" width="120px"></el-table-column>
-        <!-- <el-table-column prop="inTime" label="转入时间" width="120px" :formatter="formatterInTime"></el-table-column> -->
       </el-table>
-
       <div class="pagination">
         <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
           :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
@@ -193,4 +191,5 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

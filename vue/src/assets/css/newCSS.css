@@ -107,7 +107,7 @@ body {
   align-items: center;
   padding-right: 10px;
   color: #ccc;
-  cursor: default;
+  cursor: pointer;
 }
 
 .manager-header-right .avatar img {

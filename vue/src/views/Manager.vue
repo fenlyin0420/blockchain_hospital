@@ -9,20 +9,9 @@
 
       <!-- 面包屑导航栏 -->
       <div class="manager-header-center">
-        <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: $route.path }">{{
-            $route.meta.name
-          }}</el-breadcrumb-item>
-        </el-breadcrumb> -->
-          <!-- <div>
-          <el-button type="primary" v-if="user.role === 'USER'" @click="register">注册</el-button>
-          <el-button class="button-margin" type="primary" @click="login">登录</el-button>
-          </div> -->
       </div>
 
       <div class="manager-header-right">
-
         <el-dropdown placement="bottom">
           <div class="avatar">
             <img :src="
@@ -46,17 +35,9 @@
       <!--  侧边栏  -->
       <div class="manager-main-left">
         <el-menu :unique-opened="true" router style="border: none" :default-active="$route.path">
-          <!--default-openeds="['info','powerDoctor', 'reserve', 'user','powerUser']"-->
-          <!--          <el-menu-item index="/home">-->
-          <!--            <i class="el-icon-s-home"></i>-->
-          <!--            <span slot="title" style="font-size: 20px;">系统首页</span>-->
-          <!--          </el-menu-item>-->
-
-
           <!-- 患者模块 -->
           <el-submenu index="userModule" v-if="user.role === 'USER'">
             <template slot="title">
-              <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/patient.png" alt="" class="el-icon-img">
               <span>患者模块</span>
             </template>
@@ -66,7 +47,6 @@
           </el-submenu>
           <el-submenu v-else index="userModule" disabled>
             <template slot="title">
-              <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/patient.png" alt="" class="el-icon-img">
               <span>患者模块</span>
             </template>
@@ -78,19 +58,16 @@
           <!-- 医生模块 -->
           <el-submenu index="doctorModule" v-if="user.role === 'DOCTOR'">
             <template slot="title">
-              <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
             <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">门诊排班</el-menu-item>
             <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">门诊业务</el-menu-item>
             <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">住院业务</el-menu-item>
-<!--            <el-menu-item index="/record" v-if="user.role === 'DOCTOR'">就诊记录</el-menu-item>-->
             <el-menu-item index="/doctorCaseList" v-if="user.role === 'DOCTOR'">病历列表</el-menu-item>
           </el-submenu>
           <el-submenu v-else index="doctorModule" disabled>
             <template slot="title">
-              <!-- <i class="el-icon-menu"></i> -->
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
@@ -105,7 +82,6 @@
           <!-- 护士模块 -->
           <el-submenu index="nurseModule" v-if="user.role === 'NURSE'">
             <template slot="title">
-              <!-- <i class="el-icon-nurse"></i>  -->
               <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
               <span>护士模块</span>
             </template>
@@ -117,7 +93,6 @@
           </el-submenu>
           <el-submenu v-else index="nurseModule" disabled="">
             <template slot="title">
-              <!-- <i class="el-icon-nurse"></i> -->
               <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
               <span>护士模块</span>
             </template>
@@ -137,7 +112,6 @@
 
             <el-menu-item index="/referralApplication">转诊发起</el-menu-item>
             <el-menu-item index="/referralOut">转出审批</el-menu-item>
-
             <el-menu-item index="/referralIn">转诊接收</el-menu-item>
             <el-menu-item index="/receivePatients">转诊执行</el-menu-item>
             <el-menu-item index="/referralRecord">转诊记录</el-menu-item>
@@ -146,7 +120,6 @@
           <!-- 管理模块 -->
           <el-submenu index="adminModule" v-if="user.role === 'ADMIN'">
             <template slot="title">
-              <!-- <i class="el-icon-s-custom"></i> -->
               <img src="../assets/imgs/admin.png" alt="" class="el-icon-img">
               <span>管理模块</span>
             </template>
@@ -165,7 +138,6 @@
           </el-submenu>
           <el-submenu v-else index="adminModule" disabled>
             <template slot="title">
-              <!-- <i class="el-icon-s-custom"></i> -->
               <img src="../assets/imgs/admin.png" alt="" class="el-icon-img">
               <span>管理模块</span>
             </template>
@@ -182,10 +154,6 @@
             <el-menu-item index="/ward" disabled>病房管理</el-menu-item>
             <el-menu-item index="/approval" disabled>住院审批</el-menu-item>
           </el-submenu>
-
-
-
-
         </el-menu>
       </div>
 
