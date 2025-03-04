@@ -46,23 +46,175 @@
     });
 
 })();
-// 用户
+// 人名隔一个显示一个
+// (function () {
+//     // 中间省略的数据  准备三项
+//     var item1 = {
+//         name: '',
+//         value: 30,
+//         // 柱子颜色
+//         itemStyle: {
+//             color: '#254065'
+//         },
+//         // 鼠标经过柱子颜色
+//         emphasis: {
+//             itemStyle: {
+//                 color: '#254065'
+//             }
+//         },
+//         // 工具提示隐藏
+//         tooltip: {
+//             extraCssText: 'opacity:0'
+//         }
+//     };
+//     var item2 = {
+//         name: '',
+//         value: 25,
+//         // 柱子颜色
+//         itemStyle: {
+//             color: '#254065'
+//         },
+//         // 鼠标经过柱子颜色
+//         emphasis: {
+//             itemStyle: {
+//                 color: '#254065'
+//             }
+//         },
+//         // 工具提示隐藏
+//         tooltip: {
+//             extraCssText: 'opacity:0'
+//         }
+//     };
+//     var item3 = {
+//         name: '',
+//         value: 20,
+//         // 柱子颜色
+//         itemStyle: {
+//             color: '#254065'
+//         },
+//         // 鼠标经过柱子颜色
+//         emphasis: {
+//             itemStyle: {
+//                 color: '#254065'
+//             }
+//         },
+//         // 工具提示隐藏
+//         tooltip: {
+//             extraCssText: 'opacity:0'
+//         }
+//     };
+//     option = {
+//         // 工具提示
+//         tooltip: {
+//             // 触发类型  经过轴触发axis  经过轴触发item
+//             trigger: 'item',
+//             // 轴触发提示才有效
+//             axisPointer: {
+//                 // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果
+//                 type: 'shadow'
+//             }
+//         },
+//         // 图表边界控制
+//         grid: {
+//             // 距离 上右下左 的距离
+//             left: '0',
+//             right: '3%',
+//             bottom: '3%',
+//             top: '5%',
+//             // 大小是否包含文本【类似于boxsizing】
+//             containLabel: true,
+//             //显示边框
+//             show: true,
+//             //边框颜色
+//             borderColor: 'rgba(0, 240, 255, 0.3)'
+//         },
+//         // 控制x轴
+//         xAxis: [
+//             {
+//                 // 使用类目，必须有data属性
+//                 type: 'category',
+//                 // 使用 data 中的数据设为刻度文字
+//                 data: ['黄玉兰', '许国栋', '孙文杰', '李秀芬', '王建国',  '陈丽华', '周晓峰', '刘淑珍', '张明远'],
+//                 // 刻度设置
+//                 axisTick: {
+//                     // true意思：图形在刻度中间
+//                     // false意思：图形在刻度之间
+//                     alignWithLabel: false,
+//                     show: false
+//                 },
+//                 //文字
+//                 axisLabel: {
+//                     color: '#4c9bfd'
+//                 }
+//             }
+//         ],
+//         // 控制y轴
+//         yAxis: [
+//             {
+//                 // 使用数据的值设为刻度文字
+//                 type: 'value',
+//                 axisTick: {
+//                     // true意思：图形在刻度中间
+//                     // false意思：图形在刻度之间
+//                     alignWithLabel: false,
+//                     show: false
+//                 },
+//                 //文字
+//                 axisLabel: {
+//                     color: '#4c9bfd'
+//                 },
+//                 splitLine: {
+//                     lineStyle: {
+//                         color: 'rgba(0, 240, 255, 0.3)'
+//                     }
+//                 },
+//             }
+//         ],
+//         // 控制x轴
+//         series: [
+//
+//             {
+//                 // series配置
+//                 // 颜色
+//                 itemStyle: {
+//                     // 提供的工具函数生成渐变颜色
+//                     color: new echarts.graphic.LinearGradient(
+//                         // (x1,y2) 点到点 (x2,y2) 之间进行渐变
+//                         0, 0, 0, 1,
+//                         [
+//                             { offset: 0, color: '#00fffb' }, // 0 起始颜色
+//                             { offset: 1, color: '#0061ce' }  // 1 结束颜色
+//                         ]
+//                     )
+//                 },
+//                 // 图表数据名称
+//                 name: '用户统计',
+//                 // 图表类型
+//                 type: 'bar',
+//                 // 柱子宽度
+//                 barWidth: '60%',
+//                 // 数据
+//                 data: [62, 57, 41, 39, 37, 30, 25, 20, 10]
+//             }
+//         ]
+//     };
+//     var myechart = echarts.init($('.users .bar')[0]);
+//     myechart.setOption(option);
+// })();
+
+// 人名完全显示
 (function () {
-    // 中间省略的数据  准备三项
     var item1 = {
         name: '',
         value: 30,
-        // 柱子颜色
         itemStyle: {
             color: '#254065'
         },
-        // 鼠标经过柱子颜色
         emphasis: {
             itemStyle: {
                 color: '#254065'
             }
         },
-        // 工具提示隐藏
         tooltip: {
             extraCssText: 'opacity:0'
         }
@@ -70,17 +222,14 @@
     var item2 = {
         name: '',
         value: 25,
-        // 柱子颜色
         itemStyle: {
             color: '#254065'
         },
-        // 鼠标经过柱子颜色
         emphasis: {
             itemStyle: {
                 color: '#254065'
             }
         },
-        // 工具提示隐藏
         tooltip: {
             extraCssText: 'opacity:0'
         }
@@ -88,78 +237,56 @@
     var item3 = {
         name: '',
         value: 20,
-        // 柱子颜色
         itemStyle: {
             color: '#254065'
         },
-        // 鼠标经过柱子颜色
         emphasis: {
             itemStyle: {
                 color: '#254065'
             }
         },
-        // 工具提示隐藏
         tooltip: {
             extraCssText: 'opacity:0'
         }
     };
     option = {
-        // 工具提示
         tooltip: {
-            // 触发类型  经过轴触发axis  经过轴触发item
             trigger: 'item',
-            // 轴触发提示才有效
             axisPointer: {
-                // 默认为直线，可选为：'line' 线效果 | 'shadow' 阴影效果       
                 type: 'shadow'
             }
         },
-        // 图表边界控制
         grid: {
-            // 距离 上右下左 的距离
             left: '0',
             right: '3%',
             bottom: '3%',
             top: '5%',
-            // 大小是否包含文本【类似于boxsizing】
             containLabel: true,
-            //显示边框
             show: true,
-            //边框颜色
             borderColor: 'rgba(0, 240, 255, 0.3)'
         },
-        // 控制x轴
         xAxis: [
             {
-                // 使用类目，必须有data属性
                 type: 'category',
-                // 使用 data 中的数据设为刻度文字
-                data: ['孙文杰', '黄玉兰', '许国栋', '方振国', '吴晓莉', '', '......', '', '李秀芬', '丁伟强', '​刘淑珍', '​王建国', '何玉梅'],
-                // 刻度设置
+                data: ['黄玉兰', '许国栋', '孙文杰', '李秀芬', '王建国', '陈丽华', '周晓峰', '刘淑珍', '张明远'],
                 axisTick: {
-                    // true意思：图形在刻度中间
-                    // false意思：图形在刻度之间
                     alignWithLabel: false,
                     show: false
                 },
-                //文字
                 axisLabel: {
-                    color: '#4c9bfd'
+                    // color: '#4c9bfd',
+                    color: '#f3f3f6',
+                    interval: 0 // 确保每个标签都显示
                 }
             }
         ],
-        // 控制y轴
         yAxis: [
             {
-                // 使用数据的值设为刻度文字
                 type: 'value',
                 axisTick: {
-                    // true意思：图形在刻度中间
-                    // false意思：图形在刻度之间
                     alignWithLabel: false,
                     show: false
                 },
-                //文字
                 axisLabel: {
                     color: '#4c9bfd'
                 },
@@ -167,40 +294,31 @@
                     lineStyle: {
                         color: 'rgba(0, 240, 255, 0.3)'
                     }
-                },
+                }
             }
         ],
-        // 控制x轴
         series: [
-
             {
-                // series配置
-                // 颜色
                 itemStyle: {
-                    // 提供的工具函数生成渐变颜色
                     color: new echarts.graphic.LinearGradient(
-                        // (x1,y2) 点到点 (x2,y2) 之间进行渐变
                         0, 0, 0, 1,
                         [
-                            { offset: 0, color: '#00fffb' }, // 0 起始颜色
-                            { offset: 1, color: '#0061ce' }  // 1 结束颜色
+                            { offset: 0, color: '#00fffb' },
+                            { offset: 1, color: '#0061ce' }
                         ]
                     )
                 },
-                // 图表数据名称
                 name: '用户统计',
-                // 图表类型
                 type: 'bar',
-                // 柱子宽度
                 barWidth: '60%',
-                // 数据
-                data: [62, 57, 41, 39, 37, item1, item2, item3, 16, 10, 7, 5, 2]
+                data: [62, 57, 41, 39, 37, 30, 25, 20, 10]
             }
         ]
     };
     var myechart = echarts.init($('.users .bar')[0]);
     myechart.setOption(option);
 })();
+
 
 (function () {
     // 使用原来饼图的容器，保持不变
@@ -424,7 +542,9 @@
                 show: false//去除刻度线
             },
             axisLabel: {
-                color: '#4c9bfd'//文本颜色
+                // color: '#4c9bfd'//文本颜色
+                color: '#eff1f4'//文本颜色
+
             },
             axisLine: {
                 show: false//去除轴线  
@@ -438,7 +558,9 @@
                 show: false//去除刻度线
             },
             axisLabel: {
-                color: '#4c9bfd'//文本颜色
+                // color: '#4c9bfd'//文本颜色
+                color: '#f5f7f9'//文本颜色
+
             },
             axisLine: {
                 show: false//去除轴线  
