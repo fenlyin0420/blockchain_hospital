@@ -142,7 +142,6 @@ a{
 .monitor .row{
   line-height: 1.05;
   padding: 0.5rem 1.5rem;
-  /*color: #ebeff3;*/
   color: #ebeff3;
   font-size: 0.5rem;
   position: relative;
@@ -150,9 +149,7 @@ a{
   justify-content: space-between;
 }
 .monitor .row:hover{
-  /*color:#68d8ff;*/
   color:#68d8ff;
-
   background: rgba(255, 255, 255, 0.1);
 }
 .monitor .row:hover .icon-dot{
@@ -175,9 +172,7 @@ a{
 .monitor .row{
   line-height: 1.05;
   padding: 0.5rem 1.5rem;
-  /*color: #61a8ff;*/
-  color: #edeff1;
-
+  color: #61a8ff;
   font-size: 0.5rem;
   position: relative;
   display: flex;
@@ -603,9 +598,7 @@ a{
   margin-top: 0.5rem; /* 根据需要调整数值 */
 }
 .top .province ul.sup li {
-  /*color: #4995f4;*/
-  color: #f6f8f9;
-
+  color: #4995f4;
   padding: 0.5rem;
   margin-bottom: 1.2rem; /* 增加行间距 */
 }

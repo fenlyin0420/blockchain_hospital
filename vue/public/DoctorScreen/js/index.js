@@ -274,8 +274,7 @@
                     show: false
                 },
                 axisLabel: {
-                    // color: '#4c9bfd',
-                    color: '#f3f3f6',
+                    color: '#4c9bfd',
                     interval: 0 // 确保每个标签都显示
                 }
             }
@@ -542,9 +541,7 @@
                 show: false//去除刻度线
             },
             axisLabel: {
-                // color: '#4c9bfd'//文本颜色
-                color: '#eff1f4'//文本颜色
-
+                color: '#4c9bfd'//文本颜色
             },
             axisLine: {
                 show: false//去除轴线  
@@ -558,9 +555,7 @@
                 show: false//去除刻度线
             },
             axisLabel: {
-                // color: '#4c9bfd'//文本颜色
-                color: '#f5f7f9'//文本颜色
-
+                color: '#4c9bfd'//文本颜色
             },
             axisLine: {
                 show: false//去除轴线  
