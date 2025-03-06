@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card style="width: 50%">
+    <el-card>
       <el-form :model="user" label-width="100px" style="padding-right: 50px">
         <div style="margin: 15px; text-align: center">
           <el-upload
@@ -102,20 +102,20 @@ export default {
 </script>
 
 <style scoped>
-/deep/.el-form-item__label {
+::v-deep .el-form-item__label {
   font-weight: bold;
 }
-/deep/.el-upload {
+::v-deep .el-upload {
   border-radius: 50%;
 }
-/deep/.avatar-uploader .el-upload {
+::v-deep .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   border-radius: 50%;
 }
-/deep/.avatar-uploader .el-upload:hover {
+::v-deep .avatar-uploader .el-upload:hover {
   border-color: #409EFF;
 }
 .avatar-uploader-icon {

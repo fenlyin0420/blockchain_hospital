@@ -2,7 +2,8 @@
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <!-- LEFT SIDE -->
-      <el-col :span="16">
+      <el-col :span="18">
+        <h3 class="title">住院病历/门诊病历</h3>
         <!-- HEAD -->
         <el-row class="info-row" :gutter="24">
           <el-col :span="6">
@@ -11,15 +12,15 @@
           </el-col>
           <el-col :span="6">
             <span class="field-label2">性别:</span>
-            <span class="field-value2">{{ caseInfo.userName }}</span>
+            <span class="field-value2">{{ caseInfo.sex }}</span>
           </el-col>
           <el-col :span="6">
             <span class="field-label2">年龄:</span>
-            <span class="field-value2">{{ caseInfo.userName }}</span>
+            <span class="field-value2">{{ caseInfo.age }}</span>
           </el-col>
           <el-col :span="6">
             <span class="field-label2">职业:</span>
-            <span class="field-value2">{{ caseInfo.userName }}</span>
+            <span class="field-value2">{{ caseInfo.age }}</span>
           </el-col>
 
           <el-col :span="8">
@@ -33,7 +34,7 @@
 
           <el-col :span="8">
             <span class="field-label2">联系方式:</span>
-            <span class="field-value2">{{ caseInfo.time }}</span>
+            <span class="field-value2">{{ caseInfo.phone }}</span>
           </el-col>
         </el-row>
 
@@ -43,7 +44,7 @@
           <el-form-item>
             <el-autocomplete
               type="textarea"
-              v-model="advice"
+              v-model="caseInfo.illnessDetail"
               clearable
               :rows="2"
               resize="vertical"
@@ -102,7 +103,7 @@
           <el-form-item label="进一步检查:" v-if="selected_plan.includes('check')">
             <el-autocomplete
               type="textarea"
-              v-model="diagnosis"
+              v-model="check"
               clearable
               :rows="1"
               resize="vertical"
@@ -114,17 +115,18 @@
             </el-autocomplete>
           </el-form-item>
           <el-form-item label="药物治疗：" v-if="selected_plan.includes('medicine')">
-            <el-autocomplete
-              type="textarea"
+            <el-input
               v-model="medicine"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
+              class="custom-input"
               placeholder="药物名称、剂量、用法、疗程。"
-              :fetch-suggestions="querySearchDiagnosis"
-              :trigger-on-focus="false"
-            ></el-autocomplete>
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-plus"
+                @click="showSelectMedicineDialog = true"
+                type="primary"
+              ></el-button>
+            </el-input>
           </el-form-item>
           <el-form-item
             label="非药物治疗："
@@ -132,7 +134,7 @@
           >
             <el-autocomplete
               type="textarea"
-              v-model="diagnosis"
+              v-model="non_medicine"
               clearable
               :rows="1"
               resize="vertical"
@@ -145,7 +147,7 @@
           <el-form-item label="护理/监测:" v-if="selected_plan.includes('care')">
             <el-autocomplete
               type="textarea"
-              v-model="diagnosis"
+              v-model="care"
               clearable
               :rows="1"
               resize="vertical"
@@ -158,7 +160,7 @@
           <el-form-item label="饮食建议：" v-if="selected_plan.includes('diet')">
             <el-autocomplete
               type="textarea"
-              v-model="diagnosis"
+              v-model="diet"
               clearable
               :rows="1"
               resize="vertical"
@@ -172,7 +174,7 @@
       </el-col>
 
       <!-- RIGHT SIDE -->
-      <el-col :span="8">
+      <el-col :span="6">
         <div>
           <!-- 这里放图 -->
           <span class="field-label">辅助检查（Auxiliary Examination）</span>
@@ -192,37 +194,31 @@
             >
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{ file }">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt="test" />
-                <span class="el-upload-list__item-actions">
-                  <span
-                    class="el-upload-list__item-preview"
-                    @click="handlePictureCardPreview(file)"
-                  >
-                    <i class="el-icon-zoom-in"></i>
+                <div class="uploaded-images">
+                  <img class="el-upload-list__item-thumbnail" :src="file.url" />
+                  <span class="el-upload-list__item-actions">
+                    <span
+                      class="el-upload-list__item-preview"
+                      @click="handlePictureCardPreview(file)"
+                    >
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                      v-if="!disabled"
+                      class="el-upload-list__item-delete"
+                      @click="handleRemove(file, uploadedUrls)"
+                    >
+                      <i class="el-icon-delete"></i>
+                    </span>
                   </span>
-                  <span
-                    v-if="!disabled"
-                    class="el-upload-list__item-delete"
-                    @click="handleRemove(file, uploadedUrls)"
-                    alt="test"
-                  >
-                    <i class="el-icon-delete"></i>
-                  </span>
-                </span>
+                </div>
               </div>
             </el-upload>
           </div>
-
-          <!-- PREVIEW -->
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" />
-          </el-dialog>
         </div>
 
-        <div class="info-field">
-          <el-button type="primary" @click="ok" class="confirm-button1"
-            >诊疗结束</el-button
-          >
+        <div class="confirm-button">
+          <el-button type="primary" @click="ok">诊疗结束</el-button>
         </div>
       </el-col>
     </el-row>
@@ -240,7 +236,12 @@
         @updateDrug="updateSelectMedicine"
       ></SelectMedicine>
     </el-dialog>
-    <el-button type="primary" @click="showSelectMedicineDialog = true"> 测试 </el-button>
+
+    <!-- IMAGE PREVIEW DIALOG-->
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" />
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -298,6 +299,11 @@ export default {
         },
       ],
       selected_plan: [],
+      description: "",
+      check: "",
+      non_medicine: "",
+      care: "",
+      diet: "",
     };
   },
   created() {
@@ -316,7 +322,7 @@ export default {
         await Promise.all([this.loadByUser()]);
         // 从URL查询参数中解析caseInfo
         this.caseInfo = this.$route.query;
-        console.log("caseInfo", caseInfo);
+        console.log("caseInfo", this.caseInfo);
       } catch (error) {}
     },
 
@@ -361,29 +367,9 @@ export default {
 
     updateSelectMedicine(selectedDrugs) {
       this.selectedMedicine = selectedDrugs;
-    },
-    confirmMedicine() {
-      // 确定按钮
-      this.medicine =
-        this.medicine +
-        this.selectedMedicine +
-        " " +
-        this.medicineQuantity +
-        " " +
-        this.medicineFrequency +
-        "\n";
-      this.radio = "否";
-      this.selectedMedicine = "";
-      this.medicineFrequency = "";
-      this.medicineQuantity = "1";
-    },
-    /**
-     * 确认病历，并插入到数据库中
-     */
-    ok() {
+      let t = '';
       this.selectedMedicine.map((item) => {
-        this.medicine =
-          this.medicine +
+        t = t +
           item.drugName +
           " " +
           item.quantity +
@@ -391,7 +377,14 @@ export default {
           item.frequency +
           "\n";
       });
+      this.medicine = t;
       console.log(this.medicine)
+    },
+    /**
+     * 确认病历，并插入到数据库中
+     */
+    ok() { 
+      console.log(this.medicine);
       let newTraverse = {};
       newTraverse.userId = this.caseInfo.userId;
       newTraverse.idCard = this.caseInfo.idCard;
@@ -559,6 +552,9 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  text-align: center;
+}
 .case-container {
   min-height: 100%;
 }
@@ -656,18 +652,9 @@ export default {
 }
 
 .confirm-button {
-  float: right;
-  margin-top: 1px;
-  margin-right: 12px;
-  font-size: 16px;
-}
-
-.confirm-button1 {
-  float: right;
-  margin-top: 10px;
-  margin-right: 5px;
-  font-size: 16px;
-  width: 30%;
+  display: flex;
+  justify-content: center;
+  margin: 10px;
 }
 
 .edit-button {
@@ -702,27 +689,19 @@ export default {
   margin-bottom: 0;
 }
 
-.upload-container {
-  position: relative;
-}
-
 .el-upload--picture-card {
   width: 50px;
   height: 50px;
 }
 
 ::v-deep .el-upload-list--picture-card .el-upload-list__item {
-  transform: scale(1);
   transform-origin: top left;
-  margin: 15px;
   width: 100%;
   height: 100%;
 }
 
 ::v-deep .el-upload-list__item-thumbnail {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 ::v-deep .disabled .el-upload--picture-card {
@@ -731,5 +710,6 @@ export default {
 
 .plan-select {
   width: 100%;
+  margin: 3px 0；;
 }
 </style>

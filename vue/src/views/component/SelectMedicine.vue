@@ -20,11 +20,15 @@
           <el-option label="每日三次" value="每日三次" />
         </el-select>
       </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="">确认药品</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 
-<script>
+<script>  
 export default {
   props: {
     drugList: {
@@ -68,9 +72,6 @@ export default {
               item.label + "-" + this.temp_quantity + "-" + this.temp_frequency;
           }
         });
-
-        // to right, emit update event to update parent component's data
-        this.$emit("updateDrug", this.selectedDrugs);
       } else {
         this.drugList.map((item) => {
           if (keys.includes(item.key)) {
@@ -85,6 +86,7 @@ export default {
           }
         });
       }
+      this.$emit("updateDrug", this.selectedDrugs);
     },
   },
 };
@@ -95,7 +97,7 @@ export default {
   --el-transfer-panel-width: 40%;
 }
 .el-form {
-  width: 60%; 
+  width: 80%; 
   padding-top: 10px;
   display: flex;
   justify-content: space-around;

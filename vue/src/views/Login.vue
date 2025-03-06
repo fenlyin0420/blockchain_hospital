@@ -9,9 +9,9 @@
         <el-form-item prop="password" label="密码" label-width="15%">
           <el-input :style="{ width: '100%'}" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
         </el-form-item>
-        <el-form-item prop="password" label="公钥" label-width="15%">
+        <!-- <el-form-item prop="password" label="公钥" label-width="15%">
           <el-input :style="{ width: '100%'}" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="身份" label-width="15%">
           <el-select :style="{ width: '100%'}" v-model="form.role" placeholder="请选择角色">
             <el-option label="管理员" value="ADMIN"></el-option>

@@ -111,7 +111,6 @@ export default {
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       rules: {},
       ids: [],
-      __idCard: "",
     };
   },
   created() {
@@ -120,11 +119,12 @@ export default {
   methods: {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
+      console.log("caseData", caseData);
       // caseData.status = '已叫号'
       this.$request.put("/reserve/update", caseData).then((res) => {
         if (res.code === "200") {
           this.$message.success("叫号成功");
-
+          // 获取用户的个人信息，然后跳转到 “填写病历” 的页面
           this.$request.get("/user/selectById/" + caseData?.userId).then((res) => {
             if (res.code === "200") {
               this.__idCard = res.data.idCard;
@@ -136,7 +136,12 @@ export default {
                 hospitalName: caseData?.hospitalName,
                 departmentName: caseData?.departmentName,
                 time: caseData?.time,
-                idCard: this.__idCard,
+                illnessDetail: caseData?.illnessDetail,
+                // database
+                idCard: res.data.idCard,
+                phone: res.data.phone,
+                sex: res.data.sex,
+                age: res.data.age,
               };
               console.log(caseInfo);
               this.load(1);
