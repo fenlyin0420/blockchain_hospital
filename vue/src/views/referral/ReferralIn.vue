@@ -323,24 +323,24 @@ export default {
         timeout: 50000,
       });
       // 获取环公钥
-      await Request.post("/getPublicKeyByTransactionHash", {
-        _transactionHash:
-          "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad",
-      }).then((res) => {
-        if (res.data.code === "200") {
-          row.signPubKey = res.data.data.returnObject[0];
-        } else {
-          this.$message.error("获取环公钥失败");
-        }
-      });
-      // 获取签名数据
-      await this.$request.post("/traverse/getSignData", row).then((res) => {
-        if (res.code === "200") {
-          row.signData = res.data;
-        } else {
-          this.$message.error("获取签名数据失败");
-        }
-      });
+      // await Request.post("/getPublicKeyByTransactionHash", {
+      //   _transactionHash:
+      //     "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad",
+      // }).then((res) => {
+      //   if (res.data.code === "200") {
+      //     row.signPubKey = res.data.data.returnObject[0];
+      //   } else {
+      //     this.$message.error("获取环公钥失败");
+      //   }
+      // });
+      // // 获取签名数据
+      // await this.$request.post("/traverse/getSignData", row).then((res) => {
+      //   if (res.code === "200") {
+      //     row.signData = res.data;
+      //   } else {
+      //     this.$message.error("获取签名数据失败");
+      //   }
+      // });
 
       row.signResult = "";
       console.log(row);

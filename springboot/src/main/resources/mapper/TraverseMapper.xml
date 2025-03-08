@@ -7,6 +7,7 @@
         insert into traverse
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="treatmentDate != null">treatment_date,</if>
+            <if test="recordDate != null">record_date,</if>
             <if test="userId != null">user_id,</if>
             <if test="doctorId != null">doctor_id,</if>
             <if test="hospitalId != null">hospital_id,</if>
@@ -21,6 +22,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="treatmentDate != null">#{treatmentDate},</if>
+            <if test="recordDate != null">#{recordDate},</if>
             <if test="userId != null">#{userId},</if>
             <if test="doctorId != null">#{doctorId},</if>
             <if test="hospitalId != null">#{hospitalId},</if>

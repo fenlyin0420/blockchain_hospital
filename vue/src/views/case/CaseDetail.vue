@@ -122,16 +122,45 @@
               disabled
             ></el-input>
           </el-form-item>
+          <el-form-item label="签名数据：">
+            <el-input
+              v-model="receivedData.signData"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="验签结果：">
+            <el-input
+              v-model="verifySignResult"
+              v-if="verifySignResult === '成功'"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+            <el-input
+              v-model="verifySignResult"
+              v-else
+              :rows="1"
+              resize="vertical"
+              class="info-textarea is-error"
+              disabled
+            ></el-input>
+          </el-form-item>
         </el-form>
       </el-col>
 
       <!-- RIGHT SIDE -->
       <el-col :span="6">
         <div>
-          <span class="field-label">辅助检查（Auxiliary Examination）</span>
+          <span class="right-field-label">辅助检查（Auxiliary Examination）</span>
           <img class="image" :src="receivedData.img" />
-          <el-button type="primary" @click="decrypt"> 解密 </el-button>
-          <el-button type="primary" @click="verifySign"> 验签 </el-button>
+          <div class="button-container">
+            <el-button type="primary" @click="decrypt"> 解密 </el-button>
+            <el-button type="primary" @click="verifySign"> 验签 </el-button>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -150,6 +179,7 @@ export default {
     return {
       receivedData: {},
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
+      verifySignResult: "未验签",
     };
   },
   created() {
@@ -234,16 +264,15 @@ export default {
      */
     verifySign() {
       if (this.receivedData.id) {
-        this.params.id = this.receivedData.id;
-        this.$request.post("/keys/verifySign", this.params).then((res) => {
+        this.$request.post("/keys/verifySign", this.receivedData).then((res) => {
           if (res.code === "200") {
-            this.receivedData.signResult = res.data.message;
+            this.$message.success("验签成功");
+            this.verifySignResult = res.data.message;
           } else {
             this.$message.error(res.msg);
           }
         });
       } else {
-        console.log(this.receivedData);
         this.$request.post("/keys/verifySignByData", this.receivedData).then((res) => {
           if (res.code === "200") {
             this.receivedData.signResult = res.data.message;
@@ -390,10 +419,27 @@ export default {
   margin-bottom: 0;
 }
 .image {
+  margin: 20px 0;
   width: 100%;
   height: 100%;
 }
 ::v-deep .el-input.is-disabled .el-input__inner {
   background-color: #fff;
 }
+.button-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+.button-container .el-button {
+  margin: 10px auto;
+  width: 80%;
+}
+.right-field-label {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
 </style>

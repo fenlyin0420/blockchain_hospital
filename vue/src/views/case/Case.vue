@@ -25,11 +25,11 @@
 
           <el-col :span="8">
             <span class="field-label2">入院/就诊时间:</span>
-            <span class="field-value2">{{ caseInfo.time }}</span>
+            <span class="field-value2">{{ recordDate }}</span>
           </el-col>
           <el-col :span="8">
             <span class="field-label2">记录时间:</span>
-            <span class="field-value2">{{ caseInfo.time }}</span>
+            <span class="field-value2">{{ recordDate }}</span>
           </el-col>
 
           <el-col :span="8">
@@ -253,7 +253,6 @@ export default {
       diagnosis2: "", 
       medicine: "", // 药品
       selectedMedicine: [],
-      radio: "",
       tableData: [],
       drugList: [],
       receivedData: {},
@@ -267,6 +266,7 @@ export default {
       uploadDisabled: false, // 控制上传组件的显示与隐藏
       showSelectMedicineDialog: false,
       extraData: { isTraverse: true },
+      recordDate: "",
       imgURL: { img: "" },
       plans: [
         {
@@ -291,14 +291,16 @@ export default {
         },
       ],
       selected_plan: [],
-      description: "",
-      check: "",
-      non_medicine: "",
-      care: "",
-      diet: "",
+      check: "无",
+      medicine: "无",
+      non_medicine: "无",
+      care: "无",
+      diet: "无",
     };
   },
   created() {
+    this.recordDate = new Date()
+    this.recordDate = this.recordDate.toISOString().split("T")[0]
     this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法
     this.loadByDrug(); //获取drugList
   },
@@ -407,7 +409,7 @@ export default {
       newTraverse.illnessDetail = this.caseInfo.illnessDetail;
       newTraverse.treatmentDate = this.caseInfo.time;
       newTraverse.recordDate = this.caseInfo.time;
-      newTraverse.inHospital = this.radio;
+      newTraverse.inHospital = this.medicine === "无" ? "是" : "否";
       newTraverse.advice = "进一步检查:" + this.check + "\n"
                   + "非药物治疗:" + this.non_medicine + "\n"
                   + "护理/监测:" + this.care + "\n"
@@ -421,7 +423,6 @@ export default {
       this.$request.post("/traverse/add", newTraverse)
       .then((res) => {
         if (res.code === "200") {
-          console.log("res1", res)
           return this.$request.get("/traverse/selectAll", {
             params: {
               id: res.data,
@@ -434,7 +435,6 @@ export default {
       })
       .then((res2) => {
         if (res2 && res2.code === "200") {
-          console.log(res2)
           this.$router.push({ name: 'CaseSign', query: res2.data[0] });
         } else {
           this.$message.error("获取数据失败，数据格式不正确");

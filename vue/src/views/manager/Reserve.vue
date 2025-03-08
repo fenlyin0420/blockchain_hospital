@@ -135,7 +135,6 @@ export default {
                 hospitalId: caseData?.hospitalId,
                 hospitalName: caseData?.hospitalName,
                 departmentName: caseData?.departmentName,
-                time: caseData?.time,
                 illnessDetail: caseData?.illnessDetail,
                 // database
                 idCard: res.data.idCard,
@@ -187,7 +186,7 @@ export default {
         .catch(() => {});
     },
     load(pageNum) {
-      // 分页查询
+      // 预约信息
       if (pageNum) this.pageNum = pageNum;
       this.$request
         .get("/reserve/selectPage", {

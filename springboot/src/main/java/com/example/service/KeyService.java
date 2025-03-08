@@ -373,7 +373,6 @@ public class KeyService {
                     }
                 }
             }
-            traverseService.updateById(traverse);
         } catch (NullPointerException e) {
             e.printStackTrace();
             throw new CustomException("400", "患者不存在");

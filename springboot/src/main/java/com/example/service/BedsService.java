@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.TraverseDTO;
 import com.example.entity.Bed;
 import com.example.entity.Traverse;
 import com.example.entity.Ward;
@@ -16,9 +17,9 @@ public class BedsService {
     @Resource
     private BedsMapper bedsMapper;
 
-    public PageInfo<Traverse> selectTraversePage(Traverse traverse, Integer pageNum, Integer pageSize) {
+    public PageInfo<TraverseDTO> selectTraversePage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Traverse> list = bedsMapper.selectAllTraverse(traverse);
+        List<TraverseDTO> list = bedsMapper.selectAllTraverse(traverse);
         return PageInfo.of(list);
     }
 

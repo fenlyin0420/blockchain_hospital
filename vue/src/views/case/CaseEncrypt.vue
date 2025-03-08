@@ -21,7 +21,7 @@
                 <div class="demo-image" @click="previewImage(url, index)">
                   <el-image
                     style="width: 250px; height: 250px"
-                    :src="receivedData.img"
+                    :src="img"
                     :fit="fits"
                   ></el-image>
                 </div>
@@ -151,7 +151,7 @@ export default {
       dialogVisible: false, // 对话框可见性
       previewImageUrl: "", // 预览图片URL
       previewImageIndex: -1, // 预览图片索引
-      /** 区块链存储地址 */
+      /** 交易哈希 */
       transactionHash: "NULL",
       QRURL: "",
       params: {},
@@ -234,6 +234,8 @@ export default {
             this.receivedData.advice = res.data.advice;
             this.receivedData.drug = res.data.drug;
             this.getBase64();
+          } else {
+            this.$message.error("加密失败 :(");
           }
         });
     },
@@ -241,7 +243,7 @@ export default {
       this.$request
         .get("/files/getBase64", {
           params: {
-            url: this.receivedData.img,
+            url: this.receivedData.img.split("\n")[0],
           },
         })
         .then((res) => {
@@ -249,7 +251,7 @@ export default {
             this.receivedData.img = res.data;
             this.sign();
           } else {
-            this.$message.error("获取图片失败 :(");
+            this.$message.error("获取图片base64失败 :(");
           }
         });
     },
@@ -279,7 +281,7 @@ export default {
       // 构造要上传的至区块链的 JSON 病历
       let traverse = {
         _idCard: this.receivedData.idCard,
-        _userName_hospitalName_doctorname:
+        _userName_hospitalName_doctorName:
           this.receivedData.userName +
           "||" +
           this.receivedData.hospitalName +
