@@ -21,7 +21,7 @@
             <if test="signKey != null">sign_key,</if>
             <if test="img != null">img,</if>
             <if test="careStatus != null">care_status,</if>
-            <if test="isValid != null">is_valid,</if>
+            <if test="illnessDetail != null">illness_detail,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="treatmentDate != null">#{treatmentDate},</if>
@@ -39,7 +39,7 @@
             <if test="signKey != null">#{signKey},</if>
             <if test="img != null">#{img},</if>
             <if test="careStatus != null">#{careStatus},</if>
-            <if test="isValid != null">#{isValid},</if>
+            <if test="illnessDetail != null">#{illnessDetail},</if>
         </trim>
     </insert>
     <update id="updateById">
@@ -75,38 +75,44 @@
             <if test="signKey!=null">
                 sign_key = #{signKey},
             </if>
-            <if test="isValid!=null">
-                is_valid = #{isValid},
+            <if test="illnessDetail!=null">
+                illness_detail = #{illnessDetail},
             </if>
         </set>
         where id = #{id}
     </update>
+
+    <update id="setSignData">
+        update traverse
+        <set>
+            sign_data = #{signData},
+            sign_pub_key = #{signPubKey},
+        </set>
+        where id = #{id}
+    </update>
+
     <delete id="deleteById">
         delete from traverse where id = #{id}
     </delete>
 
-    <select id="selectAll" resultType="com.example.entity.Traverse">
-        select traverse.*, hospital.hospital_name as hospitalName, doctor.name as doctorName, user.name as userName, bed.bed_name as bedName
-        from traverse
-        left join hospital on hospital.id = traverse.hospital_id
-        left join doctor on doctor.id = traverse.doctor_id
-        left join user on user.id = traverse.user_id
-        left join bed on bed.id = traverse.bed_id
+    <select id="selectAll" resultType="com.example.dto.TraverseDTO">
+        select * from traverse_dto
         <where>
-            <if test="id != null">and traverse.id = #{id}</if>
-            <if test="userId != null">and traverse.user_id = #{userId}</if>
+            <if test="id != null">and id = #{id}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
             <if test="doctorId!= null">and doctor_id = #{doctorId}</if>
-            <if test="hospitalId!= null">and traverse.hospital_id = #{hospitalId}</if>
-            <if test="bedId != null"> and traverse.bed_id = #{bed}</if>
+            <if test="hospitalId!= null">and hospital_id = #{hospitalId}</if>
+            <if test="bedId != null"> and bed_id = #{bed}</if>
             <if test="drug!= null">and drug like concat('%', #{drug}, '%')</if>
-            <if test="userName != null"> and user.name like concat('%', #{userName}, '%')</if>
-            <if test="inHospital != null">and traverse.in_hospital = #{inHospital}</if>
+            <if test="inHospital != null">and in_hospital = #{inHospital}</if>
         </where>
-        order by traverse.id
+        order by id
     </select>
+    
     <select id="selectByTimestamp" resultType="com.example.entity.Traverse">
         select * from traverse where timestamp=#{timestamp}
     </select>
+    
     <select id="selectById" resultType="com.example.entity.Traverse">
         select * from traverse where id=#{id}
     </select>

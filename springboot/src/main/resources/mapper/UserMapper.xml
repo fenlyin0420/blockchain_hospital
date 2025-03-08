@@ -44,6 +44,8 @@
             <if test="account != null">account,</if>
             <if test="publicKey != null">public_key,</if>
             <if test="privateKey != null">private_key,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="occupation != null">occupation,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -57,6 +59,8 @@
             <if test="account != null">#{account},</if>
             <if test="publicKey != null">#{publicKey},</if>
             <if test="privateKey != null">#{privateKey},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="occupation != null">#{occupation},</if>
         </trim>
     </insert>
 
@@ -96,8 +100,10 @@
             <if test="idCard  != null">
                 id_card = #{idCard},
             </if>
+            <if test="occupation != null">
+                occupation = #{occupation},
+            </if>
         </set>
         where id = #{id}
     </update>
-
 </mapper>

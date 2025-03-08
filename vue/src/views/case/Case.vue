@@ -20,7 +20,7 @@
           </el-col>
           <el-col :span="6">
             <span class="field-label2">职业:</span>
-            <span class="field-value2">{{ caseInfo.age }}</span>
+            <span class="field-value2">{{ caseInfo.occupation }}</span>
           </el-col>
 
           <el-col :span="8">
@@ -42,42 +42,39 @@
         <el-form>
           <div class="field-label">主诉（Chief Complaint, CC）</div>
           <el-form-item>
-            <el-autocomplete
+            <el-input
               type="textarea"
               v-model="caseInfo.illnessDetail"
               clearable
               :rows="2"
               resize="vertical"
               class="info-textarea CC"
-              :fetch-suggestions="querySearchAdvice"
               placeholder="患者就诊的主要症状或体征 + 持续时间。"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
 
           <div class="field-label">初步诊断（Primary Diagnosis）</div>
           <el-form-item label="1.主要诊断：">
-            <el-autocomplete
+            <el-input
               type="textarea"
-              v-model="diagnosis"
+              v-model="diagnosis1"
               clearable
               :rows="1"
               resize="vertical"
               class="info-textarea"
-              :fetch-suggestions="querySearchDiagnosis"
               placeholder="根据病史、查体及检查结果。"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
           <el-form-item label="2.次要诊断：">
-            <el-autocomplete
+            <el-input
               type="textarea"
-              v-model="diagnosis"
+              v-model="diagnosis2"
               clearable
               :rows="1"
               resize="vertical"
               class="info-textarea"
-              :fetch-suggestions="querySearchDiagnosis"
               placeholder="合并症或其他疾病。"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
 
           <div class="field-label">诊疗计划（Treatment Plan）</div>
@@ -101,7 +98,7 @@
           </el-select>
 
           <el-form-item label="进一步检查:" v-if="selected_plan.includes('check')">
-            <el-autocomplete
+            <el-input
               type="textarea"
               v-model="check"
               clearable
@@ -109,10 +106,8 @@
               resize="vertical"
               class="info-textarea"
               placeholder="明确需完善的实验室或影像学检查。"
-              :fetch-suggestions="querySearchDiagnosis"
-              :trigger-on-focus="false"
             >
-            </el-autocomplete>
+            </el-input>
           </el-form-item>
           <el-form-item label="药物治疗：" v-if="selected_plan.includes('medicine')">
             <el-input
@@ -132,7 +127,7 @@
             label="非药物治疗："
             v-if="selected_plan.includes('non-medicine')"
           >
-            <el-autocomplete
+            <el-input
               type="textarea"
               v-model="non_medicine"
               clearable
@@ -140,12 +135,10 @@
               resize="vertical"
               class="info-textarea"
               placeholder="手术、康复训练、生活方式干预等。"
-              :fetch-suggestions="querySearchDiagnosis"
-              :trigger-on-focus="false"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
           <el-form-item label="护理/监测:" v-if="selected_plan.includes('care')">
-            <el-autocomplete
+            <el-input
               type="textarea"
               v-model="care"
               clearable
@@ -153,12 +146,10 @@
               resize="vertical"
               class="info-textarea"
               placeholder="如监测生命体征、记录出入量等。"
-              :fetch-suggestions="querySearchDiagnosis"
-              :trigger-on-focus="false"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
           <el-form-item label="饮食建议：" v-if="selected_plan.includes('diet')">
-            <el-autocomplete
+            <el-input
               type="textarea"
               v-model="diet"
               clearable
@@ -166,9 +157,7 @@
               resize="vertical"
               class="info-textarea"
               placeholder="如低盐、流质饮食等。"
-              :fetch-suggestions="querySearchDiagnosis"
-              :trigger-on-focus="false"
-            ></el-autocomplete>
+            ></el-input>
           </el-form-item>
         </el-form>
       </el-col>
@@ -218,7 +207,7 @@
         </div>
 
         <div class="confirm-button">
-          <el-button type="primary" @click="ok">诊疗结束</el-button>
+          <el-button type="primary" @click="ok">医生签名</el-button>
         </div>
       </el-col>
     </el-row>
@@ -234,6 +223,7 @@
       <SelectMedicine
         :drugList="drugList"
         @updateDrug="updateSelectMedicine"
+        @close="showSelectMedicineDialog = false"
       ></SelectMedicine>
     </el-dialog>
 
@@ -257,8 +247,10 @@ export default {
     return {
       caseInfo: { inHospital: this.radio }, // 单个病历信息
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
-      advice: "", // 病情
-      diagnosis: "", //诊断结果
+      /** 主要诊断 */
+      diagnosis1: "", 
+      /** 次要诊断 */
+      diagnosis2: "", 
       medicine: "", // 药品
       selectedMedicine: [],
       radio: "",
@@ -322,7 +314,6 @@ export default {
         await Promise.all([this.loadByUser()]);
         // 从URL查询参数中解析caseInfo
         this.caseInfo = this.$route.query;
-        console.log("caseInfo", this.caseInfo);
       } catch (error) {}
     },
 
@@ -365,6 +356,10 @@ export default {
       // 如果没有找到匹配项，caseInfo将保持不变（从URL查询参数中解析的值）
     },
 
+    /**
+     * 从子组件SelectMedicine中传递的已选择药品，格式化后更新到medicine
+     * @param selectedDrugs 子组件传来的已选择的药品
+     */
     updateSelectMedicine(selectedDrugs) {
       this.selectedMedicine = selectedDrugs;
       let t = '';
@@ -378,27 +373,30 @@ export default {
           "\n";
       });
       this.medicine = t;
-      console.log(this.medicine)
+    },
+    /** 
+     * 对病历签名
+     */
+    sign() {
+
     },
     /**
      * 确认病历，并插入到数据库中
      */
     ok() { 
-      console.log(this.medicine);
       let newTraverse = {};
+      newTraverse.advice = "进一步检查:" + this.check + "\n"
+                  + "非药物治疗:" + this.non_medicine + "\n"
+                  + "护理/监测:" + this.care + "\n"
+                  + "饮食建议:" + this.diet + "\n";
+      newTraverse.diagnosis = "主要诊断:" + this.diagnosis1 + "\n"
+                  + "次要诊断:" + this.diagnosis2 + "\n";
       newTraverse.userId = this.caseInfo.userId;
       newTraverse.idCard = this.caseInfo.idCard;
       newTraverse.timestamp = new Date().getTime();
       newTraverse.treatmentDate = this.caseInfo.time;
       newTraverse.doctorId = this.user.id;
       newTraverse.hospitalId = this.caseInfo.hospitalId;
-      this.advice == ""
-        ? (newTraverse.advice = "无")
-        : (newTraverse.advice = this.advice);
-      this.diagnosis == ""
-        ? (newTraverse.diagnosis = "无")
-        : (newTraverse.diagnosis = this.diagnosis);
-      this.medicine == "" ? (this.medicine = "无") : "";
       newTraverse.drug = this.medicine;
       newTraverse.inHospital = this.radio;
       newTraverse.img = this.imgURL.img;

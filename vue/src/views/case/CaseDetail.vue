@@ -1,308 +1,399 @@
+<!-- 查看一个病历的详细内容， 该页面应包含 <病历> 实体和病历所属的 <用户> 实体-->
+<!-- 所以无论从哪里跳转到本页面， 都应该提供上述实体的信息（通过查询参数提供），本页面将使用 receivedData 变量接收-->
 <template>
-  <el-card class="container">
-    <div class="header">
-      <h2>病例详情</h2>
-    </div>
-    <el-row :gutter="24">
-      <el-col :span="9">
-        <el-form label-width="10px">
+  <el-card class="case-container">
+    <el-row class="info-row" :gutter="24">
+      <!-- LEFT SIDE -->
+      <el-col :span="18">
+        <h3 class="title">住院病历/门诊病历</h3>
+        <!-- HEAD -->
+        <el-row class="info-row" :gutter="24">
+          <el-col :span="6">
+            <span class="field-label2">姓名:</span>
+            <span class="field-value2">{{ receivedData.userName }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">性别:</span>
+            <span class="field-value2">{{ receivedData.sex }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">年龄:</span>
+            <span class="field-value2">{{ receivedData.age }}</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="field-label2">职业:</span>
+            <span class="field-value2">{{ receivedData.occupation }}</span>
+          </el-col>
+
+          <el-col :span="8">
+            <span class="field-label2">入院/就诊时间:</span>
+            <span class="field-value2">{{ receivedData.treatmentDate }}</span>
+          </el-col>
+          <el-col :span="8">
+            <span class="field-label2">记录时间:</span>
+            <span class="field-value2">{{ receivedData.recordDate }}</span>
+          </el-col>
+
+          <el-col :span="8">
+            <span class="field-label2">联系方式:</span>
+            <span class="field-value2">{{ receivedData.phone }}</span>
+          </el-col>
+        </el-row>
+
+        <!-- CASE DESCRIPTION -->
+        <el-form>
+          <div class="field-label">主诉（Chief Complaint, CC）</div>
           <el-form-item>
-            <!-- 这里放图 -->
-            <span class="field-label">医疗影像:</span>
-            <div class="image-container">
-              <div @click.stop="previewImage(url, index)" v-for="(url, index) in ImageLines" :key="index">
-                <div class="demo-image" @click="previewImage(url, index)">
-                  <el-image style="width: 350px; height: 350px" :src="receivedData.img" :fit="fits"></el-image>
-                </div>
-              </div>
-            </div>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="previewImageUrl" :alt="'Preview of ' + (previewImageIndex + 1)" />
-            </el-dialog>
+            <el-input
+              :rows="2"
+              v-model="receivedData.illnessDetail"
+              resize="vertical"
+              class="info-textarea CC"
+              disabled
+            ></el-input>
           </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="15">
-        <el-form label-width="100px">
-          <el-form-item label="患者姓名" class="custom-layout">
-            <div class="content-wrapper">
-              <span class="name" style="color: blue;">{{ receivedData.userName }}</span>
-              <el-button type="primary" class="decrypt-button" @click="decryptAdviceAndDrug">解密</el-button>
-            </div>
+
+          <div class="field-label">初步诊断（Primary Diagnosis）</div>
+          <el-form-item label="1.主要诊断：">
+            <el-input
+              v-model="diagnosis1"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
           </el-form-item>
-        </el-form>
-        <el-form label-width="100px">
-          <el-form-item label="医嘱信息">
-            <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4 }" placeholder="请输入内容"
-              v-model="receivedData.advice">
+          <el-form-item label="2.次要诊断：">
+            <el-input
+              v-model="diagnosis2"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+          </el-form-item>
+
+          <div class="field-label">诊疗计划（Treatment Plan）</div>
+
+          <el-form-item label="进一步检查:">
+            <el-input
+              v-model="check"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            >
             </el-input>
           </el-form-item>
-          <el-form-item label="药品信息">
-            <el-table :data="drug" style="width: 100%" height="200" border>
-              <el-table-column prop="name" label="药品名称"></el-table-column>
-              <el-table-column prop="dose" label="数量"></el-table-column>
-              <el-table-column prop="frequency" label="用法用量"></el-table-column>
-            </el-table>
+          <el-form-item label="药物治疗：">
+            <el-input class="custom-input" v-model="receivedData.drug" disabled>
+              <el-button
+                slot="append"
+                icon="el-icon-plus"
+                @click="showSelectMedicineDialog = true"
+                type="primary"
+              ></el-button>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="非药物治疗：">
+            <el-input
+              v-model="non_medicine"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="护理/监测:">
+            <el-input
+              v-model="care"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="饮食建议：">
+            <el-input
+              v-model="diet"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
           </el-form-item>
         </el-form>
       </el-col>
-    </el-row>
 
-    <el-row :gutter="24">
-      <!-- 签名数据 -->
-      <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
-          <el-row>
-            <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                环签名数据
-              </div>
-            </el-col>
-            <el-col :span="14">
-              <div class="grid-content bg-purple-light">
-                <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
-                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-        <div class="grid-content bg-purple">
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signData">
-          </el-input>
-        </div>
-      </el-col>
-
-      <!-- 签名信息 --> 
-      <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
-          <el-row>
-            <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                环签名信息
-              </div>
-            </el-col>
-
-            <el-col :span="14">
-              <div class="grid-content bg-purple-light">
-                <el-button  type="primary" style="visibility: hidden;" >占位 </el-button>
-              </div>
-            </el-col>
-          </el-row>
-
-        </div>
-        <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signKey">
-          </el-input>
-        </div>
-      </el-col>
-
-      <!-- 验签结果 --> 
-      <el-col :span="8">
-        <div style="margin: 0 0 20px 0">
-          <el-row>
-            <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                验签结果
-              </div>
-            </el-col>
-
-            <el-col :span="14">
-              <div class="grid-content bg-purple-light">
-              <!-- 验签按钮 -->
-                <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER' || user.role === 'ADMIN'">验签</el-button>
-                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-        <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :rows="6" readonly placeholder="请输入内容"
-            v-model="receivedData.signResult">
-          </el-input>
+      <!-- RIGHT SIDE -->
+      <el-col :span="6">
+        <div>
+          <span class="field-label">辅助检查（Auxiliary Examination）</span>
+          <img class="image" :src="receivedData.img" />
+          <el-button type="primary" @click="decrypt"> 解密 </el-button>
+          <el-button type="primary" @click="verifySign"> 验签 </el-button>
         </div>
       </el-col>
     </el-row>
 
-    <div class="header" style="margin: 20px 0">
-      <h2>环公钥组成信息</h2>
-    </div>
-
-    <div v-if="pubs.length !== 0">
-      <el-table :data="pubs" height="250" border style="width: 100%">
-        <el-table-column prop="name" label="姓名" width="180">
-        </el-table-column>
-        <el-table-column prop="key" label="公钥">
-        </el-table-column>
-      </el-table>
-    </div>
+    <!-- IMAGE PREVIEW DIALOG-->
+    <!-- <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" />
+    </el-dialog> -->
   </el-card>
 </template>
 
 <script>
 export default {
+  name: "CaseDetail",
   data() {
     return {
       receivedData: {},
-      params: {},
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      pubs: [],
-      fits: 'fill',
-      dialogVisible: false, // 对话框可见性  
-      previewImageUrl: '', // 预览图片URL  
-      previewImageIndex: -1, // 预览图片索引 
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
     };
   },
   created() {
-    this.receivedData = this.$route?.query
-    this.load()
+    this.receivedData = this.$route?.query;
+    console.log("receivedData", this.receivedData)
+    this.load();
   },
   computed: {
-    drug() {
-      const medicationString = this.receivedData.drug;
-      // 拆分字符串为每一行
-      let lines = medicationString?.split('\n');
-      if (lines.length != 1) lines = lines.slice(0, -1);
-      // 将每一行拆分为药物信息对象
-      return lines.map(line => {
-        const parts = line?.split(' ');
-        const l = parts[0].length
-        return {
-          name: parts[1] ? parts[0] : parts[0].slice(0, l/3),
-          dose: parts[1] ? parts[1] : parts[0].slice(l/3, 2*l/3),
-          frequency: parts[2] ? parts[2] : parts[0].slice(2*l/3, l)
-        };
-      });
+    diagnosis1() {
+      
+      return this.receivedData.diagnosis?.split("\n")[0].split(':')[1];
     },
-    ImageLines() {
-      const urlImageString = this.receivedData.img;
-      const urlImageLines = urlImageString.split('\n');
-      if (urlImageLines.length > 0 && urlImageLines[urlImageLines.length - 1] === '') {
-        urlImageLines.pop();
-      }
-      return urlImageLines;
-    }
+    diagnosis2() {
+      return this.receivedData.diagnosis?.split("\n")[1].split(':')[1];
+    },
+    check() {
+      return this.receivedData.advice?.split("\n")[0].split(':')[1];
+    },
+    non_medicine() {
+      return this.receivedData.advice?.split("\n")[1].split(':')[1];
+    },
+    care() {
+      return this.receivedData.advice?.split("\n")[2].split(':')[1];
+    },
+    diet() {
+      return this.receivedData.advice?.split("\n")[3].split(':')[1];
+    },
+
   },
   methods: {
-    //图片预览
-    previewImage(url, index) {
-      this.previewImageUrl = url;
-      this.previewImageIndex = index;
-      this.dialogVisible = true;
-    },
-
     load() {
       if (this.receivedData.length) {
-        this.$router.push("/caseList")
+        this.$router.push("/caseList");
       }
 
-      if (this.receivedData.signPubKey != null || this.receivedData.signPubKey != "") {
-        const s = this.receivedData.signPubKey?.split(",")
-        const ss = s.map(line => {
-          const parts = line?.split(':');
-          return {
-            name: parts[0],
-            key: parts[1],
-          };
-        });
-        this.pubs = ss
-      }
+      // if (this.receivedData.signPubKey != null || this.receivedData.signPubKey != "") {
+      //   const s = this.receivedData.signPubKey?.split(",");
+      //   const ss = s.map((line) => {
+      //     const parts = line?.split(":");
+      //     return {
+      //       name: parts[0],
+      //       key: parts[1],
+      //     };
+      //   });
+      //   this.pubs = ss;
+      // }
     },
     /**
-     * 数据解密
+     * 病历解密
      * 将本地密文发送到服务端，服务端解密后返回明文
      */
-    decryptAdviceAndDrug() {
+    decrypt() {
       // 解密文字
       let params = {
         userId: this.receivedData.userId,
         advice: this.receivedData.advice,
-        drug: this.receivedData.drug
-      }
-      this.$request.post('keys/decrypt', params).then(res => {
-        if (res.code === '200') {
-          this.receivedData.advice = res.data.advice
-          this.receivedData.drug = res.data.drug
+        drug: this.receivedData.drug,
+      };
+      this.$request.post("keys/decrypt", params).then((res) => {
+        if (res.code === "200") {
+          this.receivedData.advice = res.data.advice;
+          this.receivedData.drug = res.data.drug;
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg);
         }
-      })
+      });
 
       // 解密图片
       const imgUrl = {
-        "img": this.receivedData.img.slice(0, -1)
-      }
-      this.$request.post('keys/imgDecrypt', imgUrl).then(res => {
-        if (res.code === '200'){
-          this.receivedData.img = `data:image/png;base64,${res.data}`;  
+        img: this.receivedData.img.slice(0, -1),
+      };
+      this.$request.post("keys/imgDecrypt", imgUrl).then((res) => {
+        if (res.code === "200") {
+          this.receivedData.img = `data:image/png;base64,${res.data}`;
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
+    /**
+     * 病历验签
+     */
     verifySign() {
       if (this.receivedData.id) {
-        this.params.id = this.receivedData.id
-        this.$request.post('/keys/verifySign', this.params).then(res => {
-          if (res.code === '200') {
-            this.receivedData.signResult = res.data.message
+        this.params.id = this.receivedData.id;
+        this.$request.post("/keys/verifySign", this.params).then((res) => {
+          if (res.code === "200") {
+            this.receivedData.signResult = res.data.message;
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.msg);
           }
-        })
+        });
       } else {
-        console.log(this.receivedData)
-        this.$request.post('/keys/verifySignByData', this.receivedData).then(res => {
-          if (res.code === '200') {
-            this.receivedData.signResult = res.data.message
+        console.log(this.receivedData);
+        this.$request.post("/keys/verifySignByData", this.receivedData).then((res) => {
+          if (res.code === "200") {
+            this.receivedData.signResult = res.data.message;
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.msg);
           }
-        })
+        });
       }
-      
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.container {
-  margin: 20px;
+.title {
+  text-align: center;
+}
+.case-container {
+  min-height: 100%;
 }
 
-.header {
+::v-deep .el-card__body {
+  padding-top: 0px;
+}
+
+::v-deep .el-row {
+  margin: 0px;
+}
+
+.custom-col {
+  margin-left: 0px;
+  /* 减小左侧间距 */
+  margin-right: 0px;
+  /* 减小右侧间距 */
+}
+
+.case-header {
   margin-bottom: 20px;
+  text-align: center;
 }
 
-.custom-layout .content-wrapper {
-  display: flex;
-  align-items: center;
-  /* 垂直方向上居中对齐 */
-  justify-content: space-between;
-  /* 水平方向上两端对齐 */
+.info-row {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.info-field {
+  margin-bottom: 15px;
+}
+
+.field-label {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.field-label2 {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  margin-right: 0px;
+  width: 80px;
+  font-weight: bold;
+}
+
+.field-value {
+  margin-left: 10px;
+  margin-right: 150px;
+}
+
+.field-value2 {
+  margin-left: 10px;
+  margin-right: 0px;
+}
+
+.info-textarea {
   width: 100%;
-  /* 确保容器宽度充满父元素 */
-}
-
-.custom-layout .decrypt-button {
-  margin-left: auto;
-  /* 利用自动外边距将按钮推至最右侧 */
-}
-
-.image-container {
-  display: flex;
-  /* 启用flexbox布局 */
-  flex-wrap: wrap;
-  /* 若图片数量超出容器宽度，则自动换行 */
-  gap: 10px;
-  /* 图片间的间距，可根据需求调整 */
 }
 
 ::v-deep .el-textarea__inner {
-  color: blue;
+  background-color: transparent;
+  resize: none !important;
+}
+
+::v-deep .el-textarea__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.medicine-select {
+  width: 50%;
+  margin-right: 40px;
+}
+
+.quantity-input {
+  width: 50%;
+  margin-right: 10px;
+}
+
+.frequency-input {
+  width: 50%;
+}
+
+.medicine-textarea {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: calc(100% - 10px);
+}
+
+.confirm-button {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.edit-button {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.divider {
+  border: 1px solid #dcdcdc;
+  margin-bottom: 20px;
+}
+
+.el-form-item {
+  margin-bottom: 3px;
+  display: flex;
+}
+
+::v-deep .el-form-item .el-form-item__content {
+  flex: 1;
+}
+
+::v-deep .el-form-item__label {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.custom-form-inline .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+.image {
+  width: 100%;
+  height: 100%;
+}
+::v-deep .el-input.is-disabled .el-input__inner {
+  background-color: #fff;
 }
 </style>

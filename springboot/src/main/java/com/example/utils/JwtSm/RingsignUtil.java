@@ -35,7 +35,7 @@ public class RingsignUtil {
      */
     public static byte[] sign(BCECPrivateKey privateKey, List<BCECPublicKey> publicKeys, byte[] data) throws CryptoException {
         ECPoint sumPoints = sumPublicKeys(publicKeys);
-        System.out.println(sumPoints.toString());
+        // System.out.println(sumPoints.toString());
         byte[] withId=sumPoints.toString().getBytes();
         byte[] sign = SM2Util.sign(privateKey, withId, data);
         return sign;
@@ -50,7 +50,7 @@ public class RingsignUtil {
      */
     public static boolean verify(List<BCECPublicKey> publicKeys,byte[] data,byte[] sign){
         ECPoint sumPoints = sumPublicKeys(publicKeys);
-        System.out.println(sumPoints.toString());
+        // System.out.println(sumPoints.toString());
         for (BCECPublicKey publicKey:publicKeys){
             boolean result=SM2Util.verify(publicKey, sumPoints.toString().getBytes(),data,sign);
             if(result){

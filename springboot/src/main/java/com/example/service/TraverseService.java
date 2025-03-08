@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.common.enums.InHospitalEnum;
+import com.example.dto.TraverseDTO;
 import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.exception.CustomException;
@@ -26,36 +27,30 @@ public class TraverseService {
     @Resource
     private UserMapper userMapper;
 
-    public List<Traverse> selectAll(Traverse traverse) {
+    public List<TraverseDTO> selectAll(Traverse traverse) {
         return traverseMapper.selectAll(traverse);
     }
 
-    public PageInfo<Traverse> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
+    public PageInfo<TraverseDTO> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Traverse> list = traverseMapper.selectAll(traverse);
+        List<TraverseDTO> list = traverseMapper.selectAll(traverse);
         Collections.reverse(list);
         return PageInfo.of(list);
     }
 
-    public Traverse selectById(Integer id) {
+    public TraverseDTO selectById(Integer id) {
         Traverse traverse = new Traverse();
         traverse.setId(id);
         return traverseMapper.selectAll(traverse).get(0);
     }
 
-    public Traverse selectByName(String name) {
-        Traverse traverse = new Traverse();
-        traverse.setUserName(name);
-        return traverseMapper.selectAll(traverse).get(0);
-    }
-
-    public Traverse selectByDoctorId(Integer id) {
+    public TraverseDTO selectByDoctorId(Integer id) {
         Traverse traverse = new Traverse();
         traverse.setDoctorId(id);
         return traverseMapper.selectAll(traverse).get(0);
     }
 
-    public Traverse selectByHospitalId(Integer id) {
+    public TraverseDTO selectByHospitalId(Integer id) {
         Traverse traverse = new Traverse();
         traverse.setHospitalId(id);
         return traverseMapper.selectAll(traverse).get(0);

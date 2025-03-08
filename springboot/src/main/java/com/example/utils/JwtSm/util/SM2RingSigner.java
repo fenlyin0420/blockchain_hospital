@@ -30,7 +30,7 @@ public class SM2RingSigner {
         //生成随机数k
         BigInteger k;
         k=redom(d);
-        System.out.println("随机数"+k);
+        // System.out.println("随机数"+k);
         BigInteger kpi=k;
         //*****************************计算c[1](pi=pi)********************************
         // 编码列表L
@@ -41,7 +41,7 @@ public class SM2RingSigner {
         BigInteger h=new BigInteger(hash);
         // 打印哈希结果
         String hashHex = Hex.toHexString(hash);
-        System.out.println("SM3 哈希结果: " + hashHex);
+        // System.out.println("SM3 哈希结果: " + hashHex);
         for(int i=0;i<pi;i++){
             C.add(BigInteger.ZERO);
         }
@@ -102,20 +102,20 @@ public class SM2RingSigner {
         String key=merge(S);
         try {
             if(verifySignature(m,L,key)){
-                System.out.println("通过：true");
+                // System.out.println("通过：true");
                 return key;
             }
             else {
                 return generateSignature(m,L,d,pi);
             }
         }catch(Throwable e){
-            System.out.println("*********************************************失败********************************************************************");
+            // System.out.println("*********************************************失败********************************************************************");
             return generateSignature(m,L,d,pi);
         }
     }
 
     public static boolean verifySignature(byte[] m, List<ECPublicKeyParameters> L,String key){
-        System.out.println("开始验签");
+        // System.out.println("开始验签");
         List<BigInteger> S=split(key);
         int length=L.size();
         List<BigInteger> C = new ArrayList<>();
@@ -174,7 +174,7 @@ public class SM2RingSigner {
             sb.setLength(sb.length() - delimiter.length());
         }
         String L = sb.toString();
-        System.out.println("L:"+L);
+        // System.out.println("L:"+L);
         return L;
     }
 

@@ -42,15 +42,15 @@ public class FileController {
         @RequestParam MultipartFile file,
         @RequestParam(defaultValue="false") Boolean isTraverse) {
         //获取当前时间戳
-        String flag;
+        String timeStamp;
         synchronized (FileController.class) {
-            flag = System.currentTimeMillis() + "";
+            timeStamp = System.currentTimeMillis() + "";
             ThreadUtil.sleep(1L);
         }
         //获取文件名
         String fileName = file.getOriginalFilename();
         try {
-            //如果没file文件夹，那么在当前根目录下创建一个file
+            //如果没 files 文件夹，那么在当前根目录下创建一个file
             if (!FileUtil.isDirectory(filePath)) {
                 FileUtil.mkdir(filePath);
             }
@@ -61,13 +61,13 @@ public class FileController {
                 file = ImgUtil.BufferedImageToMultipartFile(img, file.getOriginalFilename());
             }
             // 文件存储形式：时间戳-文件名
-            FileUtil.writeBytes(file.getBytes(), filePath + flag + "-" + fileName);  // ***/manager/files/1697438073596-avatar.png
+            FileUtil.writeBytes(file.getBytes(), filePath + timeStamp + "-" + fileName);  // ***/manager/files/1697438073596-avatar.png
             System.out.println(fileName + "--上传成功");
         } catch (Exception e) {
             System.err.println(fileName + "--文件上传失败");
         }
         String http = "http://" + ip + ":" + port + "/files/";
-        return Result.success(http + flag + "-" + fileName);  //  http://localhost:9090/files/1697438073596-avatar.png
+        return Result.success(http + timeStamp + "-" + fileName);  //  http://localhost:9090/files/1697438073596-avatar.png
     }
 
 

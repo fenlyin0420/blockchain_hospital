@@ -5,7 +5,7 @@ import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 import com.example.service.TraverseService;
 import com.example.common.Result;
-
+import com.example.dto.TraverseDTO;
 import com.github.pagehelper.PageInfo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,6 @@ import jakarta.annotation.Resource;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
-
 
 
 @Slf4j
@@ -34,7 +31,7 @@ public class TraverseController {
      */
     @GetMapping("/selectAll")
     public Result selectAll(Traverse traverse) {
-        List<Traverse> list = traverseService.selectAll(traverse);
+        List<TraverseDTO> list = traverseService.selectAll(traverse);
         return Result.success(list);
     }
 
@@ -42,34 +39,27 @@ public class TraverseController {
     public Result selectPage(Traverse traverse,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Traverse> page = traverseService.selectPage(traverse, pageNum, pageSize);
+        PageInfo<TraverseDTO> page = traverseService.selectPage(traverse, pageNum, pageSize);
         return Result.success(page);
     }
 
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
         
-        Traverse traverse = traverseService.selectById(id);
-        return Result.success(traverse);
+        TraverseDTO traverseDTO = traverseService.selectById(id);
+        return Result.success(traverseDTO);
     }
-
-    // 暂时不提供该接口哦，使用患者id查询
-//     @GetMapping("/selectByName")
-//     public Result selectById(String name) {
-//         Traverse traverse = traverseService.selectByName(name);
-//         return Result.success(traverse);
-//     }
 
     @GetMapping("/selectByDoctorId")
     public Result selectByDoctorId(Integer id) {
-        Traverse traverse = traverseService.selectByDoctorId(id);
-        return Result.success(traverse);
+        TraverseDTO traverseDTO = traverseService.selectByDoctorId(id);
+        return Result.success(traverseDTO);
     }
 
     @GetMapping("/selectByHospitalId")
     public Result selectByHospitalId(Integer id) {
-        Traverse traverse = traverseService.selectByHospitalId(id);
-        return Result.success(traverse);
+        TraverseDTO traverseDTO = traverseService.selectByHospitalId(id);
+        return Result.success(traverseDTO);
     }
 
     @GetMapping("/canSend")
@@ -134,11 +124,4 @@ public class TraverseController {
         traverseService.insertReferralTraverse(entity); 
         return Result.success("插入数据成功");
     }
-
-    @PostMapping("/getSignData")
-    public Result getSignData(@RequestBody Traverse traverse) {
-        return Result.success(traverse.signData());
-    }
-    
-    
 }

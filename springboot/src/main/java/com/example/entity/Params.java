@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/** general DTO */
 public class Params {
     /** 时间戳 */
     private String timestamp;

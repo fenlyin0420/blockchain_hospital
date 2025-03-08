@@ -1,5 +1,7 @@
 package com.example.mapper;
 
+import com.example.dao.TraverseDAO;
+import com.example.dto.TraverseDTO;
 import com.example.entity.ReferralTraverse;
 import com.example.entity.Traverse;
 
@@ -10,11 +12,13 @@ import java.util.List;
 public interface TraverseMapper {
 
 
-    List<Traverse> selectAll(Traverse traverse);
+    List<TraverseDTO> selectAll(Traverse traverse);
 
     Integer add(Traverse traverse);
 
     void updateById(Traverse traverse);
+
+    void setSignData(TraverseDAO traverseDAO);
 
     void deleteById(Integer id);
 

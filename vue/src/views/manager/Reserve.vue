@@ -142,6 +142,7 @@ export default {
                 phone: res.data.phone,
                 sex: res.data.sex,
                 age: res.data.age,
+                occupation: res.data.occupation,
               };
               console.log(caseInfo);
               this.load(1);

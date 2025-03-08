@@ -47,8 +47,6 @@ public class User extends Account implements Serializable {
     private String sex;
     /** 身份证号 */
     private String idCard;
-
-    // 非数据库属性
-    /** 医院名称 */
-    private String hospitalName;
+    /** 职业 */
+    private String occupation;
 }

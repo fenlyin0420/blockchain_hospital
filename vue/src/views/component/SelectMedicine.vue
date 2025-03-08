@@ -22,7 +22,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="">确认药品</el-button>
+        <el-button type="primary" @click="close">确认药品</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -87,6 +87,9 @@ export default {
         });
       }
       this.$emit("updateDrug", this.selectedDrugs);
+    },
+    close() {
+      this.$emit("close");
     },
   },
 };

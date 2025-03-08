@@ -69,7 +69,6 @@ export default {
       }).then(res => {
         this.tableData = res.data?.list
         this.total = res.data?.total
-        console.log("888",this.tableData)
       })
     },
     // 辅助函数，用于将Date对象格式化为您需要的字符串格式
@@ -89,7 +88,6 @@ export default {
       this.load(pageNum)
     },
     goToCaseDetails(row) {
-      console.log(row)
       this.$router.push({
         name: 'CaseDetail',
         query: row

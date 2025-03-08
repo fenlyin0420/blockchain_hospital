@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
+import com.example.dao.TraverseDAO;
 import com.example.entity.Account;
 import com.example.entity.Params;
 import com.example.entity.ReferralTraverse;
@@ -63,8 +64,8 @@ public class KeyController {
 
     // 进行环签名
     @PostMapping("/sign")
-    public Result sign(@RequestBody Params params) {
-        RingSign ringSign = keyService.sign(params);
+    public Result sign(@RequestBody Traverse traverse) {
+        RingSign ringSign = keyService.sign(traverse);
         return Result.success(ringSign);
     }
 
@@ -75,16 +76,16 @@ public class KeyController {
      * @return
      */
     @PostMapping("/verifySign")
-    public Result verifySign(@RequestBody Params params) {
-        RingSign ringSign = keyService.verifySign(params);
+    public Result verifySign(@RequestBody TraverseDAO traverseDAO) {
+        RingSign ringSign = keyService.verifySign(traverseDAO);
         return Result.success(ringSign);
     }
 
-    @PostMapping("/verifySignByData")
-    public Result verifySignByData(@RequestBody Traverse traverse) {
-        RingSign ringSign = keyService.verifySignByData(traverse);
-        return Result.success(ringSign);
-    }
+    // @PostMapping("/verifySignByData")
+    // public Result verifySignByData(@RequestBody Traverse traverse) {
+    //     RingSign ringSign = keyService.verifySignByData(traverse);
+    //     return Result.success(ringSign);
+    // }
     
 
     // 进行加密
@@ -93,7 +94,7 @@ public class KeyController {
         try {
             traverse = keyService.encrypt(traverse);
         } catch (CustomException e) {
-            System.out.println(e.getMsg());
+            // System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
         return Result.success(traverse);
@@ -105,7 +106,7 @@ public class KeyController {
         try {
             traverse = keyService.decrypt(traverse);
         } catch (CustomException e) {
-            System.out.println(e.getMsg());
+            // System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
         return Result.success(traverse);
@@ -116,7 +117,7 @@ public class KeyController {
         try {
             traverse = keyService.decrypt(traverse);
         } catch (CustomException e) {
-            System.out.println(e.getMsg());
+            // System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
         return Result.success(traverse);
@@ -139,16 +140,16 @@ public class KeyController {
         try {
             data = keyService.imgDecrypt(Url);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
             return Result.error("图像传输失败");
         } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
             return Result.error("无法找到病历图片");
         } catch (WebClientRequestException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
             return Result.error("图像URL无效，请检查病历");
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
             return Result.error("解密失败:(");
         }
         return Result.success(data);

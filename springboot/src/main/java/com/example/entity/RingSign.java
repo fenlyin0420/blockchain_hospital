@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RingSign {
+    /** 签名数据 */
     private String signData;
-    private String signKey;
+    /** 签名消息 */
     private String message;
     /** 公钥环 */
     private String signPubKey;

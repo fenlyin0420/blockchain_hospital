@@ -66,8 +66,6 @@ public class pemtxtUtil {
         publicKeyPemWriter.close();
         String publicKeyPem = publicKeyWriter.toString();
         // 输出公钥和私钥
-        System.out.println("公钥: " + publicKeyPem);
-        System.out.println("私钥: " + privateKeyPem);
         List<String> L=new ArrayList<>();
         L.add(publicKeyPem);
         L.add(privateKeyPem);
@@ -84,13 +82,13 @@ public class pemtxtUtil {
                 throw new RuntimeException(e);
             }
             BCECPublicKey bcecPublicKey= MySM2Util.str2pub(publicKey);
-            System.out.println("bcec成功");
+            // System.out.println("bcec成功");
             ECPublicKeyParameters publicKeyP = BCECUtil.convertPublicKeyToParameters(bcecPublicKey);
-            System.out.println("ec转化成功");
+            // System.out.println("ec转化成功");
             byte[] xCoord = publicKeyP.getQ().getAffineXCoord().getEncoded();
             byte[] yCoord = publicKeyP.getQ().getAffineYCoord().getEncoded();
             byte[] publicKeyBytes = new byte[xCoord.length + yCoord.length];
-            System.out.println("转化字节成功");
+            // System.out.println("转化字节成功");
             System.arraycopy(xCoord, 0, publicKeyBytes, 0, xCoord.length);
             System.arraycopy(yCoord, 0, publicKeyBytes, xCoord.length, yCoord.length);
             PemObject publicKeyPemObject =

@@ -16,7 +16,7 @@ import java.util.List;
 public class BestRingSignUtil {
     /**
      * 签名
-     * @param data 数据
+     * @param data 待签名的数据
      * @param publicKeys 公钥集合
      * @param privateKey 私钥
      * @param pi 位置
@@ -44,19 +44,19 @@ public class BestRingSignUtil {
 
     /**
      * 验签
-     * @param data 数据
-     * @param publicKeys 公钥集合
-     * @param key 签名值
-     * @return 是否验签成功
+     * @param data 被签名的数据
+     * @param publicKeys 环公钥
+     * @param signData 签名数据
+     * @return 验签是否成功
      */
-    public static boolean verifySign(String data, List<BCECPublicKey> publicKeys,String key){
+    public static boolean verifySign(String data, List<BCECPublicKey> publicKeys,String signData){
         List<ECPoint> L = new ArrayList<>();
         for (BCECPublicKey publicKey:publicKeys){
             ECPublicKeyParameters publicKeyParams = BCECUtil.convertPublicKeyToParameters(publicKey);
             L.add(publicKeyParams.getQ());
         }
         byte[] m=hexStringToByteArray(data);
-        return BestRingSigner.verifySignature(m,L,key,publicKeys.get(0).getParameters().getG());
+        return BestRingSigner.verifySignature(m,L,signData,publicKeys.get(0).getParameters().getG());
     }
 
     // 将十六进制字符串转换为 byte 数组
