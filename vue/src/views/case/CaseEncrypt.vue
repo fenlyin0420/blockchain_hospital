@@ -49,7 +49,7 @@
                 <div class="demo-image" @click="previewImage(url, index)">
                   <el-image
                     style="width: 170px; height: 170px"
-                    :src="QR"
+                    :src="QRURL"
                     :fit="fits"
                   ></el-image>
                 </div>
@@ -153,17 +153,17 @@ export default {
       previewImageIndex: -1, // 预览图片索引
       /** 区块链存储地址 */
       transactionHash: "NULL",
-      QR: "",
+      QRURL: "",
       params: {},
-      __signKey: '',
-      __signPubKey: '',
-      __signData: '',
+      signData: "",
+      signPubKey: "",
+      img: "",
     };
   },
   created() {
     this.receivedData = this.$route.query;
+    this.img = this.receivedData.img;
     this.load();
-    // this.autoOp()
   },
   computed: {
     drug() {
@@ -174,11 +174,11 @@ export default {
       // 将每一行拆分为药物信息对象
       return lines.map((line) => {
         const parts = line.split(" ");
-        const l = parts[0].length
+        const l = parts[0].length;
         return {
-          name: parts[1] ? parts[0] : parts[0].slice(0, l/3),
-          dose: parts[1] ? parts[1] : parts[0].slice(l/3, 2*l/3),
-          frequency: parts[2] ? parts[2] : parts[0].slice(2*l/3, l)
+          name: parts[1] ? parts[0] : parts[0].slice(0, l / 3),
+          dose: parts[1] ? parts[1] : parts[0].slice(l / 3, (2 * l) / 3),
+          frequency: parts[2] ? parts[2] : parts[0].slice((2 * l) / 3, l),
         };
       });
     },
@@ -216,63 +216,9 @@ export default {
         this.pubs = ss;
       }
     },
-    
-    async upChain() {
-      // 在加密之后，上链之前，进行了签名，签名页面什的数据没有保存
-      this.params.id = this.receivedData.id
-      await this.$request.post('/keys/sign', this.params).then(res => {
-        if (res.code === '200') {
-          this.__signKey = res.data.signKey
-          this.__signData = res.data.signData
-          this.__signPubKey = res.data.signPubKey
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-
-      // 构造要上传的至区块链的 JSON 病历
-      let traverse = {
-        _idCard: this.receivedData.idCard,
-        _userName: this.receivedData.userName,
-        _hospitalDoctor:
-          this.receivedData.hospitalName + "-" + this.receivedData.doctorName,
-        _drugAdvice: this.receivedData.drug + "-" + this.receivedData.advice,
-        _diagnosis: this.receivedData.diagnosis,
-        _inHospital: this.receivedData.inHospital,
-        _timestamp: this.receivedData.timestamp,
-        _signKey: this.__signKey,
-        _treatmentDate: this.receivedData.treatmentDate,
-        _img: this.receivedData.img,
-      };
-      console.log(traverse);
-      const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
-        timeout: 50000,
-      });
-
-      // 上传区块链
-      Request.post("/storeMedicalRecord", traverse).then((res) => {
-        if (res.data.code === "200") {
-
-          this.transactionHash = res.data.data.transactionReceipt.transactionHash;
-          this.$request
-            .get("/files/generateQR", {
-              params: {
-                seed: this.transactionHash,
-              },
-            })
-            .then((res) => {
-              if (res.code === "200") {
-                this.QR = res.data;
-              }
-            });
-        } else {
-          this.$message.error("上传区块链失败 :(");
-        }
-      });
-    },
     /**
      * 加密病历文字字段
+     * TODO: 文字与图片一起加密
      */
     encrypt() {
       this.$request
@@ -287,17 +233,98 @@ export default {
             // 更新数据为加密后的内容
             this.receivedData.advice = res.data.advice;
             this.receivedData.drug = res.data.drug;
-            this.upChain();
+            this.getBase64();
           }
         });
     },
-    gotoSign() {
-      this.receivedData.signPubKey = this.__signPubKey;
-      this.receivedData.signKey = this.__signKey;
-      this.receivedData.signData = this.__signData;
-      this.receivedData.QR = this.QR;
-      this.receivedData.transactionHash = this.transactionHash;
-      this.$router.push({ name: "CaseSign", query: this.receivedData });
+    getBase64() {
+      this.$request
+        .get("/files/getBase64", {
+          params: {
+            url: this.receivedData.img,
+          },
+        })
+        .then((res) => {
+          if (res.code === "200") {
+            this.receivedData.img = res.data;
+            this.sign();
+          } else {
+            this.$message.error("获取图片失败 :(");
+          }
+        });
+    },
+    sign() {
+      this.$request
+        .post("/keys/blockchain/sign", this.receivedData, {
+          params: {
+            doctorId: this.user.id,
+          },
+        })
+        .then((res) => {
+          if (res.code === "200") {
+            this.signData = res.data.signData;
+            this.signPubKey = res.data.signPubKey;
+            this.upChain();
+          } else {
+            this.$message.error("签名失败 :(");
+          }
+        });
+    },
+
+    /**
+     * 将病历上传至区块链
+     */
+    async upChain() {
+      this.params.id = this.receivedData.id;
+      // 构造要上传的至区块链的 JSON 病历
+      let traverse = {
+        _idCard: this.receivedData.idCard,
+        _userName_hospitalName_doctorname:
+          this.receivedData.userName +
+          "||" +
+          this.receivedData.hospitalName +
+          "||" +
+          this.receivedData.doctorName,
+        _timestamp_illnessDetail:
+          this.receivedData.timestamp + "||" + this.receivedData.illnessDetail,
+        _treatmentDate_recordDate:
+          this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
+        _inHospital: this.receivedData.inHospital,
+        _drug_advice: this.receivedData.drug + "||" + this.receivedData.advice,
+        _diagnosis: this.receivedData.diagnosis,
+        _img: this.receivedData.img,
+        _signData: this.signData,
+        _signPubKey: this.signPubKey,
+      };
+
+      const Request = axios.create({
+        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
+        timeout: 50000,
+      });
+
+      // 上传区块链
+      Request.post("/storeMedicalRecord", traverse).then((res) => {
+        if (res.data.code === "200") {
+          this.transactionHash = res.data.data.transactionReceipt.transactionHash;
+          this.generateQR();
+          this.$message.success("上传区块链成功 :)");
+        } else {
+          this.$message.error("上传区块链失败 :(");
+        }
+      });
+    },
+    generateQR() {
+      this.$request
+        .get("/files/generateQR", {
+          params: {
+            seed: this.transactionHash,
+          },
+        })
+        .then((res) => {
+          if (res.code === "200") {
+            this.QRURL = res.data;
+          }
+        });
     },
     autoOp() {
       // 模拟自动加密并跳转页面

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.utils.ImgUtil;
+import com.example.utils.MyMultipartFile;
 import com.example.common.Result;
 
 import cn.hutool.core.io.FileUtil;
@@ -8,6 +9,8 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.collection.CollUtil;
+
+import org.apache.poi.ss.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,9 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * 文件接口
@@ -144,5 +150,11 @@ public class FileController {
             return Result.error("二维码生成失败");
         }
         return Result.success(url);
+    }
+
+    @GetMapping("/getBase64")
+    public Result getBase64(@RequestParam String url) throws Exception {
+        String base64 = ImgUtil.getImageBase64(ImgUtil.MultipartFileToBufferedImage(MyMultipartFile.fromURL(url)));
+        return Result.success(base64);
     }
 }

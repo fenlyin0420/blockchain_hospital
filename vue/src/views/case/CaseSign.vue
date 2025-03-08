@@ -3,104 +3,75 @@
     <div class="header">
       <h2>病历签名</h2>
     </div>
+
     <el-row :gutter="24">
-      <el-col :span="8">
-        <div style="margin: 0 0 10px 0">
+      <el-col :span="16">
+        <div class="sign-area">
           <el-row>
             <el-col :span="10">
               <div style="margin: 5px 0 0 25px">
-                <span style="display: inline-block; width: 200px;font-size: 16px;">加密病历</span>
+                <span style="display: inline-block; width: 200px;font-size: 16px;">环签名数据</span>
               </div>
             </el-col>
             <el-col :span="14">
               <div class="grid-content bg-purple-light">
-                <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">签名</el-button>
+                <el-button plain type="primary" @click="sign()" v-if="user.role === 'DOCTOR'">环签名</el-button>
                 <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
                 <!-- <span><p style="color:red; display:inline; margin: 0px 0px 0px 10px">未检测到私钥 :(</p></span> -->
                 <span ><p style="color:green; display:inline; margin: 0px 0px 0px 10px; padding:0px;">已检测到私钥</p></span>
               </div>
             </el-col>
           </el-row>
-        </div>
-
-        <div class="grid-content bg-purple">
-          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
-            v-model="signData">
-          </el-input>
-        </div>
-      </el-col>
-
-      <!-- 签名信息 --> 
-      <el-col :span="8">
-        <div style="margin: 0 0 10px 0">
-          <el-row>
-            <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                <span style="display: inline-block; width: 200px; font-size: 16px;">签名病历</span>
-              </div>
-            </el-col>
-
-            <el-col :span="14">
-              <div class="grid-content bg-purple-light">
-                <el-button  type="primary" style="opacity:0" >占位 </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-        <div class="grid-content bg-purple-light">
-          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
-            v-model="signKey">
-          </el-input>
+          <div class="grid-content bg-purple">
+            <el-input type="textarea" :rows="6" readonly placeholder="请先签名"
+              v-model="signData">
+            </el-input>
+          </div>
         </div>
       </el-col>
 
-      <!-- 验签结果 --> 
+      <!-- TIMELINE --> 
       <el-col :span="8">
-        <div style="margin: 0 0 10px 0">
-          <el-row>
-            <el-col :span="10">
-              <div style="margin: 5px 0 0 25px">
-                <sapn style="display: inline-block; width: 200px; font-size: 16px;">验签结果</sapn>
-              </div>
-            </el-col>
+        <el-timeline>
+          <el-timeline-item timestamp="第一步" type="success" placement="top">
+            <el-card>
+              <h4>撰写病历</h4>
+              <p>根据患者病情，开具合适的病历</p>
+            </el-card>
+          </el-timeline-item>
+          <el-timeline-item timestamp="第二步" type="info" placement="top">
+            <el-card>
+              <h4>病历签名</h4>
+              <p>病历撰写完成后，请医生利用自己的私钥为病历进行签名</p>
+            </el-card>
+          </el-timeline-item>
+          <el-timeline-item timestamp="第三步" placement="top">
+            <el-card>
+              <h4>病历存档</h4>
+              <p>您将使用患者的公钥对病历进行加密，并再次对加密的病历进行签名，之后，将病历上传至区块链，进行存档</p>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
 
-            <el-col :span="14">
-              <div class="grid-content bg-purple-light">
-              <!-- 验签按钮 -->
-                <el-button plain type="primary" @click="verifySign()" v-if="user.role === 'USER'">验签</el-button>
-                <el-button v-else type="primary" style="visibility: hidden;"> 占位 </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-        <div>
-          <el-input type="textarea" :rows="2" readonly placeholder="请输入内容"
-            v-model="signResult">
-          </el-input>
+        <div class="button-container">
+          <el-button type="primary" @click="gotoCaseEncrypt"> 病历存档</el-button>
         </div>
       </el-col>
     </el-row>
+    <div class="public-keys">
+      <div class="header" style="margin: 10px 0">
+        <h2>环公钥组成信息</h2>
+      </div>
 
-    <div class="header" style="margin: 10px 0">
-      <h2>签名数据区块链地址</h2>
+      <div class="table-container">
+        <el-table :data="pubs" border style="width: 100%;" >
+          <el-table-column prop="name" align="center" label="姓名" width="180">
+          </el-table-column>
+          <el-table-column prop="key" align="center" label="公钥">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
-    
-      <img :src="blockInfo[0].QR" width="150px" height="150px" style="display: inline-block;">
-      <p style="color: blue; padding: 20px; border-radius: 5px; border: 2px solid rgb(235, 238, 245); font-size: 20px; display:inline-block; margin-left: 50px; position:relative;bottom:55px"> {{ blockInfo[0].blockHash }}</p>
-
-    <div class="header" style="margin: 10px 0">
-      <h2>环公钥组成信息</h2>
-    </div>
-
-    <el-table :data="pubs" border style="width: 100%;" >
-      <el-table-column prop="name" align="center" label="姓名" width="180">
-      </el-table-column>
-      <el-table-column prop="key" align="center" label="公钥">
-      </el-table-column>
-    </el-table>
-
   </el-card>
 </template>
 
@@ -108,15 +79,11 @@
 export default {
   data() {
     return {
-      receivedData: [],
+      receivedData: {},
       params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      fits: 'fill',
       signData: '',
-      signKey: '',
-      signResult: '',
       signPubKey: '',
-      blockInfo: [{ QR: '', blockHash: 'NULL' }]
     };
   },
   created() {
@@ -142,42 +109,20 @@ export default {
     load() {
 
     },
-    /**
-     * 签名。 假的，
-     * 屎山，实在写不下去了，爱咋咋样吧。
-     */
     sign() {
-      console.log(this.receivedData)
-      this.signData = this.receivedData.signData
-      this.signKey = this.receivedData.signKey
-      this.signPubKey = this.receivedData.signPubKey
-      this.blockInfo[0].QR = this.receivedData.QR
-      this.blockInfo[0].blockHash = this.receivedData.transactionHash
-
-      // 自动跳转
-      // const countdownSeconds = 3;
-      // let countdown = countdownSeconds;
-      // const countdownInterval = setInterval(() => {
-      //   if (countdown > 0) {
-      //     this.$message.info(`签名成功，${countdown}秒后将跳转页面...`);
-      //     countdown--;
-      //   } else {
-      //     clearInterval(countdownInterval);
-      //     this.$router.push('/doctorReserve');
-      //   }
-      // }, 1000);
+      this.$request.post('/keys/sign', this.receivedData).then(res => {
+        this.signData = res.data.signData
+        this.signPubKey = res.data.signPubKey
+      })
     },
-
+    gotoCaseEncrypt() {
+      this.$router.push({ name: "CaseEncrypt", query: this.receivedData })
+    }
   }
 };
 </script>
 
 <style scoped>
-.container {
-  padding: 20px;
-  height: 100%;
-  overflow-y: scroll;
-}
 
 .header {
   margin-bottom: 20px;
@@ -189,5 +134,8 @@ export default {
 ::v-deep .el-textarea__inner {
   color: blue;
 }
-
+.button-container {
+  display: flex;
+  justify-content: center;
+}
 </style>

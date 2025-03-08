@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.common.enums.RoleEnum;
 import com.example.dao.TraverseDAO;
+import com.example.dto.BlockChainTraverseDTO;
 import com.example.entity.*;
 import com.example.exception.CustomException;
 import com.example.mapper.*;
@@ -112,6 +113,66 @@ public class KeyService {
         return ringSign;
     }
 
+    /**
+     * 上传区块链病历的签名
+     * @param blockChainTraverseDTO
+     * @param doctorId
+     * @return
+     */
+    public RingSign blockchainSign(BlockChainTraverseDTO blockChainTraverseDTO, Integer doctorId) {
+        RingSign ringSign = new RingSign();
+        Doctor doctor = doctorMapper.selectById(doctorId);
+        if (doctor == null) {
+            throw new CustomException(ResultCodeEnum.USER_RESULT_GET_ERROR);
+        }
+        // 生成公钥环
+        String ringOfPublicKey = getStringPubKeyRing();
+        List<String> publicKeys = getListPubKeyRing();
+
+        // json 化要签名的病历
+        Gson gson = new Gson();
+        String data = gson.toJson(blockChainTraverseDTO);
+
+        // 匹配私钥，确定pi
+        int pi = -1;
+        for (int i = 0; i < publicKeys.size(); i++) {
+            if (Objects.equals(publicKeys.get(i), doctor.getPublicKey())) {
+                pi = i + 1;
+                break;
+            }
+        }
+        if (pi == -1) {
+            throw new CustomException(ResultCodeEnum.USER_RESULT_GET_ERROR);
+        }
+
+        // 进行签名,钥匙进行格式化
+        List<BCECPublicKey> list = new ArrayList<>();
+        try {
+            MySM2Util.getKey();
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        }
+        for (String pubKey : publicKeys) {
+            try {
+                list.add(MySM2Util.str2pub(pubKey));
+            } catch (Exception e) {
+                throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+            }
+        }
+        BCECPrivateKey bcecPrivateKey;
+        try {
+            bcecPrivateKey = MySM2Util.str2pri(doctor.getPrivateKey());
+        } catch (Exception e) {
+            throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+        }
+        String signData = BestRingSignUtil.generate(data, list, bcecPrivateKey, pi);
+
+        // 设置并返回数据
+        ringSign.setSignData(signData);
+        ringSign.setMessage("签名成功");
+        ringSign.setSignPubKey(ringOfPublicKey);
+        return ringSign;
+    }
     /**
      * 验证签名
      * @param params

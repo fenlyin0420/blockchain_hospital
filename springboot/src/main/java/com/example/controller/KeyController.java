@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
 import com.example.dao.TraverseDAO;
+import com.example.dto.BlockChainTraverseDTO;
 import com.example.entity.Account;
 import com.example.entity.Params;
 import com.example.entity.ReferralTraverse;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import java.io.IOException;
 import jakarta.annotation.Resource;
+
 
 @RestController
 @RequestMapping("/keys")
@@ -66,6 +68,12 @@ public class KeyController {
     @PostMapping("/sign")
     public Result sign(@RequestBody Traverse traverse) {
         RingSign ringSign = keyService.sign(traverse);
+        return Result.success(ringSign);
+    }
+
+    @PostMapping("/blockchain/sign")
+    public Result blockchainSign(@RequestBody BlockChainTraverseDTO blockChainTraverseDTO, @RequestParam Integer doctorId) {
+        RingSign ringSign = keyService.blockchainSign(blockChainTraverseDTO, doctorId); 
         return Result.success(ringSign);
     }
 

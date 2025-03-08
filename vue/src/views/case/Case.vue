@@ -382,46 +382,66 @@ export default {
     },
     /**
      * 确认病历，并插入到数据库中
+     * fields:
+        user_id
+        doctor_id
+        hospital_id
+        timestamp
+        illness_detail
+        treatment_date
+        record_date
+        in_hospital
+        bed_id
+        care_status
+        advice
+        drug
+        diagnosis
+        img 
      */
     ok() { 
       let newTraverse = {};
+      newTraverse.userId = this.caseInfo.userId;
+      newTraverse.doctorId = this.user.id;
+      newTraverse.hospitalId = this.caseInfo.hospitalId;
+      newTraverse.timestamp = new Date().getTime();
+      newTraverse.illnessDetail = this.caseInfo.illnessDetail;
+      newTraverse.treatmentDate = this.caseInfo.time;
+      newTraverse.recordDate = this.caseInfo.time;
+      newTraverse.inHospital = this.radio;
       newTraverse.advice = "进一步检查:" + this.check + "\n"
                   + "非药物治疗:" + this.non_medicine + "\n"
                   + "护理/监测:" + this.care + "\n"
                   + "饮食建议:" + this.diet + "\n";
+      newTraverse.drug = this.medicine;
       newTraverse.diagnosis = "主要诊断:" + this.diagnosis1 + "\n"
                   + "次要诊断:" + this.diagnosis2 + "\n";
-      newTraverse.userId = this.caseInfo.userId;
-      newTraverse.idCard = this.caseInfo.idCard;
-      newTraverse.timestamp = new Date().getTime();
-      newTraverse.treatmentDate = this.caseInfo.time;
-      newTraverse.doctorId = this.user.id;
-      newTraverse.hospitalId = this.caseInfo.hospitalId;
-      newTraverse.drug = this.medicine;
-      newTraverse.inHospital = this.radio;
       newTraverse.img = this.imgURL.img;
 
-      const fromPage = this.$route.query.fromPage; //从住院业务跳转就设置该状态
-      if (fromPage === "Hospitalization") {
-        newTraverse.careStatus = "未护理";
-      } else {
-        newTraverse.careStatus = "";
-      }
       // 确认病历，上传到数据库
-      this.$request.post("/traverse/add", newTraverse).then((res) => {
+      this.$request.post("/traverse/add", newTraverse)
+      .then((res) => {
         if (res.code === "200") {
-          newTraverse.id = res.data;
-          newTraverse.hospitalName = this.caseInfo.hospitalName;
-          newTraverse.doctorName = this.caseInfo.doctorName;
-          newTraverse.userName = this.caseInfo.userName;
-          // 如果不需要住院，则跳转到加密界面
-          // 进行加密、签名后，诊疗结束
-          if (this.radio === "否")
-            this.$router.push({ name: "CaseEncrypt", query: newTraverse });
-          else this.$message.success("诊疗结束");
+          console.log("res1", res)
+          return this.$request.get("/traverse/selectAll", {
+            params: {
+              id: res.data,
+            },
+          });
         } else {
           this.$message.error(res.msg);
+          return Promise.reject(res.msg);
         }
+      })
+      .then((res2) => {
+        if (res2 && res2.code === "200") {
+          console.log(res2)
+          this.$router.push({ name: 'CaseSign', query: res2.data[0] });
+        } else {
+          this.$message.error("获取数据失败，数据格式不正确");
+        }
+      })
+      .catch((error) => {
+        this.$message.error("请求失败：" + (error.message || error));
       });
     },
     //每日次数输入框

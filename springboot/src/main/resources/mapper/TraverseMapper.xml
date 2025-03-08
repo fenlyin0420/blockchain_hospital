@@ -15,10 +15,6 @@
             <if test="diagnosis != null">diagnosis,</if>
             <if test="drug != null">drug,</if>
             <if test="inHospital != null">in_hospital,</if>
-            <if test="signData != null">sign_data,</if>
-            <if test="signResult != null">sign_result,</if>
-            <if test="signPubKey != null">sign_pub_key,</if>
-            <if test="signKey != null">sign_key,</if>
             <if test="img != null">img,</if>
             <if test="careStatus != null">care_status,</if>
             <if test="illnessDetail != null">illness_detail,</if>
@@ -33,15 +29,12 @@
             <if test="diagnosis != null">#{diagnosis},</if>
             <if test="drug != null">#{drug},</if>
             <if test="inHospital != null">#{inHospital},</if>
-            <if test="signData != null">#{signData},</if>
-            <if test="signResult != null">#{signResult},</if>
-            <if test="signPubKey != null">#{signPubKey},</if>
-            <if test="signKey != null">#{signKey},</if>
             <if test="img != null">#{img},</if>
             <if test="careStatus != null">#{careStatus},</if>
             <if test="illnessDetail != null">#{illnessDetail},</if>
         </trim>
     </insert>
+    
     <update id="updateById">
         update traverse
         <set>
