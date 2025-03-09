@@ -158,7 +158,7 @@
           <span class="right-field-label">辅助检查（Auxiliary Examination）</span>
           <img class="image" :src="receivedData.img" />
           <div class="button-container">
-            <el-button type="primary" @click="decrypt"> 解密 </el-button>
+            <el-button type="primary" @click="init"> 解密 </el-button>
             <el-button type="primary" @click="verifySign"> 验签 </el-button>
           </div>
         </div>
@@ -169,43 +169,55 @@
     <!-- <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" />
     </el-dialog> -->
+
+    <el-dialog :visible.sync="showQRcodeScan" @closed="decrypt">
+      <QRcodeScan @getPrivateKey="data => privateKey = data"></QRcodeScan>
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
+import QRcodeScan from "../component/QRcodeScan.vue";
 export default {
   name: "CaseDetail",
+  components: {
+    QRcodeScan
+  },
   data() {
     return {
       receivedData: {},
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       verifySignResult: "未验签",
+      showQRcodeScan: false,
     };
   },
   created() {
     this.receivedData = this.$route?.query;
+    if (this.receivedData.img.length > 100) {
+      this.receivedData.img = "data:image/png;base64," + this.receivedData.img
+    }
     console.log("receivedData", this.receivedData)
     this.load();
   },
   computed: {
     diagnosis1() {
       
-      return this.receivedData.diagnosis?.split("\n")[0].split(':')[1];
+      return this.receivedData.diagnosis?.split("\n")[0]?.split(':')[1];
     },
     diagnosis2() {
-      return this.receivedData.diagnosis?.split("\n")[1].split(':')[1];
+      return this.receivedData.diagnosis?.split("\n")[1]?.split(':')[1];
     },
     check() {
-      return this.receivedData.advice?.split("\n")[0].split(':')[1];
+      return this.receivedData.advice?.split("\n")[0]?.split(':')[1];
     },
     non_medicine() {
-      return this.receivedData.advice?.split("\n")[1].split(':')[1];
+      return this.receivedData.advice?.split("\n")[1]?.split(':')[1];
     },
     care() {
-      return this.receivedData.advice?.split("\n")[2].split(':')[1];
+      return this.receivedData.advice?.split("\n")[2]?.split(':')[1];
     },
     diet() {
-      return this.receivedData.advice?.split("\n")[3].split(':')[1];
+      return this.receivedData.advice?.split("\n")[3]?.split(':')[1];
     },
 
   },
@@ -215,17 +227,24 @@ export default {
         this.$router.push("/caseList");
       }
 
-      // if (this.receivedData.signPubKey != null || this.receivedData.signPubKey != "") {
-      //   const s = this.receivedData.signPubKey?.split(",");
-      //   const ss = s.map((line) => {
-      //     const parts = line?.split(":");
-      //     return {
-      //       name: parts[0],
-      //       key: parts[1],
-      //     };
-      //   });
-      //   this.pubs = ss;
-      // }
+      if (this.receivedData.signPubKey != null || this.receivedData.signPubKey != "") {
+        const s = this.receivedData.signPubKey?.split(",");
+        const ss = s.map((line) => {
+          const parts = line?.split(":");
+          return {
+            name: parts[0],
+            key: parts[1],
+          };
+        });
+        this.pubs = ss;
+      }
+    },
+    init() {
+      if (this.user.role !== "USER"){
+        this.showQRcodeScan = true;
+      } else {
+        this.decrypt();
+      }
     },
     /**
      * 病历解密
@@ -238,26 +257,44 @@ export default {
         advice: this.receivedData.advice,
         drug: this.receivedData.drug,
       };
-      this.$request.post("keys/decrypt", params).then((res) => {
-        if (res.code === "200") {
-          this.receivedData.advice = res.data.advice;
-          this.receivedData.drug = res.data.drug;
-        } else {
-          this.$message.error(res.msg);
-        }
-      });
+
+      // this.privateKey = "MIICSwIBADCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBBIIBVTCCAVECAQEEIJORHTmOPm+yMbmLo8WvPqB4zTI+Ejs46pCLzZvbYt1soIHjMIHgAgEBMCwGByqGSM49AQECIQD////+/////////////////////wAAAAD//////////zBEBCD////+/////////////////////wAAAAD//////////AQgKOn6np2fXjRNWp5Lz2UJp/OXifUVq4+S3by9QU2UDpMEQQQyxK4sHxmBGV+ZBEZqOcmUj+MLv/JmC+FxWkWJM0x0x7w3NqL09necWb3O42tpIVPQqYd8xipHQALfMuUhOfCgAiEA/////v///////////////3ID32shxgUrU7v0CTnVQSMCAQGhRANCAAQ2V0KanwItMh4a8Lcs9sqDNqPN2JCOjStKgFbPgxjufeTeRw8/CHwHwzhd9KBAIoWCb3iIbuSwKZf/r10nragV"
+      console.log("private", this.privateKey);
+      if (this.user.role === "USER") {
+        this.$request.post("keys/decrypt", params).then((res) => {
+          if (res.code === "200") {
+            this.receivedData.advice = res.data.advice;
+            this.receivedData.drug = res.data.drug;
+          } else {
+            this.$message.error(res.msg);
+          }
+        });
+      } else {
+        this.$request.post("keys/decryptByQR", params, {
+          params:{
+            QR: this.privateKey
+          }
+        }).then((res) => {
+          if (res.code === "200") {
+            this.receivedData.advice = res.data.advice;
+            this.receivedData.drug = res.data.drug;
+          } else {
+            this.$message.error(res.msg);
+          }
+        });
+      }
 
       // 解密图片
-      const imgUrl = {
-        img: this.receivedData.img.slice(0, -1),
-      };
-      this.$request.post("keys/imgDecrypt", imgUrl).then((res) => {
-        if (res.code === "200") {
-          this.receivedData.img = `data:image/png;base64,${res.data}`;
-        } else {
-          this.$message.error(res.msg);
-        }
-      });
+      // const imgUrl = {
+      //   img: this.receivedData.img.slice(0, -1),
+      // };
+      // this.$request.post("keys/imgDecrypt", imgUrl).then((res) => {
+      //   if (res.code === "200") {
+      //     this.receivedData.img = `data:image/png;base64,${res.data}`;
+      //   } else {
+      //     this.$message.error(res.msg);
+      //   }
+      // });
     },
     /**
      * 病历验签
@@ -273,9 +310,14 @@ export default {
           }
         });
       } else {
-        this.$request.post("/keys/verifySignByData", this.receivedData).then((res) => {
+        console.log("blockchainsign");
+        this.$request.post("/keys/blockchain/sign", this.receivedData, {
+          params:{
+            doctorId: 2
+          }
+        }).then((res) => {
           if (res.code === "200") {
-            this.receivedData.signResult = res.data.message;
+            this.verifySignResult = res.data.message;
           } else {
             this.$message.error(res.msg);
           }

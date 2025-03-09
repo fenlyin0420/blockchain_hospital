@@ -270,6 +270,7 @@ export default {
             if (res.data.code === "200") {
               // 解析数据
               this.tableData = this.parseTraverse(res.data.data.returnObject);
+              console.log("traverse", this.tableData)
               localStorage.setItem("tableData", JSON.stringify(this.tableData));
             }
           }
@@ -342,8 +343,7 @@ export default {
       //   }
       // });
 
-      row.signResult = "";
-      console.log(row);
+      console.log("row", row);
       this.$router.push({
         name: "CaseDetail",
         query: row,
@@ -432,50 +432,41 @@ export default {
           case "病例编号":
             acc.caseNumber = value;
             break;
-          case "患者姓名":
-            acc.userName = value;
-            break;
           case "身份证号":
             acc.idCard = value;
             break;
-          case "医生姓名":
-            acc.doctorName = value;
+          case "患者-医院-医生":
+            acc.userName = value.split("||")[0];
+            acc.hospitalName = value.split("||")[1];
+            acc.doctorName = value.split("||")[2];
             break;
-          case "aa":
-            acc.hospitalName = value;
+          case "时间戳-病情":
+            acc.timestamp = value.split("||")[0];
+            acc.illnessDetail = value.split("||")[1];
             break;
-          case "医嘱":
-            acc.advice = value;
+          case "就诊日期-记录日期":
+            acc.treatmentDate = value.split("||")[0];
+            acc.recordDate = value.split("||")[1]
             break;
-          case "诊断结果":
-            acc.diagnosis = value;
-            break;
-          case "药物":
-            acc.drug = value;
-            break;
-          case "是否住院":
+          case "住院状态":
             acc.inHospital = value;
             break;
-          case "时间戳":
-            acc.timestamp = value;
+          case "药物医嘱":
+            acc.drug = value.split("||")[0];
+            acc.advice = value.split("||")[1];
             break;
-          case "签名结果":
-            acc.signKey = value;
-            break;
-          case "治疗日期":
-            acc.treatmentDate = value;
-            break;
-          case "药物医嘱-治理医嘱":
-            acc.drug = value.split("-")[0];
-            acc.advice = value.split("-")[1];
-            break;
-          case "医院-医生":
-            acc.hospitalName = value.split("-")[0];
-            acc.doctorName = value.split("-")[1];
+          case "诊疗结果":
+            acc.diagnosis = value;
             break;
           case "医疗影像":
             acc.img = value;
             break;
+          case "数字签名":
+            acc.signData = value;
+            break;
+          case "组织公钥":
+            acc.signPubKey = value;
+            
           // referralInfo convert
           case "转出医院":
             acc.outHospitalName = value;

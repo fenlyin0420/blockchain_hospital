@@ -79,7 +79,6 @@ export default {
 
         if (code) {
           // this.stopCamera();
-          console.log("二维码数据:", code);
           this.handleQRCodeData(code.data);
           requestAnimationFrame(scanFrame);
         } else {
@@ -90,7 +89,6 @@ export default {
     },
 
     handleQRCodeData(data) {
-      console.log("二维码数据:", data);
       // 播放提示音
       const audio = this.$refs.beepSound;
       if (audio) {

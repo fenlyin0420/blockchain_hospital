@@ -411,9 +411,9 @@ public class KeyService {
      * @param file 私钥二维码
      * @return 明文病历
      */
-    public Traverse decryptByQR(Traverse traverse, MultipartFile file) {
+    public Traverse decryptByQR(Traverse traverse, String QR) {
         try {
-            String privateKey = ImgUtil.parseQR(file);
+            String privateKey = QR;
             String advicePlainText = MySM2Util.decrypt(privateKey, traverse.getAdvice());
             String drugPlainText = MySM2Util.decrypt(privateKey, traverse.getDrug());
             traverse.setAdvice(advicePlainText);

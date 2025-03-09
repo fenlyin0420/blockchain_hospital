@@ -114,18 +114,16 @@ public class KeyController {
         try {
             traverse = keyService.decrypt(traverse);
         } catch (CustomException e) {
-            // System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
         return Result.success(traverse);
     }
 
     @PostMapping("/decryptByQR")
-    public Result decryptByQR(@RequestBody Traverse traverse, @RequestParam("file") MultipartFile file) {
+    public Result decryptByQR(@RequestBody Traverse traverse, @RequestParam String QR) {
         try {
-            traverse = keyService.decrypt(traverse);
+            traverse = keyService.decryptByQR(traverse, QR);
         } catch (CustomException e) {
-            // System.out.println(e.getMsg());
             return Result.error(e.getMsg());
         }
         return Result.success(traverse);

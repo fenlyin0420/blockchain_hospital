@@ -124,14 +124,6 @@
             </p>
           </el-form-item>
         </el-form>
-        <el-button
-          type="primary"
-          class="submit-button"
-          @click="gotoSign"
-          style="opacity: 0"
-          >去签名</el-button
-        >
-        <!-- 隐藏签名按钮 -->
       </el-col>
     </el-row>
   </el-card>
@@ -281,24 +273,25 @@ export default {
       // 构造要上传的至区块链的 JSON 病历
       let traverse = {
         _idCard: this.receivedData.idCard,
-        _userName_hospitalName_doctorName:
+        _userHospitalDoctor:
           this.receivedData.userName +
           "||" +
           this.receivedData.hospitalName +
           "||" +
           this.receivedData.doctorName,
-        _timestamp_illnessDetail:
+        _timestampIllness:
           this.receivedData.timestamp + "||" + this.receivedData.illnessDetail,
-        _treatmentDate_recordDate:
+        _treatmentRecordDate:
           this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
         _inHospital: this.receivedData.inHospital,
-        _drug_advice: this.receivedData.drug + "||" + this.receivedData.advice,
+        _drugAdvice: this.receivedData.drug + "||" + this.receivedData.advice,
         _diagnosis: this.receivedData.diagnosis,
+        // _img: "http://localhost:8090/files/default.jpg",
         _img: this.receivedData.img,
         _signData: this.signData,
         _signPubKey: this.signPubKey,
       };
-
+      console.log(traverse)
       const Request = axios.create({
         baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
         timeout: 50000,
@@ -308,6 +301,7 @@ export default {
       Request.post("/storeMedicalRecord", traverse).then((res) => {
         if (res.data.code === "200") {
           this.transactionHash = res.data.data.transactionReceipt.transactionHash;
+          console.log(res)
           this.generateQR();
           this.$message.success("上传区块链成功 :)");
         } else {
