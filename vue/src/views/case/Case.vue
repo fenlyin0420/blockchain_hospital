@@ -407,8 +407,8 @@ export default {
       newTraverse.hospitalId = this.caseInfo.hospitalId;
       newTraverse.timestamp = new Date().getTime();
       newTraverse.illnessDetail = this.caseInfo.illnessDetail;
-      newTraverse.treatmentDate = this.caseInfo.time;
-      newTraverse.recordDate = this.caseInfo.time;
+      newTraverse.treatmentDate = this.recordDate;
+      newTraverse.recordDate = this.recordDate;
       newTraverse.inHospital = this.medicine === "无" ? "是" : "否";
       newTraverse.advice = "进一步检查:" + this.check + "\n"
                   + "非药物治疗:" + this.non_medicine + "\n"
