@@ -57,7 +57,7 @@
           <el-form-item label="1.主要诊断：">
             <el-input
               type="textarea"
-              v-model="diagnosis1"
+              v-model="mainDiagnosis"
               clearable
               :rows="1"
               resize="vertical"
@@ -68,7 +68,7 @@
           <el-form-item label="2.次要诊断：">
             <el-input
               type="textarea"
-              v-model="diagnosis2"
+              v-model="secondaryDiagnosis"
               clearable
               :rows="1"
               resize="vertical"
@@ -129,7 +129,7 @@
           >
             <el-input
               type="textarea"
-              v-model="non_medicine"
+              v-model="nonMedicine"
               clearable
               :rows="1"
               resize="vertical"
@@ -245,12 +245,12 @@ export default {
   },
   data() {
     return {
-      caseInfo: { inHospital: this.radio }, // 单个病历信息
+      caseInfo: {}, // 单个病历信息
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       /** 主要诊断 */
-      diagnosis1: "", 
+      mainDiagnosis: "", 
       /** 次要诊断 */
-      diagnosis2: "", 
+      secondaryDiagnosis: "", 
       medicine: "", // 药品
       selectedMedicine: [],
       tableData: [],
@@ -291,11 +291,11 @@ export default {
         },
       ],
       selected_plan: [],
-      check: "无",
-      medicine: "无",
-      non_medicine: "无",
-      care: "无",
-      diet: "无",
+      check: null,
+      medicine: null,
+      nonMedicine: null,
+      care: null,
+      diet: null,
     };
   },
   created() {
@@ -382,24 +382,6 @@ export default {
     sign() {
 
     },
-    /**
-     * 确认病历，并插入到数据库中
-     * fields:
-        user_id
-        doctor_id
-        hospital_id
-        timestamp
-        illness_detail
-        treatment_date
-        record_date
-        in_hospital
-        bed_id
-        care_status
-        advice
-        drug
-        diagnosis
-        img 
-     */
     ok() { 
       let newTraverse = {};
       newTraverse.userId = this.caseInfo.userId;
@@ -410,13 +392,13 @@ export default {
       newTraverse.treatmentDate = this.caseInfo.time;
       newTraverse.recordDate = this.caseInfo.time;
       newTraverse.inHospital = this.medicine === "无" ? "是" : "否";
-      newTraverse.advice = "进一步检查:" + this.check + "\n"
-                  + "非药物治疗:" + this.non_medicine + "\n"
-                  + "护理/监测:" + this.care + "\n"
-                  + "饮食建议:" + this.diet + "\n";
+      newTraverse.mainDiagnosis = this.mainDiagnosis
+      newTraverse.secondaryDiagnosis = this.secondaryDiagnosis
+      newTraverse.check = this.check
       newTraverse.drug = this.medicine;
-      newTraverse.diagnosis = "主要诊断:" + this.diagnosis1 + "\n"
-                  + "次要诊断:" + this.diagnosis2 + "\n";
+      newTraverse.nonMedicine = this.nonMedicine
+      newTraverse.care = this.care
+      newTraverse.diet = this.diet
       newTraverse.img = this.imgURL.img;
 
       // 确认病历，上传到数据库

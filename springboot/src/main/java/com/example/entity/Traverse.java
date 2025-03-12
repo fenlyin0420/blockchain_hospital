@@ -3,8 +3,15 @@ package com.example.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.example.utils.Encrypt;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Data
@@ -16,8 +23,11 @@ public class Traverse {
     private Integer userId;
     private Integer doctorId;
     private Integer hospitalId;
-    private String advice;
-    private String diagnosis;
+    @Encrypt
+    private String mainDiagnosis;
+    @Encrypt
+    private String secondaryDiagnosis;
+    @Encrypt
     private String drug;
     private String inHospital;
     private String careStatus;
@@ -33,5 +43,30 @@ public class Traverse {
     private Date recordDate;
     private String img;
     /** 病情描述 */
+    @Encrypt
     private String illnessDetail;
+    @Encrypt
+    private String check;
+    @Encrypt
+    private String nonMedicine;
+    @Encrypt
+    private String care;
+    @Encrypt
+    private String diet;
+
+    /**
+     * 返回被 @encrypt 注解标注的字段
+     * @return 被 @encrypt 注解标注的字段列表
+     */
+    @JsonIgnore
+    public List<Field> getEncryptedFields() {
+        List<Field> encryptedFields = new ArrayList<>();
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Encrypt.class)) {
+                encryptedFields.add(field);
+            }
+        }
+        return encryptedFields;
+    }
 }

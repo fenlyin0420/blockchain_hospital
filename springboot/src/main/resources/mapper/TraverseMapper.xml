@@ -12,13 +12,17 @@
             <if test="doctorId != null">doctor_id,</if>
             <if test="hospitalId != null">hospital_id,</if>
             <if test="timestamp != null">timestamp,</if>
-            <if test="advice != null">advice,</if>
-            <if test="diagnosis != null">diagnosis,</if>
+            <if test="mainDiagnosis != null">main_diagnosis,</if>
+            <if test="secondaryDiagnosis != null">secondary_diagnosis,</if>
             <if test="drug != null">drug,</if>
             <if test="inHospital != null">in_hospital,</if>
             <if test="img != null">img,</if>
             <if test="careStatus != null">care_status,</if>
             <if test="illnessDetail != null">illness_detail,</if>
+            <if test="check != null">check,</if>
+            <if test="nonMedicine != null">non_medicine,</if>
+            <if test="care != null">care,</if>
+            <if test="diet != null">diet,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="treatmentDate != null">#{treatmentDate},</if>
@@ -27,13 +31,17 @@
             <if test="doctorId != null">#{doctorId},</if>
             <if test="hospitalId != null">#{hospitalId},</if>
             <if test="timestamp != null">#{timestamp},</if>
-            <if test="advice != null">#{advice},</if>
-            <if test="diagnosis != null">#{diagnosis},</if>
+            <if test="mainDiagnosis != null">#{mainDiagnosis},</if>
+            <if test="secondaryDiagnosis != null">#{secondaryDiagnosis},</if>
             <if test="drug != null">#{drug},</if>
             <if test="inHospital != null">#{inHospital},</if>
             <if test="img != null">#{img},</if>
             <if test="careStatus != null">#{careStatus},</if>
             <if test="illnessDetail != null">#{illnessDetail},</if>
+            <if test="check != null">#{check},</if>
+            <if test="nonMedicine != null">#{nonMedicine},</if>
+            <if test="care != null">#{care},</if>
+            <if test="diet != null">#{diet},</if>
         </trim>
     </insert>
     

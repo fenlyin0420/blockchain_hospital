@@ -56,7 +56,7 @@
               </template>
             </el-table-column> -->
             <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
-            <el-table-column prop="unencryptedAdvice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
             <!-- <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column> -->
             <!-- <el-table-column label="操作" width="180" align="center">
               <template v-slot="scope">
