@@ -107,7 +107,7 @@
     vertical-align: middle;
     unicode-bidi: isolate;
     border-color: inherit;
-    background-color: #20A9DF;
+    background-color: #264387;
 }
 ::v-deep .el-calendar-table thead th {
     padding: 12px 0;

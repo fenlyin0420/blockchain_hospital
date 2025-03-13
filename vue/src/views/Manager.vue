@@ -3,8 +3,8 @@
     <!--  头部  -->
     <div class="manager-header">
       <div class="manager-header-left">
-        <img src="@/assets/imgs/logo.png" />
-        <div class="title">基于SM2可链接环签名的智能区块链转诊系统 V1.0</div>
+        <img src="@/assets/imgs/logo2.png" />
+        <div class="title" style="color: white;">基于SM2可链接环签名的智能区块链转诊系统 V1.0</div>
       </div>
 
       <!-- 面包屑导航栏 -->
@@ -18,7 +18,7 @@
                 user.avatar ||
                 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
               " />
-            <div style="color: blue;">{{ user.name || "管理员" }}</div>
+            <div style="color: white; font-size: 18px;">{{ user.name || "管理员" }}</div>
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="PersonalInformation">密钥管理</el-dropdown-item>
@@ -243,8 +243,10 @@ export default {
     justify-content: flex-end;
 }
 
-.manager-header{
-  margin-top: 10px;
+.manager-header {
+    display: flex;
+    background-color: #742c20;
+    max-height: 15vh;
 }
 .button-margin{
   margin-right: 20px;
