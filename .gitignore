@@ -1,5 +1,4 @@
 vue/node_modules
-vue/node_modules/*
 springboot/target
 .idea
 .vscode

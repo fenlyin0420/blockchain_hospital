@@ -2,7 +2,7 @@
   <div class="manager-container">
     <!--  头部  -->
     <div class="manager-header">
-      <div class="manager-header-left">
+      <div class="manager-header-left" @click="$router.push('/home')">
         <img src="@/assets/imgs/logo.png" />
         <div class="title">基于SM2可链接环签名的智能区块链转诊系统 V1.0</div>
       </div>
@@ -24,8 +24,8 @@
             <el-dropdown-item @click.native="PersonalInformation">密钥管理</el-dropdown-item>
             <el-dropdown-item @click.native="goToPerson">个人信息</el-dropdown-item>
             <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
-            <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
             <el-dropdown-item @click.native="$router.push('/home')">回到首页</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -230,6 +230,9 @@ export default {
 .el-icon-img {
   width: 20px; 
   height: 20px;
+}
+.manager-header-left :hover {
+  cursor: pointer;
 }
 
 .manager-header-right {
