@@ -79,7 +79,6 @@
 export default {
   data() {
     return {
-      receivedData: {},
       params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       signData: '',
@@ -87,10 +86,13 @@ export default {
     };
   },
   created() {
-    this.receivedData = this.$route.query
+    console.log("CaseSign receivedData", this.receivedData)
     this.load()
   },
   computed: {
+    receivedData() {
+      return this.$store.state.traverseData
+    },
     pubs() {
       if (this.signPubKey != '') {
         const s = this.signPubKey.split(",")
@@ -116,7 +118,7 @@ export default {
       })
     },
     gotoCaseEncrypt() {
-      this.$router.push({ name: "CaseEncrypt", query: this.receivedData })
+      this.$router.push({ name: "CaseEncrypt", state: this.receivedData })
     }
   }
 };

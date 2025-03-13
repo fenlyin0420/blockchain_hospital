@@ -12,6 +12,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.collection.CollUtil;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/files")
 public class FileController {
-
+    @Resource
     private FileService fileService;
 
     /**
@@ -49,23 +50,10 @@ public class FileController {
      * @param flag
      * @param response
      */
-    // @GetMapping("/{flag}")   //  1697438073596-avatar.png
-    // public void avatarPath(@PathVariable String flag, HttpServletResponse response) {
-    //     OutputStream os;
-    //     try {
-    //         if (StrUtil.isNotEmpty(flag)) {
-    //             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(flag, "UTF-8"));
-    //             response.setContentType("application/octet-stream");
-    //             byte[] bytes = FileUtil.readBytes(filePath + flag);
-    //             os = response.getOutputStream();
-    //             os.write(bytes);
-    //             os.flush();
-    //             os.close();
-    //         }
-    //     } catch (Exception e) {
-    //         System.out.println("文件下载失败");
-    //     }
-    // }
+     @GetMapping("/{flag}")   //  1697438073596-avatar.png
+     public void avatarPath(@PathVariable String flag, HttpServletResponse response) {
+        fileService.pullFile(flag, response);
+     }
 
     /**
      * 删除文件

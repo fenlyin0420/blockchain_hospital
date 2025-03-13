@@ -46,7 +46,7 @@ public class Traverse {
     @Encrypt
     private String illnessDetail;
     @Encrypt
-    private String check;
+    private String furtherCheck;
     @Encrypt
     private String nonMedicine;
     @Encrypt

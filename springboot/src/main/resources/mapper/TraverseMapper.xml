@@ -3,6 +3,45 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.TraverseMapper">
+    <resultMap id="TraverseDTOMap" type="com.example.dto.TraverseDTO">
+        <!-- 映射 TraverseDTO 的其他字段 -->
+        <result property="signPubKey" column="sign_pub_key"/>
+        <result property="signData" column="sign_data"/>
+        <result property="privateKey" column="private_key"/>
+        <result property="userName" column="user_name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="idCard" column="id_card"/>
+        <result property="occupation" column="occupation"/>
+        <result property="doctorName" column="doctor_name"/>
+        <result property="hospitalName" column="hospital_name"/>
+        <result property="bedName" column="bed_name"/>
+        <result property="wardName" column="ward_name"/>
+        <!-- 嵌套映射 Traverse 对象 -->
+        <association property="traverse" javaType="Traverse">
+            <id property="id" column="id"/>
+            <result property="userId" column="user_id"/>
+            <result property="doctorId" column="doctor_id"/>
+            <result property="hospitalId" column="hospital_id"/>
+            <result property="mainDiagnosis" column="main_diagnosis"/>
+            <result property="secondaryDiagnosis" column="secondary_diagnosis"/>
+            <result property="drug" column="drug"/>
+            <result property="inHospital" column="in_hospital"/>
+            <result property="careStatus" column="care_status"/>
+            <result property="bedId" column="bed_id"/>
+            <result property="timestamp" column="timestamp"/>
+            <result property="treatmentDate" column="treatment_date"/>
+            <result property="recordDate" column="record_date"/>
+            <result property="img" column="img"/>
+            <result property="illnessDetail" column="illness_detail"/>
+            <result property="furtherCheck" column="further_check"/>
+            <result property="nonMedicine" column="non_medicine"/>
+            <result property="care" column="care"/>
+            <result property="diet" column="diet"/>
+        </association>
+    </resultMap>
     <insert id="add" parameterType="com.example.entity.Traverse" useGeneratedKeys="true">
         insert into traverse
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -19,7 +58,7 @@
             <if test="img != null">img,</if>
             <if test="careStatus != null">care_status,</if>
             <if test="illnessDetail != null">illness_detail,</if>
-            <if test="check != null">check,</if>
+            <if test="furtherCheck != null">further_check,</if>
             <if test="nonMedicine != null">non_medicine,</if>
             <if test="care != null">care,</if>
             <if test="diet != null">diet,</if>
@@ -38,7 +77,7 @@
             <if test="img != null">#{img},</if>
             <if test="careStatus != null">#{careStatus},</if>
             <if test="illnessDetail != null">#{illnessDetail},</if>
-            <if test="check != null">#{check},</if>
+            <if test="furtherCheck != null">#{furtherCheck},</if>
             <if test="nonMedicine != null">#{nonMedicine},</if>
             <if test="care != null">#{care},</if>
             <if test="diet != null">#{diet},</if>
@@ -98,7 +137,7 @@
         delete from traverse where id = #{id}
     </delete>
 
-    <select id="selectAll" resultType="com.example.dto.TraverseDTO">
+    <select id="selectAll" resultType="com.example.dto.TraverseDTO" resultMap="TraverseDTOMap">
         select * from traverse_dto
         <where>
             <if test="id != null">and id = #{id}</if>

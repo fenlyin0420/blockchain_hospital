@@ -1,8 +1,15 @@
 package com.example.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
+import cn.hutool.core.util.StrUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.controller.FileController;
@@ -13,6 +20,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.thread.ThreadUtil;
 
+@Service
 public class FileService {
     // 文件上传存储路径，为服务器本地文件系统路径
     // e.g. D:\Projects\Web\blockchain_hospital\Project/files/
@@ -46,6 +54,27 @@ public class FileService {
         }
         // e.g. http://localhost:9090/files/1697438073596-avatar.png
         return "http://" + ip + ":" + port + "/files/" + fileName;
+    }
+
+    public void pullFile(String flag, HttpServletResponse response) {
+        if (StrUtil.isEmpty(flag)) {
+            throw new IllegalArgumentException("文件名不能为空");
+        }
+
+        File file = new File(filePath + flag);
+        if (!file.exists()) {
+            throw new RuntimeException("文件不存在");
+        }
+
+        try (OutputStream os = response.getOutputStream()) {
+            response.setContentType("application/octet-stream");
+            response.addHeader("Content-Disposition", "attachment;filename=" +  URLEncoder.encode(flag, "UTF-8"));
+            byte[] bytes = FileUtil.readBytes(file);
+            os.write(bytes);
+            os.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("文件下载失败", e);
+        }
     }
 
     /** 

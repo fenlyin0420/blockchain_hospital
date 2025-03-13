@@ -43,6 +43,7 @@ public class KeyService {
     private TraverseMapper traverseMapper;
     @Resource
     private TraverseService traverseService;
+    @Resource
     private FileService fileService;
 
     /**
@@ -197,7 +198,7 @@ public class KeyService {
             traverseDAO.getRecordDate(),
             traverseDAO.getImg(),
             traverseDAO.getIllnessDetail(),
-            traverseDAO.getCheck(),
+            traverseDAO.getFurtherCheck(),
             traverseDAO.getNonMedicine(),
             traverseDAO.getCare(),
             traverseDAO.getDiet()
@@ -309,7 +310,7 @@ public class KeyService {
                 Object value = field.get(traverse);
                 if (value != null){
                     // encrypt `String` field
-                    String cipherText = MySM2Util.encryption(publicKey, (String)value);
+                    String cipherText = MySM2Util.encryption(publicKey, (String) value);
                     // update corrsponding field
                     field.set(traverse, cipherText);
                 }
@@ -317,7 +318,7 @@ public class KeyService {
 
             // 加密图片
             String imgUrl = traverse.getImg().strip();
-            // System.out.println("filePaht" + filePath);
+//            System.out.println("img url: \n" + imgUrl + "\n");
             // 图片文件
             MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
             BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
@@ -327,6 +328,7 @@ public class KeyService {
             // 保存
             fileService.replace(imgFile);
         } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
             throw new CustomException("400", "图片不存在");
         } catch (Exception e) {
             e.printStackTrace();

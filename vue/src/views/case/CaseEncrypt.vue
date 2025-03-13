@@ -54,7 +54,7 @@
           <div class="field-label">初步诊断（Primary Diagnosis）</div>
           <el-form-item label="1.主要诊断：">
             <el-input
-              v-model="diagnosis1"
+              v-model="receivedData.mainDiagnosis"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -63,7 +63,7 @@
           </el-form-item>
           <el-form-item label="2.次要诊断：">
             <el-input
-              v-model="diagnosis2"
+              v-model="receivedData.secondaryDiagnosis"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -75,7 +75,7 @@
 
           <el-form-item label="进一步检查:">
             <el-input
-              v-model="check"
+              v-model="receivedData.furtherCheck"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -95,7 +95,7 @@
           </el-form-item>
           <el-form-item label="非药物治疗：">
             <el-input
-              v-model="non_medicine"
+              v-model="receivedData.nonMedicine"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -104,7 +104,7 @@
           </el-form-item>
           <el-form-item label="护理/监测:">
             <el-input
-              v-model="care"
+              v-model="receivedData.care"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -113,7 +113,7 @@
           </el-form-item>
           <el-form-item label="饮食建议：">
             <el-input
-              v-model="diet"
+              v-model="receivedData.diet"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -127,9 +127,9 @@
       <el-col :span="6">
         <div>
           <span class="right-field-label">辅助检查（Auxiliary Examination）</span>
-          <img class="image" :src="receivedData.img" />
+          <el-image :src="receivedData.img" fit="contain" />
           <div class="button-container">
-            <el-button type="primary" @click="encrypt"> encrypt </el-button>
+            <el-button type="primary" @click="encrypt"> 加密 </el-button>
           </div>
         </div>
       </el-col>
@@ -149,8 +149,6 @@ import axios from "axios";
 export default {
   data() {
     return {
-      /** 接收查询参数 */
-      receivedData: {},
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       pubs: {},
       fits: "fill",
@@ -163,16 +161,16 @@ export default {
       params: {},
       signData: "",
       signPubKey: "",
-      img: "",
     };
   },
   created() {
-    this.receivedData = this.$route.query;
-    this.img = this.receivedData.img;
-    console.log(this.receivedData)
+    console.log("CaseEncrypt receivedData", this.receivedData)
     this.load();
   },
   computed: {
+    receivedData() {
+      return this.$store.state.traverseData
+    },
     ImageLines() {
       const urlImageString = this.receivedData.img;
       const urlImageLines = urlImageString.split("\n");
@@ -217,9 +215,9 @@ export default {
           id: this.receivedData.id,
           userId: this.receivedData.userId,
           mainDiagnosis: this.receivedData.mainDiagnosis,
-          secondaryDiagnosis: this.secondaryDiagnosis,
+          secondaryDiagnosis: this.receivedData.secondaryDiagnosis,
           drug: this.receivedData.drug,
-          check: this.receivedData.check,
+          furtherCheck: this.receivedData.furtherCheck,
           nonMedicine: this.receivedData.nonMedicine,
           care: this.receivedData.care,
           diet: this.receivedData.diet,
@@ -227,19 +225,20 @@ export default {
         })
         .then((res) => {
           if (res.code === "200") {
+            console.log("加密后：", res);
             // 更新数据为加密后的内容
             this.receivedData.mainDiagnosis = res.data.mainDiagnosis;
             this.receivedData.secondaryDiagnosis = res.data.secondaryDiagnosis;
             this.receivedData.drug = res.data.drug;
-            this.check = res.data.check;
-            this.nonMedicine = res.data.nonMedicine;
-            this.care = res.data.care;
-            this.diet = res.data.diet;
-            this.receivedData.img = res.data.img
-            console.log("res", res)
+            this.receivedData.furtherCheck = res.data.furtherCheck;
+            this.receivedData.nonMedicine = res.data.nonMedicine;
+            this.receivedData.care = res.data.care;
+            this.receivedData.diet = res.data.diet;
+            this.receivedData.img = res.data.img + "?t=" + new Date().getTime();
             // this.sign();
           } else {
             this.$message.error("加密失败 :(");
+            console.log(res)
           }
         });
     },
