@@ -120,6 +120,15 @@
               disabled
             ></el-input>
           </el-form-item>
+          <el-form-item label="加密公钥:">
+            <el-input
+              v-model="receivedData.publicKey"
+              :rows="1"
+              resize="vertical"
+              class="info-textarea"
+              disabled
+            ></el-input>
+          </el-form-item>
         </el-form>
       </el-col>
 
@@ -127,7 +136,11 @@
       <el-col :span="6">
         <div>
           <span class="right-field-label">辅助检查（Auxiliary Examination）</span>
-          <el-image :src="receivedData.img" fit="contain" />
+          <el-image :src="receivedData.img" fit="contain">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
           <div class="button-container">
             <el-button type="primary" @click="encrypt"> 加密 </el-button>
           </div>

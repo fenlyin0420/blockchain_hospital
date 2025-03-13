@@ -423,6 +423,7 @@ export default {
             ...res2.data[0].traverse // 展开 traverse 对象的字段
           };
           delete traverseDTO.traverse;
+          console.log("获取到的病历", traverseDTO)
           this.$store.commit('setTraverseData', traverseDTO);
         } else {
           this.$message.error("获取病历数据失败");
