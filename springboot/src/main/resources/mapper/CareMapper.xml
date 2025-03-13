@@ -16,7 +16,7 @@
         doctor.name as doctorName,
         bed.bed_name as bedName,
         ward.name as wardName,
-        user.name   as userName
+        user.name as userName
         from traverse
         left join bed on traverse.bed_id = bed.id
         left join doctor on traverse.doctor_id = doctor.id
@@ -28,12 +28,12 @@
         </where>
     </select>
 
-    <select id="selectPage" resultType="com.example.entity.Traverse">
+    <select id="selectPage" resultType="com.example.dto.TraverseDTO">
         select traverse.*,
         doctor.name as doctorName,
         bed.bed_name as bedName,
         ward.name as wardName,
-        user.name   as userName
+        user.name as userName
         from traverse
         left join bed on traverse.bed_id = bed.id
         left join doctor on traverse.doctor_id = doctor.id
