@@ -57,7 +57,7 @@
           <el-form-item label="1.主要诊断：">
             <el-input
               type="textarea"
-              v-model="diagnosis1"
+              v-model="mainDiagnosis"
               clearable
               :rows="1"
               resize="vertical"
@@ -68,7 +68,7 @@
           <el-form-item label="2.次要诊断：">
             <el-input
               type="textarea"
-              v-model="diagnosis2"
+              v-model="secondaryDiagnosis"
               clearable
               :rows="1"
               resize="vertical"
@@ -97,10 +97,10 @@
             </el-option>
           </el-select>
 
-          <el-form-item label="进一步检查:" v-if="selected_plan.includes('check')">
+          <el-form-item label="进一步检查:" v-if="selected_plan.includes('furtherCheck')">
             <el-input
               type="textarea"
-              v-model="check"
+              v-model="furtherCheck"
               clearable
               :rows="1"
               resize="vertical"
@@ -129,7 +129,7 @@
           >
             <el-input
               type="textarea"
-              v-model="non_medicine"
+              v-model="nonMedicine"
               clearable
               :rows="1"
               resize="vertical"
@@ -245,13 +245,12 @@ export default {
   },
   data() {
     return {
-      caseInfo: { inHospital: this.radio }, // 单个病历信息
+      caseInfo: {}, // 单个病历信息
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       /** 主要诊断 */
-      diagnosis1: "", 
+      mainDiagnosis: "", 
       /** 次要诊断 */
-      diagnosis2: "", 
-      medicine: "", // 药品
+      secondaryDiagnosis: "", 
       selectedMedicine: [],
       tableData: [],
       drugList: [],
@@ -270,7 +269,7 @@ export default {
       imgURL: { img: "" },
       plans: [
         {
-          value: "check",
+          value: "furtherCheck",
           label: "进一步检查",
         },
         {
@@ -291,11 +290,11 @@ export default {
         },
       ],
       selected_plan: [],
-      check: "无",
-      medicine: "无",
-      non_medicine: "无",
-      care: "无",
-      diet: "无",
+      furtherCheck: null,
+      medicine: null,
+      nonMedicine: null,
+      care: null,
+      diet: null,
     };
   },
   created() {
@@ -382,24 +381,6 @@ export default {
     sign() {
 
     },
-    /**
-     * 确认病历，并插入到数据库中
-     * fields:
-        user_id
-        doctor_id
-        hospital_id
-        timestamp
-        illness_detail
-        treatment_date
-        record_date
-        in_hospital
-        bed_id
-        care_status
-        advice
-        drug
-        diagnosis
-        img 
-     */
     ok() { 
       let newTraverse = {};
       newTraverse.userId = this.caseInfo.userId;
@@ -410,13 +391,13 @@ export default {
       newTraverse.treatmentDate = this.recordDate;
       newTraverse.recordDate = this.recordDate;
       newTraverse.inHospital = this.medicine === "无" ? "是" : "否";
-      newTraverse.advice = "进一步检查:" + this.check + "\n"
-                  + "非药物治疗:" + this.non_medicine + "\n"
-                  + "护理/监测:" + this.care + "\n"
-                  + "饮食建议:" + this.diet + "\n";
+      newTraverse.mainDiagnosis = this.mainDiagnosis
+      newTraverse.secondaryDiagnosis = this.secondaryDiagnosis
+      newTraverse.furtherCheck = this.furtherCheck
       newTraverse.drug = this.medicine;
-      newTraverse.diagnosis = "主要诊断:" + this.diagnosis1 + "\n"
-                  + "次要诊断:" + this.diagnosis2 + "\n";
+      newTraverse.nonMedicine = this.nonMedicine
+      newTraverse.care = this.care
+      newTraverse.diet = this.diet
       newTraverse.img = this.imgURL.img;
 
       // 确认病历，上传到数据库
@@ -429,15 +410,22 @@ export default {
             },
           });
         } else {
-          this.$message.error(res.msg);
+          this.$message.error("病历上传失败");
           return Promise.reject(res.msg);
         }
       })
       .then((res2) => {
         if (res2 && res2.code === "200") {
-          this.$router.push({ name: 'CaseSign', query: res2.data[0] });
+          this.$router.push({ name: 'CaseSign'});
+          // 解包 traverse 对象并合并到顶层
+          const traverseDTO = {
+            ...res2.data[0], // 展开 TraverseDTO 的其他字段
+            ...res2.data[0].traverse // 展开 traverse 对象的字段
+          };
+          delete traverseDTO.traverse;
+          this.$store.commit('setTraverseData', traverseDTO);
         } else {
-          this.$message.error("获取数据失败，数据格式不正确");
+          this.$message.error("获取病历数据失败");
         }
       })
       .catch((error) => {
@@ -475,13 +463,6 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
-    createFilter(queryString) {
-      return (restaurantsAdvice) => {
-        return (
-          restaurantsAdvice.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
-    },
     loadAdvice() {
       return [
         { value: "住院开药" },
@@ -500,14 +481,6 @@ export default {
         : restaurantsDiagnosis;
       // 调用 callback 返回建议列表的数据
       cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurantsDiagnosis) => {
-        return (
-          restaurantsDiagnosis.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
-        );
-      };
     },
     loadDiagnosis() {
       return [

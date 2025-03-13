@@ -2,19 +2,19 @@ package com.example.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import com.example.entity.Traverse;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class TraverseDTO extends Traverse{
+public class TraverseDTO{
+    private Traverse traverse;
     /** 环公钥 */
     private String signPubKey;
     /** 签名数据 */
     private String signData;
+    private String privateKey;
     /** 姓名 */
     private String userName;
     /** 电话 */

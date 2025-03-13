@@ -18,6 +18,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.Result;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -53,9 +54,16 @@ public class ImgUtil {
      * @param file 原图像文件
      * @return 加密后的图像文件
      */
-    public static BufferedImage ImageEncryptor(BufferedImage img) {
+    public static BufferedImage ImageEncryptor(BufferedImage img, String privateKey) throws Exception{
         // encryption key
-        int u = 107;
+        if (privateKey == null || privateKey.isEmpty() || privateKey.length() < 5) {
+            throw new Exception("非法私钥");
+        }
+
+        int u = 0;
+        for (int i = 0; i < 5; i++) {
+            u += privateKey.charAt(i);
+        }
         int w = img.getWidth();
         int h = img.getHeight();
         BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -104,9 +112,16 @@ public class ImgUtil {
      * @param img 加密过的图像
      * @return 解密后的图像
      */
-    public static BufferedImage ImageDecryptor(BufferedImage img) {
-        // key
-        int u = 107;
+    public static BufferedImage ImageDecryptor(BufferedImage img, String privateKey) throws Exception{
+        // encryption key
+        if (privateKey == null || privateKey.isEmpty() || privateKey.length() < 5) {
+            throw new Exception("非法私钥");
+        }
+
+        int u = 0;
+        for (int i = 0; i < 5; i++) {
+            u += privateKey.charAt(i);
+        }
         int w = img.getWidth();
         int h = img.getHeight();
         BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -166,7 +181,26 @@ public class ImgUtil {
             return null;
         }
     }
-    
+
+    /**
+     * Convert base64 string to BufferedImage
+     * @param base64String base64 encoded string of an image
+     * @return BufferedImage
+     */
+    public static BufferedImage base64ToImage(String base64String) {
+        try {
+            // 解码 Base64 字符串为字节数组
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            // 将字节数组转换为 ByteArrayInputStream
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(decodedBytes);
+            // 使用 ImageIO 读取输入流并转换为 BufferedImage
+            return ImageIO.read(inputStream);
+        } catch (IOException | IllegalArgumentException e) {
+            // 处理可能的异常，如输入的 Base64 字符串格式不正确或解码过程出错
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 生成二维码，数据是 seed
      * @param seed

@@ -219,7 +219,6 @@ export default {
     diet() {
       return this.receivedData.advice?.split("\n")[3]?.split(':')[1];
     },
-
   },
   methods: {
     load() {
