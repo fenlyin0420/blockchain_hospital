@@ -286,8 +286,8 @@ export default {
         _inHospital: this.receivedData.inHospital,
         _drugAdvice: this.receivedData.drug + "||" + this.receivedData.advice,
         _diagnosis: this.receivedData.diagnosis,
-        // _img: "http://localhost:8090/files/default.jpg",
-        _img: this.receivedData.img,
+        _img: "http://localhost:8090/files/default.jpg",
+        // _img: this.receivedData.img,
         _signData: this.signData,
         _signPubKey: this.signPubKey,
       };
