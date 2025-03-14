@@ -248,7 +248,17 @@ export default {
             this.receivedData.care = res.data.care;
             this.receivedData.diet = res.data.diet;
             this.receivedData.img = res.data.img + "?t=" + new Date().getTime();
+            // 将个人信息等用base64编码，以呈现加密效果
+            this.receivedData.userName = this.stob(this.receivedData.userName)
+            this.receivedData.sex = this.stob(this.receivedData.sex)
+            this.receivedData.age = this.stob(this.receivedData.age)
+            this.receivedData.occupation = this.stob(this.receivedData.occupation)
+            this.receivedData.treatmentDate = this.stob(this.receivedData.treatmentDate)
+            this.receivedData.recordDate = this.stob(this.receivedData.recordDate)
+            this.receivedData.phone = this.stob(this.receivedData.phone)
+            this.receivedData.illnessDetail = this.stob(this.receivedData.illnessDetail)
             // this.sign();
+
           } else {
             this.$message.error("加密失败 :(");
             console.log(res)
@@ -330,6 +340,30 @@ export default {
           }
         });
     },
+    /**
+     * 将原始字符串编码为base64字符串
+     * @param s 原始字符串
+     * @return base64字符串
+     */
+    stob(s) {
+      const utf8Str = encodeURIComponent(s).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+          return String.fromCharCode(parseInt(p1, 16));
+      });
+      return btoa(utf8Str);
+    },
+
+    /**
+     * 将base64字符串解码为原始字符串
+     * 
+     * @param b base64 字符串
+     * @return 原始字符串
+     */
+    btos(b) {
+      const utf8Str = atob(b);
+      return decodeURIComponent(Array.prototype.map.call(utf8Str, (c) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    }
   },
 };
 </script>
