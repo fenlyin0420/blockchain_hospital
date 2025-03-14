@@ -1,13 +1,18 @@
 <template>
   <!-- 背景为视频 -->
   <div class="container">
-    <video autoplay loop muted class="background-video">
-      <source src="@/assets/videos/bg7.mp4" type="video/mp4">
+    <video autoplay loop muted class="background-video" preload="auto">
+      <source src="@/assets/videos/bg7.mp4?" type="video/mp4">
       您的浏览器不支持HTML5视频。
     </video>
-    <div style="width: 400px; padding: 30px; border-radius: 5px; background-color: white; box-shadow: 0 0 8px #165328;">
+    <!-- 粒子效果 -->
+    <vue-particles color="#7eb488" :particleOpacity="0.7" :particlesNumber="120" shapeType="circle" :particleSize="4"
+      linesColor="#7eb488" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3"
+      :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="particles"></vue-particles>
+
+    <div class="login-form">
       <div
-        style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+        style="  text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
         欢 迎 登 录</div>
       <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username" label="账号" label-width="15%">
@@ -148,11 +153,38 @@ a {
 /* 视频动画 */
 .background-video {
   position: absolute;
+  overflow: hidden;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: -2;
+}
+
+.particles {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
 }
+
+.login-form {
+  position: relative;
+  z-index: 2;
+  /* 半透明背景 */
+  background: rgba(255, 255, 255, 1);
+  border-radius: 8px;
+  width: 400px;
+  padding: 30px;
+  /* 白色背景 */
+  /* background-color: white;*/
+  box-shadow: 0 0 5px rgba(63, 146, 78, 1);
+  transform: translateZ(0); 
+  backface-visibility: hidden;
+}
+
 </style>

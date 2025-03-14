@@ -4,8 +4,12 @@
       <source src="@/assets/videos/bg6.mp4" type="video/mp4">
       您的浏览器不支持HTML5视频。
     </video>
+    <!-- 粒子效果 -->
+    <vue-particles color="#27ada9" :particleOpacity="0.7" :particlesNumber="150" shapeType="circle" :particleSize="4"
+      linesColor="#27ada9" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3"
+      :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="particles"></vue-particles>
     <div
-      style="width: 400px; padding: 30px; background-color: white; border-radius: 5px; box-shadow: 0 0 10px #EAE7EA;">
+      style="width: 400px; padding: 30px; background-color: rgba(255, 255, 255, 1); border-radius: 5px; box-shadow: 0 0 10px #EAE7EA;">
       <div
         style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
         欢 迎 注 册</div>
@@ -105,11 +109,22 @@ a {
 /* 视频动画 */
 .background-video {
   position: absolute;
+  overflow: hidden;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: -1;
+}
+
+.particles {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
 }
 </style>
