@@ -17,7 +17,7 @@
     </div>
 
     <div class="tables-container" style="display: flex; justify-content: space-between; width: 100%;">
-      <div class="table" style="width: 70%; margin-right: 10px;">
+      <div class="table" style="width: 40%; margin-right: 10px;">
         <el-row :gutter="24">
           <el-col :span="8" v-for="item in BedData" :key="item.id">
             <div :style="{ textAlign: 'center', backgroundColor: getBackgroundColor(item.wardName) }" class="card">
@@ -46,17 +46,17 @@
         </div>
       </div>
 
-      <div class="table" style="width: 30%;">
+      <div class="table" style="width: 60%;">
         <div class="table" style="margin-top: 15px">
           <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-            <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+            <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
             <!-- <el-table-column label="病床号" align="center">
               <template v-slot="scope">
                 {{ scope.row.wardName }}-{{ scope.row.bedName }}
               </template>
             </el-table-column> -->
             <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
-            <el-table-column prop="unencryptedAdvice" label="当日医嘱" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center" ></el-table-column>
             <!-- <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column> -->
             <!-- <el-table-column label="操作" width="180" align="center">
               <template v-slot="scope">

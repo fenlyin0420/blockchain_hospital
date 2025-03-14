@@ -36,9 +36,16 @@ public class Result {
      * @return Result对象
      */
     public static Result success(Object data) {
-        Result result = new Result (data);
+        Result result = new Result(data);
         result.setCode(ResultCodeEnum.SUCCESS.code);
         result.setMsg(ResultCodeEnum.SUCCESS.msg);
+        return result;
+    }
+
+    public static Result success(Object data, String code, String msg) {
+        Result result = new Result(data);
+        result.setCode(code);
+        result.setMsg(msg);
         return result;
     }
 
@@ -74,7 +81,7 @@ public class Result {
 
     /**
      * 返回失败时包含数据的响应对象
-     * @param resultCodeEnum 状态码枚举
+     * @param resultCodeEnum 状态码枚举对象
      * @return Result对象
      */
     public static Result error(ResultCodeEnum resultCodeEnum) {

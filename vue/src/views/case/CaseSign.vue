@@ -77,22 +77,6 @@
         </div>
       </el-col>
     </el-row>
-
-    <!-- <div class="public-keys">
-      <div class="header" style="margin: 10px 0">
-        <h2>环公钥组成信息</h2>
-      </div>
-
-      <div class="table-container">
-        <el-table :data="pubs" border style="width: 100%;" >
-          <el-table-column prop="name" align="center" label="姓名" width="180">
-          </el-table-column>
-          <el-table-column prop="key" align="center" label="公钥">
-          </el-table-column>
-        </el-table>
-      </div>
-    </div> -->
-
   </el-card>
 </template>
 
@@ -103,7 +87,6 @@ import 'echarts/theme/macarons';
 export default {
   data() {
     return {
-      receivedData: {},
       params: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       signData: '',
@@ -115,8 +98,26 @@ export default {
     };
   },
   created() {
-    this.receivedData = this.$route.query
+    console.log("CaseSign receivedData", this.receivedData)
     this.load()
+  },
+  computed: {
+    receivedData() {
+      return this.$store.state.traverseData
+    },
+    pubs() {
+      if (this.signPubKey != '') {
+        const s = this.signPubKey.split(",")
+        const ss = s.map(line => {
+          const parts = line.split(':');
+          return {
+            name: parts[0],
+            key: parts[1],
+          };
+        });
+        return ss
+      }
+    }
   },
   methods: {
     load() {
@@ -141,7 +142,7 @@ export default {
       })
     },
     gotoCaseEncrypt() {
-      this.$router.push({ name: "CaseEncrypt", query: this.receivedData })
+      this.$router.push({ name: "CaseEncrypt" })
     },
     initChart() {   //公钥圆形环
       this.chart = echarts.init(this.$refs.publicKeyRingChart, 'macarons');

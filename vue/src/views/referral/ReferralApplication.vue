@@ -169,18 +169,6 @@ export default{
       this.$request.post("/referral/add", data).then((res) => {
         if (res.code === "200") {
           this.$message.success("申请成功");
-          // 自动跳转
-          // const countdownSeconds = 3;
-          // let countdown = countdownSeconds;
-          // const countdownInterval = setInterval(() => {
-          //   if (countdown > 0) {
-          //     this.$message.info(`申请成功，${countdown}秒后将跳转页面...`);
-          //     countdown--;
-          //   } else {
-          //     clearInterval(countdownInterval);
-          //     this.$router.push('/referralRecord');
-          //   }
-          // }, 1000);
         } else {
           this.$message.error(res.msg);
         }

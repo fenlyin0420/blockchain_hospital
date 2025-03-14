@@ -28,6 +28,7 @@ import com.example.common.enums.ResultCodeEnum;
 
 import jakarta.annotation.Resource;
 import com.google.gson.Gson;
+
 @Service
 public class KeyService {
     @Resource
@@ -42,6 +43,8 @@ public class KeyService {
     private TraverseMapper traverseMapper;
     @Resource
     private TraverseService traverseService;
+    @Resource
+    private FileService fileService;
 
     /**
      * 对提供的病历进行签名，将签名结果即签名时用到的公钥环持久化
@@ -184,8 +187,8 @@ public class KeyService {
             traverseDAO.getUserId(),
             traverseDAO.getDoctorId(),
             traverseDAO.getHospitalId(),
-            traverseDAO.getAdvice(),
-            traverseDAO.getDiagnosis(),
+            traverseDAO.getMainDiagnosis(),
+            traverseDAO.getSecondaryDiagnosis(),
             traverseDAO.getDrug(),
             traverseDAO.getInHospital(),
             traverseDAO.getCareStatus(),
@@ -194,13 +197,16 @@ public class KeyService {
             traverseDAO.getTreatmentDate(),
             traverseDAO.getRecordDate(),
             traverseDAO.getImg(),
-            traverseDAO.getIllnessDetail()
+            traverseDAO.getIllnessDetail(),
+            traverseDAO.getFurtherCheck(),
+            traverseDAO.getNonMedicine(),
+            traverseDAO.getCare(),
+            traverseDAO.getDiet()
         );
 
         // json 化要签名的病历
         Gson gson = new Gson();
         String data = gson.toJson(traverse);
-        System.out.println("verify data: " + data);
 
         List<Doctor> doctors = getDoctorsByPubKeyRing(traverseDAO);
         List<String> publicKeys = new ArrayList<>();
@@ -227,36 +233,6 @@ public class KeyService {
         }
         return ringSign;
     }
-    // public RingSign verifySignByData(Traverse traverse) {
-    //     List<Doctor> doctors = getDoctorsByPubKeyRing(traverse);
-    //     List<String> publicKeys = new ArrayList<>();
-    //     for (Doctor doctor : doctors) {
-    //         publicKeys.add(doctor.getPublicKey());
-    //     }
-    //     List<BCECPublicKey> list = new ArrayList<>();
-    //     for (String pubKey : publicKeys) {
-    //         try {
-    //             list.add(MySM2Util.str2pub(pubKey));
-    //         } catch (Exception e) {
-    //             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
-    //         }
-    //     }
-    //     boolean result = BestRingSignUtil.verifySign(traverse.signData(), list, traverse.getSignKey());
-
-    //     RingSign ringSign = new RingSign();
-    //     ringSign.setSignData(traverse.getSignData());
-    //     ringSign.setSignKey(traverse.getSignKey());
-    //     if (result) {
-    //         traverse.setSignResult("成功");
-    //         ringSign.setMessage("成功");
-    //     } else {
-    //         traverse.setSignResult("失败");
-    //         ringSign.setMessage("失败");
-    //     }
-    //     traverseMapper.updateById(traverse);
-    //     return ringSign;
-    // }
-
     /**
      * 获取公钥环
      * 
@@ -318,67 +294,44 @@ public class KeyService {
         }
         return doctors;
     }
+
     /**
-     * 利用反射机制将 source 对象中属于 target 类的字段值复制到 target 对象
-     * @param source 源对象
-     * @param target 目标对象
+     * encrypt all String fields that are provided by frontend.
+     * @param traverse need to encrypt traverse
+     * @return encrypted traverse
      */
-    public static void copyFields(Object source, Object target) {
-        Class<?> targetClass = target.getClass();
-        // 获取目标类的所有字段
-        Field[] targetFields = targetClass.getDeclaredFields();
-        for (Field targetField : targetFields) {
-            try {
-                // 设置字段可访问
-                targetField.setAccessible(true);
-                // 获取源对象中同名的字段
-                Field sourceField = source.getClass().getDeclaredField(targetField.getName());
-                // 设置源字段可访问
-                sourceField.setAccessible(true);
-                // 获取源字段的值
-                Object value = sourceField.get(source);
-                // 将值设置到目标字段
-                targetField.set(target, value);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    /**
-     * 加密病历
-     */
-    public Traverse encrypt(Traverse traverse) {
+    public Traverse encrypt(Traverse traverse, String publicKey){
         try {
-            User user = userMapper.selectById(traverse.getUserId());
-            Class<?> clazz = traverse.getClass();
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
+
+            // 加密文字
+            List<Field> encrypteFields = traverse.getEncryptedFields();
+            for (Field field : encrypteFields) {
                 field.setAccessible(true);
                 Object value = field.get(traverse);
-                String strValue = null;
-                Boolean isStep = false;
                 if (value != null){
-                    if (value instanceof Integer || value instanceof Date){
-                        // strValue = value.toString();
-                        isStep = true;
-                        continue;
-                    } else {
-                        strValue = (String) value;
-                    }
-                    // 加密字段
-                    String cipherText = MySM2Util.encryption(user.getPublicKey(), strValue);
-                    // 对于整数，先不更新，类型不匹配
-                    if (!isStep) {
-                        field.set(traverse, cipherText);
-                    }
+                    // encrypt `String` field
+                    String cipherText = MySM2Util.encryption(publicKey, (String) value);
+                    // update corrsponding field
+                    field.set(traverse, cipherText);
                 }
             }
-        } catch (NullPointerException e) {
+
+            // 加密图片
+            String imgUrl = traverse.getImg().strip();
+//            System.out.println("img url: \n" + imgUrl + "\n");
+            // 图片文件
+            MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
+            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
+            // 加密后的图片
+            img = ImgUtil.ImageEncryptor(img, publicKey);
+            imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
+            // 保存
+            fileService.replace(imgFile);
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-            throw new CustomException("400", "患者不存在");
+            throw new CustomException("400", "图片不存在");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CustomException("400", "加密失败");
         }
         return traverse;
     }
@@ -389,37 +342,26 @@ public class KeyService {
      * @param traverse 与病历相关的参数
      * @return
      */
-    public Traverse decrypt(Traverse traverse) throws CustomException {
+    public Traverse decrypt(Traverse traverse, String privateKey) throws CustomException {
         try {
-            User user = userMapper.selectById(traverse.getUserId());
-            if (user == null)
-                throw new CustomException("用户不存在");
-            String advicePlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getAdvice());
-            String drugPlainText = MySM2Util.decrypt(user.getPrivateKey(), traverse.getDrug());
-            traverse.setAdvice(advicePlainText);
-            traverse.setDrug(drugPlainText);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CustomException(e.getMessage());
-        }
-        return traverse;
-    }
+            // text decrypt
+            List<Field> encrypteFields = traverse.getEncryptedFields();
+            for (Field field : encrypteFields) {
+                field.setAccessible(true);
+                Object value = field.get(traverse);
+                if (value != null){
+                    String plainText = MySM2Util.decrypt(privateKey, (String) value);
+                    field.set(traverse, plainText);
+                }
+            }
 
-    /**
-     * 使用二维码提供的私钥解密病历
-     * @param traverse 病历
-     * @param file 私钥二维码
-     * @return 明文病历
-     */
-    public Traverse decryptByQR(Traverse traverse, String QR) {
-        try {
-            String privateKey = QR;
-            String advicePlainText = MySM2Util.decrypt(privateKey, traverse.getAdvice());
-            String drugPlainText = MySM2Util.decrypt(privateKey, traverse.getDrug());
-            traverse.setAdvice(advicePlainText);
-            traverse.setDrug(drugPlainText);
+            String imgUrl = traverse.getImg().strip();
+            MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
+            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
+            img = ImgUtil.ImageDecryptor(img, privateKey);
+            imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
+            fileService.replace(imgFile); 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new CustomException(e.getMessage());
         }
         return traverse;
@@ -432,10 +374,10 @@ public class KeyService {
      * @return 解密后图片的base64编码
      */
     public String imgDecrypt(String imgURL)
-            throws IOException, NullPointerException, WebClientRequestException, RuntimeException {
+            throws IOException, NullPointerException, WebClientRequestException, RuntimeException, Exception {
         MultipartFile file = MyMultipartFile.fromURL(imgURL);
         BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
-        img = ImgUtil.ImageDecryptor(img);
+        img = ImgUtil.ImageDecryptor(img, "test");
         return ImgUtil.getImageBase64(img);
     }
 
