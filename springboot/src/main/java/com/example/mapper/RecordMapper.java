@@ -1,8 +1,11 @@
 package com.example.mapper;
 
 import com.example.entity.Record;
+import com.example.dto.TraverseDTO;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 操作record相关数据接口
@@ -35,5 +38,10 @@ public interface RecordMapper {
     List<Record> selectAll(Record record);
 
     List<Record> selectAllUserName();
+
+    /**
+     * 根据医生ID和住院状态查询患者
+     */
+    List<TraverseDTO> selectByDoctorAndStatus(@Param("doctorId") Integer doctorId, @Param("inHospital") String inHospital);
 
 }

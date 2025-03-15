@@ -3,7 +3,46 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.RecordMapper">
-
+    <resultMap id="TraverseDTOMap" type="com.example.dto.TraverseDTO">
+        <!-- 映射 TraverseDTO 的其他字段 -->
+        <result property="signPubKey" column="sign_pub_key"/>
+        <result property="signData" column="sign_data"/>
+        <result property="publicKey" column="public_key"/>
+        <result property="privateKey" column="private_key"/>
+        <result property="userName" column="user_name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="idCard" column="id_card"/>
+        <result property="occupation" column="occupation"/>
+        <result property="doctorName" column="doctor_name"/>
+        <result property="hospitalName" column="hospital_name"/>
+        <result property="bedName" column="bed_name"/>
+        <result property="wardName" column="ward_name"/>
+        <!-- 嵌套映射 Traverse 对象 -->
+        <association property="traverse" javaType="Traverse">
+            <id property="id" column="id"/>
+            <result property="userId" column="user_id"/>
+            <result property="doctorId" column="doctor_id"/>
+            <result property="hospitalId" column="hospital_id"/>
+            <result property="mainDiagnosis" column="main_diagnosis"/>
+            <result property="secondaryDiagnosis" column="secondary_diagnosis"/>
+            <result property="drug" column="drug"/>
+            <result property="inHospital" column="in_hospital"/>
+            <result property="careStatus" column="care_status"/>
+            <result property="bedId" column="bed_id"/>
+            <result property="timestamp" column="timestamp"/>
+            <result property="treatmentDate" column="treatment_date"/>
+            <result property="recordDate" column="record_date"/>
+            <result property="img" column="img"/>
+            <result property="illnessDetail" column="illness_detail"/>
+            <result property="furtherCheck" column="further_check"/>
+            <result property="nonMedicine" column="non_medicine"/>
+            <result property="care" column="care"/>
+            <result property="diet" column="diet"/>
+        </association>
+    </resultMap>
     <sql id="Base_Column_List">
         id,user_id,doctor_id,time,medical_record,inhospital,inhostpital_record
     </sql>
@@ -93,5 +132,21 @@
         </set>
         where id = #{id} 
     </update>
+
+    <select id="selectByDoctorAndStatus" resultType="com.example.dto.TraverseDTO">
+        select 
+            traverse.*,
+            user.name as userName,
+            user.sex,
+            user.age,
+            user.id_card as idCard,
+            user.phone,
+            user.email,
+            user.occupation
+        from traverse
+        left join user on traverse.user_id = user.id
+        where traverse.doctor_id = #{doctorId}
+        and traverse.in_hospital = #{inHospital}
+    </select>
 
 </mapper>

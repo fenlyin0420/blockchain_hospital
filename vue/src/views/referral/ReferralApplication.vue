@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <h1 style="text-align: center; margin-bottom: 30px">医院转诊申请表</h1>
+    <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
     <el-form
       ref="elForm"
       :model="formData"
@@ -10,11 +10,18 @@
       label-position="right"
     >
       <el-row :gutter="24">
-        <el-col :span="12">
+        <el-col
+          :span="12"
+          style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
+        >
           <el-row :gutter="24">
             <el-col :span="hsl">
               <el-form-item label="患者姓名" prop="">
-                <el-select v-model="formData.userName" placeholder="请选择患者">
+                <el-select
+                  v-model="formData.userName"
+                  placeholder="请选择患者"
+                  @change="handlePatientSelect"
+                >
                   <el-option
                     v-for="item in patients"
                     :key="item.userName"
@@ -25,35 +32,42 @@
               </el-form-item>
             </el-col>
             <el-col :span="hsr">
-              <el-form-item class="custom-label" label="性别" prop="">
-                <el-input v-model="formData.diagnosis"></el-input>
+              <el-form-item class="custom-label" label="转诊类型" prop="">
+                <el-select v-model="formData.referralType" placeholder="请选择转诊类型">
+                  <el-option label="普通" value="1"></el-option>
+                  <el-option label="急诊" value="2"></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="24">
-            <el-col :span="hsr">
+            <el-col :span="9">
               <el-form-item label="年龄">
-                <el-input v-model="temp" placeholder=""></el-input>
+                <el-input v-model="formData.age" placeholder=""></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="hsl">
-              <el-form-item label="身份证号码">
-                <el-input v-model="temp" placeholder=""></el-input>
+            <el-col :span="5">
+              <el-form-item class="custom-label" label="性别" label-width="50px" prop="">
+                <el-input v-model="formData.sex"></el-input>
               </el-form-item>
             </el-col>
-
+            <el-col :span="10">
+              <el-form-item label="身份证号码" label-width="90px">
+                <el-input v-model="formData.idCard" placeholder=""></el-input>
+              </el-form-item>
+            </el-col>
           </el-row>
 
           <el-row :gutter="24">
             <el-col :span="hsl">
               <el-form-item label="联系电话">
-                <el-input v-model="temp" placeholder=""></el-input>
+                <el-input v-model="formData.phone" placeholder=""></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="hsr">
               <el-form-item label="转诊编号">
-                <el-input v-model="temp" placeholder=""></el-input>
+                <el-input v-model="formData.referralNumber" placeholder=""></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -61,9 +75,7 @@
           <el-form-item label="初步诊断" prop="diagnosis">
             <el-input
               v-model="formData.diagnosis"
-              :maxlength="11"
               show-word-limit
-              readonly
               clearable
               prefix-icon="el-icon-first-aid-kit"
               :style="{ width: '100%' }"
@@ -91,7 +103,7 @@
             <!-- 用 canvas 实现签字 -->
             <canvas
               ref="signatureCanvas"
-              height="200"
+              height="100px"
               style="border: 1px solid #ccc; background-color: #f9f9f9"
               @mousedown="startDrawing"
               @mousemove="drawSignature"
@@ -104,121 +116,152 @@
 
         <!-- LEFT SIDE -->
         <el-col :span="s_half">
-          <el-row :gutter="g_nor">
-            <el-col :span="15">
-              <el-form-item label="病历地址">
-                <el-input v-model="temp" placeholder=""></el-input>
-              </el-form-item>
-            </el-col>
+          <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+            <el-row :gutter="g_nor">
+              <el-col :span="10">
+                <el-form-item label="转诊状态">
+                  <el-input v-model="temp" placeholder=""></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14">
+                <el-form-item label="病历地址">
+                  <el-input v-model="temp" placeholder=""></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-            <el-col :span="9">
-              <el-form-item label="转诊状态">
-                <el-input v-model="temp" placeholder=""></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <el-row :gutter="g_nor">
+              <el-col :span="13">
+                <el-form-item label="转出医院" prop="outHospital">
+                  <el-select
+                    v-model="formData.outHospital"
+                    placeholder="请选择转出医院"
+                    clearable
+                    :style="{ width: '100%' }"
+                  >
+                    <template #prefix>
+                      <i class="el-icon-office-building"></i>
+                    </template>
+                    <el-option
+                      v-for="item in hospitalOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="转出医生" prop="outDoctor">
+                  <el-select
+                    v-model="formData.outDoctor"
+                    placeholder="请选择转出医生"
+                    clearable
+                    :style="{ width: '100%' }"
+                  >
+                    <template #prefix>
+                      <i class="el-icon-user"></i>
+                    </template>
+                    <el-option
+                      v-for="item in outDoctorOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="转出日期" prop="outTime">
+              <el-input
+                v-model="formData.outTime"
+                placeholder="请输入转出日期"
+                clearable
+                prefix-icon="el-icon-date"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="医务科意见" prop="outHospitalAdvice">
+              <el-input
+                v-model="formData.outHospitalAdvice"
+                placeholder="请输入医务科意见"
+                clearable
+                prefix-icon="el-icon-tickets"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+          </div>
 
-          <el-row :gutter="g_nor">
-            <el-col :span="13">
-              <el-form-item label="转出医院" prop="outHospital">
-                <el-input
-                  v-model="formData.outHospital"
-                  placeholder="请输入转出医院"
-                  clearable
-                  prefix-icon="el-icon-office-building"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="转出医生" prop="outDoctor">
-                <el-input
-                  v-model="formData.outDoctor"
-                  placeholder="请输入转出医生"
-                  clearable
-                  prefix-icon="el-icon-user"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="转出日期" prop="outTime">
-            <el-input
-              v-model="formData.outTime"
-              placeholder="请输入转出日期"
-              clearable
-              prefix-icon="el-icon-date"
-              :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="医务科意见" prop="outHospitalAdvice">
-            <el-input
-              v-model="formData.outHospitalAdvice"
-              placeholder="请输入医务科意见"
-              clearable
-              prefix-icon="el-icon-tickets"
-              :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
           <br /><br />
-          <el-row :gutter="24">
-            <el-col :span="13">
-              <el-form-item label="转入医院" prop="inHospital">
-                <el-input
-                  v-model="formData.inHospital"
-                  placeholder="请输入转入医院"
-                  clearable
-                  prefix-icon="el-icon-office-building"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="转入医生" prop="inDoctor">
-                <el-input
-                  v-model="formData.inDoctor"
-                  placeholder="请输入转入医生"
-                  clearable
-                  prefix-icon="el-icon-user"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="转入日期" prop="inTime">
-            <el-input
-              v-model="formData.inTime"
-              placeholder="请输入转入日期"
-              clearable
-              prefix-icon="el-icon-date"
-              :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="医务科意见" prop="inHospitalAdvice">
-            <el-input
-              v-model="formData.inHospitalAdvice"
-              placeholder="请输入医务科意见"
-              clearable
-              prefix-icon="el-icon-tickets"
-              :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="医保经办机构意见" prop="globalAdvice">
-            <el-input
-              v-model="formData.globalAdvice"
-              placeholder="请输入医保经办机构意见"
-              clearable
-              :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
-
-          <div style="display: flex; justify-content: space-around">
-            <el-button type="primary" @click="submitForm">提交</el-button>
-            <el-button @click="resetForm">重置</el-button>
+          <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+            <el-row :gutter="24">
+              <el-col :span="13">
+                <el-form-item label="转入医院" prop="inHospital">
+                  <el-select
+                    v-model="formData.inHospital"
+                    placeholder="请选择转入医院"
+                    clearable
+                    :style="{ width: '100%' }"
+                  >
+                    <template #prefix>
+                      <i class="el-icon-office-building"></i>
+                    </template>
+                    <el-option
+                      v-for="item in hospitalOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="转入医生" prop="inDoctor">
+                  <el-input
+                    v-model="formData.inDoctor"
+                    placeholder="请输入转入医生"
+                    clearable
+                    prefix-icon="el-icon-user"
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="转入日期" prop="inTime">
+              <el-input
+                v-model="formData.inTime"
+                placeholder="请输入转入日期"
+                clearable
+                prefix-icon="el-icon-date"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="医务科意见" prop="inHospitalAdvice">
+              <el-input
+                v-model="formData.inHospitalAdvice"
+                placeholder="请输入医务科意见"
+                clearable
+                prefix-icon="el-icon-tickets"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="医保经办机构意见" prop="globalAdvice">
+              <el-input
+                v-model="formData.globalAdvice"
+                placeholder="请输入医保经办机构意见"
+                clearable
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+            <br />
           </div>
         </el-col>
       </el-row>
     </el-form>
+    <div class="button-group">
+      <el-button type="primary" @click="submitForm">提交</el-button>
+      <el-button @click="resetForm">重置</el-button>
+    </div>
   </el-card>
 </template>
 <script>
@@ -227,6 +270,7 @@ export default {
   props: [],
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       formData: {
         userName: undefined,
         diagnosis: "",
@@ -341,13 +385,38 @@ export default {
       g_nor: 24,
       s_half: 12,
       hsl: 14,
-      hsr: 10
+      hsr: 10,
+      hospitalOptions: [
+        { value: "第一人民医院", label: "第一人民医院" },
+        { value: "第二人民医院", label: "第二人民医院" },
+        { value: "中心医院", label: "中心医院" },
+        { value: "妇幼保健院", label: "妇幼保健院" },
+      ],
+      outDoctorOptions: [
+        { value: "张医生", label: "张医生" },
+        { value: "李医生", label: "李医生" },
+        { value: "王医生", label: "王医生" },
+      ],
+      inDoctorOptions: [
+        { value: "陈医生", label: "陈医生" },
+        { value: "刘医生", label: "刘医生" },
+        { value: "孙医生", label: "孙医生" },
+      ],
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    "formData.userName": {
+      handler(newVal) {
+        if (newVal) {
+          this.handlePatientSelect(newVal);
+        }
+      },
+    },
+  },
   created() {
     this.loadUsers();
+    this.formData.outDoctor = this.user.name;
   },
   mounted() {
     // 获取 canvas 的上下文
@@ -366,9 +435,37 @@ export default {
   },
   methods: {
     loadUsers() {
-      this.$request.get("/record/selectAllUserName").then((res) => {
-        this.patients = res.data;
-      });
+      this.$request
+        .get("/record/doctor", {
+          params: {
+            doctorId: this.user.id,
+            inHospital: "已住院",
+          },
+        })
+        .then((res) => {
+          if (res.code === "200") {
+            // 解包Traverse字段
+            console.log(res.data);
+            this.patients = res.data.map((item) => ({
+              ...item,
+              age: item.age.toString(),
+              idCard: item.idCard.toString(),
+              phone: item.phone.toString(),
+            }));
+          }
+        });
+    },
+    handlePatientSelect(userName) {
+      const selectedPatient = this.patients.find((p) => p.userName === userName);
+      if (selectedPatient) {
+        // 自动填充患者信息
+        this.formData.sex = selectedPatient.sex;
+        this.formData.age = selectedPatient.age;
+        this.formData.idCard = selectedPatient.idCard;
+        this.formData.phone = selectedPatient.phone;
+        this.formData.diagnosis =
+          selectedPatient.mainDiagnosis || selectedPatient.illnessDetail;
+      }
     },
     submitForm() {
       this.$refs["elForm"].validate((valid) => {
@@ -391,7 +488,7 @@ export default {
       this.canvasContext.lineTo(offsetX, offsetY);
       this.canvasContext.stroke();
     },
-    endDrawing() { 
+    endDrawing() {
       if (this.isDrawing) {
         this.isDrawing = false;
         this.signature = this.$refs.signatureCanvas.toDataURL(); // 将签名转为 Base64 数据
@@ -404,8 +501,7 @@ export default {
         const parent = canvas.parentNode;
         const width = parent.clientWidth;
         canvas.width = width;
-        canvas.height = 200;
-      })
+      });
     },
     clearSignature() {
       const canvas = this.$refs.signatureCanvas;
@@ -416,7 +512,15 @@ export default {
 };
 </script>
 <style scoped>
-::v-deep.custom-label .el-form-item_label {
-  width: 100px !important;
+.el-form-item {
+  margin-bottom: 10px;
 }
+.button-group {
+  display: flex;
+  justify-content: center;
+}
+.button-group .el-button {
+  margin: 10px;
+}
+
 </style>

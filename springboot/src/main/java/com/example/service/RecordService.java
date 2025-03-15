@@ -4,8 +4,10 @@ import com.example.common.enums.RoleEnum;
 import com.example.common.enums.StatusEnum;
 import com.example.entity.Account;
 import com.example.entity.Record;
+import com.example.entity.Traverse;
 import com.example.mapper.RecordMapper;
 import com.example.utils.TokenUtils;
+import com.example.dto.TraverseDTO;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -90,6 +92,13 @@ public class RecordService {
         PageHelper.startPage(pageNum, pageSize);
         List<Record> list = recordMapper.selectAll(record);
         return PageInfo.of(list);
+    }
+
+    /**
+     * 根据医生ID和住院状态查询患者
+     */
+    public List<TraverseDTO> selectByDoctorAndStatus(Integer doctorId, String inHospital) {
+        return recordMapper.selectByDoctorAndStatus(doctorId, inHospital);
     }
 
 }

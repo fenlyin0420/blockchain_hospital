@@ -200,25 +200,6 @@ export default {
     this.load();
   },
   computed: {
-    diagnosis1() {
-      
-      return this.receivedData.diagnosis?.split("\n")[0]?.split(':')[1];
-    },
-    diagnosis2() {
-      return this.receivedData.diagnosis?.split("\n")[1]?.split(':')[1];
-    },
-    check() {
-      return this.receivedData.advice?.split("\n")[0]?.split(':')[1];
-    },
-    non_medicine() {
-      return this.receivedData.advice?.split("\n")[1]?.split(':')[1];
-    },
-    care() {
-      return this.receivedData.advice?.split("\n")[2]?.split(':')[1];
-    },
-    diet() {
-      return this.receivedData.advice?.split("\n")[3]?.split(':')[1];
-    },
   },
   methods: {
     load() {
