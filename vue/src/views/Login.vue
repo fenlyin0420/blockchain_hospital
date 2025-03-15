@@ -176,7 +176,7 @@ a {
   position: relative;
   z-index: 2;
   /* 半透明背景 */
-  background: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 8px;
   width: 400px;
   padding: 30px;

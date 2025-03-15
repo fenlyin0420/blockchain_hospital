@@ -1,9 +1,6 @@
 package com.example.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 
 import cn.hutool.core.util.StrUtil;
@@ -77,6 +74,24 @@ public class FileService {
         }
     }
 
+    /**
+     * 删除文件
+     */
+    public void deleteFile(String flag) throws IOException {
+        if (StrUtil.isEmpty(flag)) {
+            throw new IllegalArgumentException("文件标识不能为空");
+        }
+
+        File file = new File(filePath + flag);
+        if (!file.exists()) {
+            throw new FileNotFoundException("文件不存在: " + flag);
+        }
+
+        if (!file.delete()) {
+            throw new IOException("文件删除失败: " + flag);
+        }
+    }
+
     /** 
      * 保存文件
      */
@@ -101,4 +116,5 @@ public class FileService {
         }
         return url;
     }
+
 }
