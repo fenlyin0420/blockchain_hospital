@@ -1,13 +1,15 @@
+# 项目依赖
 node_modules
-vue/node_modules
+
+# 打包文件
 springboot/target
-springboot/src/main/resources/application.yml
 
 # 个人配置
-diagram
-note
+.diagram
+.note
 
-# 转诊端口自行配置，不做同步了
+# 因个人配置，不做同步
+springboot/src/main/resources/application.yml
 vue/vue.config.js
 vue/.env.development
 
