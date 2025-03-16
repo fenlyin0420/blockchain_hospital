@@ -15,7 +15,6 @@
     "jsqr": "^1.4.0",
     "prismjs": "^1.29.0",
     "vue": "^2.6.14",
-    "vue-particles": "^1.0.9",
     "vue-prismjs": "^1.2.0",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2",
@@ -26,6 +25,7 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "prettier": "^3.4.2",
+    "vue-particles": "^1.0.9",
     "vue-template-compiler": "^2.6.14"
   },
   "browserslist": [
