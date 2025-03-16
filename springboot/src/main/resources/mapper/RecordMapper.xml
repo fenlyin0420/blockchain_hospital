@@ -9,7 +9,7 @@
         <result property="signData" column="sign_data"/>
         <result property="publicKey" column="public_key"/>
         <result property="privateKey" column="private_key"/>
-        <result property="userName" column="user_name"/>
+        <result property="userName" column="name"/>
         <result property="phone" column="phone"/>
         <result property="email" column="email"/>
         <result property="age" column="age"/>
@@ -133,15 +133,14 @@
         where id = #{id} 
     </update>
 
-    <select id="selectByDoctorAndStatus" resultType="com.example.dto.TraverseDTO">
+    <select id="selectByDoctorAndStatus" resultType="com.example.dto.TraverseDTO" resultMap="TraverseDTOMap">
         select 
             traverse.*,
-            user.name as userName,
+            user.name,
             user.sex,
             user.age,
-            user.id_card as idCard,
+            user.id_card,
             user.phone,
-            user.email,
             user.occupation
         from traverse
         left join user on traverse.user_id = user.id

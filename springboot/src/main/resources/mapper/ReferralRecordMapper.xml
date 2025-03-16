@@ -12,8 +12,17 @@
             <if test="outTime != null">out_time,</if>
             <if test="inTime != null">in_time,</if>
             <if test="reason != null">reason,</if>
-            <if test="result != null">result,</if>
+            <if test="referralStatus != null">referral_status,</if>
             <if test="userName != null">user_name,</if>
+            <if test="referralType != null">referral_type,</if>
+            <if test="sex != null">sex,</if>
+            <if test="age != null">age,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="phone != null">phone,</if>
+            <if test="diagnosis != null">diagnosis,</if>
+            <if test="signatureUrl != null">signature_url,</if>
+            <if test="outHospitalAdvice != null">out_hospital_advice,</if>
+            <if test="communication != null">communication,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="outDoctorName != null">#{outDoctorName},</if> 
@@ -22,8 +31,17 @@
             <if test="outTime != null">#{outTime},</if>
             <if test="inTime != null">#{inTime},</if>
             <if test="reason != null">#{reason},</if>
-            <if test="result != null">#{result},</if>
+            <if test="referralStatus != null">#{referralStatus},</if>
             <if test="userName != null">#{userName},</if>
+            <if test="referralType != null">#{referralType},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="age != null">#{age},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="diagnosis != null">#{diagnosis},</if>
+            <if test="signatureUrl != null">#{signatureUrl},</if>
+            <if test="outHospitalAdvice != null">#{outHospitalAdvice},</if>
+            <if test="communication != null">#{communication},</if>
         </trim>
     </insert>
     <update id="update">
@@ -38,8 +56,8 @@
             <if test="reason != null">
                 reason = #{reason},
             </if>
-            <if test="result != null">
-                result = #{result},
+            <if test="referralStatus != null">
+                referral_status = #{referralStatus},
             </if>
             <if test="outHospitalName != null">
                 out_hospital_name = #{outHospitalName},
@@ -49,6 +67,33 @@
             </if>
             <if test="userName != null">
                 user_name = #{userName},
+            </if>
+            <if test="referralType != null">
+                referral_type = #{referralType},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="diagnosis != null">
+                diagnosis = #{diagnosis},
+            </if>
+            <if test="signatureUrl != null">
+                signature_url = #{signatureUrl},
+            </if>
+            <if test="outHospitalAdvice != null">
+                out_hospital_advice = #{outHospitalAdvice},
+            </if>
+            <if test="communication != null">
+                communication = #{communication},
             </if>
         </set>
         where id = #{id}
@@ -64,8 +109,8 @@
         select referal_record.*
         from referal_record
         <where>
-            <if test="result != null">
-                and result = #{result} 
+            <if test="referralStatus != null">
+                and referral_status = #{referralStatus} 
             </if>
             <if test="outDoctorName != null">
                 and out_doctor_name = ${outDoctorName}
@@ -78,7 +123,7 @@
         select referal_record.*
         from referal_record
         <where>
-            result = "已接诊" or result = "已转入"
+            referral_status = "已接诊" or referral_status = "已转入"
             <if test="outDoctorName != null">
                 and out_doctor_name = ${outDoctorName}
             </if>

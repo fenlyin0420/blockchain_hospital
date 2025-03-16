@@ -79,7 +79,7 @@ public class ReferralRecordService {
      * @param referralRecord
      */
     public void recieveReferralRecord(ReferralRecord referralRecord) {
-        referralRecord.setResult(ReferralEnum.WAIT_IN_ADMIN.toString());
+        referralRecord.setReferralStatus(ReferralEnum.WAIT_IN_ADMIN.toString());
         referralRecordMapper.add(referralRecord);
     }
 }
