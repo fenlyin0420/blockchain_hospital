@@ -8,6 +8,7 @@ import com.example.entity.Traverse;
 import com.example.service.BedsService;
 
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
 
@@ -43,8 +44,8 @@ public class BedsController {
 
     @PutMapping("/save")
     @AutoLog("给病人分配床位")
-    public Result save(@RequestBody Traverse traverse){
-        bedsService.updateById(traverse);
+    public Result save(@RequestBody TraverseDTO traverseDTO){
+        bedsService.updateById(traverseDTO);
         return Result.success();
     }
 

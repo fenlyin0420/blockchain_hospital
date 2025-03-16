@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="card" style="padding: 15px; background : #264387;">
-      <span style="color: white;">您好，{{ user.name }}！欢迎使用本系统</span>
+      <span style="color: white; font-weight: bold; font-size: 16px;">您好，{{ user.name }}！欢迎使用本系统。</span>
     </div>
 
     <div style="width: 100%;" class="card">
-    <el-carousel :interval="5000" arrow="always">
+      <el-carousel :interval="5000" arrow="always" class="carousel">
         <el-carousel-item v-for="(item, index) in images" :key="index">
-          <img :src="item" alt="Carousel Image" style="width: 100%; height: 100%; object-fit: cover;">
+          <img :src="item" alt="Carousel Image" class="carousel-img">
         </el-carousel-item>
-    </el-carousel>
+      </el-carousel>
     </div>
 
     <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 10px 0;">
@@ -86,5 +86,24 @@ export default {
 
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
+}
+
+.card {
+    padding: 0px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+ .carousel {
+  border-radius: 5px; /* 设置轮播图的圆角 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px; /* 设置图片的圆角，与轮播图保持一致 */
 }
 </style>
