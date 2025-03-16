@@ -8,6 +8,9 @@ import '@/assets/css/global.css'
 import '@/assets/css/theme/index.css'
 import request from "@/utils/request";
 import { blockRequest } from "@/utils/request";
+import VueParticles from 'vue-particles'
+
+
 Vue.config.productionTip = true
 
 Vue.prototype.$request = request
@@ -15,6 +18,7 @@ Vue.prototype.$blockRequest = blockRequest
 Vue.prototype.$baseUrl = process.env.VUE_APP_BASEURL
 
 Vue.use(ElementUI, {size: "big"})
+Vue.use(VueParticles)
 
 new Vue({
     router,

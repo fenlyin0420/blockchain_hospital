@@ -41,7 +41,7 @@
             <div class="card" style="text-align: center;">
               <span
                 style="display: inline-block; width: 200px;font-size: 18px; font-weight: bold;margin-bottom: 21px;">医生{{ doctorName }}的公钥</span>
-              <el-input type="textarea" :rows="12" readonly placeholder="请先签名,然后点击左边公钥环，以查看医生个人公钥。" v-model="key"
+              <el-input type="textarea" :rows="12" readonly placeholder="点击左边公钥环，以查看医生个人公钥。" v-model="key"
                 style="margin-bottom: 5px;">
               </el-input>
             </div>
@@ -105,27 +105,10 @@ export default {
     receivedData() {
       return this.$store.state.traverseData
     },
-    pubs() {
-      if (this.signPubKey != '') {
-        const s = this.signPubKey.split(",")
-        const ss = s.map(line => {
-          const parts = line.split(':');
-          return {
-            name: parts[0],
-            key: parts[1],
-          };
-        });
-        return ss
-      }
-    }
   },
   methods: {
     load() {
-
-    },
-    sign() {
       this.$request.post('/keys/sign', this.receivedData).then(res => {
-        this.signData = res.data.signData
         this.signPubKey = res.data.signPubKey
         const s = this.signPubKey.split(", ")
         const parsedData = s.map(line => {
@@ -139,6 +122,11 @@ export default {
         this.chartData = parsedData;
         this.chartNameData = parsedData.map(item => ({ name: item.name }));
         this.initChart();
+      })
+    },
+    sign() {
+      this.$request.post('/keys/sign', this.receivedData).then(res => {
+        this.signData = res.data.signData
       })
     },
     gotoCaseEncrypt() {

@@ -13,7 +13,6 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.collection.CollUtil;
 
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,16 +54,33 @@ public class FileController {
         fileService.pullFile(flag, response);
      }
 
+
+    /**
+     * 删除文件
+     *
+     * @param flag 文件标识（时间戳-文件名）
+     * @return 删除结果
+     */
+    @DeleteMapping("/{flag}")
+    public Result deleteFile(@PathVariable String flag) {
+        try {
+            fileService.deleteFile(flag);
+            return Result.success("文件删除成功");
+        } catch (Exception e) {
+            return Result.error("文件删除失败: " + e.getMessage());
+        }
+    }
+
     /**
      * 删除文件
      *
      * @param flag
      */
-    // @DeleteMapping("/{flag}")
-    // public void delFile(@PathVariable String flag) {
-    //     FileUtil.del(filePath +flag);
-    //     System.out.println("删除文件" + flag + "成功");
-    // }
+//     @DeleteMapping("/{flag}")
+//     public void delFile(@PathVariable String flag) {
+//         FileUtil.del(filePath +flag);
+//         System.out.println("删除文件" + flag + "成功");
+//     }
 
     /**
      * wang-editor编辑器文件上传接口
