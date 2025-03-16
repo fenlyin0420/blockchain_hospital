@@ -533,16 +533,21 @@ export default {
           if (this.formData.referralType === "急诊") {
             const referralInfo = {}
             referralInfo.patientData = `${this.formData.userName}||${this.formData.sex}||${this.formData.age}||${this.formData.idCard}||${this.formData.phone}`
-            referralInfo.medicalData = `${this.formData.diagnosis}||${this.formData.reason}||${this.formData.communication}||${this.formData.signature}`
+            referralInfo.medicalData = `${this.formData.diagnosis}||${this.formData.reason}||${this.formData.communication}||${this.formData.signatureUrl}`
             referralInfo.outHospitalData = `${this.formData.outHospitalName}||${this.formData.outDoctorName}||${this.formData.outHospitalAdvice}||${this.formData.outTime}`
             referralInfo.status = "待接收"
             referralInfo.urgency = "急诊"
             
             this.$blockRequest.post("/storeIntelReferralInfo", referralInfo).then((blockRes) => {
               if (blockRes.data.code === "200") {
-                this.$message("上传成功");
+                this.$message.success("区块链数据上传成功");
                 this.formData.traverseAddr = blockRes.data.data.transactionReceipt.transactionHash
+              } else {
+                this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
               }
+            }).catch(error => {
+              console.error("区块链请求错误:", error);
+              this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
             });
           }
         } else {

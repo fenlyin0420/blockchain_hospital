@@ -1,5 +1,23 @@
 <template>
   <div>
+    <!-- 添加标签筛选 -->
+    <div class="filter-tabs">
+      <el-tabs v-model="activeTab" @tab-click="handleTabChange">
+        <el-tab-pane label="全部转诊" name="all"></el-tab-pane>
+        <el-tab-pane label="普通转诊" name="normal"></el-tab-pane>
+        <el-tab-pane name="emergency">
+          <span slot="label" class="emergency-tab">
+            急诊转诊
+            <el-badge
+              v-if="emergencyCount > 0"
+              :value="emergencyCount"
+              class="emergency-badge"
+            ></el-badge>
+          </span>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+
     <div class="search">
       <div class="search1">
         <label for="search">搜索:</label>
@@ -25,105 +43,277 @@
       </div>
 
       <div class="accept">
-        <el-button type="success" plain @click="accept">同意转入</el-button>
+        <el-button type="primary" plain @click="autoPullReferralInfo"
+          >自动拉取转诊信息【测试】</el-button
+        >
       </div>
     </div>
 
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column prop="userName" label="姓名"  width="100" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="treatmentDate" label="就诊日期" width="100" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hospitalName" label="医院名称"  width="200" align="center"></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名"  width="100" align="center"></el-table-column>
-        <el-table-column prop="diagnosis" label="诊断结果" align="center"></el-table-column>
-        <el-table-column label="详情"  align="center">
+        <el-table-column prop="userName" label="患者姓名"></el-table-column>
+        <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
+        <el-table-column prop="reason" label="转诊原因"></el-table-column>
+        <el-table-column prop="outTime" label="转出时间"></el-table-column>
+        <el-table-column prop="referralStatus" label="转诊状态"></el-table-column>
+        <el-table-column prop="referralType" label="转诊类型">
           <template v-slot="scope">
-            <el-button plain type="" size="mini" @click="goToCaseDetails(scope.row)">查看</el-button>
+            <el-tag :type="scope.row.referralType === '急诊' ? 'danger' : 'info'">
+              {{ scope.row.referralType || "普通" }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="300"
+          align="center"
+          v-if="user.role === 'ADMIN'"
+        >
+          <template v-slot="scope">
+            <el-button
+              plain
+              type="danger"
+              size="mini"
+              @click="detail(scope.row)"
+              :disabled="operation(scope.row)"
+              >详情</el-button
+            >
+            <el-button
+              plain
+              type="danger"
+              size="mini"
+              @click="viewMedicalHistory(scope.row)"
+              :disabled="operation(scope.row)"
+              >溯源病历</el-button
+            >
+            <el-button
+              plain
+              type="danger"
+              size="mini"
+              @click="update(scope.row)"
+              :disabled="operation(scope.row)"
+              >同意</el-button
+            >
+            <el-button
+              plain
+              type="danger"
+              size="mini"
+              @click="refuse(scope.row)"
+              :disabled="operation(scope.row)"
+              >拒绝</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
-
-      <div class="pagination">
-        <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[5, 10, 20]"
-          :page-size="pageSize"
-          layout="total, prev, pager, next"
-          :total="total"
-        >
-        </el-pagination>
-      </div>
     </div>
 
+    <!-- 转诊信息详情 -->
     <el-dialog
-      :visible="showDialog"
-      top="calc(100% / 4)"
-      title="溯源病历"
+      :visible="showReferralDetail"
+      title="转诊详情"
       center
       fullscreen
       @close="handleClose"
     >
-      <el-row :gutter="24">
-        <el-col :span="8">
-          <el-form :model="form" label-width="120px">
+      <el-card>
+        <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
+        <el-form
+          ref="detailForm"
+          :model="referralDetailForm"
+          size="medium"
+          label-width="auto"
+          label-position="right"
+        >
+          <el-row :gutter="24">
+            <el-col
+              :span="12"
+              style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
+            >
+              <el-row :gutter="24">
+                <el-col :span="14">
+                  <el-form-item label="患者姓名">
+                    <el-input v-model="referralDetailForm.userName" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item class="custom-label" label="转诊类型">
+                    <el-input
+                      v-model="referralDetailForm.referralType"
+                      readonly
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
 
-            <el-form-item label="患者姓名">
-              <el-input v-model="form.userName" placeholder="请输入患者姓名"></el-input>
-            </el-form-item>
+              <el-row :gutter="24">
+                <el-col :span="9">
+                  <el-form-item label="年龄">
+                    <el-input v-model="referralDetailForm.age" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                  <el-form-item class="custom-label" label="性别" label-width="50px">
+                    <el-input v-model="referralDetailForm.sex" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label="身份证号码" label-width="90px">
+                    <el-input v-model="referralDetailForm.idCard" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
 
-            <el-form-item label="转出医院">
-              <el-input
-                v-model="form.outHospitalName"
-              ></el-input>
-            </el-form-item>
+              <el-row :gutter="24">
+                <el-col :span="14">
+                  <el-form-item label="联系电话">
+                    <el-input v-model="referralDetailForm.phone" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label="转诊编号">
+                    <el-input v-model="referralDetailForm.id" readonly></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
 
+              <el-form-item label="初步诊断">
+                <el-input
+                  v-model="referralDetailForm.diagnosis"
+                  readonly
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="沟通记录">
+                <el-input
+                  v-model="referralDetailForm.communication"
+                  readonly
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="患者申请原因">
+                <el-input
+                  v-model="referralDetailForm.reason"
+                  type="textarea"
+                  readonly
+                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="患者签字" v-if="referralDetailForm.signature">
+                <img
+                  :src="referralDetailForm.signature"
+                  style="max-width: 100%; max-height: 100px"
+                />
+              </el-form-item>
+            </el-col>
 
-            <el-form-item label="转出时间">
-              <el-date-picker
-                v-model="form.outTime"
-                type="datetime"
-              ></el-date-picker>
-            </el-form-item>
+            <!-- 右侧 -->
+            <el-col :span="12">
+              <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+                <el-row :gutter="24">
+                  <el-col :span="10">
+                    <el-form-item label="转诊状态">
+                      <el-input
+                        v-model="referralDetailForm.referralStatus"
+                        readonly
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="14">
+                    <el-form-item label="病历地址">
+                      <el-input
+                        v-model="referralDetailForm.traverseAddr"
+                        readonly
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
 
+                <el-row :gutter="24">
+                  <el-col :span="13">
+                    <el-form-item label="转出医院">
+                      <el-input
+                        v-model="referralDetailForm.outHospitalName"
+                        readonly
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="转出医生">
+                      <el-input
+                        v-model="referralDetailForm.outDoctorName"
+                        readonly
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-form-item label="转出日期">
+                  <el-input
+                    v-model="referralDetailForm.outTime"
+                    readonly
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="医务科意见">
+                  <el-input
+                    v-model="referralDetailForm.outHospitalAdvice"
+                    readonly
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+              </div>
 
-            <el-form-item label="转诊原因">
-              <el-input
-                v-model="form.reason"
-                type="textarea"
-              ></el-input>
-            </el-form-item>
-
-            <el-form-item label="转入医院">
-              <el-input
-                v-model="form.inHospitalName"
-
-              ></el-input>
-            </el-form-item>
-          </el-form>
-
-          <div class="pullTraverse">
-            <el-radio
-              v-model="opt"
-              label="溯源所有病历"
-              @change="handleRadioChange"
-            ></el-radio>
-            <el-radio
-              v-model="opt"
-              label="溯源指定病历"
-              @change="handleRadioChange"
-            ></el-radio>
-            <el-input id="input" :placeholder="placeholder" v-model="idCard"></el-input>
-            <el-button type="primary" plain @click="pullTraverse">溯源病历</el-button>
-          </div>
-        </el-col>
-
-        <el-col :span="16">
-          <h2 style="text-align: center">交易回执</h2>
-          <CodeBlock :code="code" language="json" />
-        </el-col>
-      </el-row>
+              <br />
+              <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+                <el-row :gutter="24">
+                  <el-col :span="13">
+                    <el-form-item label="转入医院">
+                      <el-input v-model="referralDetailForm.inHospitalName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="转入医生">
+                      <el-input v-model="referralDetailForm.inDoctorName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-form-item label="转入日期">
+                  <el-date-picker
+                    v-model="referralDetailForm.inTime"
+                    type="date"
+                    placeholder="选择日期"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                    style="width: 100%"
+                  ></el-date-picker>
+                </el-form-item>
+                <el-form-item label="医务科意见">
+                  <el-input
+                    v-model="referralDetailForm.inHospitalAdvice"
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="医保经办机构意见">
+                  <el-input
+                    v-model="referralDetailForm.globalAdvice"
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div class="button-group">
+          <el-button type="primary" @click="saveReferralDetail">确定</el-button>
+          <el-button type="success" @click="acceptReferral">同意接收</el-button>
+          <el-button type="danger" @click="rejectReferral">拒绝接收</el-button>
+          <el-button @click="showReferralDetail = false">关闭</el-button>
+        </div>
+      </el-card>
     </el-dialog>
   </div>
 </template>
@@ -139,15 +329,14 @@ export default {
   },
   data() {
     return {
-      tableData: [], // 所有的数据
+      tableData: [], // 所有的转诊信息
       pageNum: 1, // 当前的页码
       pageSize: 10, // 每页显示的个数
       total: 0,
-      keywords: '',
-      referralInfo: '',
+      keywords: "",
+      referralInfo: "",
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
-      showDialog: false,
-      showProgress: false,
+      showReferralDetail: false,
       showVerifySign: false,
       progressPercentage: 0,
       recievedData: "",
@@ -161,47 +350,110 @@ export default {
       placeholder: "请输入身份证号",
       ReferralRecord: [],
       idCard: "",
-      form: {
-        userName: '',
-        outHospitalName: '',
-        outTime: '',
-        reason: '',
-        inHospitalName: '',
+      referralDetailForm: {
+        userName: "",
+        outHospitalName: "",
+        outTime: "",
+        reason: "",
+        inHospitalName: "",
       },
-      code: `{
-  "transactionHash": "0x0bf00b1ae8d171277e9054d691ffaaeb1f141c0bca19ab5447793b2694592a01",
-  "transactionIndex": "0x0",
-  "root": "0x169fe4353d9821d902a634895bd34a7b9562d8c62bb1c3bdd5801d85952541f4",
-  "blockNumber": "0x6a",
-  "blockHash": "0x3a54ceb2c8fceecaa5420b9bd980f8b6d4ef7d4c363549e25dbe7941b218b12e",
-  "from": "0x37080385a27a3e0559f6b2bdfb5aac9c51fe2951",
-  "to": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
-  "gasUsed": "0x5614f",
-  "contractAddress": "0x0000000000000000000000000000000000000000",
-  "logs": [
-    {
-      "address": "0xe638b3e911d4c99d877f0669eb6c39b769245bbc",
-      "topics": [
-        "0xe98fb921ff38c7a05bb2f482f520be86158bc38c12f4901e3c67b5dc108f2496"
-      ]
-    }
-  ]
-}
-`,
+      activeTab: "all", // 当前激活的标签
+      emergencyCount: 0, // 急诊数量
+      autoSaveInterval: null, // 自动保存定时器
     };
   },
   created() {
-    // this.load(1)
-    const storedData = localStorage.getItem("tableData");
-    if (storedData) {
-      this.tableData = JSON.parse(storedData);
-    }
-    const storedData2 = localStorage.getItem("ReferralRecord");
-    if (storedData2) {
-      this.ReferralRecord = JSON.parse(storedData2);
-    }
+    // 从 localStorage 加载数据
+    this.loadDataFromLocalStorage();
+
+    // 加载数据
+    this.load(1);
+
+    // 设置自动保存定时器，每分钟保存一次
+    this.autoSaveInterval = setInterval(() => {
+      this.saveDataToLocalStorage();
+    }, 60000);
   },
   methods: {
+    /**
+     * 从 localStorage 加载数据
+     */
+    loadDataFromLocalStorage() {
+      // 加载表格数据
+      const storedData = localStorage.getItem("referralTableData");
+      if (storedData) {
+        try {
+          const allData = JSON.parse(storedData);
+
+          // 恢复当前标签
+          const activeTab = localStorage.getItem("referralActiveTab");
+          if (activeTab) {
+            this.activeTab = activeTab;
+          }
+
+          // 计算急诊数量
+          this.emergencyCount = allData.filter(
+            (item) => item.referralType === "急诊"
+          ).length;
+
+          // 根据当前标签筛选数据
+          if (this.activeTab === "normal") {
+            this.tableData = allData.filter(
+              (item) => (item.referralType || "普通") === "普通"
+            );
+          } else if (this.activeTab === "emergency") {
+            this.tableData = allData.filter((item) => item.referralType === "急诊");
+          } else {
+            this.tableData = allData;
+          }
+        } catch (error) {
+          console.error("解析本地存储数据错误:", error);
+          // 如果解析失败，设置空数组
+          this.tableData = [];
+          this.emergencyCount = 0;
+        }
+      } else {
+        // 如果没有本地存储数据，设置空数组
+        this.tableData = [];
+        this.emergencyCount = 0;
+      }
+
+      // 加载转诊记录
+      const storedReferralRecord = localStorage.getItem("ReferralRecord");
+      if (storedReferralRecord) {
+        try {
+          this.ReferralRecord = JSON.parse(storedReferralRecord);
+        } catch (error) {
+          console.error("解析本地存储转诊记录错误:", error);
+          this.ReferralRecord = {};
+        }
+      }
+    },
+
+    /**
+     * 保存数据到 localStorage
+     * @param {Array} allData 所有未筛选的数据，如果提供则直接使用，否则使用当前筛选后的数据
+     */
+    saveDataToLocalStorage(allData) {
+      // 保存表格数据
+      if (allData) {
+        localStorage.setItem("referralTableData", JSON.stringify(allData));
+      } else {
+        // 如果没有提供完整数据，则保存当前筛选后的数据
+        localStorage.setItem("referralTableData", JSON.stringify(this.tableData));
+      }
+
+      // 保存当前标签
+      localStorage.setItem("referralActiveTab", this.activeTab);
+
+      // 保存转诊记录
+      if (this.ReferralRecord && Object.keys(this.ReferralRecord).length > 0) {
+        localStorage.setItem("ReferralRecord", JSON.stringify(this.ReferralRecord));
+      }
+    },
+    operation(row) {
+      return row.referralStatus === "已转入";
+    },
     /**
      * 同意转出
      * @param row 转诊记录
@@ -237,45 +489,52 @@ export default {
     },
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum;
-      this.$request
-        .get("/traverse/selectPageReferralTraverse", {
-          params: {
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          },
-        })
+      // 从区块链获取所有转诊信息，而不是从数据库
+      this.$blockRequest
+        .post("/getAllReferrals")
         .then((res) => {
-          this.tableData = res.data?.list;
-          this.total = res.data?.total;
+          if (res.data.code === "200") {
+            // 解析转诊信息
+            const referrals = this.parseReferrals(res.data.data.returnObject);
+
+            // 计算急诊数量
+            this.emergencyCount = referrals.filter(
+              (item) => item.referralType === "急诊"
+            ).length;
+
+            // 保存完整数据到 localStorage
+            this.saveDataToLocalStorage(referrals);
+
+            // 前端筛选数据
+            if (this.activeTab === "normal") {
+              this.tableData = referrals.filter(
+                (item) => (item.referralType || "普通") === "普通"
+              );
+            } else if (this.activeTab === "emergency") {
+              this.tableData = referrals.filter((item) => item.referralType === "急诊");
+            } else {
+              this.tableData = referrals;
+            }
+
+            // 设置总数
+            this.total = referrals.length;
+          } else {
+            this.$message.error("获取转诊信息失败: " + (res.data.msg || "未知错误"));
+            // 如果获取失败，尝试从localStorage获取数据
+            this.loadDataFromLocalStorage();
+          }
+        })
+        .catch((error) => {
+          console.error("获取转诊信息错误:", error);
+          this.$message.error("获取转诊信息失败: " + (error.message || "网络错误"));
+
+          // 如果加载失败，尝试从localStorage获取数据
+          this.loadDataFromLocalStorage();
         });
     },
     reset() {
       this.status = null;
       this.load(1);
-    },
-    /**
-     * 获取病历
-     */
-    pullTraverse() {
-      this.$message(this.opt);
-      const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
-        timeout: 50000,
-      });
-
-      if (this.opt === "溯源指定病历") {
-      } else {
-        Request.post("/getMedicalRecordsByIdCard", { _idCard: this.idCard }).then(
-          (res) => {
-            if (res.data.code === "200") {
-              // 解析数据
-              this.tableData = this.parseTraverse(res.data.data.returnObject);
-              console.log("traverse", this.tableData)
-              localStorage.setItem("tableData", JSON.stringify(this.tableData));
-            }
-          }
-        );
-      }
     },
     /**
      * 根据给定地址，从区块链获取对应病历
@@ -294,89 +553,128 @@ export default {
       }).then((res) => {
         if (res.data.code === "200") {
           // 解析数据，打开浮窗，准备拉取病历
-          this.form = this.parseReferralRecord(res.data.data.returnObject);
-          this.ReferralRecord = this.form
+          this.referralDetailForm = this.parseReferralRecord(res.data.data.returnObject);
+          this.ReferralRecord = this.referralDetailForm;
+
+          // 保存到本地存储
           localStorage.setItem("ReferralRecord", JSON.stringify(this.ReferralRecord));
-          this.showDialog = true;
+
+          this.showReferralDetail = true;
         }
       });
+    },
+    // 页面轮询地执行该函数
+    autoPullReferralInfo() {
+      this.$blockRequest
+        .post("/getAllReferrals")
+        .then((res) => {
+          if (res.data.code === "200") {
+            console.log(res.data);
+
+            // 解析转诊信息
+            const referrals = this.parseReferrals(res.data.data.returnObject);
+            console.log("解析后的转诊信息:", referrals);
+
+            // 计算急诊数量
+            this.emergencyCount = referrals.filter(
+              (item) => item.referralType === "急诊"
+            ).length;
+
+            // 根据当前标签筛选数据
+            if (this.activeTab === "normal") {
+              this.tableData = referrals.filter(
+                (item) => (item.referralType || "普通") === "普通"
+              );
+            } else if (this.activeTab === "emergency") {
+              this.tableData = referrals.filter((item) => item.referralType === "急诊");
+            } else {
+              this.tableData = referrals;
+            }
+
+            // 保存到本地存储，传入完整数据
+            this.saveDataToLocalStorage(referrals);
+
+            this.$message.success(`成功获取 ${referrals.length} 条转诊信息`);
+          } else {
+            this.$message.error("获取转诊信息失败: " + (res.data.msg || "未知错误"));
+          }
+        })
+        .catch((error) => {
+          console.error("获取转诊信息错误:", error);
+          this.$message.error("获取转诊信息失败: " + (error.message || "网络错误"));
+        });
     },
     /**
      * 同意转诊，存储转诊信息
      */
-    accept() {
-      let body = this.ReferralRecord;
-      body.result = "已转入"; // 设置转诊结果
-      body.inTime = new Date().toISOString().split("T")[0];
-      this.$request.post("/referral/add", body).then((res) => {
-        if (res.code === "200") {
-          localStorage.removeItem("ReferralRecord");
-          localStorage.removeItem("tableData");
-          this.ReferralRecord = [];
-          this.tableData = [];
-          this.$message.success("转入成功");
-        }
-      });
-    },
-    async goToCaseDetails(row) {
-      const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
-        timeout: 50000,
-      });
-      // 获取环公钥
-      // await Request.post("/getPublicKeyByTransactionHash", {
-      //   _transactionHash:
-      //     "0x5aafa7cd8ef6e7dc20c4740180a040fbcbee8666a3146a1ebd7f6eec393486ad",
-      // }).then((res) => {
-      //   if (res.data.code === "200") {
-      //     row.signPubKey = res.data.data.returnObject[0];
-      //   } else {
-      //     this.$message.error("获取环公钥失败");
-      //   }
-      // });
-      // // 获取签名数据
-      // await this.$request.post("/traverse/getSignData", row).then((res) => {
-      //   if (res.code === "200") {
-      //     row.signData = res.data;
-      //   } else {
-      //     this.$message.error("获取签名数据失败");
-      //   }
-      // });
+    acceptReferral() {
+      // 先验证表单是否填写完整
+      if (
+        !this.referralDetailForm.inHospitalName ||
+        !this.referralDetailForm.inDoctorName ||
+        !this.referralDetailForm.inTime ||
+        !this.referralDetailForm.inHospitalAdvice
+      ) {
+        this.$message.warning("请先完善转入信息");
+        return;
+      }
 
-      console.log("row", row);
-      this.$router.push({
-        name: "CaseDetail",
-        query: row,
-      });
-    },
+      // 先保存表单信息
+      let updateForm = {
+        id: this.referralDetailForm.id,
+        inHospitalName: this.referralDetailForm.inHospitalName,
+        inDoctorName: this.referralDetailForm.inDoctorName,
+        inTime: this.referralDetailForm.inTime,
+        inHospitalAdvice: this.referralDetailForm.inHospitalAdvice,
+        globalAdvice: this.referralDetailForm.globalAdvice,
+      };
 
-    startProgress(traverse) {
-      var index = 0;
-      const keys = Object.keys(traverse);
-      this.progressPercentage = 0;
-      let interval = setInterval(() => {
-        if (this.progressPercentage >= 100) {
-          clearInterval(interval);
+      this.$request.put("/referral/update", updateForm).then((updateRes) => {
+        if (updateRes.code === "200") {
+          // 保存成功后，执行同意操作
+          let agreeForm = {
+            id: this.referralDetailForm.id,
+          };
+
+          this.$request.put("/referral/agreenIn", agreeForm).then((agreeRes) => {
+            if (agreeRes.code === "200") {
+              this.$message.success("已同意接收转诊并保存信息");
+              this.showReferralDetail = false;
+              this.load(1); // 这里会调用 saveDataToLocalStorage 并传入完整数据
+            } else {
+              this.$message.error(agreeRes.msg);
+            }
+          });
         } else {
-          this.progressPercentage += 10;
+          this.$message.error(updateRes.msg);
         }
-        if (index <= keys.length) {
-          this.sendData = keys[index] + " : " + traverse[keys[index]];
-          index++;
-        }
-      }, 1000);
+      });
+    },
+    detail(row) {
+      // 复制一份数据，避免直接修改原始数据
+      this.referralDetailForm = JSON.parse(JSON.stringify(row));
 
-      // 模拟操作完成后，可以取消进度条显示, 并显示验签页面
-      setTimeout(() => {
-        clearInterval(interval);
-        this.showProgress = false;
-        this.showVerifySign = true;
-        this.dialogTitle = "环签名验证";
-        this.$message({
-          message: "发送成功",
-          type: "success",
-        });
-      }, 1100); // 假设操作需要5秒
+      // 设置默认值
+      if (!this.referralDetailForm.inTime) {
+        this.referralDetailForm.inTime = new Date().toISOString().split("T")[0];
+      }
+
+      if (!this.referralDetailForm.inHospitalName) {
+        // 设置当前医院为转入医院
+        this.referralDetailForm.inHospitalName = this.user.hospitalName || "";
+      }
+
+      if (!this.referralDetailForm.inDoctorName) {
+        // 设置当前用户为转入医生
+        this.referralDetailForm.inDoctorName = this.user.name || "";
+      }
+
+      if (!this.referralDetailForm.inHospitalAdvice) {
+        this.referralDetailForm.inHospitalAdvice = "同意接收";
+      }
+
+      // 打开弹窗
+      this.showReferralDetail = true;
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum);
@@ -386,7 +684,7 @@ export default {
       else this.placeholder = "请输入身份证号";
     },
     handleClose() {
-      this.showDialog = false;
+      this.showReferralDetail = false;
     },
     parseReferralRecord(dataList) {
       const parsedObject = {};
@@ -446,7 +744,7 @@ export default {
             break;
           case "就诊日期-记录日期":
             acc.treatmentDate = value.split("||")[0];
-            acc.recordDate = value.split("||")[1]
+            acc.recordDate = value.split("||")[1];
             break;
           case "住院状态":
             acc.inHospital = value;
@@ -466,7 +764,7 @@ export default {
             break;
           case "组织公钥":
             acc.signPubKey = value;
-            
+
           // referralInfo convert
           case "转出医院":
             acc.outHospitalName = value;
@@ -484,6 +782,242 @@ export default {
         return acc;
       }, {});
     },
+    // 解析转诊信息字符串数组
+    parseReferrals(dataArray) {
+      if (!dataArray || !dataArray.length) return [];
+
+      // 将所有数据合并为一个字符串
+      const allData = dataArray.join("\n");
+
+      // 按分隔符分割成单独的转诊记录
+      const referralStrings = allData.split("-----------").filter((str) => str.trim());
+
+      // 解析每条转诊记录
+      return referralStrings.map((referralString) => {
+        const referral = {};
+
+        // 按行分割
+        const lines = referralString.trim().split("\n");
+
+        // 当前处理的部分（患者信息、医疗数据、转出信息）
+        let currentSection = "";
+
+        lines.forEach((line) => {
+          line = line.trim();
+          if (!line) return;
+
+          // 检查是否是部分标题
+          if (line.includes("【患者信息】")) {
+            currentSection = "patient";
+            return;
+          } else if (line.includes("【医疗数据】")) {
+            currentSection = "medical";
+            return;
+          } else if (line.includes("【转出信息】")) {
+            currentSection = "referral";
+            return;
+          }
+
+          // 解析键值对
+          const colonIndex = line.indexOf(":");
+          if (colonIndex > 0) {
+            const key = line.substring(0, colonIndex).trim();
+            const value = line.substring(colonIndex + 1).trim();
+
+            // 根据不同部分和键名设置对象属性
+            switch (key) {
+              case "转诊编号":
+                referral.id = value;
+                break;
+              case "姓名":
+                referral.userName = value;
+                break;
+              case "性别":
+                referral.sex = value;
+                break;
+              case "年龄":
+                referral.age = value;
+                break;
+              case "身份证号":
+                referral.idCard = value;
+                break;
+              case "联系电话":
+                referral.phone = value;
+                break;
+              case "诊断结果":
+                referral.diagnosis = value;
+                break;
+              case "转诊原因":
+                referral.reason = value;
+                break;
+              case "沟通记录":
+                referral.communication = value;
+                break;
+              case "患者签字":
+                referral.signature = value;
+                break;
+              case "转出医院":
+                referral.outHospitalName = value;
+                break;
+              case "转出医生":
+                referral.outDoctorName = value;
+                break;
+              case "医生意见":
+                referral.outHospitalAdvice = value;
+                break;
+              case "转出时间":
+                referral.outTime = value;
+                break;
+              case "转入医院":
+                referral.inHospitalName = value;
+                break;
+              case "当前状态":
+                referral.referralStatus = value;
+                break;
+              case "紧急程度":
+                referral.referralType = value;
+                break;
+            }
+          }
+        });
+
+        return referral;
+      });
+    },
+    // 拒绝转诊
+    rejectReferral() {
+      this.$confirm("确定要拒绝接收该转诊申请吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          let form = {
+            id: this.referralDetailForm.id,
+          };
+          this.$request.put("/referral/refuseIn", form).then((res) => {
+            if (res.code === "200") {
+              this.$message.success("已拒绝接收转诊");
+              this.showReferralDetail = false;
+              this.load(1); // 这里会调用 saveDataToLocalStorage 并传入完整数据
+            } else {
+              this.$message.error(res.msg);
+            }
+          });
+        })
+        .catch(() => {
+          this.$message.info("已取消操作");
+        });
+    },
+    saveReferralDetail() {
+      // 验证必填字段
+      if (
+        !this.referralDetailForm.inHospitalName ||
+        !this.referralDetailForm.inDoctorName ||
+        !this.referralDetailForm.inTime ||
+        !this.referralDetailForm.inHospitalAdvice
+      ) {
+        this.$message.warning("请完善转入信息");
+        return;
+      }
+
+      let form = {
+        id: this.referralDetailForm.id,
+        inHospitalName: this.referralDetailForm.inHospitalName,
+        inDoctorName: this.referralDetailForm.inDoctorName,
+        inTime: this.referralDetailForm.inTime,
+        inHospitalAdvice: this.referralDetailForm.inHospitalAdvice,
+        globalAdvice: this.referralDetailForm.globalAdvice,
+      };
+
+      this.$request
+        .put("/referral/update", form)
+        .then((res) => {
+          if (res.code === "200") {
+            this.$message.success("转诊信息保存成功");
+            this.showReferralDetail = false;
+            this.load(1); // 这里会调用 saveDataToLocalStorage 并传入完整数据
+          } else {
+            this.$message.error(res.msg || "保存失败");
+          }
+        })
+        .catch((error) => {
+          console.error("保存转诊信息错误:", error);
+          this.$message.error("保存失败: " + (error.message || "网络错误"));
+        });
+    },
+    /**
+     * 查看病历历史记录
+     * @param row 当前行数据
+     */
+    viewMedicalHistory(row) {
+      if (!row.idCard) {
+        this.$message.warning("无法获取患者身份证号，无法溯源病历");
+        return;
+      }
+
+      this.$router.push({
+        name: "CaseHistory",
+        query: { idCard: row.idCard },
+      });
+    },
+    /**
+     * 处理标签切换
+     */
+     handleTabChange() {
+      // 从localStorage获取完整数据
+      const storedData = localStorage.getItem("referralTableData");
+      if (storedData) {
+        try {
+          const allData = JSON.parse(storedData);
+          
+          // 计算急诊数量（确保在切换标签时更新）
+          this.emergencyCount = allData.filter(item => item.referralType === '急诊').length;
+          
+          // 根据当前标签筛选数据
+          if (this.activeTab === 'normal') {
+            this.tableData = allData.filter(item => (item.referralType || '普通') === '普通');
+          } else if (this.activeTab === 'emergency') {
+            this.tableData = allData.filter(item => item.referralType === '急诊');
+          } else {
+            this.tableData = allData;
+          }
+          
+          // 保存当前标签到 localStorage
+          localStorage.setItem("referralActiveTab", this.activeTab);
+        } catch (error) {
+          console.error("解析本地存储数据错误:", error);
+          // 如果解析失败，重新加载数据
+          this.load(1);
+        }
+      } else {
+        // 如果没有本地存储数据，重新加载数据
+        this.load(1);
+      }
+    },
+    /**
+     * 计算急诊数量
+     */
+    countEmergencyReferrals() {
+      // 已在 load 方法中计算，不需要单独请求
+    },
+
+    /**
+     * 前端计算急诊数量（备用方案）
+     */
+    calculateEmergencyCount() {
+      // 已在 load 方法中计算，不需要单独请求
+    },
+  },
+  // 添加 beforeDestroy 钩子，确保在组件销毁前保存数据
+  beforeDestroy() {
+    // 清除自动保存定时器
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
+    }
+
+    // 保存数据
+    this.saveDataToLocalStorage();
   },
 };
 </script>
@@ -506,7 +1040,6 @@ export default {
   color: blue;
 }
 
-
 .verifyBtn {
   margin-top: 5px;
   width: 30%;
@@ -522,5 +1055,29 @@ export default {
   width: fit-content;
 }
 
+/* 添加标签样式 */
+.filter-tabs {
+  /* margin-bottom: 20px; */
+}
 
+/* 使用深度选择器确保样式能够穿透组件 */
+.emergency-badge >>> .el-badge__content {
+  background-color: #f56c6c;
+  color: white;
+  border: none;
+}
+
+.emergency-tab {
+  color: #f56c6c;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+/* 确保badge在标签中正确显示 */
+.el-tabs__item {
+  height: auto;
+  line-height: normal;
+  padding: 10px 20px;
+}
 </style>

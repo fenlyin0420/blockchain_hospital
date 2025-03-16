@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.ReferralRecordMapper">
     <insert id="add">
-        insert into referal_record
+        insert into referral_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="outDoctorName != null">out_doctor_name,</if>
             <if test="outHospitalName != null">out_hospital_name,</if>
@@ -45,7 +45,7 @@
         </trim>
     </insert>
     <update id="update">
-        update referal_record
+        update referral_record
         <set>
             <if test="outTime != null">
                 out_time = #{outTime},
@@ -101,13 +101,13 @@
 
     <delete id="deleteById">
         delete
-        from referal_record
+        from referral_record
         where id = #{id}
     </delete>
 
     <select id="selectAll" resultType="com.example.entity.ReferralRecord">
-        select referal_record.*
-        from referal_record
+        select referral_record.*
+        from referral_record
         <where>
             <if test="referralStatus != null">
                 and referral_status = #{referralStatus} 
@@ -120,8 +120,8 @@
     </select>
 
     <select id="selectSuccess" resultType="com.example.entity.ReferralRecord">
-        select referal_record.*
-        from referal_record
+        select referral_record.*
+        from referral_record
         <where>
             referral_status = "已接诊" or referral_status = "已转入"
             <if test="outDoctorName != null">
@@ -132,13 +132,13 @@
     </select>
 
     <select id="selectById" resultType="com.example.entity.ReferralRecord">
-        select referal_record.*,
+        select referral_record.*,
         inHospitalName,d1.name as outDoctorName,d2.name as inDoctorName
-        from referal_record
-        left join doctor as d1 on referal_record.out_doctor_id = d1.id
-        left join doctor as d2 on referal_record.in_doctor_id = d2.id
+        from referral_record
+        left join doctor as d1 on referral_record.out_doctor_id = d1.id
+        left join doctor as d2 on referral_record.in_doctor_id = d2.id
         <where>
-           referal_record.id = #{id}
+           referral_record.id = #{id}
         </where>
     </select>
 </mapper>
