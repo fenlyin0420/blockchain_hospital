@@ -14,6 +14,7 @@ public class TraverseDTO{
     private String signPubKey;
     /** 签名数据 */
     private String signData;
+    private String publicKey;
     private String privateKey;
     /** 姓名 */
     private String userName;

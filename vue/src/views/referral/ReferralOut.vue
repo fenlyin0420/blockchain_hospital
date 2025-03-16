@@ -29,7 +29,7 @@
           label="转入医院"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column prop="result" label="结果"></el-table-column>
+        <el-table-column prop="referralStatus" label="结果"></el-table-column>
         <el-table-column
           label="操作"
           width="180"
@@ -152,11 +152,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          const Request = axois.create({
-            baseURL: "http://localhost:8088/",
-            timeout: 5000,
-          });
-          Request.post("/storeReferralInfo", referralInfo).then((res) => {
+          this.$blockRequest.post("/storeReferralInfo", referralInfo).then((res) => {
             if (res.data.code === "200") {
               this.$message("上传成功");
               // 得到本次转诊信息的hash值, 获取二维码

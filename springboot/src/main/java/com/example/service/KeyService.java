@@ -68,7 +68,6 @@ public class KeyService {
         // json 化要签名的病历
         Gson gson = new Gson();
         String data = gson.toJson(traverse);
-        System.out.println("sign data: " + data);
 
         // 匹配私钥，确定pi
         int pi = -1;

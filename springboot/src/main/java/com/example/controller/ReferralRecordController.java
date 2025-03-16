@@ -39,7 +39,7 @@ public class ReferralRecordController {
     }
     @GetMapping("/selectWaitingOut")
     public Result selectWaitingOut(ReferralRecord referralRecord) {
-        referralRecord.setResult("待审批");
+        referralRecord.setReferralStatus("待审批");
         List<ReferralRecord> list = referralRecordService.selectAll(referralRecord);
         return Result.success(list);
     }
@@ -74,7 +74,7 @@ public class ReferralRecordController {
      */
     @PutMapping("/refuseIn")
     public Result refuseReferralIn(@RequestBody ReferralRecord referralRecord) {
-        referralRecord.setResult(ReferralEnum.REFUSED_BY_IN_ADMIN.toString()); 
+        referralRecord.setReferralStatus(ReferralEnum.REFUSED_BY_IN_ADMIN.toString()); 
         return Result.success("已拒绝");
     }
 
@@ -85,7 +85,7 @@ public class ReferralRecordController {
      */
     @PutMapping("/agreenIn")
     public Result agreenReferralIn(@RequestBody ReferralRecord referralRecord) {
-        referralRecord.setResult(ReferralEnum.WAIT_DOCTOR.toString());
+        referralRecord.setReferralStatus(ReferralEnum.WAIT_DOCTOR.toString());
         
         return Result.success("同意转出");
     }

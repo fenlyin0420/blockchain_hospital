@@ -2,7 +2,9 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.entity.Record;
+import com.example.entity.Traverse;
 import com.example.service.RecordService;
+import com.example.dto.TraverseDTO;
 
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -88,6 +90,16 @@ public class RecordController {
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Record> page = recordService.selectPage(record, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    /**
+     * 根据医生ID和住院状态查询患者
+     */
+    @GetMapping("/doctor")
+    public Result selectByDoctorAndStatus(@RequestParam Integer doctorId,
+                                        @RequestParam(defaultValue = "已住院") String inHospital) {
+        List<TraverseDTO> records = recordService.selectByDoctorAndStatus(doctorId, inHospital);
+        return Result.success(records);
     }
 
 }

@@ -7,6 +7,7 @@
         <!-- 映射 TraverseDTO 的其他字段 -->
         <result property="signPubKey" column="sign_pub_key"/>
         <result property="signData" column="sign_data"/>
+        <result property="publicKey" column="public_key"/>
         <result property="privateKey" column="private_key"/>
         <result property="userName" column="user_name"/>
         <result property="phone" column="phone"/>

@@ -1,19 +1,31 @@
 <template>
   <div class="container">
-    <div style="width: 400px; padding: 30px; background-color: white; border-radius: 5px;">
-      <div style="text-align: center; font-size: 20px; margin-bottom: 20px; color: #333">欢迎注册</div>
+    <video autoplay loop muted class="background-video">
+      <source src="@/assets/videos/bg6.mp4" type="video/mp4">
+      您的浏览器不支持HTML5视频。
+    </video>
+    <!-- 粒子效果 -->
+    <vue-particles color="#27ada9" :particleOpacity="0.7" :particlesNumber="150" shapeType="circle" :particleSize="4"
+      linesColor="#27ada9" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3"
+      :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="particles"></vue-particles>
+    <div
+      style="width: 400px; padding: 30px; background-color: rgba(255, 255, 255, 0.85); border-radius: 5px; box-shadow: 0 0 10px #28AFAB;">
+      <div
+        style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+        欢 迎 注 册</div>
       <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username">
           <el-input prefix-icon="el-icon-user" placeholder="请输入账号" v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" show-password  v-model="form.password"></el-input>
+          <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" show-password v-model="form.password"></el-input>
         </el-form-item>
         <el-form-item prop="confirmPass">
-          <el-input prefix-icon="el-icon-lock" placeholder="请确认密码" show-password  v-model="form.confirmPass"></el-input>
+          <el-input prefix-icon="el-icon-lock" placeholder="请确认密码" show-password v-model="form.confirmPass"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%; background-color: #333; border-color: #333; color: white" @click="register">注 册</el-button>
+          <el-button style="width: 100%; background-color: #333; border-color: #333; color: white" @click="register">注
+            册</el-button>
         </el-form-item>
         <div style="display: flex; align-items: center">
           <div style="flex: 1"></div>
@@ -82,14 +94,37 @@ export default {
 .container {
   height: 100vh;
   overflow: hidden;
-  background-image: url("@/assets/imgs/bg1.jpg");
+  /* background-image: url("@/assets/imgs/bg1.jpg"); */
   background-size: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #666;
 }
+
 a {
   color: #2a60c9;
+}
+
+/* 视频动画 */
+.background-video {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.particles {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 </style>

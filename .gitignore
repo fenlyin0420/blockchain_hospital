@@ -1,12 +1,20 @@
-vue/node_modules
-vue/node_modules/*
-springboot/target
-.idea
-.vscode
-springboot/src/main/resources/application.yml
-diagram
-ER.drawio
+# 项目依赖
+node_modules
 
-# 转诊端口自行配置，不做同步了
+# 打包文件
+springboot/target
+
+# 个人配置
+.diagram
+.note
+
+# 因个人配置，不做同步
+springboot/src/main/resources/application.yml
 vue/vue.config.js
 vue/.env.development
+
+# 编辑器配置
+.idea
+.vscode
+.cursor
+.cursorignore

@@ -423,6 +423,7 @@ export default {
             ...res2.data[0].traverse // 展开 traverse 对象的字段
           };
           delete traverseDTO.traverse;
+          console.log("获取到的病历", traverseDTO)
           this.$store.commit('setTraverseData', traverseDTO);
         } else {
           this.$message.error("获取病历数据失败");
@@ -520,6 +521,7 @@ export default {
       // 设置uploadDisabled为true，隐藏上传组件
       this.uploadDisabled = true;
       const uploadedUrlString = response.data; //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
+      console.log("url",uploadedUrlString)
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
