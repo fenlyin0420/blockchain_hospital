@@ -1,114 +1,240 @@
 <template>
   <div>
-    <div class="search">
-      <el-input
-        placeholder="请输入关键词"
-        style="width: 200px"
-        v-model="keywords"
-      ></el-input>
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)"
-        >查询</el-button
+    <el-card v-if="tableData.length > 0">
+
+
+      <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
+      <el-form
+        ref="elForm"
+        :model="currentRecord"
+        size="medium"
+        label-width="auto"
+        label-position="right"
       >
-      <el-button type="warning" plain style="margin-left: 10px" @click="reset"
-        >重置</el-button
-      >
-    </div>
+        <el-row :gutter="24">
+          <el-col
+            :span="12"
+            style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
+          >
+            <el-row :gutter="24">
+              <el-col :span="14">
+                <el-form-item label="患者姓名">
+                  <el-input v-model="currentRecord.userName" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item class="custom-label" label="转诊类型">
+                  <el-select v-model="currentRecord.referralType" :disabled="currentRecord.referralStatus !== '待审批'">
+                    <el-option label="普通" value="普通"></el-option>
+                    <el-option label="急诊" value="急诊"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-    <div class="table">
-      <el-table :data="tableData" stripe>
-        <el-table-column prop="userName" label="患者姓名"></el-table-column>
-        <el-table-column
-          prop="outDoctorName"
-          label="转出医生"
-          width="80px"
-        ></el-table-column>
-        <el-table-column prop="reason" label="转诊原因"></el-table-column>
-        <el-table-column prop="outTime" label="转出时间"></el-table-column>
-        <el-table-column
-          prop="inHospitalName"
-          label="转入医院"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column prop="referralStatus" label="结果"></el-table-column>
-        <el-table-column
-          label="操作"
-          width="180"
-          align="center"
-          v-if="user.role === 'ADMIN'"
-        >
-          <template v-slot="scope">
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="update(scope.row)"
-              :disabled="operation(scope.row)"
-              >同意</el-button
-            >
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="refuse(scope.row)"
-              :disabled="operation(scope.row)"
-              >拒绝</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
+            <el-row :gutter="24">
+              <el-col :span="9">
+                <el-form-item label="年龄">
+                  <el-input v-model="currentRecord.age" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item class="custom-label" label="性别" label-width="50px">
+                  <el-input v-model="currentRecord.sex" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="身份证号码" label-width="90px">
+                  <el-input v-model="currentRecord.idCard" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-      <!-- 分页 -->
-      <div class="pagination">
-        <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[5, 10, 20]"
-          :page-size="pageSize"
-          layout="total, prev, pager, next"
-          :total="total"
-        >
-        </el-pagination>
-      </div>
-    </div>
+            <el-row :gutter="24">
+              <el-col :span="14">
+                <el-form-item label="联系电话">
+                  <el-input v-model="currentRecord.phone" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="转诊编号">
+                  <el-input v-model="currentRecord.id" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-    <el-dialog
-      :visible="showDialog"
-      top="5%"
-      width="60%"
-      :title="dialog_title"
-      center
-      @close="handleClose"
-    >
-      <el-row>
-        <div style="display: flex;justify-content: center; align-items: center; flex-direction: column;">
-          <el-image :src="QR" fit="contain" style="width: 200px; height: 200px;"/>
-          <p style="color: blue; font-size: 16px;text-align: center;">{{ blockAddr }}</p>
-        </div>
-      </el-row>
+            <el-form-item label="初步诊断">
+              <el-input
+                v-model="currentRecord.diagnosis"
+                :readonly="true"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
 
-      <el-row>
-        <h2 style="text-align: center">交易回执</h2>
-        <CodeBlock :code="code" language="json" />
-      </el-row>
-    </el-dialog>
+            <el-form-item label="沟通记录">
+              <el-input
+                v-model="currentRecord.communication"
+                :readonly="true"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="患者申请原因">
+              <el-input
+                v-model="currentRecord.reason"
+                :readonly="true"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="患者签字">
+              <el-image
+                :src="currentRecord.signature"
+                fit="contain"
+                style="width: 100%; height: 100px; border: 1px dashed #dcdfe6; border-radius: 4px;"
+              >
+                <template #error>
+                  <div class="image-slot">
+                    <i class="el-icon-picture-outline" style="font-size: 30px; color: #909399;"></i>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">暂无签名</p>
+                  </div>
+                </template>
+                <template #placeholder>
+                  <div class="image-slot">
+                    <i class="el-icon-loading"></i>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">加载中...</p>
+                  </div>
+                </template>
+              </el-image>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+              <el-row :gutter="24">
+                <el-col :span="10">
+                  <el-form-item label="转诊状态">
+                    <el-input v-model="currentRecord.referralStatus" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="14">
+                  <el-form-item label="病历地址">
+                    <el-input v-model="currentRecord.traverseAddr" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row :gutter="24">
+                <el-col :span="13">
+                  <el-form-item label="转出医院">
+                    <el-input v-model="currentRecord.outHospitalName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="转出医生">
+                    <el-input v-model="currentRecord.outDoctorName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-form-item label="转出日期">
+                <el-input
+                  v-model="currentRecord.outTime"
+                  :readonly="true"
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item label="医务科意见">
+                <el-input
+                  v-model="currentRecord.outHospitalAdvice"
+                  :style="{ width: '100%' }"
+                  :readonly="currentRecord.referralStatus !== '待审批'"
+                ></el-input>
+              </el-form-item>
+            </div>
+
+            <br /><br />
+            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+              <el-row :gutter="24">
+                <el-col :span="13">
+                  <el-form-item label="转入医院">
+                    <el-input v-model="currentRecord.inHospitalName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="转入医生">
+                    <el-input v-model="currentRecord.inDoctorName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-form-item label="转入日期">
+                <el-date-picker
+                    v-model="currentRecord.inTime"
+                    type="date"
+                    placeholder="选择日期"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                    style="width: 100%"
+                  ></el-date-picker>
+              </el-form-item>
+
+              <el-form-item label="医务科意见">
+                <el-input
+                  v-model="currentRecord.inHospitalAdvice"
+                  :readonly="true"
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="医保经办机构意见">
+                  <el-input
+                    v-model="currentRecord.globalAdvice"
+                    :style="{ width: '100%' }"
+                  ></el-input>
+                </el-form-item>
+            </div>
+
+            <div class="button-group" v-if="currentRecord.referralStatus === '待审批' && user.role === 'ADMIN'">
+              <el-button type="success" @click="update(currentRecord)">同意</el-button>
+              <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
+              <el-button type="primary" @click="saveChanges">保存修改</el-button>
+              <div class="navigation-buttons">
+                <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
+                <span>{{ currentIndex + 1 }} / {{ tableData.length }}</span>
+                <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+
+
+
+    </el-card>
+
+    <el-empty v-else description="暂无转诊记录"></el-empty>
   </div>
 </template>
 
 <script>
-import axois from "axios";
-import CodeBlock from "../component/CodeBlock.vue";
 export default {
   name: "ReferralRecord",
   components: {
-    CodeBlock,
   },
   data() {
-
     return {
       tableData: [], // 所有的数据
-      pageNum: 1, // 当前的页码
-      pageSize: 10, // 每页显示的个数
+      currentIndex: 0, // 当前显示的记录索引
+      currentRecord: {}, // 当前显示的记录
+      pageNum: 1,
+      pageSize: 10,
       total: 0,
       keywords: null,
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
@@ -128,12 +254,38 @@ export default {
   },
   methods: {
     operation(row) {
-      return row.result === "待审批" ? false : true;
+      return row.referralStatus === "已转入";
     },
-    /**
-     * 同意转出,自动上传转诊信息到区块链
-     * @param row 转诊记录
-     */
+    previousRecord() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+      }
+    },
+    nextRecord() {
+      if (this.currentIndex < this.tableData.length - 1) {
+        this.currentIndex++;
+        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+      }
+    },
+    saveChanges() {
+      // 保存修改后的数据
+      const form = {
+        id: this.currentRecord.id,
+        outHospitalAdvice: this.currentRecord.outHospitalAdvice,
+        referralType: this.currentRecord.referralType
+      };
+
+      this.$request.put("/referral/update", form).then((res) => {
+        if (res.code === "200") {
+          this.$message.success("修改成功");
+          // 更新本地数据
+          this.tableData[this.currentIndex] = JSON.parse(JSON.stringify(this.currentRecord));
+        } else {
+          this.$message.error(res.msg || "修改失败");
+        }
+      });
+    },
     update(row) {
       this.dialog_title = row.userName + "的转诊信息"; 
       const referralInfo = {
@@ -152,51 +304,50 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$blockRequest.post("/storeReferralInfo", referralInfo).then((res) => {
-            if (res.data.code === "200") {
-              this.$message("上传成功");
-              // 得到本次转诊信息的hash值, 获取二维码
-              this.showDialog = true;
-              this.blockAddr = res.data.data.transactionReceipt.output
-              this.init_code(res.data.data)
-              this.$request
-                .get("/files/generateQR", {
-                  params: {
-                    seed: this.blockAddr,
-                  },
-                })
-                .then((res) => {
-                  if (res.code === "200") {
-                    this.QR = res.data;
-                  }
-                });
-            }
-          });
+          const referralInfo = {}
+            referralInfo.patientData = `${this.currentRecord.userName}||${this.currentRecord.sex}||${this.currentRecord.age}||${this.currentRecord.idCard}||${this.currentRecord.phone}`
+            referralInfo.medicalData = `${this.currentRecord.diagnosis}||${this.currentRecord.reason}||${this.currentRecord.communication}||${this.currentRecord.signatureUrl}`
+            referralInfo.outHospitalData = `${this.currentRecord.outHospitalName}||${this.currentRecord.outDoctorName}||${this.currentRecord.outHospitalAdvice}||${this.currentRecord.outTime}`
+            referralInfo.status = "待接收"
+            referralInfo.urgency = "急诊"
+            
+            this.$blockRequest.post("/storeIntelReferralInfo", referralInfo).then((blockRes) => {
+              if (blockRes.data.code === "200") {
+                this.$message.success("区块链数据上传成功");
+                this.currentRecord.traverseAddr = blockRes.data.data.transactionReceipt.transactionHash
+              } else {
+                this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
+              }
+            }).catch(error => {
+              console.error("区块链请求错误:", error);
+              this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
+            });
         })
         .catch(() => {
           this.$message("取消发送");
         });
     },
-    /**
-     * 传入要拒绝的转诊记录的id
-     * @param row 待审批的转诊记录
-     */
     refuse(row) {
-      let form = {
-        id: row.id,
-      };
-      this.$request.patch("/referral/refuseOut", form).then((res) => {
-        if (res.code === "200") {
-          // 表示成功保存
-          this.$message.success("已拒绝接收");
-          this.load(1);
-          // this.record(row)
-        } else {
-          this.$message.error(res.msg); // 弹出错误的信息
-        }
+      this.$confirm('确定要拒绝该转诊申请吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let form = {
+          id: row.id,
+        };
+        this.$request.patch("/referral/refuseOut", form).then((res) => {
+          if (res.code === "200") {
+            this.$message.success("已拒绝转诊");
+            this.load(1);
+          } else {
+            this.$message.error(res.msg);
+          }
+        });
+      }).catch(() => {
+        this.$message.info('已取消操作');
       });
     },
-
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum;
       // 查询本医院所有的转诊记录
@@ -208,80 +359,21 @@ export default {
           },
         })
         .then((res) => {
-          this.tableData = res.data?.list;
-          this.total = res.data?.total;
+          this.tableData = res.data?.list || [];
+          this.total = res.data?.total || 0;
+          
+          // 如果有数据，显示第一条
+          if (this.tableData.length > 0) {
+            this.currentIndex = 0;
+            this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
+          }
         });
     },
     reset() {
-      this.status = null;
+      this.keywords = null;
       this.load(1);
     },
-    init_code(obj) {
-      const { returnCode, returnMessage, transactionReceipt : {
-        transactionHash,
-        transactionIndex,
-        root,
-        blockNumber,
-        blockHash,
-        from,
-        to,
-        gasUsed,
-        contractAddress,
-        logs
-      }} = obj;
-      const transactionReceipt = {
-        transactionHash,
-        transactionIndex,
-        blockHash: obj.transactionReceipt.output,
-        root,
-        blockNumber,
-        from,
-        to,
-        gasUsed,
-        contractAddress,
-        logs
-      };
 
-      const res = {
-        returnCode,
-        returnMessage,
-        transactionReceipt
-      }
-      this.code = JSON.stringify(res);
-    },
-    handleCurrentChange(pageNum) {
-      this.load(pageNum);
-    },
-    /**
-     * 显示上传病历至区块链的进度条
-     * @param traverse 病历
-     */
-    startProgress(traverse) {
-      var index = 0;
-      const keys = Object.keys(traverse);
-      this.progressPercentage = 0;
-      let interval = setInterval(() => {
-        if (this.progressPercentage >= 100) {
-          clearInterval(interval);
-        } else {
-          this.progressPercentage += 10;
-        }
-        if (index <= keys.length) {
-          this.sendData = keys[index] + " : " + traverse[keys[index]];
-          index++;
-        }
-      }, 1000);
-
-      // 模拟操作完成后，可以取消进度条显示
-      setTimeout(() => {
-        clearInterval(interval);
-        this.showProgress = false;
-        this.$message({
-          message: "发送成功",
-          type: "success",
-        });
-      }, 11000); // 假设操作需要5秒
-    },
     handleClose() {
       this.showDialog = false;
     },
@@ -289,4 +381,61 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.search {
+  margin-bottom: 20px;
+}
+
+.search * {
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.navigation-buttons span {
+  margin: 0 20px;
+  font-size: 16px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button-group .el-button {
+  margin: 0 10px;
+}
+
+.el-card {
+  margin-top: 20px;
+}
+
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+.el-input.is-disabled .el-input__inner {
+  color: #606266;
+}
+
+.el-textarea.is-disabled .el-textarea__inner {
+  color: #606266;
+}
+
+.image-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f5f7fa;
+}
+</style>

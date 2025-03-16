@@ -1,36 +1,6 @@
 <template>
   <div>
-    <!-- 添加标签筛选 -->
-    <div class="filter-tabs">
-      <el-tabs v-model="activeTab" @tab-click="handleTabChange">
-        <el-tab-pane label="全部转诊" name="all"></el-tab-pane>
-        <el-tab-pane label="普通转诊" name="normal"></el-tab-pane>
-        <el-tab-pane name="emergency">
-          <span slot="label" class="emergency-tab">
-            急诊转诊
-            <el-badge
-              v-if="emergencyCount > 0"
-              :value="emergencyCount"
-              class="emergency-badge"
-            ></el-badge>
-          </span>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-
     <div class="search">
-      <div class="search1">
-        <label for="search">搜索:</label>
-        <el-input
-          id="search"
-          placeholder="请输入关键词"
-          style="width: 200px"
-          v-model="keywords"
-        ></el-input>
-        <el-button type="info" plain @click="load(1)">查询</el-button>
-        <el-button type="warning" plain @click="reset">重置</el-button>
-      </div>
-
       <div class="update">
         <label for="pull">转诊信息:</label>
         <el-input
@@ -48,284 +18,253 @@
         >
       </div>
     </div>
-
-    <div class="table">
-      <el-table :data="tableData" stripe>
-        <el-table-column prop="userName" label="患者姓名"></el-table-column>
-        <el-table-column prop="outDoctorName" label="转出医生"></el-table-column>
-        <el-table-column prop="reason" label="转诊原因"></el-table-column>
-        <el-table-column prop="outTime" label="转出时间"></el-table-column>
-        <el-table-column prop="referralStatus" label="转诊状态"></el-table-column>
-        <el-table-column prop="referralType" label="转诊类型">
-          <template v-slot="scope">
-            <el-tag :type="scope.row.referralType === '急诊' ? 'danger' : 'info'">
-              {{ scope.row.referralType || "普通" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="300"
-          align="center"
-          v-if="user.role === 'ADMIN'"
-        >
-          <template v-slot="scope">
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="detail(scope.row)"
-              :disabled="operation(scope.row)"
-              >详情</el-button
-            >
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="viewMedicalHistory(scope.row)"
-              :disabled="operation(scope.row)"
-              >溯源病历</el-button
-            >
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="update(scope.row)"
-              :disabled="operation(scope.row)"
-              >同意</el-button
-            >
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              @click="refuse(scope.row)"
-              :disabled="operation(scope.row)"
-              >拒绝</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
+    <!-- 添加标签筛选 -->
+    <div class="filter-tabs">
+      <el-tabs v-model="activeTab" @tab-click="handleTabChange">
+        <el-tab-pane label="全部转诊" name="all"></el-tab-pane>
+        <el-tab-pane name="emergency">
+          <span slot="label" class="emergency-tab">
+            急诊转诊
+            <el-badge
+              v-if="emergencyCount > 0"
+              :value="emergencyCount"
+              class="emergency-badge"
+            ></el-badge>
+          </span>
+        </el-tab-pane>
+        <el-tab-pane label="普通转诊" name="normal"></el-tab-pane>
+      </el-tabs>
     </div>
 
-    <!-- 转诊信息详情 -->
-    <el-dialog
-      :visible="showReferralDetail"
-      title="转诊详情"
-      center
-      fullscreen
-      @close="handleClose"
-    >
-      <el-card>
-        <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
-        <el-form
-          ref="detailForm"
-          :model="referralDetailForm"
-          size="medium"
-          label-width="auto"
-          label-position="right"
-        >
-          <el-row :gutter="24">
-            <el-col
-              :span="12"
-              style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
-            >
-              <el-row :gutter="24">
-                <el-col :span="14">
-                  <el-form-item label="患者姓名">
-                    <el-input v-model="referralDetailForm.userName" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10">
-                  <el-form-item class="custom-label" label="转诊类型">
-                    <el-input
-                      v-model="referralDetailForm.referralType"
-                      readonly
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row :gutter="24">
-                <el-col :span="9">
-                  <el-form-item label="年龄">
-                    <el-input v-model="referralDetailForm.age" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="5">
-                  <el-form-item class="custom-label" label="性别" label-width="50px">
-                    <el-input v-model="referralDetailForm.sex" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10">
-                  <el-form-item label="身份证号码" label-width="90px">
-                    <el-input v-model="referralDetailForm.idCard" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row :gutter="24">
-                <el-col :span="14">
-                  <el-form-item label="联系电话">
-                    <el-input v-model="referralDetailForm.phone" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10">
-                  <el-form-item label="转诊编号">
-                    <el-input v-model="referralDetailForm.id" readonly></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-form-item label="初步诊断">
-                <el-input
-                  v-model="referralDetailForm.diagnosis"
-                  readonly
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="沟通记录">
-                <el-input
-                  v-model="referralDetailForm.communication"
-                  readonly
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="患者申请原因">
-                <el-input
-                  v-model="referralDetailForm.reason"
-                  type="textarea"
-                  readonly
-                  :autosize="{ minRows: 2, maxRows: 4 }"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="患者签字" v-if="referralDetailForm.signature">
-                <img
-                  :src="referralDetailForm.signature"
-                  style="max-width: 100%; max-height: 100px"
-                />
-              </el-form-item>
-            </el-col>
-
-            <!-- 右侧 -->
-            <el-col :span="12">
-              <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
-                <el-row :gutter="24">
-                  <el-col :span="10">
-                    <el-form-item label="转诊状态">
-                      <el-input
-                        v-model="referralDetailForm.referralStatus"
-                        readonly
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="14">
-                    <el-form-item label="病历地址">
-                      <el-input
-                        v-model="referralDetailForm.traverseAddr"
-                        readonly
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <el-row :gutter="24">
-                  <el-col :span="13">
-                    <el-form-item label="转出医院">
-                      <el-input
-                        v-model="referralDetailForm.outHospitalName"
-                        readonly
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="转出医生">
-                      <el-input
-                        v-model="referralDetailForm.outDoctorName"
-                        readonly
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-form-item label="转出日期">
-                  <el-input
-                    v-model="referralDetailForm.outTime"
-                    readonly
-                    :style="{ width: '100%' }"
-                  ></el-input>
+    <!-- 转诊信息表单 -->
+    <el-card v-if="tableData.length > 0">
+      <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
+      <el-form
+        ref="elForm"
+        :model="currentRecord"
+        size="medium"
+        label-width="auto"
+        label-position="right"
+      >
+        <el-row :gutter="24">
+          <el-col
+            :span="12"
+            style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
+          >
+            <el-row :gutter="24">
+              <el-col :span="14">
+                <el-form-item label="患者姓名">
+                  <el-input v-model="currentRecord.userName" :readonly="true"></el-input>
                 </el-form-item>
-                <el-form-item label="医务科意见">
-                  <el-input
-                    v-model="referralDetailForm.outHospitalAdvice"
-                    readonly
-                    :style="{ width: '100%' }"
-                  ></el-input>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item class="custom-label" label="转诊类型">
+                  <el-input v-model="currentRecord.referralType" :readonly="true"></el-input>
                 </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="24">
+              <el-col :span="9">
+                <el-form-item label="年龄">
+                  <el-input v-model="currentRecord.age" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item class="custom-label" label="性别" label-width="50px">
+                  <el-input v-model="currentRecord.sex" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="身份证号码" label-width="90px">
+                  <el-input v-model="currentRecord.idCard" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="24">
+              <el-col :span="14">
+                <el-form-item label="联系电话">
+                  <el-input v-model="currentRecord.phone" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="转诊编号">
+                  <el-input v-model="currentRecord.id" :readonly="true"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-form-item label="初步诊断">
+              <el-input
+                v-model="currentRecord.diagnosis"
+                :readonly="true"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="沟通记录">
+              <el-input
+                v-model="currentRecord.communication"
+                :readonly="true"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="患者申请原因">
+              <el-input
+                v-model="currentRecord.reason"
+                :readonly="true"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="患者签字">
+              <el-image
+                :src="currentRecord.signature"
+                fit="contain"
+                style="width: 100%; height: 100px; border: 1px dashed #dcdfe6; border-radius: 4px;"
+              >
+                <template #error>
+                  <div class="image-slot">
+                    <i class="el-icon-picture-outline" style="font-size: 30px; color: #909399;"></i>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">暂无签名</p>
+                  </div>
+                </template>
+                <template #placeholder>
+                  <div class="image-slot">
+                    <i class="el-icon-loading"></i>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">加载中...</p>
+                  </div>
+                </template>
+              </el-image>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+              <el-row :gutter="24">
+                <el-col :span="10">
+                  <el-form-item label="转诊状态">
+                    <el-input v-model="currentRecord.referralStatus" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="14">
+                  <el-form-item label="病历地址">
+                    <el-input v-model="currentRecord.traverseAddr" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row :gutter="24">
+                <el-col :span="13">
+                  <el-form-item label="转出医院">
+                    <el-input v-model="currentRecord.outHospitalName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="转出医生">
+                    <el-input v-model="currentRecord.outDoctorName" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-form-item label="转出日期">
+                <el-input
+                  v-model="currentRecord.outTime"
+                  :readonly="true"
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item label="医务科意见">
+                <el-input
+                  v-model="currentRecord.outHospitalAdvice"
+                  :readonly="true"
+                  :style="{ width: '100%' }"
+                ></el-input>
+              </el-form-item>
+            </div>
+
+            <br />
+            <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
+              <el-row :gutter="24">
+                <el-col :span="13">
+                  <el-form-item label="转入医院">
+                    <el-input v-model="currentRecord.inHospitalName" :readonly="currentRecord.referralStatus !== '待审批'"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="转入医生">
+                    <el-input v-model="currentRecord.inDoctorName" :readonly="currentRecord.referralStatus !== '待审批'"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-form-item label="转入日期">
+                <el-date-picker
+                  v-model="currentRecord.inTime"
+                  type="date"
+                  placeholder="选择日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%"
+                  :disabled="currentRecord.referralStatus !== '待接收'"
+                ></el-date-picker>
+              </el-form-item>
+
+              <el-form-item label="医务科意见">
+                <el-input
+                  v-model="currentRecord.inHospitalAdvice"
+                  :style="{ width: '100%' }"
+                  :readonly="currentRecord.referralStatus !== '待接收'"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item label="医保经办机构意见">
+                <el-input
+                  v-model="currentRecord.globalAdvice"
+                  :style="{ width: '100%' }"
+                  :readonly="currentRecord.referralStatus !== '待审批'"
+                ></el-input>
+              </el-form-item>
+            </div>
+
+            <div class="button-container">
+              <!-- 操作按钮组 -->
+              <div class="operation-buttons" v-if="currentRecord.referralStatus === '待接收' && user.role === 'ADMIN'">
+                <!-- <el-button type="success" @click="acceptReferral">同意接收</el-button>
+                <el-button type="danger" @click="rejectReferral">拒绝接收</el-button> -->
+                <el-button type="primary" @click="saveReferralDetail">保存修改</el-button>
+                <el-button type="primary" @click="viewMedicalHistory(currentRecord)">溯源病历</el-button>
               </div>
 
-              <br />
-              <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
-                <el-row :gutter="24">
-                  <el-col :span="13">
-                    <el-form-item label="转入医院">
-                      <el-input v-model="referralDetailForm.inHospitalName"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="转入医生">
-                      <el-input v-model="referralDetailForm.inDoctorName"></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-form-item label="转入日期">
-                  <el-date-picker
-                    v-model="referralDetailForm.inTime"
-                    type="date"
-                    placeholder="选择日期"
-                    format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd"
-                    style="width: 100%"
-                  ></el-date-picker>
-                </el-form-item>
-                <el-form-item label="医务科意见">
-                  <el-input
-                    v-model="referralDetailForm.inHospitalAdvice"
-                    type="textarea"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    :style="{ width: '100%' }"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="医保经办机构意见">
-                  <el-input
-                    v-model="referralDetailForm.globalAdvice"
-                    type="textarea"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    :style="{ width: '100%' }"
-                  ></el-input>
-                </el-form-item>
+              <!-- 导航按钮组，始终显示 -->
+              <div class="navigation-buttons">
+                <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
+                <span>{{ currentIndex + 1 }} / {{ filteredTotal }}</span>
+                <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
               </div>
-            </el-col>
-          </el-row>
-        </el-form>
-        <div class="button-group">
-          <el-button type="primary" @click="saveReferralDetail">确定</el-button>
-          <el-button type="success" @click="acceptReferral">同意接收</el-button>
-          <el-button type="danger" @click="rejectReferral">拒绝接收</el-button>
-          <el-button @click="showReferralDetail = false">关闭</el-button>
-        </div>
-      </el-card>
-    </el-dialog>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+
+    <el-empty v-else description="暂无转诊记录"></el-empty>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import CodeBlock from "../component/CodeBlock.vue";
 
 export default {
   name: "ReferralRecord",
   components: {
-    CodeBlock,
   },
   data() {
     return {
@@ -360,7 +299,21 @@ export default {
       activeTab: "all", // 当前激活的标签
       emergencyCount: 0, // 急诊数量
       autoSaveInterval: null, // 自动保存定时器
+      currentRecord: {},
+      currentIndex: 0,
+      allData: [], // 存储所有未筛选的数据
     };
+  },
+  computed: {
+    // 根据当前标签计算过滤后的总数
+    filteredTotal() {
+      if (this.activeTab === "normal") {
+        return this.allData.filter(item => (item.referralType || "普通") === "普通").length;
+      } else if (this.activeTab === "emergency") {
+        return this.allData.filter(item => item.referralType === "急诊").length;
+      }
+      return this.allData.length;
+    }
   },
   created() {
     // 从 localStorage 加载数据
@@ -496,6 +449,7 @@ export default {
           if (res.data.code === "200") {
             // 解析转诊信息
             const referrals = this.parseReferrals(res.data.data.returnObject);
+            this.allData = referrals; // 保存所有数据
 
             // 计算急诊数量
             this.emergencyCount = referrals.filter(
@@ -516,8 +470,11 @@ export default {
               this.tableData = referrals;
             }
 
-            // 设置总数
-            this.total = referrals.length;
+            // 如果有数据，显示第一条
+            if (this.tableData.length > 0) {
+              this.currentIndex = 0;
+              this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
+            }
           } else {
             this.$message.error("获取转诊信息失败: " + (res.data.msg || "未知错误"));
             // 如果获取失败，尝试从localStorage获取数据
@@ -964,23 +921,29 @@ export default {
     /**
      * 处理标签切换
      */
-     handleTabChange() {
+    handleTabChange() {
       // 从localStorage获取完整数据
       const storedData = localStorage.getItem("referralTableData");
       if (storedData) {
         try {
-          const allData = JSON.parse(storedData);
+          this.allData = JSON.parse(storedData);
           
           // 计算急诊数量（确保在切换标签时更新）
-          this.emergencyCount = allData.filter(item => item.referralType === '急诊').length;
+          this.emergencyCount = this.allData.filter(item => item.referralType === '急诊').length;
           
           // 根据当前标签筛选数据
           if (this.activeTab === 'normal') {
-            this.tableData = allData.filter(item => (item.referralType || '普通') === '普通');
+            this.tableData = this.allData.filter(item => (item.referralType || '普通') === '普通');
           } else if (this.activeTab === 'emergency') {
-            this.tableData = allData.filter(item => item.referralType === '急诊');
+            this.tableData = this.allData.filter(item => item.referralType === '急诊');
           } else {
-            this.tableData = allData;
+            this.tableData = this.allData;
+          }
+          
+          // 重置当前记录索引并更新当前记录
+          this.currentIndex = 0;
+          if (this.tableData.length > 0) {
+            this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
           }
           
           // 保存当前标签到 localStorage
@@ -1008,6 +971,24 @@ export default {
     calculateEmergencyCount() {
       // 已在 load 方法中计算，不需要单独请求
     },
+    /**
+     * 上一条记录
+     */
+    previousRecord() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+      }
+    },
+    /**
+     * 下一条记录
+     */
+    nextRecord() {
+      if (this.currentIndex < this.tableData.length - 1) {
+        this.currentIndex++;
+        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+      }
+    },
   },
   // 添加 beforeDestroy 钩子，确保在组件销毁前保存数据
   beforeDestroy() {
@@ -1030,10 +1011,6 @@ export default {
 
 .search label {
   margin-right: 5px;
-}
-
-.search > .update {
-  margin-left: 100px;
 }
 
 .el-table {
@@ -1079,5 +1056,70 @@ export default {
   height: auto;
   line-height: normal;
   padding: 10px 20px;
+}
+
+/* 添加新的样式 */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.operation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.operation-buttons .el-button {
+  min-width: 100px;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.navigation-buttons span {
+  min-width: 80px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.navigation-buttons .el-button {
+  min-width: 100px;
+}
+
+.el-card {
+  margin-top: 20px;
+}
+
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+.el-input.is-disabled .el-input__inner {
+  color: #606266;
+}
+
+.el-textarea.is-disabled .el-textarea__inner {
+  color: #606266;
+}
+
+.image-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f5f7fa;
 }
 </style>
