@@ -3,6 +3,7 @@ package com.example.controller;
 
 import com.example.common.AutoLog;
 import com.example.common.Result;
+import com.example.dto.TraverseDTO;
 import com.example.entity.Traverse;
 import com.example.service.CareService;
 import com.github.pagehelper.PageInfo;
@@ -27,7 +28,7 @@ public class CareController {
     public Result selectPage(Traverse traverse,
                               @RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Traverse> page = careService.selectPage(traverse,pageNum,pageSize);
+        PageInfo<TraverseDTO> page = careService.selectPage(traverse,pageNum,pageSize);
         return Result.success(page);
     }
 
@@ -35,7 +36,7 @@ public class CareController {
     public Result selectPageRecord(Traverse traverse,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Traverse> page = careService.selectPageRecord(traverse,pageNum,pageSize);
+        PageInfo<TraverseDTO> page = careService.selectPageRecord(traverse,pageNum,pageSize);
         return Result.success(page);
     }
 

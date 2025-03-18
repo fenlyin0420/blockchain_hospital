@@ -8,45 +8,48 @@
     </div>
 
     <div class="tables-container" style="display: flex; justify-content: space-between; width: 100%;">
-      <div class="table" style="width: 70%; margin-right: 10px;">
+      <div class="table" style="width: 40%; margin-right: 10px;">
         <el-row :gutter="24">
-          <el-col :span="8" v-for="item in BedData" :key="item.id" >
-            <div :style="{ textAlign: 'center', backgroundColor: getBackgroundColor(item.wardName) }"  class="card">
-            <div class="value">{{item.wardName }}</div>
-            <div class="value">{{item.bedName}}</div>
-            <div class="value">{{item.status}}</div>
-            <div style="margin-top: 15px">
-              <el-button type="primary" size="mini" :disabled="item.status === '空'" @click="confirmLeave(item)">出院</el-button>
-            </div>
+          <el-col :span="8" v-for="item in BedData" :key="item.id">
+            <div :style="{ textAlign: 'center', backgroundColor: getBackgroundColor(item.wardName) }" class="card">
+              <div class="value">{{ item.wardName }}</div>
+              <div class="value">{{ item.bedName }}</div>
+              <div class="value">{{ item.status }}</div>
+              <div style="margin-top: 15px">
+                <el-button type="primary" size="mini" :disabled="item.status === '空'"
+                  @click="confirmLeave(item)">出院</el-button>
+              </div>
             </div>
           </el-col>
         </el-row>
         <div class="pagination">
-            <el-pagination background @current-change="handleCurrentChangeBed" :current-page="pageNumBed" :page-sizes="[5, 10, 20]" :page-size="pageSizeBed"
-              layout="total, prev, pager, next" :total="totalBed">
-            </el-pagination>
-          </div>
+          <el-pagination background @current-change="handleCurrentChangeBed" :current-page="pageNumBed"
+            :page-sizes="[5, 10, 20]" :page-size="pageSizeBed" layout="total, prev, pager, next" :total="totalBed">
+          </el-pagination>
+        </div>
       </div>
 
-      <div class="table" style="width: 30%;">
+      <div class="table" style="width: 60%;">
         <el-table :data="tableData" strip>
           <!-- <el-table-column prop="id" label="序号" align="center" sortable></el-table-column> -->
-          <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-          <el-table-column prop="doctorName" label="主治医生" show-overflow-tooltip align="center"></el-table-column>
-          <!-- <el-table-column prop="advice" label="病历详细" show-overflow-tooltip align="center"></el-table-column> -->
+          <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
+          <el-table-column prop="doctorName" label="主治医生" show-overflow-tooltip align="center"
+            width="80px"></el-table-column>
+          <el-table-column prop="traverse.mainDiagnosis" label="主要诊断" show-overflow-tooltip
+            align="center"></el-table-column>
           <!--<el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column> -->
-          <el-table-column label="操作" align="center" width="110">
+          <el-table-column label="操作" align="center" width="110px">
             <template v-slot="scope">
               <el-button type="primary" plain @click="handleAssign(scope.row)"
-              :disabled="scope.row.inHospital === '已住院' ">分配病床</el-button>
+                :disabled="scope.row.traverse.inHospital === '已住院'">分配病床</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="pagination">
-            <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 20]" :page-size="pageSize"
-              layout="total, prev, pager, next" :total="total">
-            </el-pagination>
-          </div>
+          <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+            :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+          </el-pagination>
+        </div>
       </div>
     </div>
     <!-- dialog -->
@@ -59,7 +62,6 @@
             </div>
           </el-select>
         </el-form-item>
-
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -67,7 +69,6 @@
         <el-button type="primary" @click="save">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -80,7 +81,7 @@ export default {
   data() {
     return {
       tableData: [],
-      BedData:[],
+      BedData: [],
       pageNum: 1,
       pageSize: 10,
       total: 0,
@@ -103,7 +104,10 @@ export default {
     findWards() {
       request.get("/AssignBeds/selectBedAll").then(res => {
         if (res.code === "200") {
-          this.wardList = res.data;
+          this.wardListData = res.data;
+          this.wardList = this.wardListData.filter(item => item.status === '').map(item => {
+            return item;
+          });
         } else {
           this.$message.error(res.msg);
         }
@@ -121,7 +125,7 @@ export default {
         this.total = res.data?.total;
       });
     },
-    loadBed(pageNumBed){
+    loadBed(pageNumBed) {
       if (pageNumBed) this.pageNumBed = pageNumBed;
       this.$request.get('/AssignBeds/selectBedPage', {
         params: {
@@ -151,11 +155,12 @@ export default {
       this.loadBed(1);
     },
     handleAssign(row) {   // 新增数据（bed_id == null 的新增一个bed_id）
-      this.form = JSON.parse(JSON.stringify(row)); 
-      this.form.inHospital = '已住院';
+      this.form = JSON.parse(JSON.stringify(row));
+      this.form.traverse.inHospital = '已住院';
       this.fromVisible = true;   // 打开弹窗
     },
     save() { // 分配病房
+      this.form.traverse.bedId = this.form.bedId;
       request.put("/AssignBeds/save", this.form).then(res => {
         if (res.code === "200") {
           this.load(1);
@@ -165,12 +170,13 @@ export default {
         }
       });
       let bedForm = {};
-      bedForm.id= this.form.bedId;
+      bedForm.id = this.form.bedId;
       bedForm.status = this.form.userName;
       request.put("/AssignBeds/updateBedById", bedForm).then(res => {
         if (res.code === "200") {
           this.$message.success('保存成功');
           this.loadBed(1);
+          this.findWards();
         } else {
           this.$message.error(res.msg);
         }
@@ -191,13 +197,13 @@ export default {
           message: '出院操作已取消'
         });
       });
-  },
+    },
     findTableRow(userName) {
-    return this.tableData.find(row => row.userName === userName);
-  },
-    leave(row){  //出院
-      this.form = JSON.parse(JSON.stringify(row)); 
-      this.form.inHospital = '已出院';
+      return this.tableData.find(row => row.userName === userName);
+    },
+    leave(row) {  //出院
+      this.form = JSON.parse(JSON.stringify(row));
+      this.form.traverse.inHospital = '已出院';
       request.put("/AssignBeds/save", this.form).then(res => {
         if (res.code === "200") {
           this.load(1);
@@ -207,7 +213,7 @@ export default {
         }
       });
       let bedForm = {};
-      bedForm.id= this.form.bedId;
+      bedForm.id = this.form.traverse.bedId;
       bedForm.status = '';
       request.put("/AssignBeds/updateBedById", bedForm).then(res => {
         if (res.code === "200") {
@@ -222,20 +228,20 @@ export default {
       this.$router.push({ name: "Ward" })
     },
     getBackgroundColor(wardName) {
-    // 根据wardName返回不同的背景颜色
-    switch (wardName) {
-      case '重症监护室':
-        return '#fff5f4';
-      case '病房A':
-        return '#fffff4';
-      case '病房B':
-        return '#f1fff3';
-      case '病房C':
-        return '#fef4ff';
-      default:
-        return '#ffffff'; 
-    }
-  },
+      // 根据wardName返回不同的背景颜色
+      switch (wardName) {
+        case '重症监护室':
+          return '#fff5f4';
+        case '病房A':
+          return '#fffff4';
+        case '病房B':
+          return '#f1fff3';
+        case '病房C':
+          return '#fef4ff';
+        default:
+          return '#ffffff';
+      }
+    },
   }
 };
 </script>
@@ -258,7 +264,7 @@ export default {
 
 ::v-deep .el-dialog {
   position: relative;
-  margin: 0px auto 50px;
+  margin: 250px 650px 0px !important;
   background: #fff;
   border-radius: 20px;
   box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
@@ -266,11 +272,23 @@ export default {
   box-sizing: border-box;
   width: 40%;
 }
-::v-deep  .card{
+
+.el-dialog__wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+::v-deep .card {
   padding: 12px;
   margin-bottom: 10px;
 }
-.value{
+
+.value {
   margin-bottom: 2px;
   font-size: 16px;
 }

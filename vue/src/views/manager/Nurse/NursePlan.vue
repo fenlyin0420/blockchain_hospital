@@ -23,7 +23,7 @@
 
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column
             prop="nurseName"
             label="护士姓名"
@@ -184,6 +184,7 @@ export default {
       this.$request.get("/nurse/selectByH/" + id).then((res) => {
         if (res.code === "200") {
           this.nurseData = res.data;
+          console.log("11",this.nurseData)
         } else {
           this.$message.error(res.msg);
         }
