@@ -59,7 +59,10 @@
               </el-col>
               <el-col :span="10">
                 <el-form-item class="custom-label" label="转诊类型">
-                  <el-input v-model="currentRecord.referralType" :readonly="true"></el-input>
+                  <el-input
+                    v-model="currentRecord.referralType"
+                    :readonly="true"
+                  ></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -127,18 +130,30 @@
               <el-image
                 :src="currentRecord.signature"
                 fit="contain"
-                style="width: 100%; height: 100px; border: 1px dashed #dcdfe6; border-radius: 4px;"
+                style="
+                  width: 100%;
+                  height: 100px;
+                  border: 1px dashed #dcdfe6;
+                  border-radius: 4px;
+                "
               >
                 <template #error>
                   <div class="image-slot">
-                    <i class="el-icon-picture-outline" style="font-size: 30px; color: #909399;"></i>
-                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">暂无签名</p>
+                    <i
+                      class="el-icon-picture-outline"
+                      style="font-size: 30px; color: #909399"
+                    ></i>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0">
+                      暂无签名
+                    </p>
                   </div>
                 </template>
                 <template #placeholder>
                   <div class="image-slot">
                     <i class="el-icon-loading"></i>
-                    <p style="color: #909399; font-size: 14px; margin: 10px 0;">加载中...</p>
+                    <p style="color: #909399; font-size: 14px; margin: 10px 0">
+                      加载中...
+                    </p>
                   </div>
                 </template>
               </el-image>
@@ -150,12 +165,18 @@
               <el-row :gutter="24">
                 <el-col :span="10">
                   <el-form-item label="转诊状态">
-                    <el-input v-model="currentRecord.referralStatus" :readonly="true"></el-input>
+                    <el-input
+                      v-model="currentRecord.referralStatus"
+                      :readonly="true"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="14">
                   <el-form-item label="病历地址">
-                    <el-input v-model="currentRecord.traverseAddr" :readonly="true"></el-input>
+                    <el-input
+                      v-model="currentRecord.traverseAddr"
+                      :readonly="true"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -163,12 +184,18 @@
               <el-row :gutter="24">
                 <el-col :span="13">
                   <el-form-item label="转出医院">
-                    <el-input v-model="currentRecord.outHospitalName" :readonly="true"></el-input>
+                    <el-input
+                      v-model="currentRecord.outHospitalName"
+                      :readonly="true"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="转出医生">
-                    <el-input v-model="currentRecord.outDoctorName" :readonly="true"></el-input>
+                    <el-input
+                      v-model="currentRecord.outDoctorName"
+                      :readonly="true"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -195,12 +222,18 @@
               <el-row :gutter="24">
                 <el-col :span="13">
                   <el-form-item label="转入医院">
-                    <el-input v-model="currentRecord.inHospitalName" :readonly="currentRecord.referralStatus !== '待审批'"></el-input>
+                    <el-input
+                      v-model="currentRecord.inHospitalName"
+                      :readonly="currentRecord.referralStatus !== '待审批'"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="转入医生">
-                    <el-input v-model="currentRecord.inDoctorName" :readonly="currentRecord.referralStatus !== '待审批'"></el-input>
+                    <el-input
+                      v-model="currentRecord.inDoctorName"
+                      :readonly="currentRecord.referralStatus !== '待审批'"
+                    ></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -233,26 +266,37 @@
                 ></el-input>
               </el-form-item>
             </div>
-
-            <div class="button-container">
-              <!-- 操作按钮组 -->
-              <div class="operation-buttons" v-if="currentRecord.referralStatus === '待接收' && user.role === 'ADMIN'">
-                <!-- <el-button type="success" @click="acceptReferral">同意接收</el-button>
-                <el-button type="danger" @click="rejectReferral">拒绝接收</el-button> -->
-                <el-button type="primary" @click="saveReferralDetail">保存修改</el-button>
-                <el-button type="primary" @click="viewMedicalHistory(currentRecord)">溯源病历</el-button>
-              </div>
-
-              <!-- 导航按钮组，始终显示 -->
-              <div class="navigation-buttons">
-                <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
-                <span>{{ currentIndex + 1 }} / {{ filteredTotal }}</span>
-                <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
-              </div>
-            </div>
           </el-col>
         </el-row>
       </el-form>
+      <div class="button-container">
+        <!-- 操作按钮组 -->
+        <div
+          class="operation-buttons"
+          v-if="currentRecord.referralStatus === '待接收' && user.role === 'ADMIN'"
+        >
+          <!-- <el-button type="success" @click="acceptReferral">同意接收</el-button>
+                <el-button type="danger" @click="rejectReferral">拒绝接收</el-button> -->
+          <el-button type="primary" @click="saveReferralDetail">保存修改</el-button>
+          <el-button type="primary" @click="viewMedicalHistory(currentRecord)"
+            >溯源病历</el-button
+          >
+        </div>
+
+        <!-- 导航按钮组，始终显示 -->
+        <div class="navigation-buttons">
+          <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord"
+            >上一个</el-button
+          >
+          <span>{{ currentIndex + 1 }} / {{ filteredTotal }}</span>
+          <el-button
+            type="primary"
+            :disabled="currentIndex >= tableData.length - 1"
+            @click="nextRecord"
+            >下一个</el-button
+          >
+        </div>
+      </div>
     </el-card>
 
     <el-empty v-else description="暂无转诊记录"></el-empty>
@@ -264,8 +308,7 @@ import axios from "axios";
 
 export default {
   name: "ReferralRecord",
-  components: {
-  },
+  components: {},
   data() {
     return {
       tableData: [], // 所有的转诊信息
@@ -308,12 +351,13 @@ export default {
     // 根据当前标签计算过滤后的总数
     filteredTotal() {
       if (this.activeTab === "normal") {
-        return this.allData.filter(item => (item.referralType || "普通") === "普通").length;
+        return this.allData.filter((item) => (item.referralType || "普通") === "普通")
+          .length;
       } else if (this.activeTab === "emergency") {
-        return this.allData.filter(item => item.referralType === "急诊").length;
+        return this.allData.filter((item) => item.referralType === "急诊").length;
       }
       return this.allData.length;
-    }
+    },
   },
   created() {
     // 从 localStorage 加载数据
@@ -927,25 +971,29 @@ export default {
       if (storedData) {
         try {
           this.allData = JSON.parse(storedData);
-          
+
           // 计算急诊数量（确保在切换标签时更新）
-          this.emergencyCount = this.allData.filter(item => item.referralType === '急诊').length;
-          
+          this.emergencyCount = this.allData.filter(
+            (item) => item.referralType === "急诊"
+          ).length;
+
           // 根据当前标签筛选数据
-          if (this.activeTab === 'normal') {
-            this.tableData = this.allData.filter(item => (item.referralType || '普通') === '普通');
-          } else if (this.activeTab === 'emergency') {
-            this.tableData = this.allData.filter(item => item.referralType === '急诊');
+          if (this.activeTab === "normal") {
+            this.tableData = this.allData.filter(
+              (item) => (item.referralType || "普通") === "普通"
+            );
+          } else if (this.activeTab === "emergency") {
+            this.tableData = this.allData.filter((item) => item.referralType === "急诊");
           } else {
             this.tableData = this.allData;
           }
-          
+
           // 重置当前记录索引并更新当前记录
           this.currentIndex = 0;
           if (this.tableData.length > 0) {
             this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
           }
-          
+
           // 保存当前标签到 localStorage
           localStorage.setItem("referralActiveTab", this.activeTab);
         } catch (error) {
@@ -977,7 +1025,9 @@ export default {
     previousRecord() {
       if (this.currentIndex > 0) {
         this.currentIndex--;
-        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+        this.currentRecord = JSON.parse(
+          JSON.stringify(this.tableData[this.currentIndex])
+        );
       }
     },
     /**
@@ -986,7 +1036,9 @@ export default {
     nextRecord() {
       if (this.currentIndex < this.tableData.length - 1) {
         this.currentIndex++;
-        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+        this.currentRecord = JSON.parse(
+          JSON.stringify(this.tableData[this.currentIndex])
+        );
       }
     },
   },
@@ -1035,7 +1087,7 @@ export default {
 /* 添加标签样式 */
 .filter-tabs {
   /* margin-bottom: 20px; */
-}
+} 
 
 /* 使用深度选择器确保样式能够穿透组件 */
 .emergency-badge >>> .el-badge__content {
@@ -1061,7 +1113,6 @@ export default {
 /* 添加新的样式 */
 .button-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   margin-top: 20px;
   width: 100%;

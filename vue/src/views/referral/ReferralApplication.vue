@@ -311,14 +311,14 @@ export default {
         ],
         outHospital: [
           {
-            required: true,
+            required: false,
             message: "请输入转出医院",
             trigger: "blur",
           },
         ],
         outDoctor: [
           {
-            required: true,
+            required: false,
             message: "请输入转出医生",
             trigger: "blur",
           },

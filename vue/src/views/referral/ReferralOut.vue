@@ -1,8 +1,6 @@
 <template>
   <div>
     <el-card v-if="tableData.length > 0">
-
-
       <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
       <el-form
         ref="elForm"
@@ -95,7 +93,7 @@
 
             <el-form-item label="患者签字">
               <el-image
-                :src="currentRecord.signature"
+                :src="currentRecord.signatureUrl"
                 fit="contain"
                 style="width: 100%; height: 100px; border: 1px dashed #dcdfe6; border-radius: 4px;"
               >
@@ -143,13 +141,28 @@
                 </el-col>
               </el-row>
 
-              <el-form-item label="转出日期">
-                <el-input
-                  v-model="currentRecord.outTime"
-                  :readonly="true"
-                  :style="{ width: '100%' }"
-                ></el-input>
-              </el-form-item>
+              <el-row :gutter="10">
+                <el-col :span="10">
+                  <el-form-item label="转出日期">
+                    <el-input
+                      v-model="currentRecord.outTime"
+                      :readonly="true"
+                      :style="{ width: '100%' }"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="14">
+                  <el-form-item label="拟转入医院">
+                    <el-input
+                      v-model="temp"
+                      :readonly="true"
+                      :style="{ width: '100%' }"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+              </el-row>
 
               <el-form-item label="医务科意见">
                 <el-input
@@ -201,22 +214,17 @@
                 </el-form-item>
             </div>
 
-            <div class="button-group" v-if="currentRecord.referralStatus === '待审批' && user.role === 'ADMIN'">
-              <el-button type="success" @click="update(currentRecord)">同意</el-button>
-              <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
-              <el-button type="primary" @click="saveChanges">保存修改</el-button>
-              <div class="navigation-buttons">
-                <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
-                <span>{{ currentIndex + 1 }} / {{ tableData.length }}</span>
-                <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
-              </div>
-            </div>
           </el-col>
         </el-row>
+        <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
+          <el-button type="success" @click="update(currentRecord)">同意</el-button>
+          <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
+          <el-button type="primary" @click="saveChanges">保存修改</el-button>
+          <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
+          <span>{{ currentIndex + 1 }} / {{ tableData.length }}</span>
+          <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
+        </div>
       </el-form>
-
-
-
     </el-card>
 
     <el-empty v-else description="暂无转诊记录"></el-empty>
@@ -246,7 +254,7 @@ export default {
       blockAddr: "",
       dialog_title: "???",
       showDialog: false,
-      code: "",
+      temp: "xx大学第二附属医院"
     };
   },
   created() {
@@ -382,39 +390,18 @@ export default {
 </script>
 
 <style scoped>
-.search {
-  margin-bottom: 20px;
-}
 
-.search * {
-  margin-right: 10px;
-  display: inline-block;
-}
 
 .navigation-buttons {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .navigation-buttons span {
   margin: 0 20px;
   font-size: 16px;
-}
-
-.button-group {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.button-group .el-button {
-  margin: 0 10px;
-}
-
-.el-card {
-  margin-top: 20px;
 }
 
 .el-form-item {
