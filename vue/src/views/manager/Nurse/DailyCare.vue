@@ -47,7 +47,7 @@
       </div>
 
       <div class="table" style="width: 60%;">
-        <div class="table" style="margin-top: 15px">
+        <div class="table" style="margin-top: 0px">
           <el-table :data="tableData" strip @selection-change="handleSelectionChange">
             <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
             <!-- <el-table-column label="病床号" align="center">

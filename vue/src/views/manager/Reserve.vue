@@ -5,91 +5,34 @@
         <el-option label="未叫号" value="未叫号"></el-option>
         <el-option label="已叫号" value="已叫号"></el-option>
       </el-select>
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)"
-        >查询</el-button
-      >
-      <el-button type="warning" plain style="margin-left: 10px" @click="reset"
-        >重置</el-button
-      >
-      <el-button v-if="user.role === 'DOCTOR'" type="success" plain  @click="goToScreen" >查看门诊数据大屏</el-button>
+      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
+      <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <el-button v-if="user.role === 'DOCTOR'" type="success" plain @click="goToScreen">查看门诊数据大屏</el-button>
     </div>
-
     <div class="table">
       <el-table :data="tableData" stripe>
-        <el-table-column
-          prop="id"
-          label="序号"
-          align="center"
-          width="80px"
-        ></el-table-column>
-        <el-table-column
-          prop="hospitalName"
-          label="医院"
-          v-if="user.role !== 'DOCTOR'"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="userName"
-          label="患者姓名"
-          v-if="user.role === 'DOCTOR'"
-          align="center"
-          show-overflow-tooltip
-          width="80px"
-        ></el-table-column>
-        <el-table-column
-          prop="doctorName"
-          label="医生姓名"
-          v-if="user.role === 'USER'"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="科室"
-          v-if="user.role === 'USER'"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="illnessDetail"
-          label="病情描述"
-          v-if="user.role === 'DOCTOR'"
-          align="center"
-          show-overflow-tooltip
-          width="700px"
-        ></el-table-column>
+        <el-table-column prop="id" label="序号" align="center" width="80px"></el-table-column>
+        <el-table-column prop="hospitalName" label="医院" v-if="user.role !== 'DOCTOR'" align="center"></el-table-column>
+        <el-table-column prop="userName" label="患者姓名" v-if="user.role === 'DOCTOR'" align="center" show-overflow-tooltip
+          width="80px"></el-table-column>
+        <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" align="center"
+          show-overflow-tooltip></el-table-column>
+        <el-table-column prop="departmentName" label="科室" v-if="user.role === 'USER'" align="center"></el-table-column>
+        <el-table-column prop="illnessDetail" label="病情描述" v-if="user.role === 'DOCTOR'" align="center"
+          show-overflow-tooltip width="700px"></el-table-column>
         <el-table-column label="操作" align="center">
           <template v-slot="scope">
-            <el-button
-              plain
-              type="danger"
-              size="mini"
-              v-if="scope.row.status === '未叫号' && user.role === 'USER'"
-              @click="del(scope.row.id)"
-              >取消挂号</el-button
-            >
-            <el-button
-              plain
-              type="warning"
-              class="button"
-              size="mini"
-              v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'"
-              @click="call(scope.row)"
-              >叫号</el-button
-            >
+            <el-button plain type="danger" size="mini" v-if="scope.row.status === '未叫号' && user.role === 'USER'"
+              @click="del(scope.row.id)">取消挂号</el-button>
+            <el-button plain type="warning" class="button" size="mini"
+              v-if="user.role === 'DOCTOR' && scope.row.status !== '已叫号'" @click="call(scope.row)">叫号</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination">
-        <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[5, 10, 20]"
-          :page-size="pageSize"
-          layout="total, prev, pager, next"
-          :total="total"
-        >
+        <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>

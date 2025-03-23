@@ -30,25 +30,27 @@
       </div>
 
       <div class="table" style="width: 60%;">
-        <el-table :data="tableData" strip>
-          <!-- <el-table-column prop="id" label="序号" align="center" sortable></el-table-column> -->
-          <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
-          <el-table-column prop="doctorName" label="主治医生" show-overflow-tooltip align="center"
-            width="80px"></el-table-column>
-          <el-table-column prop="traverse.mainDiagnosis" label="主要诊断" show-overflow-tooltip
-            align="center"></el-table-column>
-          <!--<el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column> -->
-          <el-table-column label="操作" align="center" width="110px">
-            <template v-slot="scope">
-              <el-button type="primary" plain @click="handleAssign(scope.row)"
-                :disabled="scope.row.traverse.inHospital === '已住院'">分配病床</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination">
-          <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
-            :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
-          </el-pagination>
+        <div class="table" style="margin-top: 0px">
+          <el-table :data="tableData" strip>
+            <!-- <el-table-column prop="id" label="序号" align="center" sortable></el-table-column> -->
+            <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
+            <el-table-column prop="doctorName" label="主治医生" show-overflow-tooltip align="center"
+              width="80px"></el-table-column>
+            <el-table-column prop="traverse.mainDiagnosis" label="主要诊断" show-overflow-tooltip
+              align="center"></el-table-column>
+            <!--<el-table-column prop="wardName" label="病房号" show-overflow-tooltip align="center"></el-table-column> -->
+            <el-table-column label="操作" align="center" width="110px">
+              <template v-slot="scope">
+                <el-button type="primary" plain @click="handleAssign(scope.row)"
+                  :disabled="scope.row.traverse.inHospital === '已住院'">分配病床</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="pagination">
+            <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
+              :page-sizes="[5, 10, 20]" :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+            </el-pagination>
+          </div>
         </div>
       </div>
     </div>
