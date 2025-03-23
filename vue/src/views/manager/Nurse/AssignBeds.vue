@@ -268,7 +268,7 @@ export default {
   position: relative;
   margin: 250px 650px 0px !important;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
   box-shadow: outset 0 1px 10px rgba(0, 8, 255, 0.3);
   box-sizing: border-box;
