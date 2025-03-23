@@ -72,11 +72,10 @@
               <img src="../assets/imgs/doctor.png" alt="" class="el-icon-img">
               <span>医生模块</span>
             </template>
-            <el-menu-item index="/doctorPlan" disabled>医生排班信息</el-menu-item>
-            <el-menu-item index="/doctorReserve" disabled>当日诊疗</el-menu-item>
-            <el-menu-item index="/hospitalization" disabled>当日住院</el-menu-item>
-            <el-menu-item index="/record" disabled>就诊记录</el-menu-item>
-            <el-menu-item index="/doctorCaseList" disabled>病历列表</el-menu-item>
+            <el-menu-item index="/doctorPlan" v-if="user.role === 'DOCTOR'">门诊排班</el-menu-item>
+            <el-menu-item index="/doctorReserve" v-if="user.role === 'DOCTOR'">门诊业务</el-menu-item>
+            <el-menu-item index="/hospitalization" v-if="user.role === 'DOCTOR'">住院业务</el-menu-item>
+            <el-menu-item index="/doctorCaseList" v-if="user.role === 'DOCTOR'">病历列表</el-menu-item>
           </el-submenu>
 
 
@@ -97,11 +96,11 @@
               <img src="../assets/imgs/nurse.png" alt="" class="el-icon-img">
               <span>护士模块</span>
             </template>
-            <el-menu-item index="/HealthCheck" disabled>健康检测</el-menu-item>
-            <el-menu-item index="/AssignBeds" disabled>分配床位</el-menu-item>
-            <el-menu-item index="/DailyCare" disabled>日常护理</el-menu-item>
-            <el-menu-item index="/NursePlan" disabled>护士排班</el-menu-item>
-            <el-menu-item index="/NurseRecord" disabled>病床分配记录</el-menu-item>
+            <el-menu-item index="/HealthCheck">健康检测</el-menu-item>
+            <el-menu-item index="/AssignBeds">分配床位</el-menu-item>
+            <el-menu-item index="/DailyCare">日常护理</el-menu-item>
+            <el-menu-item index="/NursePlan">护士排班</el-menu-item>
+            <el-menu-item index="/NurseRecord">病床分配记录</el-menu-item>
           </el-submenu>
 
           <!-- 转诊模块 -->
@@ -142,18 +141,18 @@
               <img src="../assets/imgs/admin.png" alt="" class="el-icon-img">
               <span>管理模块</span>
             </template>
-            <el-menu-item index="/log" disabled>日志信息</el-menu-item>
-            <el-menu-item index="/notice" disabled>公告信息</el-menu-item>
-            <el-menu-item index="/hospital" disabled>医院信息</el-menu-item>
-            <el-menu-item index="/department" disabled>科室信息</el-menu-item>
-            <el-menu-item index="/drug" disabled>药品信息</el-menu-item>
-            <el-menu-item index="/doctor" disabled>医生管理</el-menu-item>
-            <el-menu-item index="/plan" disabled>医生排班</el-menu-item>
-            <el-menu-item index="/nurse" disabled>护士管理</el-menu-item>
-            <el-menu-item index="/plan" disabled>护士排班</el-menu-item>
-            <el-menu-item index="/user" disabled>患者管理</el-menu-item>
-            <el-menu-item index="/ward" disabled>病房管理</el-menu-item>
-            <el-menu-item index="/approval" disabled>住院审批</el-menu-item>
+            <el-menu-item index="/log">系统监控</el-menu-item>
+            <el-menu-item index="/notice">公告信息</el-menu-item>
+            <el-menu-item index="/hospital">医院信息</el-menu-item>
+            <el-menu-item index="/department">科室信息</el-menu-item>
+            <el-menu-item index="/drug">药品信息</el-menu-item>
+            <el-menu-item index="/doctor">医生管理</el-menu-item>
+            <el-menu-item index="/adminDoctorPlan">医生排班</el-menu-item>
+            <el-menu-item index="/nurse">护士管理</el-menu-item>
+            <el-menu-item index="/nurseplan">护士排班</el-menu-item>
+            <el-menu-item index="/user">患者管理</el-menu-item>
+            <el-menu-item index="/ward">病房管理</el-menu-item>
+            <el-menu-item index="/approval">住院审批</el-menu-item>
           </el-submenu>
         </el-menu>
       </div>
@@ -218,40 +217,4 @@ export default {
 
 <style scoped>
 @import "@/assets/css/newCSS.css"; 
-
-.el-icon-menu span {
-  font-size: 30px;
-}
-
-.el-icon-s-custom:before {
-    content: "\e7ab";
-}
-
-.el-icon-img {
-  width: 20px; 
-  height: 20px;
-}
-.manager-header-left :hover {
-  cursor: pointer;
-}
-
-.manager-header-right {
-  width: 150px;
-  display: flex; 
-  justify-content: flex-start;
-}
-
-.manager-header-center {
-    display: flex; 
-    justify-content: flex-end;
-}
-
-.manager-header {
-    display: flex;
-    background-color: #742c20;
-    max-height: 15vh;
-}
-.button-margin{
-  margin-right: 20px;
-}
 </style>
