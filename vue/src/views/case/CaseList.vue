@@ -88,6 +88,8 @@ export default {
       this.load(pageNum)
     },
     goToCaseDetails(row) {
+      row = {...row, ...row.traverse};
+      delete row.traverse;
       this.$router.push({
         name: 'CaseDetail',
         query: row

@@ -55,7 +55,7 @@
         </el-tab-pane>
         <el-tab-pane label="转诊接收" name="receive">
           <div class="qr-scan-container">
-            <QRcodeScan :active="activeTab === 'receive'" @getPrivateKey="handleQRCodeData" />
+            <QRcodeScan :active="activeTab === 'receive'" @getPrivateKey="handleQRCodeData" title="获取转诊信息..." />
           </div>
         </el-tab-pane>
       </el-tabs>

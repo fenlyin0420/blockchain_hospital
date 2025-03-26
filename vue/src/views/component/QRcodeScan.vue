@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <h1 style="text-align: center;">私钥获取</h1>
+    <h1 style="text-align: center; margin-bottom: 50px;"> {{ title }}</h1>
     <audio ref="beepSound" :src="audioSrc"></audio>
     <div class="qr-code-scanner" style="display: flex; justify-content: center;">
       <div style="height: 500px;">
@@ -27,6 +27,10 @@ import jsQR from "jsqr";
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '请扫描二维码'
+    },
     active: {
       type: Boolean,
       default: false
