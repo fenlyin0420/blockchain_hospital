@@ -26,6 +26,12 @@
 import jsQR from "jsqr";
 
 export default {
+  props: {
+    active: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       qrCodeData: null,
@@ -33,8 +39,17 @@ export default {
       audioSrc: process.env.VUE_APP_BASEURL + "/files/QR-bi.mp3",
     };
   },
-  mounted() {
-    this.initCamera();
+  watch: {
+    active: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.initCamera();
+        } else {
+          this.stopCamera();
+        }
+      }
+    }
   },
   methods: {
     async initCamera() {
@@ -58,12 +73,14 @@ export default {
     },
 
     scanQRCode() {
+      if (!this.active) return;
+      
       const video = this.$refs.video;
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
 
       const scanFrame = () => {
-        if (!this.videoStream || video.readyState !== video.HAVE_ENOUGH_DATA) {
+        if (!this.active || !this.videoStream || video.readyState !== video.HAVE_ENOUGH_DATA) {
           requestAnimationFrame(scanFrame);
           return;
         }
@@ -78,7 +95,6 @@ export default {
         });
 
         if (code) {
-          // this.stopCamera();
           this.handleQRCodeData(code.data);
           requestAnimationFrame(scanFrame);
         } else {
@@ -97,7 +113,7 @@ export default {
         });
       }
       this.$emit("getPrivateKey", data);
-      this.qrCodeData = data
+      this.qrCodeData = data;
       // 3 秒后隐藏提示
       setTimeout(() => {
         this.qrCodeData = null;
@@ -105,7 +121,10 @@ export default {
     },
 
     stopCamera() {
-      this.videoStream?.getTracks().forEach(track => track.stop());
+      if (this.videoStream) {
+        this.videoStream.getTracks().forEach(track => track.stop());
+        this.videoStream = null;
+      }
     },
   },
   beforeDestroy() {

@@ -257,7 +257,7 @@ export default {
             this.receivedData.recordDate = this.stob(this.receivedData.recordDate)
             this.receivedData.phone = this.stob(this.receivedData.phone)
             this.receivedData.illnessDetail = this.stob(this.receivedData.illnessDetail)
-            // this.sign();
+            this.sign();
 
           } else {
             this.$message.error("加密失败 :(");
@@ -276,7 +276,7 @@ export default {
           if (res.code === "200") {
             this.signData = res.data.signData;
             this.signPubKey = res.data.signPubKey;
-            // this.upChain();
+            this.upChain();
           } else {
             this.$message.error("签名失败 :(");
           }
@@ -289,27 +289,29 @@ export default {
     async upChain() {
       this.params.id = this.receivedData.id;
       // 构造要上传的至区块链的 JSON 病历
+//       {
+//     "idCard":"140402200403073215",
+//     "patientData":"唐太宗||男||18||皇帝||15101330734||2025-03-15||2025-03-15||1741925702825",
+//     "illnessDetail":"确诊糖尿病五年，一直通过口股降糖药控制血糖，但血糖波动较大。",
+//     "diagnosisData":"结合X线及MRI检查结果确诊为肩部骨折。||无",
+//     "treatmentPlan":"行肩部CT检查，进一步明确骨折的类型和移位情况，为手术治疗提供依据。||无||住院，采用切开复位内固定术治疗。||无||无",
+//     "hospitalInfo":"XX医院||李世民",
+//     "img":"http://localhost:8090/files/1742027190802-aaa1.jpg",
+//     "inHospitalStatus":"未住院",
+//     "signData":"98636178854421916927914129419243072759786400391027721454494882095943090821733,33140847311126996027460669709327299722257033193786158879367163322493113702193,54555585958578829816691541139241567457502915400355750733752752814027376900937,31433056382209366305017439048568519902375920778696214875324786541740004384190,19863820298975253024088406032192038946693765381520937823755499770803099171572,34172830686478545820546098946067022091126862784733441357108917640218221913037,30793300100828540389017497214284763286465019775921620769468311074603993510429,40013964574046954226438890550882579674522454313269594913295084292796541131951,6597561949781459580189251296371347978773766103238358046561084023847936446134"
+// }
       let traverse = {
-        _idCard: this.receivedData.idCard,
-        _userHospitalDoctor:
-          this.receivedData.userName +
-          "||" +
-          this.receivedData.hospitalName +
-          "||" +
-          this.receivedData.doctorName,
-        _timestampIllness:
-          this.receivedData.timestamp + "||" + this.receivedData.illnessDetail,
-        _treatmentRecordDate:
-          this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
-        _inHospital: this.receivedData.inHospital,
-        _drugAdvice: this.receivedData.drug + "||" + this.receivedData.advice,
-        _diagnosis: this.receivedData.diagnosis,
-        // _img: "http://localhost:8090/files/default.jpg",
-        _img: this.receivedData.img,
-        _signData: this.signData,
-        _signPubKey: this.signPubKey,
-      };
-      console.log(traverse)
+        idCard: this.receivedData.idCard,
+        patientData: this.receivedData.userName + "||" + this.receivedData.sex + "||" + this.receivedData.age + "||" + this.receivedData.occupation + "||" + this.receivedData.phone + "||" + this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
+        illnessDetail: this.receivedData.illnessDetail,
+        diagnosisData: this.receivedData.mainDiagnosis + "||" + this.receivedData.secondaryDiagnosis,
+        treatmentPlan: this.receivedData.furtherCheck + "||" + this.receivedData.nonMedicine + "||" + this.receivedData.care + "||" + this.receivedData.diet,
+        hospitalInfo: this.receivedData.hospitalName + "||" + this.receivedData.doctorName,
+        img: this.receivedData.img,
+        inHospitalStatus: this.receivedData.inHospital,
+        signData: this.signData,
+      }
+      console.log("traverse:", traverse)
       const Request = axios.create({
         baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
         timeout: 50000,
@@ -319,7 +321,7 @@ export default {
       Request.post("/storeMedicalRecord", traverse).then((res) => {
         if (res.data.code === "200") {
           this.transactionHash = res.data.data.transactionReceipt.transactionHash;
-          console.log(res)
+          console.log("res:", res)
           this.generateQR();
           this.$message.success("上传区块链成功 :)");
         } else {

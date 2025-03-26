@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="search">
+    <!-- 先别删 -->
+    <!-- <div class="search">
       <div class="update">
         <label for="pull">转诊信息:</label>
         <el-input
@@ -17,11 +18,21 @@
           >自动拉取转诊信息【测试】</el-button
         >
       </div>
-    </div>
-    <!-- 添加标签筛选 -->
+    </div> -->
+
+    <!-- 标签栏 -->
     <div class="filter-tabs">
       <el-tabs v-model="activeTab" @tab-click="handleTabChange">
-        <el-tab-pane label="全部转诊" name="all"></el-tab-pane>
+        <el-tab-pane name="all">
+          <span slot="label" class="all-tab">
+            全部转诊
+            <el-badge
+              v-if="allCount > 0"
+              :value="allCount"
+              class="all-badge"
+            ></el-badge>
+          </span>
+        </el-tab-pane>
         <el-tab-pane name="emergency">
           <span slot="label" class="emergency-tab">
             急诊转诊
@@ -32,13 +43,27 @@
             ></el-badge>
           </span>
         </el-tab-pane>
-        <el-tab-pane label="普通转诊" name="normal"></el-tab-pane>
+        <el-tab-pane name="normal">
+          <span slot="label" class="normal-tab">
+            普通转诊
+            <el-badge
+              v-if="normalCount > 0"
+              :value="normalCount"
+              class="normal-badge"
+            ></el-badge>
+          </span>
+        </el-tab-pane>
+        <el-tab-pane label="转诊接收" name="receive">
+          <div class="qr-scan-container">
+            <QRcodeScan :active="activeTab === 'receive'" @getPrivateKey="handleQRCodeData" />
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
 
     <!-- 转诊信息表单 -->
-    <el-card v-if="tableData.length > 0">
-      <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
+    <el-card v-if="tableData.length > 0 && activeTab !== 'receive'">
+      <h3 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h3>
       <el-form
         ref="elForm"
         :model="currentRecord"
@@ -224,7 +249,6 @@
                   <el-form-item label="转入医院">
                     <el-input
                       v-model="currentRecord.inHospitalName"
-                      :readonly="currentRecord.referralStatus !== '待审批'"
                     ></el-input>
                   </el-form-item>
                 </el-col>
@@ -232,7 +256,6 @@
                   <el-form-item label="转入医生">
                     <el-input
                       v-model="currentRecord.inDoctorName"
-                      :readonly="currentRecord.referralStatus !== '待审批'"
                     ></el-input>
                   </el-form-item>
                 </el-col>
@@ -246,7 +269,6 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
                   style="width: 100%"
-                  :disabled="currentRecord.referralStatus !== '待接收'"
                 ></el-date-picker>
               </el-form-item>
 
@@ -254,7 +276,6 @@
                 <el-input
                   v-model="currentRecord.inHospitalAdvice"
                   :style="{ width: '100%' }"
-                  :readonly="currentRecord.referralStatus !== '待接收'"
                 ></el-input>
               </el-form-item>
 
@@ -262,7 +283,6 @@
                 <el-input
                   v-model="currentRecord.globalAdvice"
                   :style="{ width: '100%' }"
-                  :readonly="currentRecord.referralStatus !== '待审批'"
                 ></el-input>
               </el-form-item>
             </div>
@@ -273,7 +293,7 @@
         <!-- 操作按钮组 -->
         <div
           class="operation-buttons"
-          v-if="currentRecord.referralStatus === '待接收' && user.role === 'ADMIN'"
+          v-if="user.role === 'ADMIN'"
         >
           <!-- <el-button type="success" @click="acceptReferral">同意接收</el-button>
                 <el-button type="danger" @click="rejectReferral">拒绝接收</el-button> -->
@@ -305,10 +325,13 @@
 
 <script>
 import axios from "axios";
+import QRcodeScan from "@/views/component/QRcodeScan.vue";
 
 export default {
   name: "ReferralRecord",
-  components: {},
+  components: {
+    QRcodeScan
+  },
   data() {
     return {
       tableData: [], // 所有的转诊信息
@@ -341,6 +364,8 @@ export default {
       },
       activeTab: "all", // 当前激活的标签
       emergencyCount: 0, // 急诊数量
+      normalCount: 0, // 普通转诊数量
+      allCount: 0, // 全部转诊数量
       autoSaveInterval: null, // 自动保存定时器
       currentRecord: {},
       currentIndex: 0,
@@ -495,10 +520,14 @@ export default {
             const referrals = this.parseReferrals(res.data.data.returnObject);
             this.allData = referrals; // 保存所有数据
 
-            // 计算急诊数量
+            // 计算各种数量
             this.emergencyCount = referrals.filter(
               (item) => item.referralType === "急诊"
             ).length;
+            this.normalCount = referrals.filter(
+              (item) => (item.referralType || "普通") === "普通"
+            ).length;
+            this.allCount = referrals.length;
 
             // 保存完整数据到 localStorage
             this.saveDataToLocalStorage(referrals);
@@ -518,6 +547,7 @@ export default {
             if (this.tableData.length > 0) {
               this.currentIndex = 0;
               this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
+              this.currentRecord.outTime = new Date().toISOString().split('T')[0]
             }
           } else {
             this.$message.error("获取转诊信息失败: " + (res.data.msg || "未知错误"));
@@ -538,30 +568,51 @@ export default {
       this.load(1);
     },
     /**
+     * 处理二维码扫描结果
+     * @param {string} data 扫描到的转诊哈希
+     */
+    handleQRCodeData(data) {
+      this.referralInfo = data;
+      console.log(data)
+      this.pullReferralInfo();
+    },
+    /**
      * 根据给定地址，从区块链获取对应病历
      */
     pullReferralInfo() {
-      // this.showDialog = true;
-      // this.showProgress = true;
+      if (!this.referralInfo) {
+        this.$message.warning("请先扫描转诊二维码");
+        return;
+      }
+
       const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
+        baseURL: "http://localhost:8088",
         timeout: 50000,
       });
 
       // 1. 根据转诊hash获取转诊信息,并存储转诊信息
       Request.post("/getReferralInfoByTransactionHash", {
-        _transactionHash: this.referralInfo,
+        _referralHash: this.referralInfo,
       }).then((res) => {
         if (res.data.code === "200") {
           // 解析数据，打开浮窗，准备拉取病历
           this.referralDetailForm = this.parseReferralRecord(res.data.data.returnObject);
           this.ReferralRecord = this.referralDetailForm;
-
+          console.log("ReferralRecord", this.ReferralRecord)
           // 保存到本地存储
           localStorage.setItem("ReferralRecord", JSON.stringify(this.ReferralRecord));
 
           this.showReferralDetail = true;
+          
+          // 切换到全部转诊标签
+          this.activeTab = "all";
+          this.handleTabChange();
+        } else {
+          this.$message.error(res.data.msg || "获取转诊信息失败");
         }
+      }).catch(error => {
+        console.error("获取转诊信息错误:", error);
+        this.$message.error("获取转诊信息失败: " + (error.message || "网络错误"));
       });
     },
     // 页面轮询地执行该函数
@@ -676,6 +727,21 @@ export default {
 
       // 打开弹窗
       this.showReferralDetail = true;
+    },
+    /**
+     * 查看病历历史记录
+     * @param row 当前行数据
+     */
+    viewMedicalHistory(row) {
+      if (!row.idCard) {
+        this.$message.warning("无法获取患者身份证号，无法溯源病历");
+        return;
+      }
+
+      this.$router.push({
+        name: "CaseHistory",
+        query: { idCard: row.idCard },
+      });
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum);
@@ -947,25 +1013,17 @@ export default {
           this.$message.error("保存失败: " + (error.message || "网络错误"));
         });
     },
-    /**
-     * 查看病历历史记录
-     * @param row 当前行数据
-     */
-    viewMedicalHistory(row) {
-      if (!row.idCard) {
-        this.$message.warning("无法获取患者身份证号，无法溯源病历");
-        return;
-      }
 
-      this.$router.push({
-        name: "CaseHistory",
-        query: { idCard: row.idCard },
-      });
-    },
     /**
      * 处理标签切换
      */
     handleTabChange() {
+      // 如果切换到转诊接收标签，清空之前的转诊信息
+      if (this.activeTab === "receive") {
+        this.referralInfo = "";
+        return;
+      }
+
       // 从localStorage获取完整数据
       const storedData = localStorage.getItem("referralTableData");
       if (storedData) {
@@ -1068,7 +1126,12 @@ export default {
 .el-table {
   color: blue;
 }
-
+::v-deep .el-tabs__header {
+  margin-bottom: 0px;
+}
+::v-deep .el-card__body {
+  padding-top: 5px;
+}
 .verifyBtn {
   margin-top: 5px;
   width: 30%;
@@ -1084,16 +1147,38 @@ export default {
   width: fit-content;
 }
 
-/* 添加标签样式 */
-.filter-tabs {
-  /* margin-bottom: 20px; */
-} 
 
 /* 使用深度选择器确保样式能够穿透组件 */
+.all-badge >>> .el-badge__content {
+  background-color: #409EFF;
+  color: white;
+  border: none;
+}
+
+.normal-badge >>> .el-badge__content {
+  background-color: #67C23A;
+  color: white;
+  border: none;
+}
+
 .emergency-badge >>> .el-badge__content {
   background-color: #f56c6c;
   color: white;
   border: none;
+}
+
+.all-tab {
+  color: #409EFF;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.normal-tab {
+  color: #67C23A;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
 .emergency-tab {
@@ -1148,10 +1233,6 @@ export default {
   min-width: 100px;
 }
 
-.el-card {
-  margin-top: 20px;
-}
-
 .el-form-item {
   margin-bottom: 18px;
 }
@@ -1172,5 +1253,15 @@ export default {
   width: 100%;
   height: 100%;
   background: #f5f7fa;
+}
+
+.qr-scan-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  margin: 20px 0;
 }
 </style>

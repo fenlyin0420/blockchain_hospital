@@ -1,16 +1,17 @@
 <template>
   <div class="main-content">
-    <QRcodeScan @getPrivateKey="data => childData  = data"></QRcodeScan>
-    <p>{{ childData }}</p>
+    <!-- <QRcodeScan @getPrivateKey="data => childData  = data"></QRcodeScan>
+    < -->
+    <ProgressBar></ProgressBar>
   </div>
 </template>
 
 <script>
-import QRcodeScan from "../component/QRcodeScan.vue";
+import ProgressBar from "../front/ProgressBar";
 
 export default {
   components: {
-    QRcodeScan
+    ProgressBar
   },
   data() {
     return {

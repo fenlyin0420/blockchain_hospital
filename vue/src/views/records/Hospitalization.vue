@@ -78,10 +78,14 @@ export default {
         update(row) {
             let caseData = JSON.parse(JSON.stringify(row));
             let caseInfo = {
-            userId: caseData?.userId,
+            userId: caseData?.traverse.userId,
+            sex: caseData?.sex,
+            age: caseData?.age,
+            occupation: caseData?.occupation,
+            phone: caseData.phone,
             userName: caseData?.userName,
             doctorName: caseData?.doctorName,
-            hospitalId: caseData?.hospitalId,
+            hospitalId: caseData?.traverse.hospitalId,
             hospitalName: caseData?.hospitalName,
             departmentName: caseData?.departmentName,
             time: this.currentDate,
@@ -104,6 +108,7 @@ export default {
                 }
             }).then(res => {
                 this.tableData = res.data?.list;
+                console.log(this.tableData)
                 this.total = res.data?.total;
             })
         },

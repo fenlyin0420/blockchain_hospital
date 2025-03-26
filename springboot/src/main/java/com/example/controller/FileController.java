@@ -106,8 +106,8 @@ public class FileController {
     // }
 
     /**
-     * 生成二维码,数据为 seed
-     * @param seed 二维码包含的数据
+     * 生成二维码,数据为 data
+     * @param data 二维码包含的数据
      * @return
      */
     @GetMapping("/generateQR")

@@ -44,7 +44,7 @@
           <el-row :gutter="24">
             <el-col :span="9">
               <el-form-item label="年龄">
-                <el-input v-model="formData.age" placeholder=""></el-input>
+                <el-input v-model="formData.age"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="5">
@@ -54,7 +54,7 @@
             </el-col>
             <el-col :span="10">
               <el-form-item label="身份证号码" label-width="90px">
-                <el-input v-model="formData.idCard" placeholder=""></el-input>
+                <el-input v-model="formData.idCard"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -62,12 +62,12 @@
           <el-row :gutter="24">
             <el-col :span="hsl">
               <el-form-item label="联系电话">
-                <el-input v-model="formData.phone" placeholder=""></el-input>
+                <el-input v-model="formData.phone"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="hsr">
               <el-form-item label="转诊编号">
-                <el-input v-model="formData.referralNumber" placeholder=""></el-input>
+                <el-input v-model="formData.referralNumber"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -77,6 +77,7 @@
               v-model="formData.diagnosis"
               show-word-limit
               clearable
+              readonly
               prefix-icon="el-icon-first-aid-kit"
               :style="{ width: '100%' }"
             ></el-input>
@@ -122,12 +123,12 @@
             <el-row :gutter="g_nor">
               <el-col :span="10">
                 <el-form-item label="转诊状态">
-                  <el-input v-model="formData.referralStatus"></el-input>
+                  <el-input v-model="formData.referralStatus" readonly></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="14">
                 <el-form-item label="病历地址">
-                  <el-input v-model="formData.traverseAddr" placeholder=""></el-input>
+                  <el-input v-model="formData.traverseAddr" placeholder="" readonly></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -135,22 +136,7 @@
             <el-row :gutter="g_nor">
               <el-col :span="13">
                 <el-form-item label="转出医院" prop="outHospital">
-                  <el-select
-                    v-model="formData.outHospitalName"
-                    placeholder="请选择转出医院"
-                    clearable
-                    :style="{ width: '100%' }"
-                  >
-                    <template #prefix>
-                      <i class="el-icon-office-building"></i>
-                    </template>
-                    <el-option
-                      v-for="item in hospitalOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
+                  <el-input v-model="formData.outHospitalName" prefix-icon="el-icon-office-building" readonly></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
@@ -164,6 +150,7 @@
                 v-model="formData.outTime"
                 placeholder="请输入转出日期"
                 clearable
+                readonly
                 prefix-icon="el-icon-date"
                 :style="{ width: '100%' }"
               ></el-input>
@@ -173,6 +160,7 @@
                 v-model="formData.outHospitalAdvice"
                 placeholder="请输入医务科意见"
                 clearable
+                readonly
                 prefix-icon="el-icon-tickets"
                 :style="{ width: '100%' }"
               ></el-input>
@@ -188,6 +176,7 @@
                     v-model="formData.inHospitalName"
                     placeholder="请选择转入医院"
                     clearable
+                    readonly
                     :style="{ width: '100%' }"
                   >
                     <template #prefix>
@@ -208,6 +197,7 @@
                     v-model="formData.inDoctorName"
                     placeholder="请输入转入医生"
                     clearable
+                    readonly
                     prefix-icon="el-icon-user"
                     :style="{ width: '100%' }"
                   ></el-input>
@@ -219,6 +209,7 @@
                 v-model="formData.inTime"
                 placeholder="请输入转入日期"
                 clearable
+                readonly
                 prefix-icon="el-icon-date"
                 :style="{ width: '100%' }"
               ></el-input>
@@ -228,6 +219,7 @@
                 v-model="formData.inHospitalAdvice"
                 placeholder="请输入医务科意见"
                 clearable
+                readonly
                 prefix-icon="el-icon-tickets"
                 :style="{ width: '100%' }"
               ></el-input>
@@ -237,6 +229,7 @@
                 v-model="formData.globalAdvice"
                 placeholder="请输入医保经办机构意见"
                 clearable
+                readonly
                 :style="{ width: '100%' }"
               ></el-input>
             </el-form-item>
@@ -281,13 +274,6 @@ export default {
         signatureUrl: undefined,
       },
       rules: {
-        diagnosis: [
-          {
-            required: false,
-            message: "诊断结果",
-            trigger: "blur",
-          },
-        ],
         communication: [
           {
             required: true,
@@ -302,74 +288,11 @@ export default {
             trigger: "blur",
           },
         ],
-        signature: [
+        referralType: [
           {
             required: true,
-            message: "",
-            trigger: "blur",
-          },
-        ],
-        outHospital: [
-          {
-            required: false,
-            message: "请输入转出医院",
-            trigger: "blur",
-          },
-        ],
-        outDoctor: [
-          {
-            required: false,
-            message: "请输入转出医生",
-            trigger: "blur",
-          },
-        ],
-        outTime: [
-          {
-            required: true,
-            message: "请输入转出日期",
-            trigger: "blur",
-          },
-        ],
-        outHospitalAdvice: [
-          {
-            required: true,
-            message: "请输入医务科意见",
-            trigger: "blur",
-          },
-        ],
-        inHospital: [
-          {
-            required: true,
-            message: "请输入转入医院",
-            trigger: "blur",
-          },
-        ],
-        inDoctor: [
-          {
-            required: true,
-            message: "请输入转入医生",
-            trigger: "blur",
-          },
-        ],
-        inTime: [
-          {
-            required: true,
-            message: "请输入转入日期",
-            trigger: "blur",
-          },
-        ],
-        inHospitalAdvice: [
-          {
-            required: true,
-            message: "请输入医务科意见",
-            trigger: "blur",
-          },
-        ],
-        globalAdvice: [
-          {
-            required: true,
-            message: "请输入医保经办机构意见",
-            trigger: "blur",
+            message: "请选择转诊类型",
+            trigger: "change",
           },
         ],
       },
@@ -400,7 +323,9 @@ export default {
   created() {
     this.loadUsers();
     this.formData.outDoctorName = this.user.name;
-    this.formData.outTime = new Date().toISOString().split('T')[0];
+    this.formData.outHospitalName = 'xx大学第一附属医院';
+    this.formData.referralStatus = '待提交';
+    // this.formData.outTime = new Date().toISOString().split('T')[0];
     this.loadHospitals();
   },
   mounted() {
@@ -523,35 +448,17 @@ export default {
       xhr.send(formData);
     },
     
-    // 提交完整表单的方法
+    // 提交完整表单
     submitFullForm() {
-      this.$request.post("/referral/add", this.formData).then((res) => {
-        if (res.code === "200") {
-          this.$message.success("提交成功");
-          
-          // 如果是急诊，继续处理区块链数据
-          if (this.formData.referralType === "急诊") {
-            const referralInfo = {}
-            referralInfo.patientData = `${this.formData.userName}||${this.formData.sex}||${this.formData.age}||${this.formData.idCard}||${this.formData.phone}`
-            referralInfo.medicalData = `${this.formData.diagnosis}||${this.formData.reason}||${this.formData.communication}||${this.formData.signatureUrl}`
-            referralInfo.outHospitalData = `${this.formData.outHospitalName}||${this.formData.outDoctorName}||${this.formData.outHospitalAdvice}||${this.formData.outTime}`
-            referralInfo.status = "待接收"
-            referralInfo.urgency = "急诊"
-            
-            this.$blockRequest.post("/storeIntelReferralInfo", referralInfo).then((blockRes) => {
-              if (blockRes.data.code === "200") {
-                this.$message.success("区块链数据上传成功");
-                this.formData.traverseAddr = blockRes.data.data.transactionReceipt.transactionHash
-              } else {
-                this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
-              }
-            }).catch(error => {
-              console.error("区块链请求错误:", error);
-              this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
-            });
-          }
-        } else {
-          this.$message.error(res.msg);
+      this.$refs["elForm"].validate((valid) => {
+        if (valid) {
+          this.$request.post("/referral/add", this.formData).then((res) => {
+            if (res.code === "200") {
+              this.$message.success("提交成功");
+            } else {
+              this.$message.error(res.msg);
+            }
+          });
         }
       });
     },

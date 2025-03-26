@@ -17,7 +17,7 @@
         <el-table-column prop="reason" label="转诊原因" align="center"></el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template v-slot="scope">
-            <el-button plain type="primary" style="color: blue;" size="mini" @click=call(scope.row)
+            <el-button plain type="primary" style="color: blue;" size="mini" @click=viewMedicalHistory(scope.row)
               :disabled="user.role !== 'DOCTOR'">病历溯源</el-button>
             <el-button plain type="warning" style="color: blue;" size="mini" @click=call(scope.row)
               :disabled="user.role !== 'DOCTOR'">接诊</el-button>
@@ -113,6 +113,21 @@ export default {
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
+    },
+    /**
+     * 查看病历历史记录
+     * @param row 当前行数据
+     */
+    viewMedicalHistory(row) {
+      if (!row.idCard) {
+        this.$message.warning("无法获取患者身份证号，无法溯源病历");
+        return;
+      }
+
+      this.$router.push({
+        name: "CaseHistory",
+        query: { idCard: row.idCard },
+      });
     },
   }
 }
