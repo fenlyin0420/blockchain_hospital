@@ -215,6 +215,7 @@
           </el-col>
         </el-row>
         <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
+          <!-- <el-button type="primary" @click="showProgressBar">转诊进度</el-button> -->
           <el-button type="success" @click="update(currentRecord)">同意</el-button>
           <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
           <el-button type="primary" @click="saveChanges">保存修改</el-button>
@@ -252,13 +253,22 @@
         <p class="qr-code-tip">请使用手机扫描保存二维码</p>
       </div>
     </el-dialog>
+    <el-dialog
+      title="转诊进度"
+      :visible.sync="ProgressBarDialogVisible"
+      width="800px"
+    >
+      <ProgressBar />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ProgressBar from '../front/ProgressBar.vue';
 export default {
   name: "ReferralRecord",
   components: {
+    ProgressBar
   },
   data() {
     return {
@@ -279,6 +289,7 @@ export default {
       temp: "xx大学第二附属医院",
       qrCodeDialogVisible: false, // 二维码弹窗显示状态
       qrCodeUrl: '', // 二维码图片URL
+      ProgressBarDialogVisible: false,
       currentRecord: {
         outHospitalAdvice: undefined,
       },
@@ -367,9 +378,11 @@ export default {
                 this.$message.success("区块链数据上传成功");
                 this.currentRecord.traverseAddr = blockRes.data.data.transactionReceipt.output
                 console.log(blockRes)
-                // 生成并显示二维码
+                // 普通生成并显示二维码，急诊显示医院匹配的进度条
                 if (this.currentRecord.referralType !== "急诊") {
                   this.showQRCode(blockRes.data.data.transactionReceipt.output);
+                } else {
+                  this.showProgressBar();
                 }
               } else {
                 this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
@@ -460,6 +473,9 @@ export default {
         console.error('生成二维码错误:', error);
         this.$message.error('生成二维码失败：' + (error.message || '网络错误'));
       }
+    },
+    showProgressBar() {
+      this.ProgressBarDialogVisible = true;
     },
   },
 };
