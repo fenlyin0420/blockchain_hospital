@@ -1,31 +1,46 @@
 <template>
-  <div>
+  <div class="container">
     <div class="title">
-      <span v-if="percentage < 100">正在智能匹配{{ hospital }}</span>
+      <span v-if="percentage < 100">正在智能匹配医院</span>
       <div v-else>
         <div class="title">
           <span>已匹配到以下医院：</span>
         </div>
         <el-row :gutter="20">
-          <el-col :span="12" v-for="(item, index) in hospitalData" :key="index">
+          <el-col :span="24">
             <div class="hospital-item">
-              <p><strong>医院名称：</strong>{{ item.hospital }}</p>
-              <p><strong>专科匹配度：</strong>{{ item.matched }}</p>
-              <p><strong>当前候诊人数：</strong>{{ item.number }}</p>
-              <p><strong>交通便利指数：</strong>{{ item.transportation }}</p>
+              <p><strong>医院名称：</strong>{{ hospitalData[0].hospital }}</p>
+              <p><strong>专科匹配度：</strong>{{ hospitalData[0].matched }}</p>
+              <p><strong>当前候诊人数：</strong>{{ hospitalData[0].number }}</p>
+              <p><strong>交通便利指数：</strong>{{ hospitalData[0].transportation }}</p>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
-    <el-progress
-      v-if="percentage < 100"
-      :percentage="percentage"
-      :color="progressColor"
-      :stroke-width="20"
-      :text-inside="true"
-      :format="formatPercentage"
-    ></el-progress>
+    <div v-if="percentage < 100" class="progress-container">
+      <div class="influence-factors">
+        <p>
+          <strong>医院名称：</strong>{{ hospital }}
+        </p>
+        <p>
+          <strong>专科匹配度：</strong>{{ currentHospital.matched }}
+        </p>
+        <p>
+          <strong>当前候诊人数：</strong>{{ currentHospital.number }}
+        </p>
+        <p>
+          <strong>交通便利指数：</strong>{{ currentHospital.transportation }}
+        </p>
+      </div>
+      <el-progress
+        :percentage="percentage"
+        :color="progressColor"
+        :stroke-width="20"
+        :text-inside="true"
+        :format="formatPercentage"
+      ></el-progress>
+    </div>
   </div>
 </template>
 
@@ -33,7 +48,44 @@
 export default {
   data() {
     return {
-      hospitalData: [], // 存储解析后的医院数据
+      hospitalData: [
+        {
+          hospital: "医院A",
+          matched: "90%",
+          number: "10",
+          transportation: "80%",
+        },
+        {
+          hospital: "医院B",
+          matched: "85%",
+          number: "15",
+          transportation: "75%",
+        },
+        {
+          hospital: "医院C",
+          matched: "80%",
+          number: "20",
+          transportation: "90%",
+        },
+        {
+          hospital: "医院D",
+          matched: "75%",
+          number: "25",
+          transportation: "60%",
+        },
+        {
+          hospital: "医院E",
+          matched: "95%",
+          number: "5",
+          transportation: "85%",
+        },
+        {
+          hospital: "医院F",
+          matched: "88%",
+          number: "12",
+          transportation: "70%",
+        },
+      ], // 存储静态医院数据
       hospital: "", // 当前显示的医院名称
       percentage: 0, // 当前进度
       gradientColors: [
@@ -83,55 +135,15 @@ export default {
       const interpolatedColor = this.interpolateColor(currentColor, nextColor, ratio);
       return this.rgbToHex(interpolatedColor);
     },
+    // 当前匹配的医院数据
+    currentHospital() {
+      return this.hospitalData[this.currentHospitalIndex];
+    },
   },
   mounted() {
     this.startProgress();
-    this.load();
   },
   methods: {
-    load() {
-      this.$blockRequest
-        .post("/getHospitalData")
-        .then((res) => {
-          if (res.data.code === "200") {
-            // 检查 returnObject 是否存在
-            if (
-              res.data.data &&
-              res.data.data.returnObject &&
-              res.data.data.returnObject.length > 0
-            ) {
-              // 将 returnObject 的第一个元素（字符串）按医院信息分割
-              const hospitalsInfo = res.data.data.returnObject[0].split("\n\n");
-              // 解析每条医院信息并存入 hospitalData 数组
-              this.hospitalData = hospitalsInfo.map((info) => {
-                // 去掉每条信息首尾的换行符
-                const trimmedInfo = info.trim();
-                // 按行分割每条医院信息
-                const lines = trimmedInfo.split("\n");
-                // 提取每行的信息
-                const hospital = lines[0]; // 医院名称
-                const matched = lines[1].split(": ")[1]; // 专科匹配度
-                const number = lines[2].split(": ")[1]; // 当前候诊人数
-                const transportation = lines[4].split(": ")[1]; // 交通便利指数
-                // 返回一个对象
-                return {
-                  hospital,
-                  matched,
-                  number,
-                  transportation,
-                };
-              });
-            } else {
-              console.error("返回数据中没有 returnObject 或数据为空");
-            }
-          } else {
-            console.error("请求失败，状态码：", res.data.code);
-          }
-        })
-        .catch((error) => {
-          console.error("请求发生错误：", error);
-        });
-    },
     startProgress() {
       let interval = setInterval(() => {
         if (this.percentage < 100) {
@@ -140,7 +152,7 @@ export default {
         } else {
           clearInterval(interval);
         }
-      }, 600); // 每隔 0.06 秒增加 1%
+      }, 100); // 每隔 0.06 秒增加 1%
     },
     updateHospital() {
       // 确保 hospitalData 不为空
@@ -187,22 +199,53 @@ export default {
 </script>
 
 <style scoped>
-/* 设置进度条文本样式 */
-::v-deep .el-progress__text {
-  color: black;
-  /* 设置文本颜色为黑色 */
-  font-weight: bold;
-  /* 设置文本加粗 */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .hospital-item {
-  margin-bottom: 20px;
+  background-color: #fff;
+  padding: 15px;
   border: 1px solid #ccc;
-  padding: 10px;
   border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.progress-container {
+  position: relative;
+  margin-top: 20px;
+}
+
+.progress-container .influence-factors {
+  position: relative;
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.progress-container .influence-factors p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 14px;
+  color: #333;
+}
+
+::v-deep .el-progress__text {
+  color: black;
+  font-weight: bold;
 }
 </style>
