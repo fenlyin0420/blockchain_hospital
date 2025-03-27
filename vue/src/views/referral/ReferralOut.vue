@@ -215,7 +215,7 @@
           </el-col>
         </el-row>
         <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
-          <!-- <el-button type="primary" @click="showProgressBar">转诊进度</el-button> -->
+          <el-button type="primary" @click="showProgressBar">转诊进度</el-button>
           <el-button type="success" @click="update(currentRecord)">同意</el-button>
           <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
           <el-button type="primary" @click="saveChanges">保存修改</el-button>
@@ -254,7 +254,8 @@
       </div>
     </el-dialog>
     <el-dialog
-      title="转诊进度"
+      title="智能推荐"
+      center
       :visible.sync="ProgressBarDialogVisible"
       width="800px"
     >

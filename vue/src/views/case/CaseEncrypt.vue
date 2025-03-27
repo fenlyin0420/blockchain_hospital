@@ -293,12 +293,13 @@ export default {
           this.receivedData[key] = "无";
         }
       }
+      let timestamp = new Date().getTime();
       let traverse = {
         idCard: this.receivedData.idCard,
-        patientData: this.receivedData.userName + "||" + this.receivedData.sex + "||" + this.receivedData.age + "||" + this.receivedData.occupation + "||" + this.receivedData.phone + "||" + this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
+        patientData: this.receivedData.userName + "||" + this.receivedData.sex + "||" + this.receivedData.age + "||" + this.receivedData.occupation + "||" + this.receivedData.phone + "||" + this.receivedData.treatmentDate + "||" + this.receivedData.recordDate + "||" + timestamp,
         illnessDetail: this.receivedData.illnessDetail,
         diagnosisData: this.receivedData.mainDiagnosis + "||" + this.receivedData.secondaryDiagnosis,
-        treatmentPlan: this.receivedData.furtherCheck + "||" + this.receivedData.nonMedicine + "||" + this.receivedData.care + "||" + this.receivedData.diet,
+        treatmentPlan: this.receivedData.furtherCheck + "||" + this.receivedData.drug + "||" + this.receivedData.nonMedicine + "||" + this.receivedData.care + "||" + this.receivedData.diet,
         hospitalInfo: this.receivedData.hospitalName + "||" + this.receivedData.doctorName,
         img: this.receivedData.img,
         inHospitalStatus: this.receivedData.inHospital,

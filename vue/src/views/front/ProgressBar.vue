@@ -140,7 +140,7 @@ export default {
         } else {
           clearInterval(interval);
         }
-      }, 600); // 每隔 0.06 秒增加 1%
+      }, 200); // 每隔 0.06 秒增加 1%
     },
     updateHospital() {
       // 确保 hospitalData 不为空
