@@ -1,0 +1,127 @@
+<mxfile host="65bd71144e">
+    <diagram id="RdVCcxbGRxnegAiaeV9u" name="Page-1">
+        <mxGraphModel dx="1276" dy="530" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="12" target="13" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="79" y="238" as="sourcePoint"/>
+                        <mxPoint x="79" y="305" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="12" value="A医院&lt;br&gt;转诊发起" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="19.001811018318953" y="193.00159516433186" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="管理员审批" style="whiteSpace=wrap;html=1;rounded=1;arcSize=35;" parent="1" vertex="1">
+                    <mxGeometry x="19.001811018318953" y="312.0015951643319" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="转诊申请" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="79.00594894935348" y="267.0046986126078" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="上传病历至区块链" style="whiteSpace=wrap;html=1;rounded=1;arcSize=35;" parent="1" vertex="1">
+                    <mxGeometry x="19.001811018318946" y="431.0015951643319" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="病历" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="76" y="385" width="48" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="33" y="566" width="280" height="33" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=none;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;endFill=0;" parent="25" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="0.00449862563834301" as="sourcePoint"/>
+                        <mxPoint x="280" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=none;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;endFill=0;" parent="25" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="0.00449862563834301" y="32.997143104493134" as="sourcePoint"/>
+                        <mxPoint x="280" y="32.997143104493134" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=none;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;endFill=0;" parent="25" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint y="0.0028568955068636846" as="sourcePoint"/>
+                        <mxPoint y="33" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="26" value="病历" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="25" vertex="1">
+                    <mxGeometry x="115.99865041230849" y="3.502553891437954" width="42" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="病历" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="79" y="512" width="42" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="从区块链拉取病历" style="whiteSpace=wrap;html=1;rounded=1;arcSize=35;" parent="1" vertex="1">
+                    <mxGeometry x="212.0018110183189" y="427.0015951643319" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="病历" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="274" y="512" width="42" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="对病历验签" style="whiteSpace=wrap;html=1;rounded=1;arcSize=35;" parent="1" vertex="1">
+                    <mxGeometry x="212.0018110183189" y="312.0015951643319" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=open;endFill=0;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="31" target="35" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="349.66666666666674" y="403.83333333333337" as="sourcePoint"/>
+                        <mxPoint x="469.66666666666674" y="403.83333333333337" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="37" value="病历" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="268" y="397" width="48" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="B医院&lt;br&gt;转诊接收" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="212.00181101831896" y="193.00159516433186" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=open;endFill=0;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="13" target="17" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="55.333333333333485" y="400.5" as="sourcePoint"/>
+                        <mxPoint x="175.33333333333348" y="400.5" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="40" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=open;endFill=0;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="17" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="170.33333333333348" y="500.83333333333337" as="sourcePoint"/>
+                        <mxPoint x="80" y="567" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="41" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=open;endFill=0;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" target="31" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="272" y="566" as="sourcePoint"/>
+                        <mxPoint x="387.09521484375" y="524.2380719866071" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="43" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;endArrow=open;endFill=0;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;jumpStyle=none;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="35" target="38" edge="1">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="264.2380719866071" y="268.57142857142856" as="sourcePoint"/>
+                        <mxPoint x="384.2380719866071" y="268.57142857142856" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="44" value="病历" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="268" y="272" width="48" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;rounded=0;endArrow=open;startSize=14;endSize=14;sourcePerimeterSpacing=8;targetPerimeterSpacing=8;curved=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="13" target="12">
+                    <mxGeometry width="120" relative="1" as="geometry">
+                        <mxPoint x="34.17241379310349" y="299.25288759428884" as="sourcePoint"/>
+                        <mxPoint x="154.1724137931035" y="299.25288759428884" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="46" value="被拒绝的转诊申请" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="-18" y="267" width="56" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="A医院向B医院转诊的数据流图" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=22;" vertex="1" parent="1">
+                    <mxGeometry x="16" y="93" width="314" height="38" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
