@@ -47,7 +47,7 @@
       </div>
 
       <div class="table" style="width: 60%;">
-        <div class="table" style="margin-top: 15px">
+        <div class="table" style="margin-top: 0px">
           <el-table :data="tableData" strip @selection-change="handleSelectionChange">
             <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
             <!-- <el-table-column label="病床号" align="center">
@@ -56,7 +56,7 @@
               </template>
             </el-table-column> -->
             <!-- <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column> -->
-            <el-table-column prop="advice" label="当日医嘱" show-overflow-tooltip align="center" ></el-table-column>
+            <el-table-column prop="traverse.drug" label="当日医嘱" show-overflow-tooltip align="center" ></el-table-column>
             <!-- <el-table-column prop="careStatus" label="护理状态" align="center"></el-table-column> -->
             <!-- <el-table-column label="操作" width="180" align="center">
               <template v-slot="scope">
@@ -114,10 +114,9 @@ export default {
         },).then(res => {
           if (res.code === '200') {
             this.tableData = res.data?.list.filter(item => {
-              return item.treatmentDate === currentDate;
+              return item.traverse.treatmentDate === currentDate;
             });
             this.total = res.data?.total;
-            console.log("yizhu",this.tableData)
           } else {
             this.$message.error(res.msg)
           }
@@ -146,6 +145,7 @@ export default {
       let Data = this.tableData.filter(item =>item.userName === status) //找出床位对应的患者
       let caseData = Data[0];
       caseData.careStatus = '已护理';
+      caseData.id = caseData.traverse.id;
       this.$request.put('/DailyCare/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('护理完毕')
@@ -175,7 +175,7 @@ export default {
       // 遍历 tableData 查找匹配的 userName
       for (const item of this.tableData) {
         if (item.userName === status) {
-          if(item.careStatus === '已护理'){
+          if(item.traverse.careStatus === '已护理'){
             return true;
           }
         }

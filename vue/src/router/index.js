@@ -57,6 +57,7 @@ const routes = [
       { path: 'doctorCaseList', name: 'DoctorCaseList', meta: { name: '病历列表' }, component: () => import('../views/case/CaseList.vue') },
       { path: 'case', name: 'Case', meta: { name: '病历信息' }, component: () => import('../views/case/Case.vue') },
       { path: 'caseDetail', name: 'CaseDetail', meta: { name: '病历详情' }, component: () => import('../views/case/CaseDetail.vue') },
+      { path: 'caseHistory', name: 'CaseHistory', meta: { name: '病历历史' }, component: () => import('../views/case/CaseHistory.vue') },
       { path: 'caseEncrypt', name: 'CaseEncrypt', meta: { name: '病历加密' }, component: () => import('../views/case/CaseEncrypt.vue') },
       { path: 'caseSign', name: 'CaseSign', meta: { name: '病历签名' }, component: () => import('../views/case/CaseSign.vue') },
       

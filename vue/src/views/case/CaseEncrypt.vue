@@ -257,7 +257,7 @@ export default {
             this.receivedData.recordDate = this.stob(this.receivedData.recordDate)
             this.receivedData.phone = this.stob(this.receivedData.phone)
             this.receivedData.illnessDetail = this.stob(this.receivedData.illnessDetail)
-            // this.sign();
+            this.sign();
 
           } else {
             this.$message.error("加密失败 :(");
@@ -276,7 +276,7 @@ export default {
           if (res.code === "200") {
             this.signData = res.data.signData;
             this.signPubKey = res.data.signPubKey;
-            // this.upChain();
+            this.upChain();
           } else {
             this.$message.error("签名失败 :(");
           }
@@ -288,28 +288,23 @@ export default {
      */
     async upChain() {
       this.params.id = this.receivedData.id;
-      // 构造要上传的至区块链的 JSON 病历
+      for (const key in this.receivedData) {
+        if (this.receivedData[key] == null || this.receivedData[key] == "") {
+          this.receivedData[key] = "无";
+        }
+      }
       let traverse = {
-        _idCard: this.receivedData.idCard,
-        _userHospitalDoctor:
-          this.receivedData.userName +
-          "||" +
-          this.receivedData.hospitalName +
-          "||" +
-          this.receivedData.doctorName,
-        _timestampIllness:
-          this.receivedData.timestamp + "||" + this.receivedData.illnessDetail,
-        _treatmentRecordDate:
-          this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
-        _inHospital: this.receivedData.inHospital,
-        _drugAdvice: this.receivedData.drug + "||" + this.receivedData.advice,
-        _diagnosis: this.receivedData.diagnosis,
-        _img: "http://localhost:8090/files/default.jpg",
-        // _img: this.receivedData.img,
-        _signData: this.signData,
-        _signPubKey: this.signPubKey,
-      };
-      console.log(traverse)
+        idCard: this.receivedData.idCard,
+        patientData: this.receivedData.userName + "||" + this.receivedData.sex + "||" + this.receivedData.age + "||" + this.receivedData.occupation + "||" + this.receivedData.phone + "||" + this.receivedData.treatmentDate + "||" + this.receivedData.recordDate,
+        illnessDetail: this.receivedData.illnessDetail,
+        diagnosisData: this.receivedData.mainDiagnosis + "||" + this.receivedData.secondaryDiagnosis,
+        treatmentPlan: this.receivedData.furtherCheck + "||" + this.receivedData.nonMedicine + "||" + this.receivedData.care + "||" + this.receivedData.diet,
+        hospitalInfo: this.receivedData.hospitalName + "||" + this.receivedData.doctorName,
+        img: this.receivedData.img,
+        inHospitalStatus: this.receivedData.inHospital,
+        signData: this.signData,
+      }
+      console.log("traverse:", traverse)
       const Request = axios.create({
         baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
         timeout: 50000,
@@ -319,7 +314,7 @@ export default {
       Request.post("/storeMedicalRecord", traverse).then((res) => {
         if (res.data.code === "200") {
           this.transactionHash = res.data.data.transactionReceipt.transactionHash;
-          console.log(res)
+          console.log("res:", res)
           this.generateQR();
           this.$message.success("上传区块链成功 :)");
         } else {

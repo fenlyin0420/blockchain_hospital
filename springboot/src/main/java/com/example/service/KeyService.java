@@ -307,7 +307,7 @@ public class KeyService {
             for (Field field : encrypteFields) {
                 field.setAccessible(true);
                 Object value = field.get(traverse);
-                if (value != null){
+                if (value != null && !Objects.equals(value, "")){
                     // encrypt `String` field
                     String cipherText = MySM2Util.encryption(publicKey, (String) value);
                     // update corrsponding field

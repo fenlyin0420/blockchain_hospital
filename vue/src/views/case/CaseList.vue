@@ -11,7 +11,7 @@
         <el-table-column prop="traverse.treatmentDate" label="就诊日期" width="200" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="userName" label="姓名" v-if="user.role === 'DOCTOR'" width="100" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="doctorName" label="医生姓名" v-if="user.role === 'USER'" width="100" align="center"></el-table-column>
-        <el-table-column prop="traverse.diagnosis" label="诊断结果" align="center"></el-table-column>
+        <el-table-column prop="traverse.mainDiagnosis" label="诊断结果" align="center"></el-table-column>
         <el-table-column prop="traverse.drug" label="药品信息" align="center" width="200"></el-table-column>
         <el-table-column label="详情"  align="center">
           <template v-slot="scope">
@@ -88,6 +88,8 @@ export default {
       this.load(pageNum)
     },
     goToCaseDetails(row) {
+      row = {...row, ...row.traverse};
+      delete row.traverse;
       this.$router.push({
         name: 'CaseDetail',
         query: row

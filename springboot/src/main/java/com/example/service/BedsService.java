@@ -23,8 +23,8 @@ public class BedsService {
         return PageInfo.of(list);
     }
 
-    public void updateById(Traverse traverse) {
-        bedsMapper.updateById(traverse);
+    public void updateById(TraverseDTO traverseDTO) {
+        bedsMapper.updateById(traverseDTO);
     }
 
     public PageInfo<Bed> selectBedPage(Bed bed, Integer pageNum, Integer pageSize) {

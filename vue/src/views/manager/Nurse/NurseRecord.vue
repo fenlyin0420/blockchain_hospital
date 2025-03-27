@@ -16,15 +16,15 @@
     </div>
     <div class="table" style="margin-top: 15px">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-        <el-table-column prop="id" label="序号" align="center" sortable></el-table-column>
-        <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-        <el-table-column label="病床号" align="center">
+        <el-table-column prop="traverse.id" label="序号" align="center" width="80px" sortable></el-table-column>
+        <el-table-column prop="userName" label="姓名" align="center" width="80px"></el-table-column>
+        <el-table-column prop="bedName" label="分配病床" align="center" width="180px">
           <template v-slot="scope">
             {{ scope.row.wardName }}-{{ scope.row.bedName }}
           </template>
         </el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="advice" label="病历详细" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="doctorName" label="主治医生" show-overflow-tooltip align="center" width="80px"></el-table-column>
+        <el-table-column prop="traverse.mainDiagnosis" label="主要诊断" show-overflow-tooltip align="center"></el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum"
@@ -68,6 +68,7 @@ export default {
           if (res.code === '200') {
             this.tableData = res.data?.list;
             this.total = res.data?.total;
+            console.log("333",this.tableData)
           } else {
             this.$message.error(res.msg)
           }

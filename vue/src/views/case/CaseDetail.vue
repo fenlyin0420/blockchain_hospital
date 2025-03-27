@@ -56,7 +56,7 @@
           <div class="field-label">初步诊断（Primary Diagnosis）</div>
           <el-form-item label="1.主要诊断：">
             <el-input
-              v-model="diagnosis1"
+              v-model="receivedData.mainDiagnosis"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -65,7 +65,7 @@
           </el-form-item>
           <el-form-item label="2.次要诊断：">
             <el-input
-              v-model="diagnosis2"
+              v-model="receivedData.secondaryDiagnosis"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -77,7 +77,7 @@
 
           <el-form-item label="进一步检查:">
             <el-input
-              v-model="check"
+              v-model="receivedData.furtherCheck"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -97,7 +97,7 @@
           </el-form-item>
           <el-form-item label="非药物治疗：">
             <el-input
-              v-model="non_medicine"
+              v-model="receivedData.nonMedicine"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -106,7 +106,7 @@
           </el-form-item>
           <el-form-item label="护理/监测:">
             <el-input
-              v-model="care"
+              v-model="receivedData.care"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -115,7 +115,7 @@
           </el-form-item>
           <el-form-item label="饮食建议：">
             <el-input
-              v-model="diet"
+              v-model="receivedData.diet"
               :rows="1"
               resize="vertical"
               class="info-textarea"
@@ -171,7 +171,7 @@
     </el-dialog> -->
 
     <el-dialog :visible.sync="showQRcodeScan" @closed="decrypt">
-      <QRcodeScan @getPrivateKey="data => privateKey = data"></QRcodeScan>
+      <QRcodeScan @getPrivateKey="data => privateKey = data" title="获取私钥..." active="true"></QRcodeScan>
     </el-dialog>
   </el-card>
 </template>

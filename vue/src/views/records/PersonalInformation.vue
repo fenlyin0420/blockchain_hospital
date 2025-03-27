@@ -130,7 +130,7 @@ export default {
     refreshQR() {
       console.log(this.dataP.publicKey);
       request.get("/files/generateQR", {
-        params: { seed: this.dataP.publicKey }
+        params: { data: this.dataP.publicKey }
       }).then(res => {
         if (res.code === "200") {
           this.publicKeyQR = res.data;
@@ -140,7 +140,7 @@ export default {
       });
     
       request.get("/files/generateQR", {
-        params: { seed: this.dataP.privateKey }
+        params: { data: this.dataP.privateKey }
       }).then(res => {
         if (res.code === "200") {
           this.privateKeyQR = res.data;

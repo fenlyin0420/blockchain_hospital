@@ -12,7 +12,7 @@ public interface BedsMapper {
 
     List<TraverseDTO> selectAllTraverse(Traverse traverse);
 
-    int updateById(Traverse traverse);
+    int updateById(TraverseDTO traverseDTO);
 
     List<Bed> selectBedPage(Bed bed);
 

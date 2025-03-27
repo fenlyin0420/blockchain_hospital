@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.TraverseDTO;
 import com.example.entity.Traverse;
 import com.example.mapper.CareMapper;
 import com.github.pagehelper.PageHelper;
@@ -22,15 +23,15 @@ public class CareService {
         careMapper.updateById(traverse);
     }
 
-    public PageInfo<Traverse> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
+    public PageInfo<TraverseDTO> selectPage(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Traverse> list = careMapper.selectPage(traverse);
+        List<TraverseDTO> list = careMapper.selectPage(traverse);
         return PageInfo.of(list);
     }
 
-    public PageInfo<Traverse> selectPageRecord(Traverse traverse, Integer pageNum, Integer pageSize) {
+    public PageInfo<TraverseDTO> selectPageRecord(Traverse traverse, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Traverse> list = careMapper.selectPageRecord(traverse);
+        List<TraverseDTO> list = careMapper.selectPageRecord(traverse);
         return PageInfo.of(list);
     }
 }

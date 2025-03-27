@@ -2,41 +2,44 @@
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <!-- LEFT SIDE -->
-      <el-col :span="18">
-        <h3 class="title">住院病历/门诊病历</h3>
-        <!-- HEAD -->
-        <el-row class="info-row" :gutter="24">
-          <el-col :span="6">
-            <span class="field-label2">姓名:</span>
-            <span class="field-value2">{{ caseInfo.userName }}</span>
-          </el-col>
-          <el-col :span="6">
-            <span class="field-label2">性别:</span>
-            <span class="field-value2">{{ caseInfo.sex }}</span>
-          </el-col>
-          <el-col :span="6">
-            <span class="field-label2">年龄:</span>
-            <span class="field-value2">{{ caseInfo.age }}</span>
-          </el-col>
-          <el-col :span="6">
-            <span class="field-label2">职业:</span>
-            <span class="field-value2">{{ caseInfo.occupation }}</span>
-          </el-col>
+      <el-col :span="18" >
+        <h2 class="title">住院病历/门诊病历</h2>
+        <div class="right-container">
+          <!-- HEAD -->
+          <el-row class="info-row" :gutter="24">
+            <el-col :span="6">
+              <span class="field-label2">姓名:</span>
+              <span class="field-value2">{{ caseInfo.userName }}</span>
+            </el-col>
+            <el-col :span="6">
+              <span class="field-label2">性别:</span>
+              <span class="field-value2">{{ caseInfo.sex }}</span>
+            </el-col>
+            <el-col :span="6">
+              <span class="field-label2">年龄:</span>
+              <span class="field-value2">{{ caseInfo.age }}</span>
+            </el-col>
+            <el-col :span="6">
+              <span class="field-label2">职业:</span>
+              <span class="field-value2">{{ caseInfo.occupation }}</span>
+            </el-col>
 
-          <el-col :span="8">
-            <span class="field-label2">入院/就诊时间:</span>
-            <span class="field-value2">{{ recordDate }}</span>
-          </el-col>
-          <el-col :span="8">
-            <span class="field-label2">记录时间:</span>
-            <span class="field-value2">{{ recordDate }}</span>
-          </el-col>
+            <el-col :span="8">
+              <span class="field-label2">入院/就诊时间:</span>
+              <span class="field-value2">{{ recordDate }}</span>
+            </el-col>
+            <el-col :span="8">
+              <span class="field-label2">记录时间:</span>
+              <span class="field-value2">{{ recordDate }}</span>
+            </el-col>
 
-          <el-col :span="8">
-            <span class="field-label2">联系方式:</span>
-            <span class="field-value2">{{ caseInfo.phone }}</span>
-          </el-col>
-        </el-row>
+            <el-col :span="8">
+              <span class="field-label2">联系方式:</span>
+              <span class="field-value2">{{ caseInfo.phone }}</span>
+            </el-col>
+          </el-row>
+
+        
 
         <!-- CASE DESCRIPTION -->
         <el-form>
@@ -160,10 +163,11 @@
             ></el-input>
           </el-form-item>
         </el-form>
+      </div>
       </el-col>
 
       <!-- RIGHT SIDE -->
-      <el-col :span="6">
+      <el-col :span="6" style="margin-top: 15px;">
         <div>
           <!-- 这里放图 -->
           <span class="field-label">辅助检查（Auxiliary Examination）</span>
@@ -289,7 +293,7 @@ export default {
           label: "饮食建议",
         },
       ],
-      selected_plan: [],
+      selected_plan: ["furtherCheck", "medicine", "non-medicine", "care", "diet"],
       furtherCheck: null,
       medicine: null,
       nonMedicine: null,
@@ -399,6 +403,8 @@ export default {
       newTraverse.care = this.care
       newTraverse.diet = this.diet
       newTraverse.img = this.imgURL.img;
+
+      console.log("newTraverse", newTraverse)
 
       // 确认病历，上传到数据库
       this.$request.post("/traverse/add", newTraverse)
@@ -703,6 +709,13 @@ export default {
 
 .plan-select {
   width: 100%;
-  margin: 3px 0；;
+  margin: 3px 0;
+}
+.right-container {
+  margin-top: 10px;
+  border: 1px solid;
+  border-color: #c0c4cc; 
+  border-radius: 5px;
+  padding: 10px;
 }
 </style>
