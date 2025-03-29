@@ -176,9 +176,9 @@ public class KeyService {
         return ringSign;
     }
     /**
-     * 验证签名
-     * @param params
-     * @return
+     * 验证签名，需要原数据、签名数据、签名公钥环
+     * @param traverseDAO 原数据
+     * @return 验签结果
      */
     public RingSign verifySign(TraverseDAO traverseDAO) {
         Traverse traverse = new Traverse(

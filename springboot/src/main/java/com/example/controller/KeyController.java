@@ -78,12 +78,6 @@ public class KeyController {
         return Result.success(ringSign);
     }
 
-    /**
-     * 进行签名验证
-     * 根据id找到对应病历，在对其进行验签
-     * @param params.id 病历id
-     * @return
-     */
     @PostMapping("/verifySign")
     public Result verifySign(@RequestBody TraverseDAO traverseDAO) {
         RingSign ringSign = keyService.verifySign(traverseDAO);
