@@ -194,7 +194,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import QRcodeScan from "../component/QRcodeScan.vue";
 
 export default {
@@ -237,18 +236,14 @@ export default {
       this.loading = true;
       this.progressPercentage = 30;
       
-      const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
-        timeout: 50000,
-      });
-      
-      Request.post("/getMedicalRecordsByIdCard", { _idCard: this.idCard })
+      this.$blockRequest.post("/getMedicalRecordsByIdCard", { _idCard: this.idCard })
         .then(res => {
           this.progressPercentage = 70;
           
           if (res.data.code === "200") {
             // 解析数据
             const parsedRecords = this.parseTraverse(res.data.data.returnObject);
+            console.log("解析后的病历记录:", parsedRecords);
             this.medicalRecords = parsedRecords;
             
             if (parsedRecords.length > 0) {
@@ -276,159 +271,161 @@ export default {
      * @param dataList 病历列表
      */
     parseTraverse(dataList) {
-      return dataList.flatMap((item) => {
-        return item
-          .split("\n\n\n")
-          .filter((entry) => entry.trim() !== "")
-          .map((entry) => {
-            const lines = entry.split("\n").filter((line) => line.trim() !== "");
-            const obj = {};
-            
-            // 提取记录编号
-            const recordMatch = entry.match(/----------- 记录 (\d+) -----------/);
-            if (recordMatch) {
-              obj.recordNumber = recordMatch[1];
+      if (!dataList || dataList.length === 0) {
+        return [];
+      }
+
+      const result = [];
+      
+      // 首先按身份证号分组
+      const idCardRegex = /\n身份证号: ([^\n]+)\n/;
+      const idCardMatch = dataList[0].match(idCardRegex);
+      const idCard = idCardMatch ? idCardMatch[1] : '';
+      
+      // 按记录分割
+      const recordRegex = /----------- 记录 (\d+) -----------/g;
+      const recordSections = dataList[0].split(recordRegex).filter(section => section.trim().length > 10);
+      console.log("recordSections:", recordSections)
+      // 第一部分可能是身份证号部分，跳过
+      const startIndex = recordSections[0].includes('身份证号') ? 1 : 0;
+      
+      for (let i = startIndex; i < recordSections.length; i++) {
+        const recordData = recordSections[i];
+        const recordObj = {
+          idCard: idCard,
+          recordNumber: i
+        };
+        
+        // 提取患者信息
+        const patientInfoMatch = recordData.match(/【患者信息】\n([\s\S]*?)(?=\n【|$)/);
+        if (patientInfoMatch) {
+          const patientInfo = patientInfoMatch[1];
+          
+          // 解析基本信息行
+          const basicInfoMatch = patientInfo.match(/姓名: ([^\t]+)\t\|\t性别: ([^\t]+)\t\|\t年龄: ([^\t]+)\t\|\t职业: ([^\t]+)\t\|\t电话: ([^\n]+)/);
+          if (basicInfoMatch) {
+            try {
+              recordObj.userName = this.decodeBase64(basicInfoMatch[1].trim());
+              recordObj.sex = this.decodeBase64(basicInfoMatch[2].trim());
+              recordObj.age = this.decodeBase64(basicInfoMatch[3].trim());
+              recordObj.occupation = this.decodeBase64(basicInfoMatch[4].trim());
+              recordObj.phone = this.decodeBase64(basicInfoMatch[5].trim());
+            } catch (e) {
+              console.error('Base64解码错误:', e);
+              recordObj.userName = basicInfoMatch[1].trim();
+              recordObj.sex = basicInfoMatch[2].trim();
+              recordObj.age = basicInfoMatch[3].trim();
+              recordObj.occupation = basicInfoMatch[4].trim();
+              recordObj.phone = basicInfoMatch[5].trim();
             }
-            
-            // 提取各部分信息
-            let currentSection = "";
-            
-            lines.forEach((line) => {
-              line = line.trim();
-              if (!line) return;
-              
-              // 检查是否是部分标题
-              if (line.includes("【患者信息】")) {
-                currentSection = "patient";
-                return;
-              } else if (line.includes("【主诉症状】")) {
-                currentSection = "symptoms";
-                return;
-              } else if (line.includes("【诊断结果】")) {
-                currentSection = "diagnosis";
-                return;
-              } else if (line.includes("【诊疗计划】")) {
-                currentSection = "treatment";
-                return;
-              } else if (line.includes("【医院信息】")) {
-                currentSection = "hospital";
-                return;
-              }
-              
-              // 解析患者信息部分的特殊格式
-              if (currentSection === "patient" && line.includes("\t|\t")) {
-                const parts = line.split("\t|\t");
-                parts.forEach(part => {
-                  const [key, value] = part.split(": ");
-                  if (key && value) {
-                    switch(key.trim()) {
-                      case "姓名":
-                        obj.userName = value.trim();
-                        break;
-                      case "性别":
-                        obj.sex = value.trim();
-                        break;
-                      case "年龄":
-                        obj.age = value.trim();
-                        break;
-                      case "职业":
-                        obj.occupation = value.trim();
-                        break;
-                      case "电话":
-                        obj.phone = value.trim();
-                        break;
-                    }
-                  }
-                });
-                return;
-              }
-              
-              // 解析就诊日期和记录时间
-              if (currentSection === "patient" && line.includes("就诊日期:") && line.includes("记录时间:")) {
-                const parts = line.split("\t|\t");
-                parts.forEach(part => {
-                  const [key, value] = part.split(": ");
-                  if (key && value) {
-                    switch(key.trim()) {
-                      case "就诊日期":
-                        obj.treatmentDate = value.trim();
-                        break;
-                      case "记录时间":
-                        obj.recordDate = value.trim();
-                        break;
-                    }
-                  }
-                });
-                return;
-              }
-              
-              // 解析时间戳
-              if (currentSection === "patient" && line.includes("时间戳:")) {
-                const [key, value] = line.split(": ");
-                if (key && value) {
-                  obj.timestamp = value.trim();
-                }
-                return;
-              }
-              
-              // 解析主诉症状
-              if (currentSection === "symptoms" && line.includes("【主诉症状】")) {
-                obj.illnessDetail = line.split("【主诉症状】")[1].trim();
-                return;
-              }
-              
-              // 解析诊断结果
-              if (currentSection === "diagnosis" && line.includes("主要诊断:")) {
-                obj.mainDiagnosis = line.split("主要诊断:")[1].trim();
-                return;
-              }
-              
-              // 解析诊疗计划
-              if (currentSection === "treatment") {
-                if (line.includes("检查项目:")) {
-                  obj.furtherCheck = line.split("检查项目:")[1].trim();
-                } else if (line.includes("非药物治疗:")) {
-                  obj.nonMedicine = line.split("非药物治疗:")[1].trim();
-                }
-                return;
-              }
-              
-              // 解析医院信息
-              if (currentSection === "hospital") {
-                if (line.includes("医院名称:")) {
-                  obj.hospitalName = line.split("医院名称:")[1].trim();
-                } else if (line.includes("主治医师:")) {
-                  obj.doctorName = line.split("主治医师:")[1].trim();
-                }
-                return;
-              }
-              
-              // 解析其他键值对
-              const colonIndex = line.indexOf(":");
-              if (colonIndex !== -1) {
-                const key = line.slice(0, colonIndex).trim();
-                const value = line.slice(colonIndex + 1).trim();
-                
-                switch(key) {
-                  case "身份证号":
-                    obj.idCard = value;
-                    break;
-                  case "【医疗影像】":
-                    obj.img = value;
-                    break;
-                  case "【住院状态】":
-                    obj.inHospital = value;
-                    break;
-                  case "【数字签名】":
-                    obj.signData = value;
-                    break;
-                }
-              }
-            });
-            
-            return obj;
-          });
-      });
+          }
+          
+          // 解析日期行
+          const dateInfoMatch = patientInfo.match(/就诊日期: ([^\t]+)\t\|\t记录时间: ([^\n]+)/);
+          if (dateInfoMatch) {
+            try {
+              recordObj.treatmentDate = this.decodeBase64(dateInfoMatch[1].trim());
+              recordObj.recordDate = this.decodeBase64(dateInfoMatch[2].trim());
+            } catch (e) {
+              console.error('Base64解码错误:', e);
+              recordObj.treatmentDate = dateInfoMatch[1].trim();
+              recordObj.recordDate = dateInfoMatch[2].trim();
+            }
+          }
+        }
+        
+        // 提取主诉症状
+        const symptomsMatch = recordData.match(/【主诉症状】\s+([^\n]+)/);
+        if (symptomsMatch) {
+          try {
+            recordObj.illnessDetail = this.decodeBase64(symptomsMatch[1].trim());
+          } catch (e) {
+            console.error('Base64解码错误:', e);
+            recordObj.illnessDetail = symptomsMatch[1].trim();
+          }
+        }
+        
+        // 提取诊断结果
+        const diagnosisMatch = recordData.match(/【诊断结果】\s*\n\s*主要诊断:\s*([^\n]+)/);
+        if (diagnosisMatch) {
+          recordObj.mainDiagnosis = diagnosisMatch[1].trim();
+        }
+        
+        // 提取次要诊断（如果有）
+        const secondaryDiagnosisMatch = recordData.match(/次要诊断:\s*([^\n]+)/);
+        if (secondaryDiagnosisMatch) {
+          recordObj.secondaryDiagnosis = secondaryDiagnosisMatch[1].trim();
+        }
+        
+        // 提取诊疗计划
+        const checkItemsMatch = recordData.match(/【诊疗计划】\s*\n\s*检查项目:\s*([^\n]+)/);
+        if (checkItemsMatch) {
+          recordObj.furtherCheck = checkItemsMatch[1].trim();
+        }
+        
+        // 提取非药物治疗
+        const nonMedicineMatch = recordData.match(/非药物治疗:\s*([^\n]+)/);
+        if (nonMedicineMatch) {
+          recordObj.nonMedicine = nonMedicineMatch[1].trim();
+        }
+        
+        // 提取药物治疗（如果有）
+        const drugMatch = recordData.match(/药物治疗:\s*([^\n]+)/);
+        if (drugMatch) {
+          recordObj.drug = drugMatch[1].trim();
+        }
+        
+        // 提取护理/监测（如果有）
+        const careMatch = recordData.match(/护理\/监测:\s*([^\n]+)/);
+        if (careMatch) {
+          recordObj.care = careMatch[1].trim();
+        }
+        
+        // 提取饮食建议（如果有）
+        const dietMatch = recordData.match(/饮食建议:\s*([^\n]+)/);
+        if (dietMatch) {
+          recordObj.diet = dietMatch[1].trim();
+        }
+        
+        // 提取医疗影像
+        const imageMatch = recordData.match(/【医疗影像】:\s*([^\n\?]+)/);
+        if (imageMatch) {
+          recordObj.img = imageMatch[1].trim();
+        }
+        
+        // 提取数字签名
+        const signDataMatch = recordData.match(/【数字签名】:\s*([^\n]+)/);
+        if (signDataMatch) {
+          recordObj.signData = signDataMatch[1].trim();
+        }
+        
+        // 提取医院信息（如果有）
+        const hospitalMatch = recordData.match(/医院名称:\s*([^\n]+)/);
+        if (hospitalMatch) {
+          recordObj.hospitalName = hospitalMatch[1].trim();
+        }
+        
+        const doctorMatch = recordData.match(/主治医师:\s*([^\n]+)/);
+        if (doctorMatch) {
+          recordObj.doctorName = doctorMatch[1].trim();
+        }
+        
+        result.push(recordObj);
+      }
+      
+      return result;
+    },
+    
+    /**
+     * Base64解码函数
+     */
+    decodeBase64(str) {
+      try {
+        return decodeURIComponent(escape(atob(str)));
+      } catch (e) {
+        console.error('Base64解码错误:', str, e);
+        return str;
+      }
     },
     
     /**

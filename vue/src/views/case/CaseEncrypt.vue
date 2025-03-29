@@ -266,6 +266,7 @@ export default {
         });
     },
     sign() {
+      console.log("waiting for sign:", this.receivedData)
       this.$request
         .post("/keys/blockchain/sign", this.receivedData, {
           params: {
@@ -307,35 +308,17 @@ export default {
       }
       console.log("traverse:", traverse)
 
-      const Request = axios.create({
-        baseURL: "http://localhost:8088", // 区块链管理平台的 baseURL
-        timeout: 50000,
-      });
 
       // 上传区块链
-      Request.post("/storeMedicalRecord", traverse).then((res) => {
+      this.$blockRequest.post("/storeMedicalRecord", traverse).then((res) => {
         if (res.data.code === "200") {
           this.transactionHash = res.data.data.transactionReceipt.transactionHash;
           console.log("res:", res)
-          this.generateQR();
           this.$message.success("上传区块链成功 :)");
         } else {
           this.$message.error("上传区块链失败 :(");
         }
       });
-    },
-    generateQR() {
-      this.$request
-        .get("/files/generateQR", {
-          params: {
-            seed: this.transactionHash,
-          },
-        })
-        .then((res) => {
-          if (res.code === "200") {
-            this.QRURL = res.data;
-          }
-        });
     },
     /**
      * 将原始字符串编码为base64字符串
