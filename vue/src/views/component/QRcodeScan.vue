@@ -122,6 +122,7 @@ export default {
       setTimeout(() => {
         this.qrCodeData = null;
       }, 3000);
+      this.stopCamera();
     },
 
     stopCamera() {
