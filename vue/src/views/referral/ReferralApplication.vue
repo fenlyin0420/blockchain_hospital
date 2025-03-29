@@ -268,7 +268,7 @@ export default {
         globalAdvice: undefined,
         referralType: undefined,
         referralNumber: undefined,
-        referralStatus: "待审批",
+        referralStatus: "待提交",
         communication: "要求自动转院，自愿承担转院风险，后果自负。",
         traverseAddr: undefined,
         signatureUrl: undefined,
@@ -324,7 +324,6 @@ export default {
     this.loadUsers();
     this.formData.outDoctorName = this.user.name;
     this.formData.outHospitalName = 'xx大学第一附属医院';
-    this.formData.referralStatus = '待提交';
     // this.formData.outTime = new Date().toISOString().split('T')[0];
     this.loadHospitals();
   },
@@ -452,9 +451,11 @@ export default {
     submitFullForm() {
       this.$refs["elForm"].validate((valid) => {
         if (valid) {
+          this.formData.referralStatus = '待审批';
           this.$request.post("/referral/add", this.formData).then((res) => {
             if (res.code === "200") {
               this.$message.success("提交成功");
+              this.resetForm();
             } else {
               this.$message.error(res.msg);
             }
@@ -464,6 +465,7 @@ export default {
     },
     resetForm() {
       this.$refs["elForm"].resetFields();
+      this.formData.referralStatus = '待提交';
     },
     startDrawing(event) {
       this.isDrawing = true;
