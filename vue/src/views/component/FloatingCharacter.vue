@@ -15,7 +15,8 @@
     @touchend.prevent="stopDrag"
   >
     <div class="character">
-      <!-- 可替换为图片 -->
+      <!-- 可以使用img标签而不是背景图 -->
+      <img src="@/assets/imgs/AI.png" alt="角色" class="character-image" />
       <div class="click-effect"></div>
     </div>
   </div>
@@ -238,7 +239,7 @@ export default {
 .floating-character {
   position: fixed;
   z-index: 9999;
-  cursor: move;
+  cursor: grab;
   touch-action: none;
   transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
@@ -250,43 +251,35 @@ export default {
 .character {
   width: 60px;
   height: 60px;
-  background: #409EFF;
-  border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.2s;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   animation: float 3s ease-in-out infinite;
 }
 
-.character::before {
-  content: '';
-  position: absolute;
+.character-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, #409EFF, #67C23A);
-  opacity: 0.8;
-}
-
-.character::after {
-  content: '转诊';
-  position: absolute;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  object-fit: contain;
+  /* 允许图片显示原始形状，包括透明区域 */
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 }
 
 .click-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 80%;
   height: 80%;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.2s;
+  pointer-events: none; /* 确保点击事件穿透到图片 */
 }
 
 .floating-character:active .click-effect {
@@ -300,7 +293,10 @@ export default {
 /* 添加悬停效果 */
 .character:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.character-image:hover {
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.2));
 }
 
 /* 添加动画效果 */
