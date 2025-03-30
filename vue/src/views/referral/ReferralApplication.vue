@@ -127,7 +127,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="14">
-                <el-form-item label="病历地址">
+                <el-form-item label="转诊地址">
                   <el-input v-model="formData.traverseAddr" placeholder="" readonly></el-input>
                 </el-form-item>
               </el-col>

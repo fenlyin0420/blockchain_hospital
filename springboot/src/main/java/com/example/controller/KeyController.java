@@ -125,6 +125,26 @@ public class KeyController {
         }
         return Result.success(traverse);
     }
+    
+    /**
+     * 解密接口 - 用于处理扁平化数据结构
+     * 前端直接传递traverse的属性，不使用嵌套对象
+     */
+    @PostMapping("/decryptFlat")
+    public Result decryptFlat(@RequestBody Traverse traverse, @RequestParam(required = false) String privateKey) {
+        System.out.println("traverse" + traverse);
+        System.out.println("privateKey" + privateKey);
+        try {
+            if (traverse.getUserId() != null && (privateKey == null || privateKey.isEmpty())) {
+                User user = userService.selectById(traverse.getUserId());
+                privateKey = user.getPrivateKey();
+            }
+            traverse = keyService.decrypt(traverse, privateKey);
+        } catch (CustomException e) {
+            return Result.error(e.getMsg());
+        }
+        return Result.success(traverse);
+    }
 
     /**
      * 图像解密接口

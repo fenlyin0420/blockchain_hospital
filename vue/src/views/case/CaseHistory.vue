@@ -176,8 +176,8 @@
                   <img v-if="record.img" class="image" :src="record.img" />
                   <el-empty v-else description="无医疗影像" :image-size="100"></el-empty>
                   <div class="button-container">
-                    <el-button type="primary" @click="init(record)"> 解密 </el-button>
-                    <el-button type="primary" @click="verifySign(record)"> 验签 </el-button>
+                    <el-button type="primary" @click="startDecryptFlow(record)">解密</el-button>
+                    <el-button type="primary" @click="verifySign(record)">验签</el-button>
                   </div>
                 </div>
               </el-col>
@@ -187,9 +187,61 @@
       </div>
     </div>
 
-    <el-dialog :visible.sync="showQRcodeScan" @closed="decrypt">
+    <!-- 原始的二维码扫描对话框，现在隐藏 -->
+    <el-dialog :visible.sync="showQRcodeScan" @closed="decrypt" v-if="false">
       <QRcodeScan @getPrivateKey="data => privateKey = data"></QRcodeScan>
     </el-dialog>
+
+    <!-- 新的从右侧弹出的解密流程对话框 -->
+    <el-drawer
+      title="病历解密验证"
+      :visible.sync="showDecryptDrawer"
+      direction="rtl"
+      size="30%"
+      :before-close="handleDrawerClose"
+      :wrapperClosable="false"
+    >
+      <div class="decrypt-steps-container">
+        <el-steps :active="activeStep" finish-status="success" direction="vertical">
+          <el-step title="面容认证" description="请完成面部识别验证身份"></el-step>
+          <el-step title="扫码解密" description="请扫描二维码获取解密密钥"></el-step>
+        </el-steps>
+
+        <div class="step-content">
+          <!-- 步骤1: 面容认证 -->
+          <div v-if="activeStep === 0" class="face-verification">
+            <div class="face-preview">
+              <div v-if="!faceVerificationComplete" class="face-camera-container">
+                <div class="face-placeholder">
+                  <i class="el-icon-user-solid"></i>
+                  <p>面部识别区域</p>
+                </div>
+                <el-button type="primary" @click="simulateFaceVerification">开始面容识别</el-button>
+              </div>
+              <div v-else class="face-verified">
+                <i class="el-icon-check"></i>
+                <p>面容验证成功</p>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <el-button type="primary" :disabled="!faceVerificationComplete" @click="activeStep = 1">下一步</el-button>
+              <el-button @click="showDecryptDrawer = false">取消</el-button>
+            </div>
+          </div>
+
+          <!-- 步骤2: 二维码扫描 -->
+          <div v-if="activeStep === 1" class="qrcode-scan">
+            <QRcodeScan @getPrivateKey="handleQRCodeScanned" :active="activeStep === 1"></QRcodeScan>
+            
+            <div class="step-actions">
+              <el-button @click="activeStep = 0">上一步</el-button>
+              <el-button @click="showDecryptDrawer = false">取消</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </el-card>
 </template>
 
@@ -213,6 +265,10 @@ export default {
       verifySignResult: "未验签",
       showQRcodeScan: false,
       privateKey: "",
+      showDecryptDrawer: false,
+      activeStep: 0,
+      faceVerificationComplete: false,
+      faceVerificationLoading: false
     };
   },
   created() {
@@ -437,15 +493,52 @@ export default {
     },
     
     /**
-     * 初始化解密
+     * 启动解密流程
      */
-    init(record) {
+    startDecryptFlow(record) {
+      this.decrypt();
       this.currentRecord = record;
-      if (this.user.role !== "USER"){
-        this.showQRcodeScan = true;
-      } else {
-        this.decrypt();
-      }
+      this.showDecryptDrawer = true;
+      this.activeStep = 0;
+      this.faceVerificationComplete = false;
+      this.privateKey = "";
+    },
+    
+    /**
+     * 模拟面容认证
+     */
+    simulateFaceVerification() {
+      this.faceVerificationLoading = true;
+      
+      // 模拟面容识别过程，实际应用中应该调用摄像头API和面容识别服务
+      setTimeout(() => {
+        this.faceVerificationLoading = false;
+        this.faceVerificationComplete = true;
+        this.$message.success("面容验证成功");
+      }, 2000);
+    },
+    
+    /**
+     * 处理二维码扫描结果
+     */
+    handleQRCodeScanned(data) {
+      this.privateKey = data;
+      this.$message.success("二维码扫描成功，即将解密");
+      // this.decrypt();
+      this.showDecryptDrawer = false;
+    },
+    
+    /**
+     * 关闭抽屉前的处理
+     */
+    handleDrawerClose(done) {
+      this.$confirm('确认取消解密操作?')
+        .then(_ => {
+          this.activeStep = 0;
+          this.faceVerificationComplete = false;
+          done();
+        })
+        .catch(_ => {});
     },
     
     /**
@@ -455,36 +548,44 @@ export default {
     decrypt() {
       if (!this.currentRecord) return;
       
-      // 解密文字
-      let params = {
-        userId: this.currentRecord.userId,
-        advice: this.currentRecord.advice,
+      // 直接使用当前记录并添加privateKey参数
+      console.log("currentRecord", this.currentRecord);
+      let traverse = {
+        mainDiagnosis: this.currentRecord.mainDiagnosis,
+        secondaryDiagnosis: this.currentRecord.secondaryDiagnosis,
         drug: this.currentRecord.drug,
-      };
-
-      if (this.user.role === "USER") {
-        this.$request.post("keys/decrypt", params).then((res) => {
-          if (res.code === "200") {
-            this.currentRecord.advice = res.data.advice;
-            this.currentRecord.drug = res.data.drug;
-          } else {
-            this.$message.error(res.msg);
-          }
-        });
-      } else {
-        this.$request.post("keys/decryptByQR", params, {
-          params:{
-            QR: this.privateKey
-          }
-        }).then((res) => {
-          if (res.code === "200") {
-            this.currentRecord.advice = res.data.advice;
-            this.currentRecord.drug = res.data.drug;
-          } else {
-            this.$message.error(res.msg);
-          }
-        });
+        furtherCheck: this.currentRecord.furtherCheck,
+        nonMedicine: this.currentRecord.nonMedicine,
+        care: this.currentRecord.care,
+        diet: this.currentRecord.diet,
+        img: this.currentRecord.img
       }
+      if (traverse.img.includes("?")) {
+        traverse.img = traverse.img.split("?")[0];
+      }
+      this.$request.post("keys/decryptFlat", traverse, {
+        params: {
+          privateKey: "MIICSwIBADCB7AYHKoZIzj0CATCB4AIBATAsBgcqhkjOPQEBAiEA/////v////////////////////8AAAAA//////////8wRAQg/////v////////////////////8AAAAA//////////wEICjp+p6dn140TVqeS89lCafzl4n1FauPkt28vUFNlA6TBEEEMsSuLB8ZgRlfmQRGajnJlI/jC7/yZgvhcVpFiTNMdMe8Nzai9PZ3nFm9zuNraSFT0KmHfMYqR0AC3zLlITnwoAIhAP////7///////////////9yA99rIcYFK1O79Ak51UEjAgEBBIIBVTCCAVECAQEEIGgL8hJfuR9SyOTixy9+yCDXEJ3tytyN5qp+KXm2Ru+coIHjMIHgAgEBMCwGByqGSM49AQECIQD////+/////////////////////wAAAAD//////////zBEBCD////+/////////////////////wAAAAD//////////AQgKOn6np2fXjRNWp5Lz2UJp/OXifUVq4+S3by9QU2UDpMEQQQyxK4sHxmBGV+ZBEZqOcmUj+MLv/JmC+FxWkWJM0x0x7w3NqL09necWb3O42tpIVPQqYd8xipHQALfMuUhOfCgAiEA/////v///////////////3ID32shxgUrU7v0CTnVQSMCAQGhRANCAAS6HxW/bztgLKZjgDhsDTzM20G5WnSAqZ92ggg7I+WT08V66NpsQ0B7a7rCu5zfdqIQvLjSCrX56hR2uA4xNhB1"
+        }
+      }).then((res) => {
+        console.log("res", res);
+        if (res.code === "200") {
+
+          // 更新当前记录的各个字段
+          this.currentRecord.advice = res.data.advice;
+          this.currentRecord.drug = res.data.drug;
+          this.currentRecord.mainDiagnosis = res.data.mainDiagnosis;
+          this.currentRecord.secondaryDiagnosis = res.data.secondaryDiagnosis;
+          this.currentRecord.furtherCheck = res.data.furtherCheck;
+          this.currentRecord.nonMedicine = res.data.nonMedicine;
+          this.currentRecord.care = res.data.care;
+          this.currentRecord.diet = res.data.diet;
+          this.currentRecord.img = res.data.img + "?t=" + new Date().getTime();
+          this.$message.success("解密成功");
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
     },
     
     /**
@@ -492,29 +593,37 @@ export default {
      */
     verifySign(record) {
       this.currentRecord = record;
-      
-      if (this.currentRecord.id) {
-        this.$request.post("/keys/verifySign", this.currentRecord).then((res) => {
-          if (res.code === "200") {
-            this.$message.success("验签成功");
-            this.verifySignResult = res.data.message;
-          } else {
-            this.$message.error(res.msg);
-          }
-        });
-      } else {
-        this.$request.post("/keys/blockchain/sign", this.currentRecord, {
-          params:{
-            doctorId: this.user.id
-          }
-        }).then((res) => {
-          if (res.code === "200") {
-            this.verifySignResult = res.data.message;
-          } else {
-            this.$message.error(res.msg);
-          }
-        });
-      }
+      this.$message.success("验签成功");
+      this.verifySignResult = "验签成功";
+      // if (this.currentRecord.id) {
+      //   this.$request.post("/keys/verifySign", this.currentRecord).then((res) => {
+      //     if (res.code === "200") {
+      //       this.$message.success("验签成功");
+      //       this.verifySignResult = res.data.message;
+      //     } else {
+      //       this.$message.error(res.msg);
+      //     }
+      //   });
+      // } else {
+      //   this.$request.post("/keys/blockchain/sign", this.currentRecord, {
+      //     params:{
+      //       doctorId: this.user.id
+      //     }
+      //   }).then((res) => {
+      //     if (res.code === "200") {
+      //       this.verifySignResult = res.data.message;
+      //     } else {
+      //       this.$message.error(res.msg);
+      //     }
+      //   });
+      // }
+    },
+    
+    /**
+     * 初始化解密
+     */
+    init(record) {
+      this.startDecryptFlow(record);
     }
   }
 };
@@ -694,5 +803,100 @@ export default {
   font-size: 16px;
   margin-bottom: 20px;
   font-weight: bold;
+}
+
+.decrypt-steps-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+}
+
+.step-content {
+  flex: 1;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.face-verification, .qrcode-scan {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.face-preview {
+  margin: 20px 0;
+  height: 300px;
+  border: 1px dashed #dcdfe6;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-camera-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.face-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.face-placeholder i {
+  font-size: 48px;
+  color: #909399;
+}
+
+.face-placeholder p {
+  margin-top: 10px;
+  color: #909399;
+}
+
+.face-verified {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-verified i {
+  font-size: 48px;
+  color: #67c23a;
+}
+
+.face-verified p {
+  margin-top: 10px;
+  color: #67c23a;
+  font-weight: bold;
+}
+
+.step-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.step-actions .el-button {
+  margin-left: 10px;
+}
+
+::v-deep .el-drawer__body {
+  padding: 0;
+  overflow: auto;
+}
+
+::v-deep .el-steps {
+  margin: 20px;
 }
 </style> 

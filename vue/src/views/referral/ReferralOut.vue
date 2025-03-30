@@ -123,7 +123,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="14">
-                  <el-form-item label="病历地址">
+                  <el-form-item label="转诊地址">
                     <el-input v-model="currentRecord.traverseAddr" :readonly="true"></el-input>
                   </el-form-item>
                 </el-col>
@@ -236,7 +236,6 @@
           </el-col>
         </el-row>
         <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
-          <el-button type="primary" @click="showProgressBar">转诊进度</el-button>
           <el-button type="success" @click="update(currentRecord)">同意</el-button>
           <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
           <el-button type="primary" @click="saveChanges">保存修改</el-button>
@@ -410,9 +409,17 @@ export default {
                 console.error("区块链请求错误:", error);
                 this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
               });
+            }).then(() => {
+              this.$request.put("/referral/update", {
+                id: this.currentRecord.id,
+                referralStatus: "待接收"
+              }).then((res) => {
+                if (res.code === "200") {
+                  this.$message.success("转诊信息发送成功");
+                }
+              })
             })
             .catch(() => {
-              console.log("取消发送");
               this.$message("取消发送");
             });
         }
@@ -425,11 +432,12 @@ export default {
         type: 'warning'
       }).then(() => {
         let form = {
-          id: row.id,
+          id: this.currentRecord.id,
+          referralStatus: "已拒绝转出"
         };
-        this.$request.patch("/referral/refuseOut", form).then((res) => {
+        this.$request.put("/referral/update", form).then((res) => {
           if (res.code === "200") {
-            this.$message.success("已拒绝转诊");
+            this.$message.success("已拒绝转出");
             this.load(1);
           } else {
             this.$message.error(res.msg);
@@ -452,6 +460,7 @@ export default {
         .then((res) => {
           this.ReferralRecords = res.data?.list || [];
           this.total = res.data?.total || 0;
+          this.ReferralRecords = this.ReferralRecords.filter((item) => item.referralStatus === "待审批");
           
           // 如果有数据，显示第一条
           if (this.ReferralRecords.length > 0) {

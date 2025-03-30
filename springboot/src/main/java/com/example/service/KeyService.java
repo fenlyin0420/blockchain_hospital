@@ -350,11 +350,13 @@ public class KeyService {
                 Object value = field.get(traverse);
                 if (value != null){
                     String plainText = MySM2Util.decrypt(privateKey, (String) value);
+                    System.out.println("plainText" + plainText);
                     field.set(traverse, plainText);
                 }
             }
 
             String imgUrl = traverse.getImg().strip();
+            System.out.println("img url: \n" + imgUrl + "\n");
             MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
             BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
             img = ImgUtil.ImageDecryptor(img, privateKey);

@@ -177,7 +177,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="14">
-                  <el-form-item label="病历地址">
+                  <el-form-item label="转诊地址">
                     <el-input
                       v-model="currentRecord.traverseAddr"
                       :readonly="true"
@@ -267,8 +267,8 @@
       </el-form>
       <div class="button-container">
         <div class="operation-buttons" v-if="user.role === 'ADMIN'">
-          <!-- <el-button type="success" @click="acceptReferral">同意接收</el-button>
-                <el-button type="danger" @click="rejectReferral">拒绝接收</el-button> -->
+          <el-button type="success" @click="acceptReferral">同意接收</el-button>
+          <el-button type="danger" @click="rejectReferral">拒绝接收</el-button>
           <el-button type="primary" @click="saveReferralDetail">保存修改</el-button>
           <el-button type="primary" @click="viewMedicalHistory(currentRecord)"
             >溯源病历</el-button
@@ -343,13 +343,13 @@ export default {
     setTimeout(() => {
       this.load(1);
     }, 100);
-    
+
     // 设置自动保存定时器 - 减少保存频率，防止性能问题
     this.autoSaveInterval = setInterval(() => {
       // 不需要自动保存，因为我们已经在获取新数据时保存数据
       localStorage.setItem("referralActiveTab", this.activeTab);
     }, 5000);
-    
+
     // 设置轮询定时器，每30秒获取一次数据
     this.pollingInterval = setInterval(() => {
       this.load(1);
@@ -364,9 +364,9 @@ export default {
      */
     filterDataByTab(data, tab) {
       // 首先过滤掉已处理过的转诊信息
-      const activeData = data.filter(item => 
-        item.referralStatus !== "已拒绝接收" && 
-        item.referralStatus !== "已确认接收"
+      const activeData = data.filter(
+        (item) =>
+          item.referralStatus !== "已拒绝接收" && item.referralStatus !== "已确认接收"
       );
 
       // 然后根据标签类型进行筛选
@@ -384,13 +384,17 @@ export default {
      */
     calculateCounts(data) {
       // 首先过滤掉已处理过的转诊信息
-      const activeData = data.filter(item => 
-        item.referralStatus !== "已拒绝接收" && 
-        item.referralStatus !== "已确认接收"
+      const activeData = data.filter(
+        (item) =>
+          item.referralStatus !== "已拒绝接收" && item.referralStatus !== "已确认接收"
       );
 
-      this.emergencyCount = activeData.filter((item) => item.referralType === "急诊").length;
-      this.normalCount = activeData.filter((item) => (item.referralType || "普通") === "普通").length;
+      this.emergencyCount = activeData.filter(
+        (item) => item.referralType === "急诊"
+      ).length;
+      this.normalCount = activeData.filter(
+        (item) => (item.referralType || "普通") === "普通"
+      ).length;
       this.allCount = activeData.length;
     },
 
@@ -403,37 +407,37 @@ export default {
       if (Array.isArray(data)) {
         const referrals = [];
         // 按"-----------"分割多个转诊信息
-        const referralStrings = data[0].split("-----------").filter(str => str.trim());
-        
+        const referralStrings = data[0].split("-----------").filter((str) => str.trim());
+
         for (const referralString of referralStrings) {
           const parsedObject = {};
           const lines = referralString.trim().split("\n");
-          
+
           for (const line of lines) {
             const [key, value] = line.split(": ");
             if (key && value) {
               parsedObject[key] = value;
             }
           }
-          
+
           if (Object.keys(parsedObject).length > 0) {
             referrals.push(this.convertToEnglishObjectReferral(parsedObject));
           }
         }
         return referrals;
       }
-      
+
       // 如果data是单个转诊信息
       const parsedObject = {};
       const lines = data[0].trim().split("\n");
-      
+
       for (const line of lines) {
         const [key, value] = line.split(": ");
         if (key && value) {
           parsedObject[key] = value;
         }
       }
-      
+
       return [this.convertToEnglishObjectReferral(parsedObject)];
     },
 
@@ -552,18 +556,18 @@ export default {
           if (activeTab) {
             this.activeTab = activeTab;
           }
-          
+
           // 更新allData
           this.allData = allData;
-          
+
           // 计算各类型的数量
           this.calculateCounts(allData);
-          
+
           // 根据当前标签过滤数据
           this.ReferralRecords = this.filterDataByTab(allData, this.activeTab);
-          
+
           console.log("从localStorage加载数据:", this.ReferralRecords.length, "条记录");
-          
+
           // 如果有数据，显示第一条
           if (this.ReferralRecords.length > 0) {
             this.currentIndex = 0;
@@ -590,11 +594,11 @@ export default {
 
     saveDataToLocalStorage(newItems) {
       console.log("准备保存数据:", newItems);
-      
+
       // 获取localStorage中现有的数据
       const existingData = localStorage.getItem("ReferralRecords");
       let currentData = [];
-      
+
       if (existingData) {
         try {
           currentData = JSON.parse(existingData);
@@ -613,24 +617,26 @@ export default {
         localStorage.setItem("referralActiveTab", this.activeTab);
         return;
       }
-      
+
       // 确保newItems是数组
       const itemsToAdd = Array.isArray(newItems) ? newItems : [newItems];
       console.log("需要添加的数据条数:", itemsToAdd.length);
-      
+
       // 合并数据，避免重复
       let addedCount = 0;
       let updatedCount = 0;
-      
-      itemsToAdd.forEach(newItem => {
+
+      itemsToAdd.forEach((newItem) => {
         // 跳过没有id或undefined的项
         if (!newItem || !newItem.id) {
           console.log("跳过无效数据:", newItem);
           return;
         }
-        
+
         console.log("处理数据项:", newItem.id);
-        const existingIndex = currentData.findIndex(item => item && item.id === newItem.id);
+        const existingIndex = currentData.findIndex(
+          (item) => item && item.id === newItem.id
+        );
         if (existingIndex === -1) {
           // 如果不存在，添加新记录
           currentData.push(newItem);
@@ -647,10 +653,18 @@ export default {
       // 保存合并后的数据
       localStorage.setItem("ReferralRecords", JSON.stringify(currentData));
       localStorage.setItem("referralActiveTab", this.activeTab);
-      
+
       // 输出日志
-      console.log("保存到localStorage:", currentData.length, "条记录 (新增:", addedCount, ", 更新:", updatedCount, ")");
-      
+      console.log(
+        "保存到localStorage:",
+        currentData.length,
+        "条记录 (新增:",
+        addedCount,
+        ", 更新:",
+        updatedCount,
+        ")"
+      );
+
       // 更新内存中的完整数据
       this.allData = currentData;
     },
@@ -663,19 +677,20 @@ export default {
           if (res.data.code === "200") {
             const referrals = this.parseReferralRecord(res.data.data.returnObject);
             // 过滤掉已处理过的转诊信息
-            const filteredReferrals = referrals.filter(item => 
-              item.referralStatus !== "已拒绝接收" && 
-              item.referralStatus !== "已确认接收"
+            const filteredReferrals = referrals.filter(
+              (item) =>
+                item.referralStatus !== "已拒绝接收" &&
+                item.referralStatus !== "已确认接收"
             );
-            
+
             console.log("从服务器获取数据:", filteredReferrals.length, "条记录");
-            
+
             // 保存新数据到localStorage
             this.saveDataToLocalStorage(filteredReferrals);
-            
+
             // 根据当前标签过滤数据
             this.ReferralRecords = this.filterDataByTab(this.allData, this.activeTab);
-            
+
             // 如果有数据，显示第一条
             if (this.ReferralRecords.length > 0) {
               this.currentIndex = 0;
@@ -709,22 +724,25 @@ export default {
         return;
       }
 
-      this.$blockRequest.post("/getReferralInfoByTransactionHash", {
-        _referralHash: this.referralHash,
-      })
+      this.$blockRequest
+        .post("/getReferralInfoByTransactionHash", {
+          _referralHash: this.referralHash,
+        })
         .then((res) => {
           if (res.data.code === "200") {
             const newReferrals = this.parseReferralRecord(res.data.data.returnObject);
             console.log("扫描获取的转诊信息:", newReferrals);
-            
+
             if (newReferrals.length > 0) {
               const newReferral = newReferrals[0]; // 只取第一个转诊信息
               console.log("处理的转诊信息:", newReferral);
               console.log("转诊ID:", newReferral.id);
-              
+
               // 检查转诊状态，如果是已处理过的则提示并返回
-              if (newReferral.referralStatus === "已拒绝接收" || 
-                  newReferral.referralStatus === "已确认接收") {
+              if (
+                newReferral.referralStatus === "已拒绝接收" ||
+                newReferral.referralStatus === "已确认接收"
+              ) {
                 this.$message.warning("该转诊信息已处理完成");
                 return;
               }
@@ -737,15 +755,17 @@ export default {
 
               // 保存新数据到localStorage
               this.saveDataToLocalStorage(newReferral);
-              
+
               // 更新计数
               this.calculateCounts(this.allData);
-              
+
               // 根据当前标签过滤数据
               this.ReferralRecords = this.filterDataByTab(this.allData, this.activeTab);
-              
+
               // 找到新添加的记录的索引
-              const newIndex = this.ReferralRecords.findIndex(item => item.id === newReferral.id);
+              const newIndex = this.ReferralRecords.findIndex(
+                (item) => item.id === newReferral.id
+              );
               if (newIndex !== -1) {
                 this.currentIndex = newIndex;
                 this.currentRecord = JSON.parse(JSON.stringify(newReferral));
@@ -753,7 +773,9 @@ export default {
                 // 如果在当前标签中找不到，切换到全部标签
                 this.activeTab = "all";
                 this.ReferralRecords = this.filterDataByTab(this.allData, this.activeTab);
-                const allIndex = this.ReferralRecords.findIndex(item => item.id === newReferral.id);
+                const allIndex = this.ReferralRecords.findIndex(
+                  (item) => item.id === newReferral.id
+                );
                 if (allIndex !== -1) {
                   this.currentIndex = allIndex;
                   this.currentRecord = JSON.parse(JSON.stringify(newReferral));
@@ -771,36 +793,73 @@ export default {
     },
 
     acceptReferral() {
-      if (!this.validateReferralForm()) {
+      this.currentRecord.referralStatus = "已确认接收";
+      let tempId = this.currentRecord.id;
+      console.log("this.referralDetailForm", this.currentRecord);
+      if (this.currentRecord.id.startsWith("temp_")) {
+        this.currentRecord.id = null;
+      }
+      this.$request
+        .post("/referral/add", this.currentRecord)
+        .then((updateRes) => {
+          if (updateRes.code === "200") {
+            this.$message.success("已同意接收转诊并保存信息");
+            this.showReferralDetail = false;
+
+            // 从localStorage中移除已接受的转诊记录
+            this.removeReferralFromLocalStorage(tempId);
+
+            this.load(1);
+          } else {
+            this.$message.error(updateRes.msg);
+          }
+        })
+        .then(() => {
+          if (this.currentRecord.referralType === "急诊") {
+            this.$blockRequest.post("/confirmIntelTransfer", {
+              referralId: this.currentRecord.id,
+            });
+          }
+        });
+    },
+
+    /**
+     * 从localStorage中删除指定ID的转诊记录
+     */
+    removeReferralFromLocalStorage(referralId) {
+      if (!referralId) {
+        console.warn("转诊ID为空，无法从localStorage中删除");
         return;
       }
 
-      const updateForm = {
-        id: this.referralDetailForm.id,
-        inHospitalName: this.referralDetailForm.inHospitalName,
-        inDoctorName: this.referralDetailForm.inDoctorName,
-        inTime: this.referralDetailForm.inTime,
-        inHospitalAdvice: this.referralDetailForm.inHospitalAdvice,
-        globalAdvice: this.referralDetailForm.globalAdvice,
-      };
+      // 获取现有的转诊记录
+      const storedData = localStorage.getItem("ReferralRecords");
 
-      this.$request.put("/referral/update", updateForm).then((updateRes) => {
-        if (updateRes.code === "200") {
-          this.$request
-            .put("/referral/agreenIn", { id: this.referralDetailForm.id })
-            .then((agreeRes) => {
-              if (agreeRes.code === "200") {
-                this.$message.success("已同意接收转诊并保存信息");
-                this.showReferralDetail = false;
-                this.load(1);
-              } else {
-                this.$message.error(agreeRes.msg);
-              }
-            });
-        } else {
-          this.$message.error(updateRes.msg);
+      if (storedData) {
+        try {
+          let referrals = JSON.parse(storedData);
+
+          // 查找并删除特定ID的记录
+          const originalLength = referrals.length;
+          referrals = referrals.filter((item) => item && item.id !== referralId);
+
+          // 如果长度变化，说明成功删除了记录
+          if (referrals.length < originalLength) {
+            // 保存更新后的数据回localStorage
+            localStorage.setItem("ReferralRecords", JSON.stringify(referrals));
+            console.log(`已从localStorage中永久删除ID为${referralId}的转诊记录`);
+
+            // 更新当前内存中的数据
+            this.allData = referrals;
+            this.calculateCounts(this.allData);
+            this.ReferralRecords = this.filterDataByTab(this.allData, this.activeTab);
+          } else {
+            console.warn(`未在localStorage中找到ID为${referralId}的转诊记录`);
+          }
+        } catch (error) {
+          console.error("解析localStorage数据错误:", error);
         }
-      });
+      }
     },
 
     validateReferralForm() {
@@ -823,15 +882,31 @@ export default {
         type: "warning",
       })
         .then(() => {
+          this.currentRecord.referralStatus = "已拒绝接收";
+          let tempId = this.currentRecord.id;
+          if (this.currentRecord.id.startsWith("temp_")) {
+            this.currentRecord.id = null;
+          }
           this.$request
-            .put("/referral/refuseIn", { id: this.referralDetailForm.id })
-            .then((res) => {
-              if (res.code === "200") {
-                this.$message.success("已拒绝接收转诊");
+            .post("/referral/add", this.currentRecord)
+            .then((updateRes) => {
+              if (updateRes.code === "200") {
+                this.$message.success("已拒绝接收转诊并保存信息");
                 this.showReferralDetail = false;
+
+                // 从localStorage中移除已接受的转诊记录
+                this.removeReferralFromLocalStorage(tempId);
+
                 this.load(1);
               } else {
-                this.$message.error(res.msg);
+                this.$message.error(updateRes.msg);
+              }
+            })
+            .then(() => {
+              if (this.currentRecord.referralType === "急诊") {
+                this.$blockRequest.post("/rejectIntelTransfer", {
+                  referralId: this.currentRecord.id,
+                });
               }
             });
         })
@@ -924,7 +999,7 @@ export default {
     if (this.pollingInterval) {
       clearInterval(this.pollingInterval);
     }
-    
+
     // 页面销毁前保存当前activeTab
     localStorage.setItem("referralActiveTab", this.activeTab);
   },
