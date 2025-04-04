@@ -211,9 +211,13 @@ export default {
     // 点击处理
     handleClick() {
       if (!this.hasDragged) {
-        this.$router.push(this.targetRoute)
+        if (this.targetRoute) {
+          this.$router.push(this.targetRoute);
+        } else {
+          this.$emit('click');
+        }
       }
-      this.hasDragged = false
+      this.hasDragged = false;
     },
 
     // 窗口大小变化处理

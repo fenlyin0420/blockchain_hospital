@@ -45,8 +45,27 @@ request.interceptors.response.use(
 export default request
 
 
+// 区块链
 const blockRequest = axios.create({
     baseURL: "http://localhost:8088/",
     timeout: 5000,
 });
 export { blockRequest };
+
+// 人脸识别
+const faceRequest = axios.create({
+    baseURL: "http://localhost:8089",
+    timeout: 5000,
+})
+
+faceRequest.interceptors.response.use(
+    response => {
+        let res = response.data;
+        return res;
+    },
+    error => {
+        console.error('response error: ' + error)
+        return Promise.reject(error);
+    }
+)
+export { faceRequest };

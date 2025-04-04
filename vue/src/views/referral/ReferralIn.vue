@@ -36,7 +36,7 @@
               @getPrivateKey="handleQRCodeData"
               title="获取转诊信息..."
             />
-          </div>
+      </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -55,10 +55,10 @@
           <el-col
             :span="12"
             style="border: 1px solid #ccc; border-radius: 10px; padding: 20px"
-          >
-            <el-row :gutter="24">
+    >
+      <el-row :gutter="24">
               <el-col :span="14">
-                <el-form-item label="患者姓名">
+            <el-form-item label="患者姓名">
                   <el-input v-model="currentRecord.userName" :readonly="true"></el-input>
                 </el-form-item>
               </el-col>
@@ -99,7 +99,7 @@
               <el-col :span="10">
                 <el-form-item label="转诊编号">
                   <el-input v-model="currentRecord.id" :readonly="true"></el-input>
-                </el-form-item>
+            </el-form-item>
               </el-col>
             </el-row>
 
@@ -159,11 +159,11 @@
                     <p style="color: #909399; font-size: 14px; margin: 10px 0">
                       加载中...
                     </p>
-                  </div>
+          </div>
                 </template>
               </el-image>
             </el-form-item>
-          </el-col>
+        </el-col>
 
           <el-col :span="12">
             <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
@@ -262,8 +262,8 @@
                 ></el-input>
               </el-form-item>
             </div>
-          </el-col>
-        </el-row>
+        </el-col>
+      </el-row>
       </el-form>
       <div class="button-container">
         <div class="operation-buttons" v-if="user.role === 'ADMIN'">

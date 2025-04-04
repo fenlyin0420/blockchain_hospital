@@ -169,14 +169,14 @@
                   :style="{ width: '100%' }"
                 ></el-input>
               </el-form-item>
-            </div>
+    </div>
 
             <br /><br />
             <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
               <el-row :gutter="24">
                 <el-col :span="13">
                   <el-form-item 
-                    label="转入医院" 
+          label="转入医院"
                     :rules="[
                       { 
                         required: currentRecord.referralType === '普通', 
@@ -370,12 +370,12 @@ export default {
       // 验证表单
       this.$refs["elForm"].validate((valid) => {
         if (valid) {
-          this.$confirm("同意审批将上传转诊信息至区块链，你确定要上传吗？", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-          })
-            .then(() => {
+      this.$confirm("同意审批将上传转诊信息至区块链，你确定要上传吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
               const referralInfo = {}
               let url = ""
               if (this.currentRecord.referralType === "急诊") {
@@ -418,12 +418,12 @@ export default {
                   this.$message.success("转诊信息发送成功");
                 }
               })
-            })
-            .catch(() => {
-              this.$message("取消发送");
+        })
+        .catch(() => {
+          this.$message("取消发送");
             });
         }
-      });
+        });
     },
     refuse(row) {
       this.$confirm('确定要拒绝该转诊申请吗?', '提示', {
@@ -431,17 +431,17 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let form = {
+      let form = {
           id: this.currentRecord.id,
           referralStatus: "已拒绝转出"
-        };
+      };
         this.$request.put("/referral/update", form).then((res) => {
-          if (res.code === "200") {
+        if (res.code === "200") {
             this.$message.success("已拒绝转出");
-            this.load(1);
-          } else {
+          this.load(1);
+        } else {
             this.$message.error(res.msg);
-          }
+        }
         });
       }).catch(() => {
         this.$message.info('已取消操作');

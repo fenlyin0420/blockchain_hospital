@@ -210,20 +210,12 @@
         <div class="step-content">
           <!-- 步骤1: 面容认证 -->
           <div v-if="activeStep === 0" class="face-verification">
-            <div class="face-preview">
-              <div v-if="!faceVerificationComplete" class="face-camera-container">
-                <div class="face-placeholder">
-                  <i class="el-icon-user-solid"></i>
-                  <p>面部识别区域</p>
-                </div>
-                <el-button type="primary" @click="simulateFaceVerification">开始面容识别</el-button>
-              </div>
-              <div v-else class="face-verified">
-                <i class="el-icon-check"></i>
-                <p>面容验证成功</p>
-              </div>
-            </div>
-
+            <FaceVerification 
+              :active="activeStep === 0"
+              :auto-start="true"
+              @verification-success="handleFaceVerificationSuccess"
+            />
+            
             <div class="step-actions">
               <el-button type="primary" :disabled="!faceVerificationComplete" @click="activeStep = 1">下一步</el-button>
               <el-button @click="showDecryptDrawer = false">取消</el-button>
@@ -247,11 +239,13 @@
 
 <script>
 import QRcodeScan from "../component/QRcodeScan.vue";
+import FaceVerification from "../component/FaceVerification.vue";
 
 export default {
   name: "CaseHistory",
   components: {
-    QRcodeScan
+    QRcodeScan,
+    FaceVerification
   },
   data() {
     return {
@@ -360,45 +354,25 @@ export default {
           // 解析基本信息行
           const basicInfoMatch = patientInfo.match(/姓名: ([^\t]+)\t\|\t性别: ([^\t]+)\t\|\t年龄: ([^\t]+)\t\|\t职业: ([^\t]+)\t\|\t电话: ([^\n]+)/);
           if (basicInfoMatch) {
-            try {
-              recordObj.userName = this.decodeBase64(basicInfoMatch[1].trim());
-              recordObj.sex = this.decodeBase64(basicInfoMatch[2].trim());
-              recordObj.age = this.decodeBase64(basicInfoMatch[3].trim());
-              recordObj.occupation = this.decodeBase64(basicInfoMatch[4].trim());
-              recordObj.phone = this.decodeBase64(basicInfoMatch[5].trim());
-            } catch (e) {
-              console.error('Base64解码错误:', e);
-              recordObj.userName = basicInfoMatch[1].trim();
-              recordObj.sex = basicInfoMatch[2].trim();
-              recordObj.age = basicInfoMatch[3].trim();
-              recordObj.occupation = basicInfoMatch[4].trim();
-              recordObj.phone = basicInfoMatch[5].trim();
-            }
+            recordObj.userName = basicInfoMatch[1].trim();
+            recordObj.sex = basicInfoMatch[2].trim();
+            recordObj.age = basicInfoMatch[3].trim();
+            recordObj.occupation = basicInfoMatch[4].trim();
+            recordObj.phone = basicInfoMatch[5].trim();
           }
           
           // 解析日期行
           const dateInfoMatch = patientInfo.match(/就诊日期: ([^\t]+)\t\|\t记录时间: ([^\n]+)/);
           if (dateInfoMatch) {
-            try {
-              recordObj.treatmentDate = this.decodeBase64(dateInfoMatch[1].trim());
-              recordObj.recordDate = this.decodeBase64(dateInfoMatch[2].trim());
-            } catch (e) {
-              console.error('Base64解码错误:', e);
-              recordObj.treatmentDate = dateInfoMatch[1].trim();
-              recordObj.recordDate = dateInfoMatch[2].trim();
-            }
+            recordObj.treatmentDate = dateInfoMatch[1].trim();
+            recordObj.recordDate = dateInfoMatch[2].trim();
           }
         }
         
         // 提取主诉症状
         const symptomsMatch = recordData.match(/【主诉症状】\s+([^\n]+)/);
         if (symptomsMatch) {
-          try {
-            recordObj.illnessDetail = this.decodeBase64(symptomsMatch[1].trim());
-          } catch (e) {
-            console.error('Base64解码错误:', e);
-            recordObj.illnessDetail = symptomsMatch[1].trim();
-          }
+          recordObj.illnessDetail = symptomsMatch[1].trim();
         }
         
         // 提取诊断结果
@@ -473,15 +447,16 @@ export default {
     },
     
     /**
-     * Base64解码函数
+     * 将base64字符串解码为原始字符串
+     * 
+     * @param b base64 字符串
+     * @return 原始字符串
      */
-    decodeBase64(str) {
-      try {
-        return decodeURIComponent(escape(atob(str)));
-      } catch (e) {
-        console.error('Base64解码错误:', str, e);
-        return str;
-      }
+     btos(b) {
+      const utf8Str = atob(b);
+      return decodeURIComponent(Array.prototype.map.call(utf8Str, (c) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
     },
     
     /**
@@ -496,7 +471,10 @@ export default {
      * 启动解密流程
      */
     startDecryptFlow(record) {
-      this.decrypt();
+      setTimeout(() => {
+        this.decrypt();
+        
+      }, 10000);
       this.currentRecord = record;
       this.showDecryptDrawer = true;
       this.activeStep = 0;
@@ -516,6 +494,17 @@ export default {
         this.faceVerificationComplete = true;
         this.$message.success("面容验证成功");
       }, 2000);
+    },
+    
+    /**
+     * 处理面容认证成功事件
+     */
+    handleFaceVerificationSuccess(userData) {
+      this.faceVerificationComplete = true;
+      this.$message.success(`欢迎您，${userData.name}`);
+      setTimeout(() => {
+        this.activeStep = 1;
+      }, 1500);
     },
     
     /**
@@ -547,8 +536,18 @@ export default {
      */
     decrypt() {
       if (!this.currentRecord) return;
-      
-      // 直接使用当前记录并添加privateKey参数
+
+      // Decode Base64 fields
+      const decodeBase64 = (str) => {
+        try {
+          return decodeURIComponent(escape(atob(str)));
+        } catch (e) {
+          console.error('Base64解码错误:', str, e);
+          return str;
+        }
+      };
+
+      // Proceed with decryption logic
       console.log("currentRecord", this.currentRecord);
       let traverse = {
         mainDiagnosis: this.currentRecord.mainDiagnosis,
@@ -559,7 +558,7 @@ export default {
         care: this.currentRecord.care,
         diet: this.currentRecord.diet,
         img: this.currentRecord.img
-      }
+      };
       if (traverse.img.includes("?")) {
         traverse.img = traverse.img.split("?")[0];
       }
@@ -570,8 +569,6 @@ export default {
       }).then((res) => {
         console.log("res", res);
         if (res.code === "200") {
-
-          // 更新当前记录的各个字段
           this.currentRecord.advice = res.data.advice;
           this.currentRecord.drug = res.data.drug;
           this.currentRecord.mainDiagnosis = res.data.mainDiagnosis;
@@ -580,7 +577,19 @@ export default {
           this.currentRecord.nonMedicine = res.data.nonMedicine;
           this.currentRecord.care = res.data.care;
           this.currentRecord.diet = res.data.diet;
-          this.currentRecord.img = res.data.img + "?t=" + new Date().getTime();
+          // this.currentRecord.img = res.data.img + "?t=" + new Date().getTime();
+          this.currentRecord.img = 'http://localhost:8090/files/1741863814485-aaa2.jpg'
+          
+          // 在解密后进行Base64解码
+          this.currentRecord.userName = this.btos(this.currentRecord.userName);
+          this.currentRecord.sex = this.btos(this.currentRecord.sex);
+          this.currentRecord.age = this.btos(this.currentRecord.age);
+          this.currentRecord.occupation = this.btos(this.currentRecord.occupation);
+          this.currentRecord.treatmentDate = this.btos(this.currentRecord.treatmentDate);
+          this.currentRecord.recordDate = this.btos(this.currentRecord.recordDate);
+          this.currentRecord.phone = this.btos(this.currentRecord.phone);
+          this.currentRecord.illnessDetail = this.btos(this.currentRecord.illnessDetail);
+          
           this.$message.success("解密成功");
         } else {
           this.$message.error(res.msg);
@@ -887,7 +896,7 @@ export default {
   justify-content: flex-end;
 }
 
-.step-actions .el-button {
+step-actions .el-button {
   margin-left: 10px;
 }
 
@@ -896,7 +905,10 @@ export default {
   overflow: auto;
 }
 
-::v-deep .el-steps {
-  margin: 20px;
+::v-deep .el-drawer__header {
+  color: white;
+  font-size: large;
+  background-color: #742c20;
+  padding: 14px;
 }
-</style> 
+</style>

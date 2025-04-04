@@ -8,6 +8,7 @@ import '@/assets/css/global.css'
 import '@/assets/css/theme/index.css'
 import request from "@/utils/request";
 import { blockRequest } from "@/utils/request";
+import { faceRequest } from "@/utils/request";
 import VueParticles from 'vue-particles'
 
 
@@ -15,6 +16,7 @@ Vue.config.productionTip = true
 
 Vue.prototype.$request = request
 Vue.prototype.$blockRequest = blockRequest
+Vue.prototype.$faceRequest = faceRequest
 Vue.prototype.$baseUrl = process.env.VUE_APP_BASEURL
 
 Vue.use(ElementUI, {size: "big"})
