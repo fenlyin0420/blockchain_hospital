@@ -1,6 +1,6 @@
 <!-- 医疗顾问聊天组件 -->
 <template>
-  <div class="medical-advisor">
+  <div class="medical-advisor markdown-body">
     <el-drawer
       :visible.sync="drawerVisible"
       direction="rtl"
@@ -48,11 +48,11 @@
             <div class="message-content">
               <!-- 思考内容区域 - 确保在有reasoningContent且不等于content时显示 -->
               <div v-if="message.sender === 'bot' && message.reasoningContent && message.reasoningContent !== message.content && showReasoning" 
-                  class="message-text reasoning"
+                  class="message-text reasoning markdown-body"
                   v-html="formatMessage(message.reasoningContent)">
               </div>
               <!-- 主要内容区域 -->
-              <div class="message-text" v-html="formatMessage(message.content || '')"></div>
+              <div class="message-text markdown-body" v-html="formatMessage(message.content || '')"></div>
             </div>
           </div>
           
@@ -78,7 +78,7 @@
             :autosize="{ minRows: 2, maxRows: 4 }"
             v-model="inputMessage"
             placeholder="请输入您的医疗问题..."
-            @keyup.enter.native="sendMessage"
+            @keydown.enter.native="handleEnterKey"
           ></el-input>
           <div class="input-actions">
             <el-button 
@@ -102,23 +102,33 @@
 
 <script>
 import { medicalAdvisorAPI } from '@/utils/AIService';
-import { marked } from 'marked';
+import MarkdownIt from 'markdown-it';
+import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
 
-// 配置marked
-marked.setOptions({
-  highlight: function(code, lang) {
+// 配置 markdown-it
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  breaks: true,
+  highlight: function(str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(code, { language: lang }).value;
+        return '<pre class="hljs"><code>' +
+               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+               '</code></pre>';
       } catch (__) {}
     }
-    return code;
-  },
-  breaks: true,
-  gfm: true
+    // 对未指定语言的代码块使用普通高亮
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  }
 });
+
+// 调整 markdown-it 配置以获得更好的输出
+md.renderer.rules.table_open = () => '<div class="table-container"><table class="md-table">';
+md.renderer.rules.table_close = () => '</table></div>';
 
 export default {
   name: "MedicalAdvisor",
@@ -167,12 +177,24 @@ export default {
       if (!message) return '';
       
       try {
-        // 使用marked解析markdown
-        const htmlContent = marked(message);
-        return htmlContent;
+        // 使用 markdown-it 解析 markdown
+        const renderedHtml = md.render(message);
+        
+        // 使用 DOMPurify 净化 HTML 防止 XSS 攻击
+        const sanitizedHtml = DOMPurify.sanitize(renderedHtml, {
+          ADD_ATTR: ['target'], // 允许链接使用 target="_blank"
+          FORBID_TAGS: ['style', 'script', 'iframe'], // 禁止可能导致问题的标签
+          FORBID_ATTR: ['style', 'onerror', 'onload'], // 禁止可能导致问题的属性
+        });
+        
+        return sanitizedHtml;
       } catch (error) {
         console.error('Markdown parsing error:', error);
-        return message;
+        // 出错时返回转义后的原始内容
+        return message
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
       }
     },
     sendMessage() {
@@ -220,7 +242,7 @@ export default {
               // 累积思考内容
               this.currentReasoningContent += reasoningContent;
               
-              // 更新消息中的思考内容字段
+              // 更新消息中的思考内容字段，但不立即渲染
               this.$set(currentMessage, 'reasoningContent', this.currentReasoningContent);
               
               // 如果尚未开始接收正式内容，在内容区域也显示思考内容
@@ -245,7 +267,9 @@ export default {
               }
               
               // 追加内容
-              this.$set(currentMessage, 'content', (currentMessage.content || '') + content);
+              const updatedContent = (currentMessage.content || '') + content;
+              this.$set(currentMessage, 'content', updatedContent);
+              currentMessage.rawContent = updatedContent;
             }
             
             // 如果收到完成信号
@@ -260,10 +284,11 @@ export default {
               // 如果有思考内容但没有正式内容
               if (this.currentReasoningContent && (!currentMessage.content || currentMessage.content === '')) {
                 this.$set(currentMessage, 'content', this.currentReasoningContent);
+                currentMessage.rawContent = this.currentReasoningContent;
               }
               
               // 记录完整回复到历史
-              const fullContent = currentMessage.content || '';
+              const fullContent = currentMessage.rawContent || '';
               
               this.messages.push({
                 role: 'assistant',
@@ -346,6 +371,14 @@ export default {
           content: "您好，我是AI医疗助手，可以帮你规范书写病历，查询药物用法用量。"
         });
       }).catch(() => {});
+    },
+    handleEnterKey(event) {
+      if (event.shiftKey) {
+        return;
+      }
+
+      event.preventDefault();
+      this.sendMessage();
     }
   }
 };
@@ -417,7 +450,7 @@ export default {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #f5f7fa;
+  background-color: #ffffff;
 }
 
 .message {
@@ -469,94 +502,173 @@ export default {
 }
 
 .message-text {
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: break-word;
+  overflow-wrap: break-word;
 }
 
-.message-text :deep(p) {
-  margin: 8px 0;
+.message-text p {
+  margin: 0 0 0.8em;
 }
 
-.message-text :deep(h1),
-.message-text :deep(h2),
-.message-text :deep(h3),
-.message-text :deep(h4),
-.message-text :deep(h5),
-.message-text :deep(h6) {
-  margin: 16px 0 8px;
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+.message-text h1, 
+.message-text h2, 
+.message-text h3, 
+.message-text h4, 
+.message-text h5, 
+.message-text h6 {
+  margin: 1em 0 0.5em;
+  line-height: 1.25;
   font-weight: 600;
+  color: #24292e;
 }
 
-.message-text :deep(code) {
-  background-color: #f6f8fa;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.9em;
+.message-text h1:first-child, 
+.message-text h2:first-child, 
+.message-text h3:first-child {
+  margin-top: 0;
 }
 
-.message-text :deep(pre) {
+.message-text h1 {
+  font-size: 1.5em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.message-text h2 {
+  font-size: 1.3em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.message-text h3 {
+  font-size: 1.1em;
+}
+
+.message-text code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  background-color: rgba(27,31,35,0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+}
+
+.message-text pre {
+  margin: 0.8em 0;
+  padding: 0;
+  background-color: transparent;
+  overflow: visible;
+}
+
+.message-text pre.hljs {
   background-color: #f6f8fa;
-  padding: 16px;
   border-radius: 6px;
-  overflow-x: auto;
-  margin: 12px 0;
+  padding: 1em;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
 }
 
-.message-text :deep(pre code) {
+.message-text pre.hljs code {
   background-color: transparent;
   padding: 0;
+  margin: 0;
   border-radius: 0;
+  white-space: pre;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
-.message-text :deep(blockquote) {
-  border-left: 4px solid #dfe2e5;
+.message-text ul,
+.message-text ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.message-text li {
+  margin: 0.2em 0;
+}
+
+.message-text li+li {
+  margin-top: 0.1em;
+}
+
+.message-text li > p {
+  margin: 0;
+}
+
+.message-text blockquote {
+  margin: 0.8em 0;
+  padding: 0 1em;
   color: #6a737d;
-  margin: 12px 0;
-  padding: 0 16px;
+  border-left: 0.25em solid #dfe2e5;
 }
 
-.message-text :deep(ul),
-.message-text :deep(ol) {
-  padding-left: 24px;
-  margin: 8px 0;
+.message-text blockquote > :first-child {
+  margin-top: 0;
 }
 
-.message-text :deep(table) {
+.message-text blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.message-text .table-container {
+  overflow-x: auto;
+  margin: 0.8em 0;
+}
+
+.message-text .md-table {
   border-collapse: collapse;
   width: 100%;
-  margin: 12px 0;
+  margin: 0;
+  display: table;
 }
 
-.message-text :deep(table th),
-.message-text :deep(table td) {
+.message-text .md-table th,
+.message-text .md-table td {
   border: 1px solid #dfe2e5;
-  padding: 8px 12px;
+  padding: 0.4em 0.8em;
+  text-align: left;
 }
 
-.message-text :deep(table th) {
+.message-text .md-table th {
+  font-weight: 600;
   background-color: #f6f8fa;
 }
 
-.message-text :deep(img) {
-  max-width: 100%;
-  height: auto;
-  margin: 12px 0;
+.message-text .md-table tr:nth-child(2n) {
+  background-color: #f6f8fa;
 }
 
-.message-text :deep(a) {
+.message-text a {
   color: #0366d6;
   text-decoration: none;
 }
 
-.message-text :deep(a:hover) {
+.message-text a:hover {
   text-decoration: underline;
 }
 
-.message-text :deep(hr) {
-  border: none;
-  border-top: 1px solid #dfe2e5;
-  margin: 16px 0;
+.message-text hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 1em 0;
+  background-color: #e1e4e8;
+  border: 0;
+}
+
+.message-text strong {
+  font-weight: 600;
+}
+
+.message-text img {
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: #fff;
+  margin: 0.5em 0;
 }
 
 /* 思考内容样式 */
@@ -652,5 +764,226 @@ export default {
   30% {
     transform: translateY(-5px);
   }
+}
+
+/* 代码块相关样式 */
+.code-block {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 16px;
+  overflow: auto;
+  margin: 12px 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 85%;
+}
+
+.code-block code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-family: inherit !important;
+}
+
+/* 确保正确展示 */
+.markdown-body pre {
+  margin: 12px 0;
+  padding: 16px;
+  overflow: auto;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  line-height: 1.45;
+}
+
+.markdown-body code {
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27,31,35,0.05);
+  border-radius: 3px;
+}
+
+.markdown-body pre > code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+/* 修改代码块样式 */
+.markdown-code-block {
+  margin: 16px 0;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.markdown-code-block pre {
+  margin: 0 !important;
+  padding: 16px;
+  overflow: auto;
+  background-color: #f6f8fa;
+  border-radius: 0 !important;
+}
+
+.markdown-code-block code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 85%;
+  white-space: pre;
+  display: block;
+}
+
+/* 代码块样式 */
+.code-block-wrapper {
+  margin: 16px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #f6f8fa;
+}
+
+.code-block-wrapper pre {
+  margin: 0 !important;
+  padding: 16px;
+  overflow: auto;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 85%;
+  line-height: 1.45;
+}
+
+.code-block-wrapper code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  white-space: pre;
+}
+
+/* Markdown样式 */
+.message-text h1 {
+  font-size: 1.5em;
+  margin: 16px 0 10px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.message-text h2 {
+  font-size: 1.3em;
+  margin: 16px 0 8px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.message-text h3 {
+  font-size: 1.1em;
+  margin: 16px 0 8px;
+}
+
+.message-text code {
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  background-color: rgba(27,31,35,0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+}
+
+.message-text blockquote {
+  margin: 16px 0;
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+}
+
+.message-text ul, .message-text ol {
+  padding-left: 2em;
+  margin: 16px 0;
+}
+
+.message-text li {
+  margin: 4px 0;
+}
+
+.message-text table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+}
+
+.message-text table td {
+  border: 1px solid #dfe2e5;
+  padding: 6px 13px;
+}
+
+.message-text strong {
+  font-weight: 600;
+}
+
+.message-text em {
+  font-style: italic;
+}
+
+.message-text a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.message-text a:hover {
+  text-decoration: underline;
+}
+
+.message-text hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #e1e4e8;
+  border: 0;
+}
+
+.message-text p {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+.message-text ul, .message-text ol {
+  padding-left: 2em;
+  margin: 12px 0;
+}
+
+.message-text li + li {
+  margin-top: 2px;
+}
+
+.message-text li > p {
+  margin: 0;
+}
+
+/* 减少标题上下间距 */
+.message-text h1, .message-text h2, .message-text h3 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.message-text h1:first-child, 
+.message-text h2:first-child,
+.message-text h3:first-child {
+  margin-top: 0;
+}
+
+/* 优化引用块间距 */
+.message-text blockquote {
+  margin: 12px 0;
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+}
+
+.message-text blockquote > p {
+  margin: 6px 0;
 }
 </style> 
