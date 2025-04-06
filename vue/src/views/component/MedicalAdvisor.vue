@@ -53,8 +53,6 @@
               </div>
               <!-- 主要内容区域 -->
               <div class="message-text" v-html="formatMessage(message.content || '')"></div>
-              
-              <div class="message-time">{{ message.time }}</div>
             </div>
           </div>
           
@@ -104,6 +102,23 @@
 
 <script>
 import { medicalAdvisorAPI } from '@/utils/AIService';
+import { marked } from 'marked';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
+
+// 配置marked
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value;
+      } catch (__) {}
+    }
+    return code;
+  },
+  breaks: true,
+  gfm: true
+});
 
 export default {
   name: "MedicalAdvisor",
@@ -149,13 +164,16 @@ export default {
       done();
     },
     formatMessage(message) {
-      // 处理换行符
-      let formattedMsg = message.replace(/\n/g, '<br>');
+      if (!message) return '';
       
-      // 处理Markdown风格的链接 [文本](链接)
-      formattedMsg = formattedMsg.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-      
-      return formattedMsg;
+      try {
+        // 使用marked解析markdown
+        const htmlContent = marked(message);
+        return htmlContent;
+      } catch (error) {
+        console.error('Markdown parsing error:', error);
+        return message;
+      }
     },
     sendMessage() {
       const message = this.inputMessage.trim();
@@ -433,26 +451,112 @@ export default {
 }
 
 .message-content {
-  background-color: white;
   padding: 12px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
   position: relative;
 }
 
 .bot-message .message-content {
-  background-color: white;
+  width: 100%;
   color: #333;
 }
 
 .user-message .message-content {
   background-color: #ecf5ff;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
   color: #333;
 }
 
 .message-text {
-  line-height: 1.5;
+  line-height: 1.6;
   word-break: break-word;
+}
+
+.message-text :deep(p) {
+  margin: 8px 0;
+}
+
+.message-text :deep(h1),
+.message-text :deep(h2),
+.message-text :deep(h3),
+.message-text :deep(h4),
+.message-text :deep(h5),
+.message-text :deep(h6) {
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+.message-text :deep(code) {
+  background-color: #f6f8fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.message-text :deep(pre) {
+  background-color: #f6f8fa;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.message-text :deep(pre code) {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.message-text :deep(blockquote) {
+  border-left: 4px solid #dfe2e5;
+  color: #6a737d;
+  margin: 12px 0;
+  padding: 0 16px;
+}
+
+.message-text :deep(ul),
+.message-text :deep(ol) {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.message-text :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.message-text :deep(table th),
+.message-text :deep(table td) {
+  border: 1px solid #dfe2e5;
+  padding: 8px 12px;
+}
+
+.message-text :deep(table th) {
+  background-color: #f6f8fa;
+}
+
+.message-text :deep(img) {
+  max-width: 100%;
+  height: auto;
+  margin: 12px 0;
+}
+
+.message-text :deep(a) {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.message-text :deep(a:hover) {
+  text-decoration: underline;
+}
+
+.message-text :deep(hr) {
+  border: none;
+  border-top: 1px solid #dfe2e5;
+  margin: 16px 0;
 }
 
 /* 思考内容样式 */
@@ -462,7 +566,7 @@ export default {
   background-color: #f5f5f5;
   padding: 10px;
   border-radius: 6px;
-  border-left: 3px solid #409EFF;
+  border-left: 3px solid #bebfc0;
   margin-bottom: 10px;
   position: relative;
   font-size: 0.95em;
