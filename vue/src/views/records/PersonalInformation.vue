@@ -92,6 +92,8 @@
 
 <script>
 import request from "@/utils/request";
+import { compressKey, decompressKey } from "@/utils/keyCompression";
+
 
 export default {
   name: "UserInformation",
@@ -128,9 +130,16 @@ export default {
      * refresh QR code
      */
     refreshQR() {
-      console.log(this.dataP.publicKey);
+      // console.log("privateKey", this.dataP.privateKey);
+      // let publicKey = compressKey(this.dataP.publicKey);
+      // let privateKey = compressKey(this.dataP.privateKey);
+      // console.log("compress privateKey", privateKey);
+      // console.log("decompress", decompressKey(privateKey));
+
+      let publicKey = this.dataP.publicKey;
+      let privateKey = this.dataP.privateKey;
       request.get("/files/generateQR", {
-        params: { data: this.dataP.publicKey }
+        params: { data: publicKey }
       }).then(res => {
         if (res.code === "200") {
           this.publicKeyQR = res.data;
@@ -140,7 +149,7 @@ export default {
       });
     
       request.get("/files/generateQR", {
-        params: { data: this.dataP.privateKey }
+        params: { data: privateKey }
       }).then(res => {
         if (res.code === "200") {
           this.privateKeyQR = res.data;

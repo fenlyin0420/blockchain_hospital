@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card v-if="tableData.length > 0">
+    <el-card v-if="ReferralRecords.length > 0">
       <h1 style="text-align: center; margin-bottom: 10px">医院转诊申请表</h1>
       <el-form
         ref="elForm"
@@ -23,7 +23,7 @@
               </el-col>
               <el-col :span="10">
                 <el-form-item class="custom-label" label="转诊类型">
-                  <el-select v-model="currentRecord.referralType" :readonly="currentRecord.referralStatus !== '待审批'">
+                  <el-select v-model="currentRecord.referralType" disabled>
                     <el-option label="普通" value="普通"></el-option>
                     <el-option label="急诊" value="急诊"></el-option>
                   </el-select>
@@ -123,7 +123,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="14">
-                  <el-form-item label="病历地址">
+                  <el-form-item label="转诊地址">
                     <el-input v-model="currentRecord.traverseAddr" :readonly="true"></el-input>
                   </el-form-item>
                 </el-col>
@@ -169,14 +169,35 @@
                   :style="{ width: '100%' }"
                 ></el-input>
               </el-form-item>
-            </div>
+    </div>
 
             <br /><br />
             <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px">
               <el-row :gutter="24">
                 <el-col :span="13">
-                  <el-form-item label="转入医院">
-                    <el-input v-model="currentRecord.inHospitalName"></el-input>
+                  <el-form-item 
+          label="转入医院"
+                    :rules="[
+                      { 
+                        required: currentRecord.referralType === '普通', 
+                        message: '请选择转入医院', 
+                        trigger: 'change' 
+                      }
+                    ]"
+                  >
+                    <el-select
+                      v-model="currentRecord.inHospitalName"
+                      placeholder="请选择转入医院"
+                      :disabled="currentRecord.referralType === '急诊'"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in hospitalOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
@@ -215,13 +236,12 @@
           </el-col>
         </el-row>
         <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
-          <!-- <el-button type="primary" @click="showProgressBar">转诊进度</el-button> -->
           <el-button type="success" @click="update(currentRecord)">同意</el-button>
           <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
           <el-button type="primary" @click="saveChanges">保存修改</el-button>
           <el-button type="primary" :disabled="currentIndex === 0" @click="previousRecord">上一个</el-button>
-          <span>{{ currentIndex + 1 }} / {{ tableData.length }}</span>
-          <el-button type="primary" :disabled="currentIndex >= tableData.length - 1" @click="nextRecord">下一个</el-button>
+          <span>{{ currentIndex + 1 }} / {{ ReferralRecords.length }}</span>
+          <el-button type="primary" :disabled="currentIndex >= ReferralRecords.length - 1" @click="nextRecord">下一个</el-button>
         </div>
       </el-form>
     </el-card>
@@ -254,7 +274,8 @@
       </div>
     </el-dialog>
     <el-dialog
-      title="转诊进度"
+      title="智能推荐"
+      center
       :visible.sync="ProgressBarDialogVisible"
       width="800px"
     >
@@ -272,7 +293,7 @@ export default {
   },
   data() {
     return {
-      tableData: [], // 所有的数据
+      ReferralRecords: [], // 所有的转诊记录
       currentIndex: 0, // 当前显示的记录索引
       pageNum: 1,
       pageSize: 10,
@@ -301,7 +322,11 @@ export default {
             trigger: "blur",
           },
         ],
-      }
+      },
+      hospitalOptions: [
+        { value: 'xx大学第一附属医院', label: 'xx大学第一附属医院' },
+        { value: 'xx大学第二附属医院', label: 'xx大学第二附属医院' }
+      ],
     };
   },
   created() {
@@ -314,17 +339,16 @@ export default {
     previousRecord() {
       if (this.currentIndex > 0) {
         this.currentIndex--;
-        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+        this.currentRecord = JSON.parse(JSON.stringify(this.ReferralRecords[this.currentIndex]));
       }
     },
     nextRecord() {
-      if (this.currentIndex < this.tableData.length - 1) {
+      if (this.currentIndex < this.ReferralRecords.length - 1) {
         this.currentIndex++;
-        this.currentRecord = JSON.parse(JSON.stringify(this.tableData[this.currentIndex]));
+        this.currentRecord = JSON.parse(JSON.stringify(this.ReferralRecords[this.currentIndex]));
       }
     },
     saveChanges() {
-      // 保存修改后的数据
       const form = {
         id: this.currentRecord.id,
         outHospitalAdvice: this.currentRecord.outHospitalAdvice,
@@ -335,7 +359,7 @@ export default {
         if (res.code === "200") {
           this.$message.success("修改成功");
           // 更新本地数据
-          this.tableData[this.currentIndex] = JSON.parse(JSON.stringify(this.currentRecord));
+          this.ReferralRecords[this.currentIndex] = JSON.parse(JSON.stringify(this.currentRecord));
         } else {
           this.$message.error(res.msg || "修改失败");
         }
@@ -343,58 +367,62 @@ export default {
     },
     update(row) {
       this.dialog_title = row.userName + "的转诊信息"; 
-      const referralInfo = {
-        _userName: row.userName,
-        _outHospitalName: row.outHospitalName,
-        _inHospitalName: row.inHospitalName,
-        _outTime: row.outTime,
-        _reason: row.reason,
-      };
-      console.log(referralInfo);
-
+      // 验证表单
+      this.$refs["elForm"].validate((valid) => {
+        if (valid) {
       this.$confirm("同意审批将上传转诊信息至区块链，你确定要上传吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-            const referralInfo = {}
-            let url = ""
-            if (this.currentRecord.referralType === "急诊") {
-              url = "/storeIntelReferralInfo"
-            } else {
-              url = "/storeReferralInfo"
-              referralInfo.inHospitalName = this.currentRecord.inHospitalName
-            }
-            referralInfo.patientData = `${this.currentRecord.userName}||${this.currentRecord.sex}||${this.currentRecord.age}||${this.currentRecord.idCard}||${this.currentRecord.phone}`
-            referralInfo.medicalData = `${this.currentRecord.diagnosis}||${this.currentRecord.reason}||${this.currentRecord.communication}||${this.currentRecord.signatureUrl}`
-            referralInfo.outHospitalData = `${this.currentRecord.outHospitalName}||${this.currentRecord.outDoctorName}||${this.currentRecord.outHospitalAdvice}||${this.currentRecord.outTime}`
-            referralInfo.status = '待接收'
-            referralInfo.urgency = this.currentRecord.referralType            
-
-            console.log("referralInfo", referralInfo)
-            this.$blockRequest.post(url, referralInfo).then((blockRes) => {
-              if (blockRes.data.code === "200") {
-                this.$message.success("区块链数据上传成功");
-                this.currentRecord.traverseAddr = blockRes.data.data.transactionReceipt.output
-                console.log(blockRes)
-                // 普通生成并显示二维码，急诊显示医院匹配的进度条
-                if (this.currentRecord.referralType !== "急诊") {
-                  this.showQRCode(blockRes.data.data.transactionReceipt.output);
-                } else {
-                  this.showProgressBar();
-                }
+              const referralInfo = {}
+              let url = ""
+              if (this.currentRecord.referralType === "急诊") {
+                url = "/storeIntelReferralInfo"
               } else {
-                this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
+                url = "/storeReferralInfo"
+                referralInfo.inHospitalName = this.currentRecord.inHospitalName
               }
-            }).catch(error => {
-              console.error("区块链请求错误:", error);
-              this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
-            });
+              referralInfo.patientData = `${this.currentRecord.userName}||${this.currentRecord.sex}||${this.currentRecord.age}||${this.currentRecord.idCard}||${this.currentRecord.phone}`
+              referralInfo.medicalData = `${this.currentRecord.diagnosis}||${this.currentRecord.reason}||${this.currentRecord.communication}||${this.currentRecord.signatureUrl}`
+              referralInfo.outHospitalData = `${this.currentRecord.outHospitalName}||${this.currentRecord.outDoctorName}||${this.currentRecord.outHospitalAdvice}||${this.currentRecord.outTime}`
+              referralInfo.status = '待接收'
+              referralInfo.urgency = this.currentRecord.referralType            
+
+              console.log("referralInfo", referralInfo)
+              this.$blockRequest.post(url, referralInfo).then((blockRes) => {
+                if (blockRes.data.code === "200") {
+                  this.$message.success("区块链数据上传成功");
+                  this.currentRecord.traverseAddr = blockRes.data.data.transactionReceipt.output
+                  console.log(blockRes)
+                  // 普通生成并显示二维码，急诊显示医院匹配的进度条
+                  if (this.currentRecord.referralType !== "急诊") {
+                    this.showQRCode(blockRes.data.data.transactionReceipt.output);
+                  } else {
+                    this.showProgressBar();
+                  }
+                } else {
+                  this.$message.error("区块链数据上传失败: " + (blockRes.data.msg || "未知错误"));
+                }
+              }).catch(error => {
+                console.error("区块链请求错误:", error);
+                this.$message.error("区块链数据上传失败: " + (error.message || "网络错误"));
+              });
+            }).then(() => {
+              this.$request.put("/referral/update", {
+                id: this.currentRecord.id,
+                referralStatus: "待接收"
+              }).then((res) => {
+                if (res.code === "200") {
+                  this.$message.success("转诊信息发送成功");
+                }
+              })
         })
-        .catch((error) => {
-          console.error("取消发送:", error);
+        .catch(() => {
           this.$message("取消发送");
+            });
+        }
         });
     },
     refuse(row) {
@@ -403,16 +431,17 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let form = {
-          id: row.id,
-        };
-        this.$request.patch("/referral/refuseOut", form).then((res) => {
-          if (res.code === "200") {
-            this.$message.success("已拒绝转诊");
-            this.load(1);
-          } else {
+      let form = {
+          id: this.currentRecord.id,
+          referralStatus: "已拒绝转出"
+      };
+        this.$request.put("/referral/update", form).then((res) => {
+        if (res.code === "200") {
+            this.$message.success("已拒绝转出");
+          this.load(1);
+        } else {
             this.$message.error(res.msg);
-          }
+        }
         });
       }).catch(() => {
         this.$message.info('已取消操作');
@@ -429,13 +458,14 @@ export default {
           },
         })
         .then((res) => {
-          this.tableData = res.data?.list || [];
+          this.ReferralRecords = res.data?.list || [];
           this.total = res.data?.total || 0;
+          this.ReferralRecords = this.ReferralRecords.filter((item) => item.referralStatus === "待审批");
           
           // 如果有数据，显示第一条
-          if (this.tableData.length > 0) {
+          if (this.ReferralRecords.length > 0) {
             this.currentIndex = 0;
-            this.currentRecord = JSON.parse(JSON.stringify(this.tableData[0]));
+            this.currentRecord = JSON.parse(JSON.stringify(this.ReferralRecords[0]));
             this.currentRecord.outHospitalAdvice = '同意转诊，医保相关事宜已备案。'
             this.currentRecord.outTime = new Date().toISOString().split('T')[0]
           }
@@ -534,5 +564,13 @@ export default {
 .image-slot i {
   font-size: 30px;
   margin-bottom: 10px;
+}
+
+/* 添加禁用状态的样式 */
+.el-select.is-disabled .el-input__inner {
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
+  color: #909399;
+  cursor: not-allowed;
 }
 </style>

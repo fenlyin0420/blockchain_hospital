@@ -95,7 +95,7 @@ export default {
       if (pageNum) this.pageNum = pageNum
       this.$request.get('/referral/selectPage', {
         params: {
-          result: "已转入",
+          referralStatus: "已确认接收",
           pageNum: this.pageNum,
           pageSize: this.pageSize,
         }

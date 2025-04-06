@@ -10,7 +10,7 @@
       <el-table :data="tableData" stripe>
         <el-table-column prop="userName" label="患者" width="80px" show-overflow-tooltip></el-table-column>
         <el-table-column prop="reason" label="转诊原因"></el-table-column>
-        <el-table-column prop="result" label="结果" width="120px"></el-table-column>
+        <el-table-column prop="referralStatus" label="结果" width="120px"></el-table-column>
         <el-table-column prop="outHospitalName" label="转出医院" show-overflow-tooltip></el-table-column>
         <el-table-column prop="outTime" label="转出时间" width="120px"></el-table-column>
         <el-table-column prop="inHospitalName" label="转入医院" show-overflow-tooltip></el-table-column>

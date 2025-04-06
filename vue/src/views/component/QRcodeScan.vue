@@ -26,10 +26,11 @@
 import jsQR from "jsqr";
 
 export default {
+  name: "QRcodeScan",
   props: {
     title: {
       type: String,
-      default: '请扫描二维码'
+      default: "扫描密钥二维码"
     },
     active: {
       type: Boolean,
@@ -122,6 +123,7 @@ export default {
       setTimeout(() => {
         this.qrCodeData = null;
       }, 3000);
+      this.stopCamera();
     },
 
     stopCamera() {

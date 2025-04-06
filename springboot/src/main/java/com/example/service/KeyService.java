@@ -176,9 +176,9 @@ public class KeyService {
         return ringSign;
     }
     /**
-     * 验证签名
-     * @param params
-     * @return
+     * 验证签名，需要原数据、签名数据、签名公钥环
+     * @param traverseDAO 原数据
+     * @return 验签结果
      */
     public RingSign verifySign(TraverseDAO traverseDAO) {
         Traverse traverse = new Traverse(
@@ -314,18 +314,7 @@ public class KeyService {
                     field.set(traverse, cipherText);
                 }
             }
-
-            // 加密图片
-            String imgUrl = traverse.getImg().strip();
-//            System.out.println("img url: \n" + imgUrl + "\n");
-            // 图片文件
-            MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
-            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
-            // 加密后的图片
-            img = ImgUtil.ImageEncryptor(img, publicKey);
-            imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
-            // 保存
-            fileService.replace(imgFile);
+            encryptImg(traverse.getImg(), publicKey);
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
             throw new CustomException("400", "图片不存在");
@@ -333,6 +322,20 @@ public class KeyService {
             e.printStackTrace();
         }
         return traverse;
+    }
+
+    public String encryptImg(String url, String publicKey) throws IOException, NullPointerException, Exception{
+        // 加密图片
+        String imgUrl = url.strip();
+        // 图片文件
+        MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
+        BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
+        // 加密后的图片
+        img = ImgUtil.ImageEncryptor(img, publicKey);
+        imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
+        // 保存
+        fileService.replace(imgFile); 
+        return imgUrl;
     }
 
     /**
@@ -350,11 +353,13 @@ public class KeyService {
                 Object value = field.get(traverse);
                 if (value != null){
                     String plainText = MySM2Util.decrypt(privateKey, (String) value);
+                    System.out.println("plainText" + plainText);
                     field.set(traverse, plainText);
                 }
             }
 
             String imgUrl = traverse.getImg().strip();
+            System.out.println("img url: \n" + imgUrl + "\n");
             MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
             BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
             img = ImgUtil.ImageDecryptor(img, privateKey);
@@ -364,20 +369,6 @@ public class KeyService {
             throw new CustomException(e.getMessage());
         }
         return traverse;
-    }
-
-    /**
-     * 图像解密函数
-     * 
-     * @param imgURL 加密图像在服务器的url
-     * @return 解密后图片的base64编码
-     */
-    public String imgDecrypt(String imgURL)
-            throws IOException, NullPointerException, WebClientRequestException, RuntimeException, Exception {
-        MultipartFile file = MyMultipartFile.fromURL(imgURL);
-        BufferedImage img = ImgUtil.MultipartFileToBufferedImage(file);
-        img = ImgUtil.ImageDecryptor(img, "test");
-        return ImgUtil.getImageBase64(img);
     }
 
     public Account selectById(Account account) {

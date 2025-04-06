@@ -19,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -78,12 +81,6 @@ public class KeyController {
         return Result.success(ringSign);
     }
 
-    /**
-     * 进行签名验证
-     * 根据id找到对应病历，在对其进行验签
-     * @param params.id 病历id
-     * @return
-     */
     @PostMapping("/verifySign")
     public Result verifySign(@RequestBody TraverseDAO traverseDAO) {
         RingSign ringSign = keyService.verifySign(traverseDAO);
@@ -131,36 +128,48 @@ public class KeyController {
         }
         return Result.success(traverse);
     }
+    
+    /**
+     * 解密接口 - 用于处理扁平化数据结构
+     * 前端直接传递traverse的属性，不使用嵌套对象
+     */
+    @PostMapping("/decryptFlat")
+    public Result decryptFlat(@RequestBody Traverse traverse, @RequestParam(required = false) String privateKey) {
+        System.out.println("traverse" + traverse);
+        System.out.println("privateKey" + privateKey);
+        try {
+            if (traverse.getUserId() != null && (privateKey == null || privateKey.isEmpty())) {
+                User user = userService.selectById(traverse.getUserId());
+                privateKey = user.getPrivateKey();
+            }
+            traverse = keyService.decrypt(traverse, privateKey);
+        } catch (CustomException e) {
+            return Result.error(e.getMsg());
+        }
+        return Result.success(traverse);
+    }
 
     /**
-     * 图像解密接口
+     * 图像加密接口
      * 
-     * @param traverse 接收图像url
-     * @return 图像base64编码
+     * @param url 接收图像url
+     * @param publicKey 公钥
+     * @return 加密后的图像url
      */
-    // @PostMapping("/imgDecrypt")
-    // public Result imgDecrypt(@RequestBody Traverse traverse) {
-    //     if (" ".equals(traverse.getImg()) || traverse.getImg() == null || traverse.getImg().equals("")) {
-    //         return Result.error("图像URL为空");
-    //     }
+    @PostMapping("/imgEncrypt")
+    public Result imgEncrypt(@RequestBody String url, @RequestBody String publicKey) {
+        try {
+            url = keyService.encryptImg(publicKey, publicKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.success(url);
+    }
 
-    //     Object data;
-    //     String Url = traverse.getImg();
-    //     try {
-    //         data = keyService.imgDecrypt(Url);
-    //     } catch (IOException e) {
-    //         // System.out.println(e.getMessage());
-    //         return Result.error("图像传输失败");
-    //     } catch (NullPointerException e) {
-    //         // System.out.println(e.getMessage());
-    //         return Result.error("无法找到病历图片");
-    //     } catch (WebClientRequestException e) {
-    //         // System.out.println(e.getMessage());
-    //         return Result.error("图像URL无效，请检查病历");
-    //     } catch (RuntimeException e) {
-    //         // System.out.println(e.getMessage());
-    //         return Result.error("解密失败:(");
-    //     }
-    //     return Result.success(data);
-    // }
+    @PostMapping("/imgDecrypt")
+    public Result imgDecrypt(@RequestBody String url, @RequestBody String privateKey) {
+
+        return Result.success(url);
+    }
+    
 }
