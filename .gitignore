@@ -18,3 +18,4 @@ vue/.env.development
 .vscode
 .cursor
 .cursorignore
+.github

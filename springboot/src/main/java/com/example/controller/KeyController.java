@@ -157,9 +157,10 @@ public class KeyController {
      * @return 加密后的图像url
      */
     @PostMapping("/imgEncrypt")
-    public Result imgEncrypt(@RequestBody String url, @RequestBody String publicKey) {
+    public Result imgEncrypt(@RequestBody ImgPayload imgPayload) {
+        String url = null;
         try {
-            url = keyService.encryptImg(publicKey, publicKey);
+            url = keyService.encryptImg(imgPayload.getUrl(), imgPayload.getPublicKey());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,9 +168,49 @@ public class KeyController {
     }
 
     @PostMapping("/imgDecrypt")
-    public Result imgDecrypt(@RequestBody String url, @RequestBody String privateKey) {
-
+    public Result imgDecrypt(@RequestBody ImgPayload imgPayload) {
+        String url = null;
+        try {
+            url = keyService.decryptImg(imgPayload.getUrl(), imgPayload.getPrivateKey());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return Result.success(url);
     }
     
+}
+
+class ImgPayload{
+    private String url;
+    private String publicKey;
+    private String privateKey;
+
+    public ImgPayload(String url, String publicKey) {
+        this.url = url;
+        this.publicKey = publicKey;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public String getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
+    }
 }
