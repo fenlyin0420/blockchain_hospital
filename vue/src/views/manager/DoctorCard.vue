@@ -255,7 +255,7 @@ export default {
           .get("/department/selectAll")
           .then((res) => {
             if (res.code === "200") {
-              this.departmentList = res.data;
+              this.departmentList = res.data.reverse();
               // 初始化科室
               this.departmentId = this.departmentList[0]?.id;
               resolve();
