@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="search">
+  <div class="body">
+    <!-- <div class="search">
       <el-input placeholder="请输入标题查询" style="width: 200px" v-model="title"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
@@ -17,21 +17,23 @@
             <el-button plain type="primary" @click="del(scope.row.id)">删除</el-button>
             <el-button plain type="primary" @click="update(scope.row)">修改</el-button>
           </template>
-        </el-table-column>
-      </el-table>
+</el-table-column>
+</el-table>
 
-      <div class="pagination">
-        <el-pagination
-            background
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="pageSize"
-            layout="total, prev, pager, next"
-            :total="total">
-        </el-pagination>
-      </div>
-    </div>
+<div class="pagination">
+  <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 20]"
+    :page-size="pageSize" layout="total, prev, pager, next" :total="total">
+  </el-pagination>
+</div> -->
+
+    <!-- <img
+        src="../../assets/imgs/qj.png" 
+        width="100%"
+        height="100%"
+      ></img> -->
+
+    <iframe src="http://localhost:8080/screen/views/index.html" class="window"></iframe>
+    <!-- </div>
 
 
     <el-dialog title="医院添加" :visible.sync="fromVisible" width="60%" :close-on-click-modal="false" destroy-on-close>
@@ -47,7 +49,7 @@
         <el-button @click="fromVisible = false">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
   </div>
 </template>
@@ -68,7 +70,7 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         inHospital: [
-          {required: true, message: '请选择是否住院', trigger: 'blur'},
+          { required: true, message: '请选择是否住院', trigger: 'blur' },
         ],
       },
       ids: [],
@@ -91,16 +93,16 @@ export default {
         }
       })
     },
-    update(data){
-      this.form=data;
-      this.fromVisible=true
+    update(data) {
+      this.form = data;
+      this.fromVisible = true
     },
-    handleAdd(){
-      this.form= {};
-      this.fromVisible=true
+    handleAdd() {
+      this.form = {};
+      this.fromVisible = true
     },
     del(id) {   // 单个删除
-      this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
+      this.$confirm('您确定删除吗？', '确认删除', { type: "warning" }).then(response => {
         this.$request.delete('/hospital/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
@@ -133,11 +135,21 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
-    handleSelectionChange(){ }, //批量
+    handleSelectionChange() { }, //批量
   }
 }
 </script>
 
 <style scoped>
+.body {
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
 
+.window {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
 </style>

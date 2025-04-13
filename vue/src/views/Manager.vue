@@ -125,7 +125,7 @@
             </template>
             <el-menu-item index="/log">系统监控</el-menu-item>
             <el-menu-item index="/notice">公告信息</el-menu-item>
-            <el-menu-item index="/hospital">医院信息</el-menu-item>
+            <el-menu-item index="/hospital">全景视图</el-menu-item>
             <el-menu-item index="/department">科室信息</el-menu-item>
             <el-menu-item index="/drug">药品信息</el-menu-item>
             <el-menu-item index="/doctor">医生管理</el-menu-item>
