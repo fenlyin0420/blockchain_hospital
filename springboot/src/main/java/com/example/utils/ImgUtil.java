@@ -54,41 +54,45 @@ public class ImgUtil {
      * @param file 原图像文件
      * @return 加密后的图像文件
      */
-    public static BufferedImage ImageEncryptor(BufferedImage img, String privateKey) throws Exception {
-        if (privateKey == null || privateKey.isEmpty() || privateKey.length() < 5) {
-            throw new Exception("非法私钥");
-        }
-    
-        int u = 0;
-        for (int i = 0; i < 5; i++) {
-            u += privateKey.charAt(i);
-        }
-    
+    public static BufferedImage ImageEncryptor(BufferedImage img, String publicKey) {
+        // encryption key
+        int u = 107;
         int w = img.getWidth();
         int h = img.getHeight();
         BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        Random rand = new Random(u);
-    
-        int[][][] d = new int[h][w][3];
+
+        // 初始化随机扰动数组
+        int[][][] d = new int[h][w][3]; // [高度][宽度][RGB 三个通道]
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
+                // 使用 u, i, j 作为种子来生成随机数
+                Random rand = new Random(u * i * j);
                 for (int k = 0; k < 3; k++) {
-                    d[i][j][k] = rand.nextInt(511) - 255; // [-255, 255]
+                    d[i][j][k] = rand.nextInt(511) - 255; // 生成范围 [-255, 255]
                 }
             }
         }
-    
+
+        // 应用扰动并保存新图像
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 int rgb = img.getRGB(j, i);
+                // 分别获取 R, G, B 三个通道的值
                 int red = (rgb >> 16) & 0xFF;
                 int green = (rgb >> 8) & 0xFF;
                 int blue = rgb & 0xFF;
-    
-                int newRed = Math.min(255, Math.max(0, red + d[i][j][0]));
-                int newGreen = Math.min(255, Math.max(0, green + d[i][j][1]));
-                int newBlue = Math.min(255, Math.max(0, blue + d[i][j][2]));
-    
+                
+                // 对每个通道应用随机扰动
+                int newRed = (red + d[i][j][0]) % 255;
+                int newGreen = (green + d[i][j][1]) % 255;
+                int newBlue = (blue + d[i][j][2]) % 255;
+
+                // 确保像素值为非负
+                if (newRed < 0) newRed += 255;
+                if (newGreen < 0) newGreen += 255;
+                if (newBlue < 0) newBlue += 255;
+
+                // 将加密后的 R, G, B 组合回一个 RGB 值
                 int newRGB = (newRed << 16) | (newGreen << 8) | newBlue;
                 out.setRGB(j, i, newRGB);
             }
@@ -96,53 +100,56 @@ public class ImgUtil {
         return out;
     }
     
-    
     /**
      * 图像的解密
      * @param img 加密过的图像
      * @return 解密后的图像
      */
-    public static BufferedImage ImageDecryptor(BufferedImage img, String privateKey) throws Exception {
-        if (privateKey == null || privateKey.isEmpty() || privateKey.length() < 5) {
-            throw new Exception("非法私钥");
-        }
-    
-        int u = 0;
-        for (int i = 0; i < 5; i++) {
-            u += privateKey.charAt(i);
-        }
-    
+    public static BufferedImage ImageDecryptor(BufferedImage img, String privateKey) {
+        // key
+        int u = 107;
         int w = img.getWidth();
         int h = img.getHeight();
         BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        Random rand = new Random(u);
-    
-        int[][][] d = new int[h][w][3];
+
+        // 初始化随机扰动数组
+        int[][][] d = new int[h][w][3]; // [高度][宽度][RGB 三个通道]
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
+                // 使用 u, i, j 作为种子来生成随机数
+                Random rand = new Random(u * i * j);
                 for (int k = 0; k < 3; k++) {
-                    d[i][j][k] = rand.nextInt(511) - 255; // [-255, 255]
+                    d[i][j][k] = rand.nextInt(511) - 255; // 生成范围 [-255, 255]
                 }
             }
         }
-    
+
+        // 应用解密操作并保存新图像
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 int encryptedRGB = img.getRGB(j, i);
+                // 分别获取加密后的 R, G, B 三个通道的值
                 int encryptedRed = (encryptedRGB >> 16) & 0xFF;
                 int encryptedGreen = (encryptedRGB >> 8) & 0xFF;
                 int encryptedBlue = encryptedRGB & 0xFF;
-    
-                int decryptedRed = Math.min(255, Math.max(0, (encryptedRed - d[i][j][0] + 255) % 255));
-                int decryptedGreen = Math.min(255, Math.max(0, (encryptedGreen - d[i][j][1] + 255) % 255));
-                int decryptedBlue = Math.min(255, Math.max(0, (encryptedBlue - d[i][j][2] + 255) % 255));
-    
+                
+                // 对每个通道应用解密操作
+                int decryptedRed = (encryptedRed - d[i][j][0]) % 255;
+                int decryptedGreen = (encryptedGreen - d[i][j][1]) % 255;
+                int decryptedBlue = (encryptedBlue - d[i][j][2]) % 255;
+
+                // 确保解密后的像素值为非负
+                if (decryptedRed < 0) decryptedRed += 255;
+                if (decryptedGreen < 0) decryptedGreen += 255;
+                if (decryptedBlue < 0) decryptedBlue += 255;
+
+                // 将解密后的 R, G, B 组合回一个 RGB 值
                 int decryptedRGB = (decryptedRed << 16) | (decryptedGreen << 8) | decryptedBlue;
                 out.setRGB(j, i, decryptedRGB);
             }
         }
         return out;
-    }
+    } 
     
 
     /**

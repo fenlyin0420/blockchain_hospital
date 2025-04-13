@@ -530,5 +530,4 @@ export default {
 .button-group .el-button {
   margin: 10px;
 }
-
 </style>

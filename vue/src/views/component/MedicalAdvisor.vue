@@ -15,20 +15,6 @@
             <img src="@/assets/imgs/AI.png" alt="AI医疗顾问" class="advisor-avatar">
             <h3>AI医疗助手</h3>
           </div>
-          <div class="header-actions">
-            <el-switch
-              v-model="showReasoning"
-              active-text="显示思考过程"
-              inactive-text=""
-              class="reasoning-switch"
-            ></el-switch>
-            <el-button 
-              type="text" 
-              icon="el-icon-close" 
-              @click="drawerVisible = false" 
-              class="close-btn"
-            ></el-button>
-          </div>
         </div>
 
         <!-- 聊天内容区域 -->
@@ -411,27 +397,7 @@ export default {
   align-items: center;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-}
 
-.reasoning-switch {
-  margin-right: 15px;
-}
-
-.reasoning-switch :deep(.el-switch__label) {
-  color: white;
-}
-
-.reasoning-switch :deep(.el-switch__core) {
-  border-color: #ffffff;
-}
-
-.reasoning-switch :deep(.el-switch.is-checked .el-switch__core) {
-  border-color: #ffffff;
-  background-color: #67C23A;
-}
 
 .advisor-avatar {
   width: 30px;
@@ -441,10 +407,6 @@ export default {
   background-color: white;
 }
 
-.close-btn {
-  color: white;
-  font-size: 20px;
-}
 
 .chat-container {
   flex: 1;

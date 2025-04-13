@@ -357,19 +357,24 @@ public class KeyService {
                     field.set(traverse, plainText);
                 }
             }
-
-            String imgUrl = traverse.getImg().strip();
-            System.out.println("img url: \n" + imgUrl + "\n");
-            MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
-            BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
-            img = ImgUtil.ImageDecryptor(img, privateKey);
-            imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
-            fileService.replace(imgFile); 
+            decryptImg(traverse.getImg(), privateKey);
         } catch (Exception e) {
             throw new CustomException(e.getMessage());
         }
         return traverse;
     }
+
+    public String decryptImg(String url, String publicKey) throws IOException, NullPointerException, Exception{
+        String imgUrl = url.strip();
+        MultipartFile imgFile = MyMultipartFile.fromURL(imgUrl);
+        BufferedImage img = ImgUtil.MultipartFileToBufferedImage(imgFile);
+        img = ImgUtil.ImageDecryptor(img, publicKey);
+        imgFile = ImgUtil.BufferedImageToMultipartFile(img, imgFile.getOriginalFilename());
+        // 保存
+        fileService.replace(imgFile); 
+        return imgUrl;
+    }
+
 
     public Account selectById(Account account) {
         Account account1 = new Account();
