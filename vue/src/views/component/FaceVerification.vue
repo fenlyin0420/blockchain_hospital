@@ -54,7 +54,7 @@
         <h3>人脸验证成功</h3>
         <div v-if="userInfo" class="user-info">
           <div class="user-photo">
-            <img :src="userInfo.faceImage" alt="用户照片">
+            <img src="http://localhost:8090/files/me.jpg" alt="用户照片">
           </div>
           <div class="user-details">
             <p><span>姓名:</span> {{ userInfo.name }}</p>

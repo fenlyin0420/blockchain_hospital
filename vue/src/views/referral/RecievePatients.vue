@@ -58,13 +58,17 @@ export default {
     call(row) {
       let caseData = JSON.parse(JSON.stringify(row));
       caseData.result = '已接诊'
-      console.log(caseData)
+      console.log("Receive", caseData)
       // 确保caseData 数据完整，否则将污染整个数据库！！ :(
       this.$request.put('/referral/update', caseData).then(res => {
         if (res.code === '200') {
           this.$message.success('接诊成功')
           let caseinfo = {
             userName: caseData?.userName,
+            sex: caseData.sex,
+            age: caseData.age,
+            occupation: "律师",
+            phone: caseData.phone,
             doctorName: this.user.name,
             hospitalName: this.user.hospitalName,
             departmentName: this.user.departmentName,

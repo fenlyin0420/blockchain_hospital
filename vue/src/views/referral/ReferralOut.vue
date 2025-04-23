@@ -391,10 +391,10 @@ export default {
               referralInfo.patientData = `${this.currentRecord.userName}||${this.currentRecord.sex}||${this.currentRecord.age}||${this.currentRecord.idCard}||${this.currentRecord.phone}`
               referralInfo.medicalData = `${this.currentRecord.diagnosis}||${this.currentRecord.reason}||${this.currentRecord.communication}||${this.currentRecord.signatureUrl}`
               referralInfo.outHospitalData = `${this.currentRecord.outHospitalName}||${this.currentRecord.outDoctorName}||${this.currentRecord.outHospitalAdvice}||${this.currentRecord.outTime}`
-              // referralInfo.status = '待接收'
+              referralInfo.status = '待接收'
               referralInfo.urgency = this.currentRecord.referralType            
 
-              this.showProgressBar();
+              // this.showProgressBar();
               this.$blockRequest.post(url, referralInfo).then((blockRes) => {
                 // if (true){
                 if (blockRes.data.code === "200") {
@@ -417,7 +417,7 @@ export default {
             }).then(() => {
               this.$request.put("/referral/update", {
                 id: this.currentRecord.id,
-                // referralStatus: "待接收"
+                referralStatus: "待接收"
               }).then((res) => {
                 if (res.code === "200") {
                   this.$message.success("转诊信息发送成功");

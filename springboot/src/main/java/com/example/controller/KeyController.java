@@ -87,6 +87,19 @@ public class KeyController {
         return Result.success(ringSign);
     }
 
+    @PostMapping("/verifyLinkage")
+    public Result verifyLinkage(@RequestBody TraverseLinkage traverseLinkage) {
+        TraverseDTO traverse1 = traverseLinkage.getT1();
+        TraverseDTO traverse2 = traverseLinkage.getT2();
+        
+        if (keyService.verifyLinkage(traverse1, traverse2)) {
+            return Result.success("验证成功");
+        } else {
+            return Result.success("验证失败");
+        }
+    }
+    
+
     /**
      * 加密病历
      * @param traverse 待加密的病历
@@ -214,3 +227,24 @@ class ImgPayload{
         this.privateKey = privateKey;
     }
 }
+
+class TraverseLinkage {
+    TraverseDTO t1;
+    TraverseDTO t2;
+
+    public TraverseDTO getT1() {
+        return t1;
+    }
+
+    public void setT1(TraverseDTO t1) {
+        this.t1 = t1;
+    }
+
+    public TraverseDTO getT2() {
+        return t2;
+    }
+
+    public void setT2(TraverseDTO t2) {
+        this.t2 = t2;
+    }
+};
