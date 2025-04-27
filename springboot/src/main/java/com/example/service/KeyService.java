@@ -221,7 +221,7 @@ public class KeyService {
                 throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
             }
         }
-        boolean result = BestRingSignUtil.verifySign(data, BCECPublicKeys, traverseDAO.getSignData());
+        boolean result = BestRingSignUtil.verifySign(data, BCECPublicKeys, traverseDAO.getSignData().split("#")[0]);
 
         RingSign ringSign = new RingSign();
         ringSign.setSignData(traverseDAO.getSignData());
@@ -233,7 +233,7 @@ public class KeyService {
         }
         return ringSign;
     }
-    public boolean verifyLinkage(TraverseDTO traverse1, TraverseDTO traverse2) {
+    public boolean verifyLinkage(TraverseDAO traverse1, TraverseDAO traverse2) {
         String q1 = traverse1.getSignData().split("#")[1];
         String q2 = traverse2.getSignData().split("#")[1];
         if (q1.equals(q2)) {

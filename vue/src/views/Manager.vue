@@ -4,7 +4,7 @@
     <div class="manager-header">
       <div class="manager-header-left" @click="$router.push('/home')">
         <img src="@/assets/imgs/logo.png" />
-        <div class="title" style="color: white;">基于SM算法和多模态AI的全场景区块链医疗系统</div>
+        <div class="title" style="color: white;">基于SM2可链接环签名的智能区块链转诊系统 V1.0</div>
       </div>
 
       <!-- 面包屑导航栏 -->

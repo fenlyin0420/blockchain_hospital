@@ -235,7 +235,7 @@
 
           </el-col>
         </el-row>
-        <div class="navigation-buttons" v-if="user.role === 'ADMIN'">
+        <div class="navigation-buttons">
           <el-button type="success" @click="update(currentRecord)">同意</el-button>
           <el-button type="danger" @click="refuse(currentRecord)">拒绝</el-button>
           <el-button type="primary" @click="saveChanges">保存修改</el-button>

@@ -89,9 +89,14 @@ public class KeyController {
 
     @PostMapping("/verifyLinkage")
     public Result verifyLinkage(@RequestBody TraverseLinkage traverseLinkage) {
-        TraverseDTO traverse1 = traverseLinkage.getT1();
-        TraverseDTO traverse2 = traverseLinkage.getT2();
+        TraverseDAO traverse1 = traverseLinkage.getT1();
+        TraverseDAO traverse2 = traverseLinkage.getT2();
         
+        RingSign ringSign1 = keyService.verifySign(traverse1);
+        RingSign ringSign2 = keyService.verifySign(traverse2);
+        if (ringSign1.getMessage().equals("失败") || ringSign2.getMessage().equals("失败")) {
+            return Result.error("签名验证失败");
+        }
         if (keyService.verifyLinkage(traverse1, traverse2)) {
             return Result.success("验证成功");
         } else {
@@ -229,22 +234,22 @@ class ImgPayload{
 }
 
 class TraverseLinkage {
-    TraverseDTO t1;
-    TraverseDTO t2;
+    TraverseDAO t1;
+    TraverseDAO t2;
 
-    public TraverseDTO getT1() {
+    public TraverseDAO getT1() {
         return t1;
     }
 
-    public void setT1(TraverseDTO t1) {
+    public void setT1(TraverseDAO t1) {
         this.t1 = t1;
     }
 
-    public TraverseDTO getT2() {
+    public TraverseDAO getT2() {
         return t2;
     }
 
-    public void setT2(TraverseDTO t2) {
+    public void setT2(TraverseDAO t2) {
         this.t2 = t2;
     }
 };
