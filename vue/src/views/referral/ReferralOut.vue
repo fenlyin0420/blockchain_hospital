@@ -273,11 +273,15 @@
         <p class="qr-code-tip">请使用手机扫描保存二维码</p>
       </div>
     </el-dialog>
+
     <el-dialog
       title="智能推荐"
+      modal="false"
+      :show-close="false"   
       center
       :visible.sync="ProgressBarDialogVisible"
-      width="800px"
+      custom-class="transparent-dialog"
+      width="1000px"
     >
       <ProgressBar />
     </el-dialog>
@@ -390,8 +394,9 @@ export default {
               referralInfo.status = '待接收'
               referralInfo.urgency = this.currentRecord.referralType            
 
-              console.log("referralInfo", referralInfo)
+              // this.showProgressBar();
               this.$blockRequest.post(url, referralInfo).then((blockRes) => {
+                // if (true){
                 if (blockRes.data.code === "200") {
                   this.$message.success("区块链数据上传成功");
                   this.currentRecord.traverseAddr = blockRes.data.data.transactionReceipt.output
@@ -512,7 +517,32 @@ export default {
 </script>
 
 <style scoped>
+/* 关键样式 */
+::v-deep .transparent-dialog {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
 
+/* 隐藏头部和底部 */
+::v-deep .transparent-dialog .el-dialog__header,
+::v-deep .transparent-dialog .el-dialog__footer {
+  display: none !important;
+}
+
+/* 内容区域透明 */
+::v-deep.transparent-dialog .el-dialog__body {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* 自定义内容样式 */
+::v-deep .dialog-content {
+  background: #fff;  /* 内容本身的背景 */
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+}
 
 .navigation-buttons {
   display: flex;

@@ -11,12 +11,12 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class BestRingSigner {
-
     /**
      * 进行签名
      * @param m 签名的信息
@@ -107,7 +107,7 @@ public class BestRingSigner {
         try {
             if(verifySignature(m,L,key,G)){
                 System.out.println("检测签名是否合理:true");
-                return key;
+                return key + "#" + generateQpi(m,L,d,pi,G);
             }
             else {
                 return "检测签名错误";
@@ -117,6 +117,22 @@ public class BestRingSigner {
             return generateSignature(m,L,d,pi,G);
         }
     }
+
+    public static String generateQpi(byte[] m, List<ECPoint> L, ECPrivateKeyParameters d, int pi,ECPoint G){ 
+        ECPoint pk_pi = G.multiply(d.getD()).normalize();
+        byte[] encodedL = encodeECPublicKeyParametersList(L); 
+        
+        byte[] encodedPkPi = pk_pi.getEncoded(true); 
+        byte[] hashInput = new byte[encodedL.length + encodedPkPi.length];
+        System.arraycopy(encodedL, 0, hashInput, 0, encodedL.length);
+        System.arraycopy(encodedPkPi, 0, hashInput, encodedL.length, encodedPkPi.length);
+        byte[] hashResult = SM3Hash(hashInput); 
+        BigInteger hashInt = new BigInteger(1, hashResult);
+        ECPoint H_p = G.multiply(hashInt).normalize();
+        ECPoint I = H_p.multiply(d.getD()).normalize();
+        return Hex.toHexString(I.getEncoded(true)); 
+    }
+
 
     /**
      * 进行验签
@@ -128,6 +144,7 @@ public class BestRingSigner {
      */
     public static boolean verifySignature(byte[] m, List<ECPoint> L,String key,ECPoint G){
 
+        System.out.println("开始验签" + key.split(","));
         List<BigInteger> S=split(key);
         int length=L.size();
         List<BigInteger> C = new ArrayList<>();
@@ -138,8 +155,10 @@ public class BestRingSigner {
             ECPoint var6=var1.multiply(G,S.get(i)).normalize();
             ECPoint var7=var1.multiply(L.get(i),S.get(i).add(C.get(i))).normalize();
             ECPoint var8=var6.add(var7);
+            // 计算哈希 h1 = SM3(L || m || var8)
             byte[] h1=calculateSM3Hash(encodedL,m,var8);
             BigInteger h2=new BigInteger(h1);
+            // 设置下一个C值: C[i+1] = h2
             C.add(i+1,h2);
         }
         if(Objects.equals(C.get(0), C.get(length))){
@@ -147,6 +166,7 @@ public class BestRingSigner {
         }
         return false;
     }
+    
 
     /**
      * 对集合进行合成
@@ -243,5 +263,14 @@ public class BestRingSigner {
      */
     protected static ECMultiplier createBasePointMultiplier() {
         return new FixedPointCombMultiplier();
+    }
+
+    private static byte[] SM3Hash(byte[] input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SM3");
+            return digest.digest(input);
+        } catch (Exception e) {
+            throw new RuntimeException("SM3哈希计算失败", e);
+        }
     }
 }

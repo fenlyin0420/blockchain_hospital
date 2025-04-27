@@ -474,7 +474,7 @@ export default {
       setTimeout(() => {
         this.decrypt();
         
-      }, 10000);
+      }, 8000);
       this.currentRecord = record;
       this.showDecryptDrawer = true;
       this.activeStep = 0;
@@ -578,7 +578,7 @@ export default {
           this.currentRecord.care = res.data.care;
           this.currentRecord.diet = res.data.diet;
           // this.currentRecord.img = res.data.img + "?t=" + new Date().getTime();
-          this.currentRecord.img = 'http://localhost:8090/files/1741863814485-aaa2.jpg'
+          this.currentRecord.img = 'http://localhost:8090/files/aaa2.jpg'
           
           // 在解密后进行Base64解码
           this.currentRecord.userName = this.btos(this.currentRecord.userName);

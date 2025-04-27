@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.common.enums.RoleEnum;
 import com.example.dao.TraverseDAO;
 import com.example.dto.BlockChainTraverseDTO;
+import com.example.dto.TraverseDTO;
 import com.example.entity.*;
 import com.example.exception.CustomException;
 import com.example.mapper.*;
@@ -220,7 +221,7 @@ public class KeyService {
                 throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
             }
         }
-        boolean result = BestRingSignUtil.verifySign(data, BCECPublicKeys, traverseDAO.getSignData());
+        boolean result = BestRingSignUtil.verifySign(data, BCECPublicKeys, traverseDAO.getSignData().split("#")[0]);
 
         RingSign ringSign = new RingSign();
         ringSign.setSignData(traverseDAO.getSignData());
@@ -231,6 +232,15 @@ public class KeyService {
             ringSign.setMessage("失败");
         }
         return ringSign;
+    }
+    public boolean verifyLinkage(TraverseDAO traverse1, TraverseDAO traverse2) {
+        String q1 = traverse1.getSignData().split("#")[1];
+        String q2 = traverse2.getSignData().split("#")[1];
+        if (q1.equals(q2)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     /**
      * 获取公钥环
@@ -357,7 +367,9 @@ public class KeyService {
                     field.set(traverse, plainText);
                 }
             }
-            decryptImg(traverse.getImg(), privateKey);
+            if (!traverse.getImg().equals("") || traverse.getImg() != null || !traverse.getImg().equals(" ")) {
+                decryptImg(traverse.getImg(), privateKey);
+            }
         } catch (Exception e) {
             throw new CustomException(e.getMessage());
         }
