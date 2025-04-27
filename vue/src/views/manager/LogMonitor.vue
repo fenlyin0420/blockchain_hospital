@@ -15,7 +15,7 @@
         <el-table-column prop="name" label="操作人" align="center"></el-table-column>
         <el-table-column prop="role" label="角色" align="center"></el-table-column>
         <el-table-column prop="time" label="操作时间" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="ip" label="ip" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="ip" label="IP" show-overflow-tooltip align="center"></el-table-column>
       </el-table>
       <div class="pagination">
           <el-pagination
