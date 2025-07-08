@@ -69,27 +69,106 @@
 
             <el-form-item label="进一步检查:" v-if="selected_plan.includes('furtherCheck')">
               <el-input type="textarea" v-model="furtherCheck" clearable :rows="1" resize="vertical"
-                class="info-textarea" placeholder="明确需完善的实验室或影像学检查。">
-              </el-input>
+                class="info-textarea" placeholder="明确需完善的实验室或影像学检查。" @focus="activeSuggestionPanel = 'furtherCheck'"
+                @blur="setTimeout(() => activeSuggestionPanel = '', 200)"></el-input>
+
+              <div v-if="activeSuggestionPanel === 'furtherCheck' && aiSuggestions.furtherCheck.length"
+                class="ai-suggestion-panel">
+                <div class="suggestion-header">
+                  <span class="suggestion-title">AI建议：</span>
+                  <el-button type="text" icon="el-icon-close" class="close-btn"
+                    @click="activeSuggestionPanel = ''"></el-button>
+                </div>
+                <el-checkbox-group v-model="furtherCheckOptions">
+                  <el-checkbox v-for="(item, index) in aiSuggestions.furtherCheck" :key="index" :label="item"
+                    @change="updateTextarea('furtherCheck')">{{ item }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
+
+            <!-- 药物治疗 -->
             <el-form-item label="药物治疗：" v-if="selected_plan.includes('medicine')">
-              <el-input v-model="medicine" class="custom-input" placeholder="药物名称、剂量、用法、疗程。">
+              <el-input v-model="medicine" class="custom-input" placeholder="药物名称、剂量、用法、疗程。"
+                @focus="activeSuggestionPanel = 'medicine'" @blur="setTimeout(() => activeSuggestionPanel = '', 200)">
                 <el-button slot="append" icon="el-icon-plus" @click="showSelectMedicineDialog = true"
                   type="primary"></el-button>
               </el-input>
+
+              <!-- AI建议选择面板 -->
+              <div v-if="activeSuggestionPanel === 'medicine' && aiSuggestions.medicine.length"
+                class="ai-suggestion-panel">
+                <div class="suggestion-header">
+                  <span class="suggestion-title">AI建议：</span>
+                  <el-button type="text" icon="el-icon-close" class="close-btn"
+                    @click="activeSuggestionPanel = ''"></el-button>
+                </div>
+                <el-checkbox-group v-model="medicineOptions">
+                  <el-checkbox v-for="(item, index) in aiSuggestions.medicine" :key="index" :label="item"
+                    @change="updateTextarea('medicine')">{{ item }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
+
+            <!-- 非药物治疗 -->
             <el-form-item label="非药物治疗：" v-if="selected_plan.includes('non-medicine')">
               <el-input type="textarea" v-model="nonMedicine" clearable :rows="1" resize="vertical"
-                class="info-textarea" placeholder="手术、康复训练、生活方式干预等。"></el-input>
+                class="info-textarea" placeholder="手术、康复训练、生活方式干预等。" @focus="activeSuggestionPanel = 'nonMedicine'"
+                @blur="setTimeout(() => activeSuggestionPanel = '', 200)"></el-input>
+
+              <!-- AI建议选择面板 -->
+              <div v-if="activeSuggestionPanel === 'nonMedicine' && aiSuggestions.nonMedicine.length"
+                class="ai-suggestion-panel">
+                <div class="suggestion-header">
+                  <span class="suggestion-title">AI建议：</span>
+                  <el-button type="text" icon="el-icon-close" class="close-btn"
+                    @click="activeSuggestionPanel = ''"></el-button>
+                </div>
+                <el-checkbox-group v-model="nonMedicineOptions">
+                  <el-checkbox v-for="(item, index) in aiSuggestions.nonMedicine" :key="index" :label="item"
+                    @change="updateTextarea('nonMedicine')">{{ item }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
+
+            <!-- 护理/监测 -->
             <el-form-item label="护理/监测:" v-if="selected_plan.includes('care')">
               <el-input type="textarea" v-model="care" clearable :rows="1" resize="vertical" class="info-textarea"
-                placeholder="如监测生命体征、记录出入量等。"></el-input>
+                placeholder="如监测生命体征、记录出入量等。" @focus="activeSuggestionPanel = 'care'"
+                @blur="setTimeout(() => activeSuggestionPanel = '', 200)"></el-input>
+
+              <!-- AI建议选择面板 -->
+              <div v-if="activeSuggestionPanel === 'care' && aiSuggestions.care.length" class="ai-suggestion-panel">
+                <div class="suggestion-header">
+                  <span class="suggestion-title">AI建议：</span>
+                  <el-button type="text" icon="el-icon-close" class="close-btn"
+                    @click="activeSuggestionPanel = ''"></el-button>
+                </div>
+                <el-checkbox-group v-model="careOptions">
+                  <el-checkbox v-for="(item, index) in aiSuggestions.care" :key="index" :label="item"
+                    @change="updateTextarea('care')">{{ item }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
+
             <el-form-item label="饮食建议：" v-if="selected_plan.includes('diet')">
               <el-input type="textarea" v-model="diet" clearable :rows="1" resize="vertical" class="info-textarea"
-                placeholder="如低盐、流质饮食等。"></el-input>
+                placeholder="如低盐、流质饮食等。" @focus="activeSuggestionPanel = 'diet'"
+                @blur="setTimeout(() => activeSuggestionPanel = '', 200)"></el-input>
+
+              <!-- AI建议选择面板 -->
+              <div v-if="activeSuggestionPanel === 'diet' && aiSuggestions.diet.length" class="ai-suggestion-panel">
+                <div class="suggestion-header">
+                  <span class="suggestion-title">AI建议：</span>
+                  <el-button type="text" icon="el-icon-close" class="close-btn"
+                    @click="activeSuggestionPanel = ''"></el-button>
+                </div>
+                <el-checkbox-group v-model="dietOptions">
+                  <el-checkbox v-for="(item, index) in aiSuggestions.diet" :key="index" :label="item"
+                    @change="updateTextarea('diet')">{{ item }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-form-item>
+
           </el-form>
         </div>
       </el-col>
@@ -124,7 +203,7 @@
 
         <div class="confirm-button">
           <el-button type="primary" @click="intelligentFilling" :loading="isLoadingAI">
-            智能填写
+            智能建议
           </el-button>
           <el-button type="primary" @click="ok">医生签名</el-button>
         </div>
@@ -208,6 +287,22 @@ export default {
       care: null,
       diet: null,
       isLoadingAI: false,
+      // 添加AI建议的分点数据存储
+      aiSuggestions: {
+        furtherCheck: [],
+        medicine: [],
+        nonMedicine: [],
+        care: [],
+        diet: []
+      },
+      // 当前激活的建议面板
+      activeSuggestionPanel: '',// 存储当前需要显示的建议面板key
+      // 存储各项目的选择项
+      furtherCheckOptions: [],
+      medicineOptions: [],
+      nonMedicineOptions: [],
+      careOptions: [],
+      dietOptions: [],
     };
   },
   created() {
@@ -475,7 +570,7 @@ export default {
       // 使用 $loading 组件替代 $message.loading
       const loadingInstance = this.$loading({
         lock: true,
-        text: '正在请求AI智能填写...',
+        text: '正在智能生成AI建议...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.1)'
       });
@@ -496,58 +591,60 @@ export default {
         // 解析AI响应
         const aiResponse = this.parseAIResponse(response);
 
-        console.log("furtherCheck:", aiResponse.furtherCheck);
-        console.log("medicine:", aiResponse.medicine);
-        console.log("nonMedicine:", aiResponse.nonMedicine);
-        console.log("care:", aiResponse.care);
-        console.log("diet:", aiResponse.diet);
+        this.aiSuggestions = {
+          furtherCheck: aiResponse.furtherCheck || [],
+          medicine: aiResponse.medicine || [],
+          nonMedicine: aiResponse.nonMedicine || [],
+          care: aiResponse.care || [],
+          diet: aiResponse.diet || []
+        };
 
-        // 自动填充到表单
-        this.furtherCheck = aiResponse.furtherCheck || '';
-        this.medicine = aiResponse.medicine || '';
-        this.nonMedicine = aiResponse.nonMedicine || '';
-        this.care = aiResponse.care || '';
-        this.diet = aiResponse.diet || '';
-
-        // 更新选中的诊疗计划
-        this.updateSelectedPlan(aiResponse);
-
-        this.$message.success('智能填写成功');
+        this.$message.success('AI智能建议已生成，点击输入框可查看和选择内容');
       } catch (error) {
-        console.error('智能填写失败', error);
-        this.$message.error('智能填写失败，请稍后再试');
+        console.error('智能生成失败', error);
+        this.$message.error('智能生成失败，请稍后再试');
       } finally {
         loadingInstance.close(); // 关闭加载状态
       }
     },
     parseAIResponse(response) {
       const defaultResponse = {
-        furtherCheck: '',
-        medicine: '',
-        nonMedicine: '',
-        care: '',
-        diet: ''
+        furtherCheck: [],
+        medicine: [],
+        nonMedicine: [],
+        care: [],
+        diet: []
       };
 
       try {
-        // 提取AI响应内容（假设response是包含choices的对象）
         const content = response.choices?.[0]?.message?.content || '';
         console.log("AI响应内容:", content);
 
         if (!content) return defaultResponse;
 
+        // 解析每个部分为数组
         return {
-          ...defaultResponse,
-          furtherCheck: this.extractMarkdownSection(content, '进一步检查'),
-          medicine: this.extractMarkdownSection(content, '药物治疗'),
-          nonMedicine: this.extractMarkdownSection(content, '非药物治疗'),
-          care: this.extractMarkdownSection(content, '护理/监测'),
-          diet: this.extractMarkdownSection(content, '饮食建议')
+          furtherCheck: this.parseToSuggestionList(content, '进一步检查'),
+          medicine: this.parseToSuggestionList(content, '药物治疗'),
+          nonMedicine: this.parseToSuggestionList(content, '非药物治疗'),
+          care: this.parseToSuggestionList(content, '护理/监测'),
+          diet: this.parseToSuggestionList(content, '饮食建议')
         };
       } catch (error) {
         console.error('解析AI响应失败', error);
         return defaultResponse;
       }
+    },
+
+    // 新增：将文本解析为建议列表数组
+    parseToSuggestionList(text, sectionTitle) {
+      const sectionContent = this.extractMarkdownSection(text, sectionTitle);
+      if (!sectionContent) return [];
+
+      // 将文本按换行分割为数组
+      return sectionContent.split('\n')
+        .map(item => item.trim())
+        .filter(item => item); // 过滤空项
     },
 
     // 提取Markdown格式的章节内容
@@ -581,15 +678,9 @@ export default {
       return match ? match[1].trim() : '';
     },
 
-    // 更新选中的诊疗计划
-    updateSelectedPlan(aiResponse) {
-      this.selected_plan = [];
-
-      if (aiResponse.furtherCheck) this.selected_plan.push('furtherCheck');
-      if (aiResponse.medicine) this.selected_plan.push('medicine');
-      if (aiResponse.nonMedicine) this.selected_plan.push('non-medicine');
-      if (aiResponse.care) this.selected_plan.push('care');
-      if (aiResponse.diet) this.selected_plan.push('diet');
+    updateTextarea(type) {
+      const options = this[`${type}Options`];
+      this[type] = options.join('；');
     },
   },
 };
@@ -764,5 +855,48 @@ export default {
   border-color: #c0c4cc;
   border-radius: 5px;
   padding: 10px;
+}
+
+.ai-suggestion-panel {
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 5px;
+  background: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #1890ff;
+}
+
+::v-deep .ai-suggestion-panel .el-checkbox {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* AI建议面板标题栏样式 */
+.suggestion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* 关闭按钮样式 */
+.close-btn {
+  color: #909399;
+  padding: 0 5px;
+  height: auto;
+  line-height: normal;
+}
+
+.close-btn:hover {
+  color: #f56c6c;
+  /* hover时变红，增强交互提示 */
 }
 </style>
