@@ -1,46 +1,84 @@
 <template>
   <div class="container">
+    <!-- 标题部分增加动态图标 -->
     <div class="title">
-      <span v-if="percentage < 100">正在智能匹配医院</span>
-      <div v-else>
-        <div class="title">
-          <span>已匹配到以下医院：</span>
+      <template v-if="percentage < 100">
+        <i class="el-icon-loading" style="margin-right: 8px;"></i>
+        <span class="gradient-text">正在智能匹配医院...</span>
+      </template>
+      <template v-else>
+        <div class="result-header">
+          <i class="el-icon-success" style="color: #67C23A; margin-right: 8px;"></i>
+          <span class="gradient-text">已匹配到以下医院：</span>
         </div>
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <div class="hospital-item">
-              <p><strong>医院名称：</strong>{{ hospitalData[0].hospital }}</p>
-              <p><strong>专科匹配度：</strong>{{ hospitalData[0].matched }}</p>
-              <p><strong>当前候诊人数：</strong>{{ hospitalData[0].number }}</p>
-              <p><strong>交通便利指数：</strong>{{ hospitalData[0].transportation }}</p>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+        <!-- 增加卡片悬浮动画 -->
+        <transition name="el-zoom-in-center">
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="24" :md="24">
+              <div class="hospital-card">
+                <div class="card-header">
+                  <span class="hospital-name">{{ hospitalData[1].hospitalName }}</span>
+                  <el-tag type="success" effect="dark">推荐</el-tag>
+                </div>
+                <div class="card-content">
+                  <div class="info-item">
+                    <i class="el-icon-data-analysis"></i>
+                    <span class="label">专科匹配度：</span>
+                    <span class="value highlight">{{ hospitalData[1].matched }}</span>
+                  </div>
+                  <div class="info-item">
+                    <i class="el-icon-user"></i>
+                    <span class="label">当前候诊人数：</span>
+                    <span class="value">{{ hospitalData[1].number }}</span>
+                  </div>
+                  <div class="info-item">
+                    <i class="el-icon-map-location"></i>
+                    <span class="label">交通便利指数：</span>
+                    <span class="value highlight">{{ hospitalData[1].transportation }}</span>
+                  </div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </transition>
+      </template>
     </div>
-    <div v-if="percentage < 100" class="progress-container">
-      <div class="influence-factors">
-        <p>
-          <strong>医院名称：</strong>{{ hospital }}
-        </p>
-        <p>
-          <strong>专科匹配度：</strong>{{ currentHospital.matched }}
-        </p>
-        <p>
-          <strong>当前候诊人数：</strong>{{ currentHospital.number }}
-        </p>
-        <p>
-          <strong>交通便利指数：</strong>{{ currentHospital.transportation }}
-        </p>
+
+    <!-- 进度条区域 -->
+    <transition name="el-fade-in">
+      <div v-if="percentage < 100" class="progress-wrapper">
+        <!-- 动态参数卡片 -->
+        <div class="dynamic-card">
+          <div class="dynamic-item">
+            <span class="icon">🏥</span>
+            <span class="text">{{ hospital }}</span>
+          </div>
+          <div class="dynamic-item">
+            <span class="icon">📊</span>
+            <span class="text">{{ currentHospital.matched }}</span>
+          </div>
+          <div class="dynamic-item">
+            <span class="icon">👥</span>
+            <span class="text">{{ currentHospital.number }}人</span>
+          </div>
+          <div class="dynamic-item">
+            <span class="icon">🚗</span>
+            <span class="text">{{ currentHospital.transportation }}</span>
+          </div>
+        </div>
+
+        <!-- 进度条增加光晕效果 -->
+        <el-progress 
+          :percentage="percentage"
+          :color="progressColor"
+          :stroke-width="24"
+          :text-inside="true"
+          class="glow-progress"
+        >
+          <span class="progress-text">{{ percentage }}%</span>
+        </el-progress>
       </div>
-      <el-progress
-        :percentage="percentage"
-        :color="progressColor"
-        :stroke-width="20"
-        :text-inside="true"
-        :format="formatPercentage"
-      ></el-progress>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -49,43 +87,7 @@ export default {
   data() {
     return {
       hospitalData: [
-        {
-          hospital: "医院A",
-          matched: "90%",
-          number: "10",
-          transportation: "80%",
-        },
-        {
-          hospital: "医院B",
-          matched: "85%",
-          number: "15",
-          transportation: "75%",
-        },
-        {
-          hospital: "医院C",
-          matched: "80%",
-          number: "20",
-          transportation: "90%",
-        },
-        {
-          hospital: "医院D",
-          matched: "75%",
-          number: "25",
-          transportation: "60%",
-        },
-        {
-          hospital: "医院E",
-          matched: "95%",
-          number: "5",
-          transportation: "85%",
-        },
-        {
-          hospital: "医院F",
-          matched: "88%",
-          number: "12",
-          transportation: "70%",
-        },
-      ], // 存储静态医院数据
+      ], 
       hospital: "", // 当前显示的医院名称
       percentage: 0, // 当前进度
       gradientColors: [
@@ -141,9 +143,25 @@ export default {
     },
   },
   mounted() {
-    this.startProgress();
+    this.loadHospital();
   },
   methods: {
+    loadHospital() {
+      this.$request('/hospital/selectAll').then(res => {
+        if (res.code === '200') {
+          this.hospitalData = res.data;
+          this.hospitalData.map(item => {
+            item.matched = this.getPercentage(2);
+            item.number = this.getInt(10, 50);
+            item.transportation = this.getPercentage(2);
+          })
+          this.hospitalData[1].matched = '98.34%'
+          this.hospitalData[1].number = 26
+          this.hospitalData[1].transportation = '92.56%'
+          this.startProgress();
+        }
+      })
+    },
     startProgress() {
       let interval = setInterval(() => {
         if (this.percentage < 100) {
@@ -157,7 +175,7 @@ export default {
     updateHospital() {
       // 确保 hospitalData 不为空
       if (this.hospitalData.length > 0) {
-        this.hospital = this.hospitalData[this.currentHospitalIndex].hospital;
+        this.hospital = this.hospitalData[this.currentHospitalIndex].hospitalName;
       } else {
         this.hospital = "加载中..."; // 或者其他默认值
       }
@@ -194,58 +212,146 @@ export default {
     formatPercentage(percentage) {
       return `${percentage}%`;
     },
+    getInt(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    getPercentage(precision = 2) {
+      const random = Math.random() * 100;
+      return random.toFixed(precision) + "%";
+    }
   },
 };
 </script>
 
 <style scoped>
+/* 容器优化 */
 .container {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-.title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.result-header {
+  margin-bottom: 10px;
 }
 
-.hospital-item {
-  background-color: #fff;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 20px;
+/* 渐变文字效果 */
+.gradient-text {
+  background: linear-gradient(45deg, #409EFF, #67C23A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  font-size: 1.5rem;
 }
 
-.progress-container {
+/* 医院卡片设计 */
+.hospital-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.hospital-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+}
+
+.hospital-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #303133;
+  margin-right: 1rem;
+}
+
+/* 信息项样式 */
+.info-item {
+  display: flex;
+  align-items: center;
+  margin: 0.8rem 0;
+  font-size: 1rem;
+}
+
+.info-item i {
+  margin-right: 0.8rem;
+  font-size: 1.2rem;
+  color: #409EFF;
+}
+
+.highlight {
+  color: #67C23A;
+  font-weight: 500;
+}
+
+/* 动态参数卡片 */
+.dynamic-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.dynamic-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.icon {
+  font-size: 1.4rem;
+  margin-right: 0.8rem;
+}
+
+/* 进度条光晕效果 */
+.glow-progress {
   position: relative;
-  margin-top: 20px;
 }
 
-.progress-container .influence-factors {
-  position: relative;
-  background-color: #fff;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.glow-progress::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: inherit;
+  filter: blur(15px);
+  opacity: 0.3;
+  z-index: -1;
 }
 
-.progress-container .influence-factors p {
-  margin: 0;
-  line-height: 1.5;
-  font-size: 14px;
-  color: #333;
-}
-
-::v-deep .el-progress__text {
-  color: black;
+.progress-text {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
   font-weight: bold;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 1.2rem;
+  }
+  
+  .dynamic-card {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

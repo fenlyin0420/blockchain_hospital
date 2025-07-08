@@ -87,6 +87,24 @@ public class KeyController {
         return Result.success(ringSign);
     }
 
+    @PostMapping("/verifyLinkage")
+    public Result verifyLinkage(@RequestBody TraverseLinkage traverseLinkage) {
+        TraverseDAO traverse1 = traverseLinkage.getT1();
+        TraverseDAO traverse2 = traverseLinkage.getT2();
+        
+        RingSign ringSign1 = keyService.verifySign(traverse1);
+        RingSign ringSign2 = keyService.verifySign(traverse2);
+        if (ringSign1.getMessage().equals("失败") || ringSign2.getMessage().equals("失败")) {
+            return Result.error("签名验证失败");
+        }
+        if (keyService.verifyLinkage(traverse1, traverse2)) {
+            return Result.success("验证成功");
+        } else {
+            return Result.success("验证失败");
+        }
+    }
+    
+
     /**
      * 加密病历
      * @param traverse 待加密的病历
@@ -214,3 +232,24 @@ class ImgPayload{
         this.privateKey = privateKey;
     }
 }
+
+class TraverseLinkage {
+    TraverseDAO t1;
+    TraverseDAO t2;
+
+    public TraverseDAO getT1() {
+        return t1;
+    }
+
+    public void setT1(TraverseDAO t1) {
+        this.t1 = t1;
+    }
+
+    public TraverseDAO getT2() {
+        return t2;
+    }
+
+    public void setT2(TraverseDAO t2) {
+        this.t2 = t2;
+    }
+};

@@ -211,6 +211,10 @@ export default {
     };
   },
   created() {
+    if (this.$route.query) {
+      this.caseInfo = this.$route.query
+      console.log("case:", this.caseInfo)
+    }
     this.recordDate = new Date()
     this.recordDate = this.recordDate.toISOString().split("T")[0]
     this.loadData(); // 加载数据tableData和初始化caseInfo的通用方法
@@ -303,7 +307,7 @@ export default {
       newTraverse.illnessDetail = this.caseInfo.illnessDetail;
       newTraverse.treatmentDate = this.recordDate;
       newTraverse.recordDate = this.recordDate;
-      newTraverse.inHospital = this.medicine === "无" ? "是" : "否";
+      newTraverse.inHospital = this.medicine ? "否" : "是";
       newTraverse.mainDiagnosis = this.mainDiagnosis
       newTraverse.secondaryDiagnosis = this.secondaryDiagnosis
       newTraverse.furtherCheck = this.furtherCheck
