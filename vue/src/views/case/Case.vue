@@ -2,7 +2,7 @@
   <el-card class="case-container">
     <el-row class="info-row" :gutter="24">
       <!-- LEFT SIDE -->
-      <el-col :span="18" >
+      <el-col :span="18">
         <h2 class="title">住院病历/门诊病历</h2>
         <div class="right-container">
           <!-- HEAD -->
@@ -39,131 +39,59 @@
             </el-col>
           </el-row>
 
-        
 
-        <!-- CASE DESCRIPTION -->
-        <el-form>
-          <div class="field-label">主诉（Chief Complaint, CC）</div>
-          <el-form-item>
-            <el-input
-              type="textarea"
-              v-model="caseInfo.illnessDetail"
-              clearable
-              :rows="2"
-              resize="vertical"
-              class="info-textarea CC"
-              placeholder="患者就诊的主要症状或体征 + 持续时间。"
-            ></el-input>
-          </el-form-item>
 
-          <div class="field-label">初步诊断（Primary Diagnosis）</div>
-          <el-form-item label="1.主要诊断：">
-            <el-input
-              type="textarea"
-              v-model="mainDiagnosis"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="根据病史、查体及检查结果。"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="2.次要诊断：">
-            <el-input
-              type="textarea"
-              v-model="secondaryDiagnosis"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="合并症或其他疾病。"
-            ></el-input>
-          </el-form-item>
+          <!-- CASE DESCRIPTION -->
+          <el-form>
+            <div class="field-label">主诉（Chief Complaint, CC）</div>
+            <el-form-item>
+              <el-input type="textarea" v-model="caseInfo.illnessDetail" clearable :rows="2" resize="vertical"
+                class="info-textarea CC" placeholder="患者就诊的主要症状或体征 + 持续时间。"></el-input>
+            </el-form-item>
 
-          <div class="field-label">诊疗计划（Treatment Plan）</div>
+            <div class="field-label">初步诊断（Primary Diagnosis）</div>
+            <el-form-item label="1.主要诊断：">
+              <el-input type="textarea" v-model="mainDiagnosis" clearable :rows="1" resize="vertical"
+                class="info-textarea" placeholder="根据病史、查体及检查结果。"></el-input>
+            </el-form-item>
+            <el-form-item label="2.次要诊断：">
+              <el-input type="textarea" v-model="secondaryDiagnosis" clearable :rows="1" resize="vertical"
+                class="info-textarea" placeholder="合并症或其他疾病。"></el-input>
+            </el-form-item>
 
-          <el-select
-            class="plan-select"
-            v-model="selected_plan"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            placeholder="选择诊疗计划"
-          >
-            <el-option
-              v-for="item in plans"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+            <div class="field-label">诊疗计划（Treatment Plan）</div>
 
-          <el-form-item label="进一步检查:" v-if="selected_plan.includes('furtherCheck')">
-            <el-input
-              type="textarea"
-              v-model="furtherCheck"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="明确需完善的实验室或影像学检查。"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="药物治疗：" v-if="selected_plan.includes('medicine')">
-            <el-input
-              v-model="medicine"
-              class="custom-input"
-              placeholder="药物名称、剂量、用法、疗程。"
-            >
-              <el-button
-                slot="append"
-                icon="el-icon-plus"
-                @click="showSelectMedicineDialog = true"
-                type="primary"
-              ></el-button>
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            label="非药物治疗："
-            v-if="selected_plan.includes('non-medicine')"
-          >
-            <el-input
-              type="textarea"
-              v-model="nonMedicine"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="手术、康复训练、生活方式干预等。"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="护理/监测:" v-if="selected_plan.includes('care')">
-            <el-input
-              type="textarea"
-              v-model="care"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="如监测生命体征、记录出入量等。"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="饮食建议：" v-if="selected_plan.includes('diet')">
-            <el-input
-              type="textarea"
-              v-model="diet"
-              clearable
-              :rows="1"
-              resize="vertical"
-              class="info-textarea"
-              placeholder="如低盐、流质饮食等。"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
+            <el-select class="plan-select" v-model="selected_plan" multiple filterable allow-create default-first-option
+              placeholder="选择诊疗计划">
+              <el-option v-for="item in plans" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+
+            <el-form-item label="进一步检查:" v-if="selected_plan.includes('furtherCheck')">
+              <el-input type="textarea" v-model="furtherCheck" clearable :rows="1" resize="vertical"
+                class="info-textarea" placeholder="明确需完善的实验室或影像学检查。">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="药物治疗：" v-if="selected_plan.includes('medicine')">
+              <el-input v-model="medicine" class="custom-input" placeholder="药物名称、剂量、用法、疗程。">
+                <el-button slot="append" icon="el-icon-plus" @click="showSelectMedicineDialog = true"
+                  type="primary"></el-button>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="非药物治疗：" v-if="selected_plan.includes('non-medicine')">
+              <el-input type="textarea" v-model="nonMedicine" clearable :rows="1" resize="vertical"
+                class="info-textarea" placeholder="手术、康复训练、生活方式干预等。"></el-input>
+            </el-form-item>
+            <el-form-item label="护理/监测:" v-if="selected_plan.includes('care')">
+              <el-input type="textarea" v-model="care" clearable :rows="1" resize="vertical" class="info-textarea"
+                placeholder="如监测生命体征、记录出入量等。"></el-input>
+            </el-form-item>
+            <el-form-item label="饮食建议：" v-if="selected_plan.includes('diet')">
+              <el-input type="textarea" v-model="diet" clearable :rows="1" resize="vertical" class="info-textarea"
+                placeholder="如低盐、流质饮食等。"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
       </el-col>
 
       <!-- RIGHT SIDE -->
@@ -172,35 +100,19 @@
           <!-- 这里放图 -->
           <span class="field-label">辅助检查（Auxiliary Examination）</span>
           <div class="upload-container">
-            <el-upload
-              ref="pictureUpload"
-              :action="$baseUrl + '/files/upload'"
-              list-type="picture-card"
-              :auto-upload="true"
-              :on-success="handleImgSuccess"
-              :on-remove="handleRemove"
-              :data="extraData"
-              :before-upload="beforeUpload"
-              class="custom-upload"
-              multiple
-              :limit="3"
-            >
+            <el-upload ref="pictureUpload" :action="$baseUrl + '/files/upload'" list-type="picture-card"
+              :auto-upload="true" :on-success="handleImgSuccess" :on-remove="handleRemove" :data="extraData"
+              :before-upload="beforeUpload" class="custom-upload" multiple :limit="3">
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{ file }">
                 <div class="uploaded-images">
                   <img class="el-upload-list__item-thumbnail" :src="file.url" />
                   <span class="el-upload-list__item-actions">
-                    <span
-                      class="el-upload-list__item-preview"
-                      @click="handlePictureCardPreview(file)"
-                    >
+                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
                       <i class="el-icon-zoom-in"></i>
                     </span>
-                    <span
-                      v-if="!disabled"
-                      class="el-upload-list__item-delete"
-                      @click="handleRemove(file, uploadedUrls)"
-                    >
+                    <span v-if="!disabled" class="el-upload-list__item-delete"
+                      @click="handleRemove(file, uploadedUrls)">
                       <i class="el-icon-delete"></i>
                     </span>
                   </span>
@@ -211,24 +123,19 @@
         </div>
 
         <div class="confirm-button">
+          <el-button type="primary" @click="intelligentFilling" :loading="isLoadingAI">
+            智能填写
+          </el-button>
           <el-button type="primary" @click="ok">医生签名</el-button>
         </div>
       </el-col>
     </el-row>
 
     <!-- SELECT MEDICINE DIALOG -->
-    <el-dialog
-      :visible="showSelectMedicineDialog"
-      title="选择药品"
-      width="80%"
-      @close="showSelectMedicineDialog = false"
-      center
-    >
-      <SelectMedicine
-        :drugList="drugList"
-        @updateDrug="updateSelectMedicine"
-        @close="showSelectMedicineDialog = false"
-      ></SelectMedicine>
+    <el-dialog :visible="showSelectMedicineDialog" title="选择药品" width="80%" @close="showSelectMedicineDialog = false"
+      center>
+      <SelectMedicine :drugList="drugList" @updateDrug="updateSelectMedicine" @close="showSelectMedicineDialog = false">
+      </SelectMedicine>
     </el-dialog>
 
     <!-- IMAGE PREVIEW DIALOG-->
@@ -241,6 +148,7 @@
 
 <script>
 import SelectMedicine from "../component/SelectMedicine.vue";
+import { medicalAdvisorAPI } from '@/utils/AIService';
 
 export default {
   name: "Case",
@@ -252,9 +160,9 @@ export default {
       caseInfo: {}, // 单个病历信息
       user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       /** 主要诊断 */
-      mainDiagnosis: "", 
+      mainDiagnosis: "",
       /** 次要诊断 */
-      secondaryDiagnosis: "", 
+      secondaryDiagnosis: "",
       selectedMedicine: [],
       tableData: [],
       drugList: [],
@@ -299,6 +207,7 @@ export default {
       nonMedicine: null,
       care: null,
       diet: null,
+      isLoadingAI: false,
     };
   },
   created() {
@@ -319,7 +228,7 @@ export default {
         await Promise.all([this.loadByUser()]);
         // 从URL查询参数中解析caseInfo
         this.caseInfo = this.$route.query;
-      } catch (error) {}
+      } catch (error) { }
     },
 
     async loadByUser() {
@@ -385,7 +294,7 @@ export default {
     sign() {
 
     },
-    ok() { 
+    ok() {
       let newTraverse = {};
       newTraverse.userId = this.caseInfo.userId;
       newTraverse.doctorId = this.user.id;
@@ -408,36 +317,36 @@ export default {
 
       // 确认病历，上传到数据库
       this.$request.post("/traverse/add", newTraverse)
-      .then((res) => {
-        if (res.code === "200") {
-          return this.$request.get("/traverse/selectAll", {
-            params: {
-              id: res.data,
-            },
-          });
-        } else {
-          this.$message.error("病历上传失败");
-          return Promise.reject(res.msg);
-        }
-      })
-      .then((res2) => {
-        if (res2 && res2.code === "200") {
-          this.$router.push({ name: 'CaseSign'});
-          // 解包 traverse 对象并合并到顶层
-          const traverseDTO = {
-            ...res2.data[0], // 展开 TraverseDTO 的其他字段
-            ...res2.data[0].traverse // 展开 traverse 对象的字段
-          };
-          delete traverseDTO.traverse;
-          console.log("获取到的病历", traverseDTO)
-          this.$store.commit('setTraverseData', traverseDTO);
-        } else {
-          this.$message.error("获取病历数据失败");
-        }
-      })
-      .catch((error) => {
-        this.$message.error("请求失败：" + (error.message || error));
-      });
+        .then((res) => {
+          if (res.code === "200") {
+            return this.$request.get("/traverse/selectAll", {
+              params: {
+                id: res.data,
+              },
+            });
+          } else {
+            this.$message.error("病历上传失败");
+            return Promise.reject(res.msg);
+          }
+        })
+        .then((res2) => {
+          if (res2 && res2.code === "200") {
+            this.$router.push({ name: 'CaseSign' });
+            // 解包 traverse 对象并合并到顶层
+            const traverseDTO = {
+              ...res2.data[0], // 展开 TraverseDTO 的其他字段
+              ...res2.data[0].traverse // 展开 traverse 对象的字段
+            };
+            delete traverseDTO.traverse;
+            console.log("获取到的病历", traverseDTO)
+            this.$store.commit('setTraverseData', traverseDTO);
+          } else {
+            this.$message.error("获取病历数据失败");
+          }
+        })
+        .catch((error) => {
+          this.$message.error("请求失败：" + (error.message || error));
+        });
     },
     //每日次数输入框
     querySearch(queryString, cb) {
@@ -459,7 +368,7 @@ export default {
     loadFrequency() {
       return [{ value: "一日一次" }, { value: "一日两次" }, { value: "一日三次" }];
     },
-    handleSelectFrequency(item) {},
+    handleSelectFrequency(item) { },
 
     //病情联想
     querySearchAdvice(queryString, cb) {
@@ -511,7 +420,7 @@ export default {
             .then((response) => {
               uploadedUrls.splice(i, 1);
             })
-            .catch((error) => {});
+            .catch((error) => { });
           //客户端删除图片
           uploadFiles.splice(i, 1);
           break;
@@ -527,7 +436,7 @@ export default {
       // 设置uploadDisabled为true，隐藏上传组件
       this.uploadDisabled = true;
       const uploadedUrlString = response.data; //从上传成功后返回的Url中获取图片在服务器中的名称，并将其存在数组里
-      console.log("url",uploadedUrlString)
+      console.log("url", uploadedUrlString)
       const uploadedUrl = uploadedUrlString.split("/");
       const lastPart = uploadedUrl[uploadedUrl.length - 1];
       this.uploadedUrls.push(lastPart);
@@ -546,6 +455,138 @@ export default {
       }
       return isImage;
     },
+
+    async intelligentFilling() {
+      // 验证必填字段
+      if (!this.caseInfo.illnessDetail) {
+        this.$message.error('请先填写主诉信息');
+        return;
+      }
+
+      if (!this.mainDiagnosis) {
+        this.$message.error('请先填写主要诊断');
+        return;
+      }
+
+      // 使用 $loading 组件替代 $message.loading
+      const loadingInstance = this.$loading({
+        lock: true,
+        text: '正在请求AI智能填写...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.1)'
+      });
+
+      try {
+        // 构建AI请求消息
+        const messages = [
+          {
+            role: 'user',
+            content: `患者主诉：${this.caseInfo.illnessDetail}。主要诊断：${this.mainDiagnosis}。次要诊断：${this.secondaryDiagnosis}。请根据这些信息生成完整的诊疗计划，包括：进一步检查、药物治疗、非药物治疗、护理/监测、饮食建议。每个部分请以#### 标题开头，用列表格式回答，例如：#### 进一步检查\n- 检查项目1\n- 检查项目2`
+          }
+        ];
+
+        // 调用AI接口
+        const response = await medicalAdvisorAPI.chat(messages);
+        console.log("AI原始响应:", response); // 新增日志
+
+        // 解析AI响应
+        const aiResponse = this.parseAIResponse(response);
+
+        console.log("furtherCheck:", aiResponse.furtherCheck);
+        console.log("medicine:", aiResponse.medicine);
+        console.log("nonMedicine:", aiResponse.nonMedicine);
+        console.log("care:", aiResponse.care);
+        console.log("diet:", aiResponse.diet);
+
+        // 自动填充到表单
+        this.furtherCheck = aiResponse.furtherCheck || '';
+        this.medicine = aiResponse.medicine || '';
+        this.nonMedicine = aiResponse.nonMedicine || '';
+        this.care = aiResponse.care || '';
+        this.diet = aiResponse.diet || '';
+
+        // 更新选中的诊疗计划
+        this.updateSelectedPlan(aiResponse);
+
+        this.$message.success('智能填写成功');
+      } catch (error) {
+        console.error('智能填写失败', error);
+        this.$message.error('智能填写失败，请稍后再试');
+      } finally {
+        loadingInstance.close(); // 关闭加载状态
+      }
+    },
+    parseAIResponse(response) {
+      const defaultResponse = {
+        furtherCheck: '',
+        medicine: '',
+        nonMedicine: '',
+        care: '',
+        diet: ''
+      };
+
+      try {
+        // 提取AI响应内容（假设response是包含choices的对象）
+        const content = response.choices?.[0]?.message?.content || '';
+        console.log("AI响应内容:", content);
+
+        if (!content) return defaultResponse;
+
+        return {
+          ...defaultResponse,
+          furtherCheck: this.extractMarkdownSection(content, '进一步检查'),
+          medicine: this.extractMarkdownSection(content, '药物治疗'),
+          nonMedicine: this.extractMarkdownSection(content, '非药物治疗'),
+          care: this.extractMarkdownSection(content, '护理/监测'),
+          diet: this.extractMarkdownSection(content, '饮食建议')
+        };
+      } catch (error) {
+        console.error('解析AI响应失败', error);
+        return defaultResponse;
+      }
+    },
+
+    // 提取Markdown格式的章节内容
+    extractMarkdownSection(text, sectionTitle) {
+      if (!text) return '';
+
+      // 匹配Markdown标题（#### 标题）及其后的内容
+      const regex = new RegExp(`(^|\\n)\\s*####\\s+${sectionTitle}\\s*\\n+([\\s\\S]*?)(?=\\n+####|$)`, 'i');
+      const match = text.match(regex);
+
+      if (match) {
+        // 处理列表项并去除Markdown格式
+        return match[2]
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line && !line.startsWith('####')) // 过滤空行和子标题
+          .map(line => line.replace(/^- /, '')) // 去除列表符号
+          .join('\n');
+      }
+
+      // 备用解析：尝试按普通标题解析
+      return this.extractSection(text, sectionTitle);
+    },
+
+    // 备用的普通文本提取方法
+    extractSection(text, sectionTitle) {
+      if (!text) return '';
+
+      const regex = new RegExp(`${sectionTitle}[:：]?\\s*(.*?)(?=\\s*[\\n\\r]|$)`, 'i');
+      const match = text.match(regex);
+      return match ? match[1].trim() : '';
+    },
+
+    // 更新选中的诊疗计划
+    updateSelectedPlan(aiResponse) {
+      this.selected_plan = [];
+
+      if (aiResponse.furtherCheck) this.selected_plan.push('furtherCheck');
+      if (aiResponse.medicine) this.selected_plan.push('medicine');
+      if (aiResponse.nonMedicine) this.selected_plan.push('non-medicine');
+      if (aiResponse.care) this.selected_plan.push('care');
+      if (aiResponse.diet) this.selected_plan.push('diet');
+    },
   },
 };
 </script>
@@ -554,6 +595,7 @@ export default {
 .title {
   text-align: center;
 }
+
 .case-container {
   min-height: 100%;
 }
@@ -711,10 +753,11 @@ export default {
   width: 100%;
   margin: 3px 0;
 }
+
 .right-container {
   margin-top: 10px;
   border: 1px solid;
-  border-color: #c0c4cc; 
+  border-color: #c0c4cc;
   border-radius: 5px;
   padding: 10px;
 }
