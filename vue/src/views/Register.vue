@@ -9,7 +9,7 @@
       linesColor="#27ada9" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3"
       :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="particles"></vue-particles>
     <div
-      style="width: 400px; padding: 30px; background-color: rgba(255, 255, 255, 0.85); border-radius: 5px; box-shadow: 0 0 10px #28AFAB;">
+      style="width: 400px; padding: 30px; background-color: rgba(255, 255, 255, 0.99); border-radius: 5px; box-shadow: 0 0 10px #28AFAB;">
       <div
         style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
         欢 迎 注 册</div>
