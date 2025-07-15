@@ -103,7 +103,15 @@ public class KeyService {
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
         String signData = BestRingSignUtil.generate(data, list, bcecPrivateKey, pi);
-
+        // 暂时使用管理员充当tracer
+        Admin admin = adminMapper.selectById(1);
+        // 利用tracer公钥加密医生私钥
+        try {
+            String sid = MySM2Util.encryption(admin.getPublicKey(), doctor.getPrivateKey());
+            signData += "---" + sid;
+        } catch (Exception e) {
+            throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+        }
         // 设置并返回数据
         ringSign.setSignData(signData);
         ringSign.setMessage("签名成功");
@@ -236,6 +244,8 @@ public class KeyService {
     public boolean verifyLinkage(TraverseDAO traverse1, TraverseDAO traverse2) {
         String q1 = traverse1.getSignData().split("#")[1];
         String q2 = traverse2.getSignData().split("#")[1];
+        q1 = q1.split("---")[0];
+        q2 = q2.split("---")[0];
         if (q1.equals(q2)) {
             return true;
         } else {

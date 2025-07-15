@@ -37,7 +37,7 @@ public class BestRingSigner {
         BigInteger k;
         k=redom(d);
         BigInteger kpi=k;
-        //*****************************计算c[1](pi=pi)********************************
+        // *****************************计算c[1](pi=pi)********************************
         // 编码列表L
         byte[] encodedL = encodeECPublicKeyParametersList(L);
         // 计算SM3哈希值
@@ -51,7 +51,7 @@ public class BestRingSigner {
             C.add(BigInteger.ZERO);
         }
         C.add(pi,h);
-//**********************************计算循坏****************************************
+        // **********************************计算循坏***********************************
         for(int i=0;i<pi;i++){
             S.add(BigInteger.ZERO);
         }
@@ -118,6 +118,7 @@ public class BestRingSigner {
         }
     }
 
+    // 生成可链接标识
     public static String generateQpi(byte[] m, List<ECPoint> L, ECPrivateKeyParameters d, int pi,ECPoint G){ 
         ECPoint pk_pi = G.multiply(d.getD()).normalize();
         byte[] encodedL = encodeECPublicKeyParametersList(L); 
