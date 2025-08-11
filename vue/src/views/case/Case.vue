@@ -203,7 +203,7 @@
 
         <div class="confirm-button">
           <el-button type="primary" @click="intelligentFilling" :loading="isLoadingAI">
-            智能建议
+            智能生成
           </el-button>
           <el-button type="primary" @click="ok">医生签名</el-button>
         </div>
