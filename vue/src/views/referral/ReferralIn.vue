@@ -296,7 +296,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import QRcodeScan from "@/views/component/QRcodeScan.vue";
 
 export default {
@@ -714,7 +713,6 @@ export default {
 
     handleQRCodeData(data) {
       this.referralHash = data;
-      console.log("referralHash", data);
       this.pullReferralInfo();
     },
 

@@ -120,6 +120,13 @@ public class FileController {
         }
     }
 
+    @GetMapping("/parseQR")
+    public Result parseQR(String uuid) {
+        String content = fileService.parseQr(uuid);
+        return Result.success(content);
+    }
+
+
     // @GetMapping("/getBase64")
     // public Result getBase64(@RequestParam String url) throws Exception {
     //     String base64 = ImgUtil.getImageBase64(ImgUtil.MultipartFileToBufferedImage(MyMultipartFile.fromURL(url)));

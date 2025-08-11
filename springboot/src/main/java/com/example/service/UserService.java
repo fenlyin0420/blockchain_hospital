@@ -47,6 +47,8 @@ public class UserService {
             user.setName(user.getUsername());
         }
         user.setRole(RoleEnum.USER.name());
+        // 默认余额
+        user.setAccount(100.00);
         userMapper.insert(user);
     }
 

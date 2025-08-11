@@ -103,7 +103,15 @@ public class KeyService {
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
         String signData = BestRingSignUtil.generate(data, list, bcecPrivateKey, pi);
-
+        // 暂时使用管理员充当tracer
+        Admin admin = adminMapper.selectById(1);
+        // 利用tracer公钥加密医生私钥
+        try {
+            String sid = MySM2Util.encryption(admin.getPublicKey(), doctor.getPrivateKey());
+            signData += "---" + sid;
+        } catch (Exception e) {
+            throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+        }
         // 设置并返回数据
         ringSign.setSignData(signData);
         ringSign.setMessage("签名成功");
@@ -169,7 +177,15 @@ public class KeyService {
             throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
         }
         String signData = BestRingSignUtil.generate(data, list, bcecPrivateKey, pi);
-
+        // 暂时使用管理员充当tracer
+        Admin admin = adminMapper.selectById(1);
+        // 利用tracer公钥加密医生私钥
+        try {
+            String sid = MySM2Util.encryption(admin.getPublicKey(), doctor.getPrivateKey());
+            signData += "---" + sid;
+        } catch (Exception e) {
+            throw new CustomException(ResultCodeEnum.USER_KEY_ERROR);
+        }
         // 设置并返回数据
         ringSign.setSignData(signData);
         ringSign.setMessage("签名成功");
@@ -236,11 +252,37 @@ public class KeyService {
     public boolean verifyLinkage(TraverseDAO traverse1, TraverseDAO traverse2) {
         String q1 = traverse1.getSignData().split("#")[1];
         String q2 = traverse2.getSignData().split("#")[1];
+        q1 = q1.split("---")[0];
+        q2 = q2.split("---")[0];
         if (q1.equals(q2)) {
             return true;
         } else {
             return false;
         }
+    }
+    
+    public Doctor signTracer(TraverseDAO traverseDAO) {
+        Doctor doctor = new Doctor();
+        try {
+            String sid = traverseDAO.getSignData().split("---")[1];
+            // 获取TraceradminController私钥
+            Admin admin = adminMapper.selectById(1);
+            String adminPrivateKey = admin.getPrivateKey();
+            // 解密医生私钥
+            String doctorPrivateKey = MySM2Util.decrypt(adminPrivateKey, sid);
+
+            // 获取所有医生信息
+            List<Doctor> doctors = doctorMapper.select();
+            for (Doctor d : doctors) {
+                if (Objects.equals(d.getPrivateKey(), doctorPrivateKey)) {
+                    doctor = d;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return doctor;
     }
     /**
      * 获取公钥环
@@ -362,15 +404,18 @@ public class KeyService {
                 field.setAccessible(true);
                 Object value = field.get(traverse);
                 if (value != null){
+                    System.out.println("privateKey" + privateKey);
                     String plainText = MySM2Util.decrypt(privateKey, (String) value);
                     System.out.println("plainText" + plainText);
                     field.set(traverse, plainText);
                 }
             }
             if (!traverse.getImg().equals("") || traverse.getImg() != null || !traverse.getImg().equals(" ")) {
+                System.out.println("privateKey" + privateKey);
                 decryptImg(traverse.getImg(), privateKey);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CustomException(e.getMessage());
         }
         return traverse;

@@ -147,18 +147,10 @@
         </div>
       </el-col>
     </el-row>
-
-    <!-- IMAGE PREVIEW DIALOG-->
-    <!-- <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" />
-    </el-dialog> -->
-
   </el-card>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   data() {
     return {
@@ -239,7 +231,7 @@ export default {
         .then((res) => {
           if (res.code === "200") {
             console.log("加密后：", res);
-            // 更新数据为加密后的内容
+            // 更新页面数据
             this.receivedData.mainDiagnosis = res.data.mainDiagnosis;
             this.receivedData.secondaryDiagnosis = res.data.secondaryDiagnosis;
             this.receivedData.drug = res.data.drug;
@@ -258,7 +250,6 @@ export default {
             this.receivedData.phone = this.stob(this.receivedData.phone)
             this.receivedData.illnessDetail = this.stob(this.receivedData.illnessDetail)
             this.sign();
-
           } else {
             this.$message.error("加密失败 :(");
             console.log(res)
@@ -306,8 +297,6 @@ export default {
         inHospitalStatus: this.receivedData.inHospital,
         signData: this.signData,
       }
-      console.log("traverse:", traverse)
-
 
       // 上传区块链
       this.$blockRequest.post("/storeMedicalRecord", traverse).then((res) => {
@@ -326,10 +315,18 @@ export default {
      * @return base64字符串
      */
     stob(s) {
-      const utf8Str = encodeURIComponent(s).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-          return String.fromCharCode(parseInt(p1, 16));
-      });
-      return btoa(utf8Str);
+      // 首先使用 TextEncoder 将字符串转换为 UTF-8 字节数组
+      const encoder = new TextEncoder();
+      const data = encoder.encode(s);
+      
+      // 将字节数组转换为二进制字符串
+      let binary = '';
+      for (let i = 0; i < data.length; i++) {
+          binary += String.fromCharCode(data[i]);
+      }
+      
+      // 使用 btoa 进行 Base64 编码
+      return btoa(binary);
     },
 
     /**
@@ -339,10 +336,18 @@ export default {
      * @return 原始字符串
      */
     btos(b) {
-      const utf8Str = atob(b);
-      return decodeURIComponent(Array.prototype.map.call(utf8Str, (c) => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
+      // 使用 atob 解码 Base64 得到二进制字符串
+      const binary = atob(b);
+      
+      // 将二进制字符串转换为字节数组
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+      }
+      
+      // 使用 TextDecoder 将字节数组解码为 UTF-8 字符串
+      const decoder = new TextDecoder('utf-8');
+      return decoder.decode(bytes);
     }
   },
 };
