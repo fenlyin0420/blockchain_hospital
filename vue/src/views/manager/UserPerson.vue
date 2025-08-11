@@ -19,11 +19,23 @@
         <el-form-item label="姓名" prop="name">
           <el-input v-model="user.name" placeholder="姓名"></el-input>
         </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-input v-model="user.sex" placeholder="性别"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model="user.age" placeholder="年龄"></el-input>
+        </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input v-model="user.phone" placeholder="电话"></el-input>
         </el-form-item>
         <el-form-item label="身份证" prop="idCard">
           <el-input v-model="user.idCard" placeholder="身份证"></el-input>
+        </el-form-item>
+        <el-form-item label="职业" prop="occupation">
+          <el-input v-model="user.occupation" placeholder="职业"></el-input>
+        </el-form-item>
+        <el-form-item label="E-mail" prop="email">
+          <el-input v-model="user.email" placeholder="email"></el-input>
         </el-form-item>
         <el-form-item label="余额" prop="account">
           <el-input v-model="user.account" disabled></el-input>
@@ -34,6 +46,7 @@
         </div>
       </el-form>
     </el-card>
+
     <el-dialog title="充值金额" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="account" label="输入金额">

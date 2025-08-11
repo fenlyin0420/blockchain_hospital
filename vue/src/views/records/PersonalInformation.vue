@@ -140,21 +140,21 @@ export default {
       let privateKey = this.dataP.privateKey;
       request.get("/files/generateQR", {
         params: { data: publicKey }
-      }).then(res => {
-        if (res.code === "200") {
-          this.publicKeyQR = res.data;
+      }).then(Pubres => {
+        if (Pubres.code === "200") {
+          this.publicKeyQR = Pubres.data;
         } else {
-          this.$message.error(res.msg);
+          this.$message.error(Pubres.msg);
         }
       });
     
       request.get("/files/generateQR", {
         params: { data: privateKey }
-      }).then(res => {
-        if (res.code === "200") {
-          this.privateKeyQR = res.data;
+      }).then(Prires => {
+        if (Prires.code === "200") {
+          this.privateKeyQR = Prires.data;
         } else {
-          this.$message.error(res.msg);
+          this.$message.error(Prires.msg);
         }
       });
     },

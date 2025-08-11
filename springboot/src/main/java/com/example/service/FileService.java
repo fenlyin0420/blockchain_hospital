@@ -2,9 +2,11 @@ package com.example.service;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.controller.FileController;
 import com.example.utils.ImgUtil;
 import com.example.exception.CustomException;
+import com.example.mapper.QRCodeMapper;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
@@ -22,6 +25,9 @@ public class FileService {
     // 文件上传存储路径，为服务器本地文件系统路径
     // e.g. D:\Projects\Web\blockchain_hospital\Project/files/
     private static final String filePath = System.getProperty("user.dir") + "/files/";
+    
+    @Resource
+    QRCodeMapper qrCodeMapper;
 
     @Value("${server.port:9090}")
     private String port;
@@ -29,6 +35,11 @@ public class FileService {
     @Value("${ip:localhost}")
     private String ip;
 
+    /**
+     * 保存文件，返回文件的 url
+     * @param file MultipartFile 要保存的文件
+     * @return String 文件 url
+     */
     public String save(MultipartFile file) {
         //获取当前时间戳
         String timeStamp;
@@ -92,9 +103,6 @@ public class FileService {
         }
     }
 
-    /** 
-     * 保存文件
-     */
     public void replace(MultipartFile file) {
         try {
             FileUtil.writeBytes(file.getBytes(), filePath + file.getName());
@@ -110,11 +118,20 @@ public class FileService {
         if (data == null || data.equals("")) {
             throw new CustomException("二维码数据为空");
         }
-        String url = ImgUtil.generateQR(data, filePath, ip, port);
+        // 生成UUID
+        String uuid = UUID.randomUUID().toString();
+        // 将内容存入数据库
+        qrCodeMapper.create(uuid, data);
+        String url = ImgUtil.generateQR(uuid, filePath, ip, port);
         if (url == null) {
             throw new CustomException("二维码生成失败");
         }
         return url;
+    }
+    
+    public String parseQr(String uuid) {
+        String content = qrCodeMapper.read(uuid);
+        return content;
     }
 
 }
