@@ -140,7 +140,7 @@ export default {
       this.drawerVisible = newVal;
       if (newVal && this.chatMessages.length === 0) {
         // 第一次打开时发送欢迎消息
-        this.addBotMessage("您好，我是AI医疗助手，可以帮你规范书写病历，查询药物用法用量。");
+        this.addBotMessage("您好，我是AI医疗助手，请问您遇到什么医疗问题了吗？");
       }
     },
     drawerVisible(newVal) {
@@ -349,12 +349,12 @@ export default {
         this.currentReasoningContent = "";
         
         // 重新添加欢迎消息
-        this.addBotMessage("您好，我是AI医疗助手，可以帮你规范书写病历，查询药物用法用量。");
+        this.addBotMessage("您好，我是AI医疗助手，请问您遇到什么医疗问题了吗？");
         
         // 添加到历史
         this.messages.push({
           role: 'assistant',
-          content: "您好，我是AI医疗助手，可以帮你规范书写病历，查询药物用法用量。"
+          content: "您好，我是AI医疗助手，请问您遇到什么医疗问题了吗？"
         });
       }).catch(() => {});
     },

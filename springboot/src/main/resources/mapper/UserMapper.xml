@@ -76,6 +76,12 @@
             <if test="name != null">
                 name = #{name},
             </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
             <if test="phone != null">
                 phone = #{phone},
             </if>

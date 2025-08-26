@@ -3,6 +3,7 @@ node_modules
 
 # 打包文件
 springboot/target
+vue/dist
 
 # 个人配置
 .diagram

@@ -7,6 +7,7 @@ import com.example.dao.TraverseDAO;
 import com.example.dto.BlockChainTraverseDTO;
 import com.example.dto.TraverseDTO;
 import com.example.entity.Account;
+import com.example.entity.Doctor;
 import com.example.entity.RingSign;
 import com.example.entity.Traverse;
 import com.example.entity.User;
@@ -103,6 +104,11 @@ public class KeyController {
             return Result.success("验证失败");
         }
     }
+    @PostMapping("/signTracer")
+    public Result signTracer(@RequestBody TraverseDAO traverseDAO) {
+        Doctor doctor = keyService.signTracer(traverseDAO);
+        return Result.success(doctor);
+    }
     
 
     /**
@@ -153,8 +159,6 @@ public class KeyController {
      */
     @PostMapping("/decryptFlat")
     public Result decryptFlat(@RequestBody Traverse traverse, @RequestParam(required = false) String privateKey) {
-        System.out.println("traverse" + traverse);
-        System.out.println("privateKey" + privateKey);
         try {
             if (traverse.getUserId() != null && (privateKey == null || privateKey.isEmpty())) {
                 User user = userService.selectById(traverse.getUserId());

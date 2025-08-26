@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.QRCodeMapper">
+    <insert id="create" parameterType="String" useGeneratedKeys="true">
+        insert into qr_code(uuid, content) values(#{uuid}, #{content})
+    </insert>
+
+    <select id="read" resultType="String">
+        select content from qr_code where uuid = #{uuid}
+    </select>
+</mapper>

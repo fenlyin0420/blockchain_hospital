@@ -2,10 +2,10 @@
   <div class="main-content">
     <h1 style="text-align: center; margin-bottom: 50px;"> {{ title }}</h1>
     <audio ref="beepSound" :src="audioSrc"></audio>
+
     <div class="qr-code-scanner" style="display: flex; justify-content: center;">
       <div style="height: 500px;">
         <video ref="video" autoplay playsinline></video>
-
         <div class="scan-overlay">
           <div class="scan-box">
             <div class="scan-box2"></div>
@@ -84,7 +84,7 @@ export default {
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
 
-      const scanFrame = () => {
+      const scanFrame = async () => {
         if (!this.active || !this.videoStream || video.readyState !== video.HAVE_ENOUGH_DATA) {
           requestAnimationFrame(scanFrame);
           return;
@@ -93,15 +93,16 @@ export default {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const w = canvas.width;
+        const h = canvas.height;
+        const imageData = context.getImageData(w * 0.15, h * 0.15, w * 0.85, h * 0.85);
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
           inversionAttempts: "attemptBoth",
         });
 
         if (code) {
-          this.handleQRCodeData(code.data);
-          requestAnimationFrame(scanFrame);
+          await this.handleQRCodeData(code.data);
+          return;
         } else {
           requestAnimationFrame(scanFrame);
         }
@@ -109,23 +110,37 @@ export default {
       requestAnimationFrame(scanFrame);
     },
 
-    handleQRCodeData(data) {
-      // 播放提示音
-      const audio = this.$refs.beepSound;
-      if (audio) {
-        audio.play().catch(error => {
-          console.error("无法播放提示音:", error);
-        });
-      }
-      this.$emit("getPrivateKey", data);
-      this.qrCodeData = data;
-      // 3 秒后隐藏提示
-      setTimeout(() => {
-        this.qrCodeData = null;
-      }, 3000);
-      this.stopCamera();
-    },
+    async handleQRCodeData(data) {
+      console.log("内容1: ", data);
+      this.$request.get('/files/parseQR', {
+        params: {
+          uuid: data
+        }
+      })
+      .then(res => {
+        if (res.code === '200') {
+          const content = res.data;
+          this.$emit("getPrivateKey", content);
+          this.qrCodeData = content;
+          console.log("内容2: ", content);
+          // 播放提示音
+          const audio = this.$refs.beepSound;
+          if (audio) {
+            audio.play().catch(error => {
+              console.error("无法播放提示音:", error);
+            });
+          }
 
+          // 3 秒后隐藏提示
+          setTimeout(() => {
+            this.qrCodeData = null;
+          }, 3000);
+          this.stopCamera();
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
     stopCamera() {
       if (this.videoStream) {
         this.videoStream.getTracks().forEach(track => track.stop());
